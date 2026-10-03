@@ -30,8 +30,8 @@ async def capture(url: str, tmp: Path) -> Path:
         page = await context.new_page()
         await page.goto(url + "#full_nmpc", wait_until="load")
         await page.select_option("#controller", "full_nmpc")
-        await page.select_option("#observer", "adaptive")
-        await page.select_option("#scenario", "sensor")
+        await page.select_option("#observer", "ekf")
+        await page.select_option("#scenario", "mixed")
         await page.wait_for_timeout(1200)
         await page.click("#pushR")
         await page.wait_for_timeout(1800)
@@ -57,15 +57,15 @@ def convert(src: Path):
         pattern = str(Path(frames_dir) / "frame-%04d.png")
         subprocess.run([
             str(FFMPEG), "-y", "-i", str(src),
-            "-vf", "scale=960:-1", pattern
+            "-vf", "scale=720:-1", pattern
         ], check=True)
         all_paths = sorted(Path(frames_dir).glob("frame-*.png"))
-        # Playwright records at 25 fps. Keep roughly 8.3 fps for a compact README loop.
-        frames = [Image.open(p).convert("P", palette=Image.Palette.ADAPTIVE, colors=128)
-                  for p in all_paths[::3]]
+        # Playwright records at 25 fps. Keep 5 fps for a compact README loop.
+        frames = [Image.open(p).convert("P", palette=Image.Palette.ADAPTIVE, colors=64)
+                  for p in all_paths[::5]]
         if not frames:
             raise RuntimeError("no demo frames generated")
-        frames[0].save(gif, save_all=True, append_images=frames[1:], duration=120,
+        frames[0].save(gif, save_all=True, append_images=frames[1:], duration=200,
                        loop=0, optimize=True, disposal=2)
         for frame in frames:
             frame.close()

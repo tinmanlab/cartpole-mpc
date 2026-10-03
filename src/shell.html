@@ -8,7 +8,7 @@
  <div class="card-head"><div><b>공통 실시간 실험</b><small>Controller에는 선택한 observer의 x̂만 입력 · truth는 화면/평가에만 사용</small></div><span class="badge" id="statusBadge">RUNNING</span></div>
  <div class="runtime-controls">
   <label>Controller<select id="controller"><option value="pid">PID</option><option value="lqr">LQR</option><option value="linear_mpc">Linear MPC</option><option value="centroidal_mpc">Centroidal-style MPC</option><option value="full_nmpc">Full nonlinear NMPC</option><option value="ppo">PPO</option></select></label>
-  <label>Observer<select id="observer"><option value="truth">Truth / oracle</option><option value="raw">Raw + finite diff</option><option value="kf">KF</option><option value="ekf">EKF</option><option value="so2">Invariant-error bridge</option><option value="residual">Learned residual</option><option value="adaptive">Adaptive R bridge</option></select></label>
+  <label>Observer<select id="observer"><option value="truth">Truth / oracle</option><option value="raw">Raw + finite diff</option><option value="kf">KF</option><option value="ekf">EKF</option><option value="so2">SO(2) error bridge</option><option value="residual">Learned residual</option><option value="adaptive">Adaptive R · FOCUS bridge</option></select></label>
   <label>Scenario<select id="scenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed</option><option value="glitch">Measurement glitch</option></select></label>
   <label>Goal<select id="goal"><option value="0">0.0 m</option><option value="0.5">+0.5 m</option><option value="-0.5">−0.5 m</option></select></label>
  </div>
