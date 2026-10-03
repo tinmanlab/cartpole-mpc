@@ -62,6 +62,20 @@ assert.equal(cent.lastPredictionReduced.length,33);
 assert.equal(cent.lastReference.length,2);
 assert(cent.lastControls.every(u=>Math.abs(u)<=cent.limit+1e-12));
 
+// Scenario-risk MPC ensemble gradient must match finite differences away from worst-model ties.
+{
+  const spec=plant.spec,variants=[{...spec,mc:spec.mc*.85,mp:spec.mp*1.2,l:spec.l*.9},{...spec},{...spec,mc:spec.mc*1.15,mp:spec.mp*.8,l:spec.l*1.1}],
+    models=variants.map(v=>Lab.linearModel(v)),x0=[.12,-.03,.08,.02],U=Array(12).fill(0).map((_,i)=>.12*Math.sin(.31*i)),
+    Qs=Lab.diag([3,.6,72,4]),Qfs=Lab.diag([10,2,120,8]),Rs=.16,risk=.55,
+    a=Lab.ensembleLinearObjective(models,x0,U,Qs,Rs,Qfs,risk),gn=Array(U.length).fill(0),epss=1e-6;
+  for(let k=0;k<U.length;k++){
+    const up=U.slice(),um=U.slice();up[k]+=epss;um[k]-=epss;
+    const jp=Lab.ensembleLinearObjective(models,x0,up,Qs,Rs,Qfs,risk).J,jm=Lab.ensembleLinearObjective(models,x0,um,Qs,Rs,Qfs,risk).J;
+    gn[k]=(jp-jm)/(2*epss);
+  }
+  assert(maxAbs(a.g,gn)<2e-5,'scenario-risk MPC gradient drifted from finite differences');
+}
+
 // Full NMPC must reduce the zero-sequence nonlinear cost and obey its input bound.
 const full=new Lab.FullNMPCController(plant.spec);full.reset();const xn=[.2,.05,.07,-.04],uz=Array(full.N).fill(0),xz=full.rollout(xn,uz),jn0=full.cost(xz,uz);
 full.act(xn,0);
@@ -81,7 +95,7 @@ assert(Math.abs(ar.R[0][0]-ar.baseR[0][0])<1e-15);
 assert(Math.abs(ar.R[1][1]-ar.baseR[1][1])<1e-15);
 
 // Sensor R must match the actually injected Gaussian standard deviation in each scenario.
-for(const scenario of ['nominal','sensor','model','mixed','nonlinear','glitch']){
+for(const scenario of ['nominal','sensor','model','mixed','bias','actuator','latency','nonlinear','glitch']){
   const p=new Lab.LabPlant({seed:4,scenario}),r=p.measurementVariance(),kf=new Lab.KFObserver(p.spec,{R:r});
   assert(Math.abs(kf.R[0][0]-p.sensorStd[0]**2)<1e-15);
   assert(Math.abs(kf.R[1][1]-p.sensorStd[1]**2)<1e-15);

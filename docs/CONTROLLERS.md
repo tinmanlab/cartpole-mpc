@@ -55,6 +55,25 @@ The current controller uses:
 
 This is a real box-constrained linear MPC optimization. It is intentionally small and dependency-free; it is not presented as a production QP solver.
 
+
+## Scenario-risk MPC
+
+Purpose: make model uncertainty part of the optimization rather than only part of an external stress test.
+
+The CartPole controller builds three local linear models with different cart mass, pole mass and pole length. One shared control sequence is evaluated on all of them. The objective is
+
+    J = mean_i J_i + rho * (max_i J_i - mean_i J_i)
+
+with the same input box constraint for every scenario. The gradient combines the mean gradient with the gradient of the current worst model.
+
+This is an executable finite-scenario risk controller. It teaches the distinction between:
+
+    nominal MPC
+    scenario/risk robustification
+    domain-randomized validation
+
+It does **not** provide the invariant-set guarantee of tube MPC, the adversarial guarantee of a formal min-max controller, or a chance-constraint probability guarantee. For humanoids, select the robustness formulation according to measured uncertainty and use the native OCP solver.
+
 ## Centroidal-style MPC
 
 The humanoid architecture that motivated this page uses a reduced state based on centroidal momentum/configuration, contact-wrench inputs, and a lower-level realization layer.

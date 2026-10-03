@@ -6,9 +6,11 @@
   "scripts": {
     "build": "python3 scripts/build.py",
     "check:build": "python3 scripts/build.py --check",
-    "check:js": "node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/topics.js && node --check src/app.js",
-    "test": "node tests/test_engine.js && node tests/test_math.js",
+    "check:js": "node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/commissioning.js && node --check src/topics.js && node --check src/app.js",
+    "test": "node tests/test_engine.js && node tests/test_math.js && node tests/test_commissioning.js && node tests/test_diagnosis.js",
     "train:residual": "node scripts/train_residual.js",
-    "check": "npm run check:js && npm run check:build && npm test"
+    "check": "npm run check:js && npm run check:build && npm test",
+    "commission": "node scripts/run_commissioning.js && node scripts/diagnose_commissioning.js",
+    "diagnose": "node scripts/diagnose_commissioning.js"
   }
 }

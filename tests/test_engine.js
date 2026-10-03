@@ -7,7 +7,7 @@ const residual = JSON.parse(fs.readFileSync('./assets/residual_model.json','utf8
 
 function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
 
-const controllers=['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'];
+const controllers=['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo'];
 for(const c of controllers){
   const rs=[1,2,3].map(seed=>Lab.runEpisode({
     controller:c, observer:'truth', scenario:'nominal', seed,
@@ -18,13 +18,24 @@ for(const c of controllers){
 
 const plant = new Lab.LabPlant({seed:9,scenario:'nominal'});
 const linear = new Lab.LinearMPCController(plant.spec);
+const scenarioMpc = new Lab.ScenarioMPCController(plant.spec);
+const stateMpc = new Lab.StateAwareLinearMPCController(plant.spec);
+const ltv = new Lab.LTVMPCController(plant.spec);
 const centroidal = new Lab.CentroidalMPCController(plant.spec);
 const full = new Lab.FullNMPCController(plant.spec);
-linear.reset(); centroidal.reset(); full.reset();
+linear.reset(); stateMpc.reset(); ltv.reset(); centroidal.reset(); full.reset();
 linear.act([0,0,.04,0],0);
+scenarioMpc.act([0,0,.04,0],0);
+stateMpc.act([0,0,.04,0],0);
+ltv.act([0,0,.04,0],0);
 centroidal.act([0,0,.04,0],0);
 full.act([0,0,.04,0],0);
 assert.equal(linear.lastPrediction.length-1,30);
+assert.equal(scenarioMpc.lastPrediction.length-1,30);
+assert.equal(scenarioMpc.lastScenarioCosts.length,5);
+assert.equal(stateMpc.lastPrediction.length-1,30);
+assert.equal(ltv.lastPrediction.length-1,30);
+assert.equal(ltv.lastIterations,1);
 assert.equal(centroidal.lastPrediction.length-1,32);
 assert.equal(full.lastPrediction.length-1,30);
 assert.equal(centroidal.lastReference.length,2);
@@ -50,9 +61,38 @@ const noisyRaw=[1,2,3].map(seed=>Lab.runEpisode({
 }));
 assert(noisyRaw.filter(r=>r.failed).length>=2);
 
+// Zero configured delay must not create a hidden one-tick command delay.
+const nominalPlant=new Lab.LabPlant({seed:5,scenario:'nominal'});nominalPlant.reset([0,0,0,0]);
+const nominalOut=nominalPlant.step(1.25);assert(Math.abs(nominalOut.appliedCommand-1.25)<1e-12);
+
+// MHE is a windowed nonlinear estimator with deliberately uncalibrated output covariance.
+const mheRuns=[1,2,3].map(seed=>Lab.runEpisode({controller:'lqr',observer:'mhe',scenario:'sensor',seed,steps:180,pushAt:999,pushForce:0}));
+assert(mheRuns.every(r=>!r.failed&&Number.isFinite(r.rmseState)));
+assert(mheRuns.every(r=>r.trace.some(q=>q.observerWindow>=2)));
+assert(mheRuns.every(r=>r.trace.every(q=>q.P===null)));
+
+// A soft state-bound formulation should reduce the fixed track-boundary failures relative to input-only linear MPC.
+const linStress=[301,302,303].map(seed=>Lab.runEpisode({controller:'linear_mpc',observer:'ekf',scenario:'sim2real',seed,steps:260,pushAt:100,pushForce:3}));
+const boundStress=[301,302,303].map(seed=>Lab.runEpisode({controller:'state_mpc',observer:'ekf',scenario:'sim2real',seed,steps:260,pushAt:100,pushForce:3}));
+assert(boundStress.filter(r=>r.failed).length < linStress.filter(r=>r.failed).length);
+
+// Combined sim2real preset must create a measurable command/application mismatch.
+const sim2real=Lab.runEpisode({controller:'lqr',observer:'ekf',scenario:'sim2real',seed:91,steps:120,pushAt:999,pushForce:0});
+assert(sim2real.rmsCommandMismatch>0);
+
+// Single-factor sim2real ablations isolate actuator, latency, and sensor-bias effects.
+const actuatorRun=Lab.runEpisode({controller:'lqr',observer:'ekf',scenario:'actuator',seed:91,steps:100,pushAt:999,pushForce:0});
+assert(actuatorRun.rmsCommandMismatch>0,'actuator-only scenario should create command/application mismatch');
+const latencyPlant=new Lab.LabPlant({seed:3,scenario:'latency'});latencyPlant.reset([0,0,0,0]);
+const lat1=latencyPlant.step(2),lat2=latencyPlant.step(2),lat3=latencyPlant.step(2);
+assert(Math.abs(lat1.appliedCommand)<1e-12&&Math.abs(lat2.appliedCommand)<1e-12&&Math.abs(lat3.appliedCommand)>0,'two-tick latency scenario should delay command application');
+const biasPlant=new Lab.LabPlant({seed:3,scenario:'bias'});biasPlant.reset([0,0,0,0]);
+const firstBias=biasPlant.sensorBias.slice();for(let i=0;i<50;i++)biasPlant.sensor();const laterBias=biasPlant.sensorBias.slice();
+assert(Math.abs(laterBias[0]-firstBias[0])+Math.abs(laterBias[1]-firstBias[1])>0,'bias scenario should evolve sensor bias');
+
 console.log(JSON.stringify({
-  controllers:"6/6 nominal truth probes pass",
-  horizons:{linear:30,centroidal:32,fullNmpc:30},
+  controllers:controllers.length+"/"+controllers.length+" nominal truth probes pass",
+  horizons:{linear:30,stateAware:30,ltv:30,centroidal:32,fullNmpc:30},
   fullNmpcMeanSolveMs:mean(nmpc.map(r=>r.meanSolveMs)),
   noisyRawFailures:noisyRaw.filter(r=>r.failed).length
 }, null, 2));
