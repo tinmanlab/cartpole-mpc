@@ -105,7 +105,7 @@
   function loop(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.08,(ts-lastTs)/1000);lastTs=ts;if(running){acc+=dt;let n=0;while(acc>=L.DT&&n<4){stepOne();acc-=L.DT;n++;}}renderAll();requestAnimationFrame(loop);}
   function compare(){
     const sc=$('compareScenario').value,cs=['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'],os=['truth','raw','kf','ekf','so2','residual','adaptive'];let html='<thead><tr><th>Controller</th>'+os.map(function(o){return '<th>'+observerLabels[o]+'</th>';}).join('')+'</tr></thead><tbody>';
-    cs.forEach(function(c){html+='<tr><td>'+controllerLabels[c]+'</td>';os.forEach(function(o){const r=L.runEpisode({controller:c,observer:o,scenario:sc,seed:77,steps:240,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:96,pushForce:sc==='nonlinear'?0:3});html+="<td class='"+(r.failed?'fail':'pass')+"'>"+(r.failed?'FAIL':'✓')+' · '+r.rmseState.toFixed(2)+(r.meanSolveMs?'<br><small>'+r.meanSolveMs.toFixed(1)+'ms</small>':'')+'</td>';});html+='</tr>';});$('matrix').innerHTML=html+'</tbody>';
+    cs.forEach(function(c){html+='<tr><td>'+controllerLabels[c]+'</td>';os.forEach(function(o){const r=L.runEpisode({controller:c,observer:o,scenario:sc,seed:77,steps:240,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:96,pushForce:3});html+="<td class='"+(r.failed?'fail':'pass')+"'>"+(r.failed?'FAIL':'✓')+' · '+r.rmseState.toFixed(2)+(r.meanSolveMs?'<br><small>'+r.meanSolveMs.toFixed(1)+'ms</small>':'')+'</td>';});html+='</tr>';});$('matrix').innerHTML=html+'</tbody>';
   }
   function statePayload(){
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
