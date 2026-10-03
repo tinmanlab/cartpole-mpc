@@ -174,8 +174,8 @@ Do not learn every acronym at once.
 1. **PID → LQR**: feedback versus model-derived feedback.
 2. **LQR → Linear MPC**: why a horizon and constraints change the problem.
 3. **Linear MPC → Centroidal / Full NMPC**: reduced-order versus full nonlinear prediction.
-4. **Raw → KF → EKF**: why a state estimator is needed and where P, Q, R, K appear.
-5. **EKF → invariant filtering branch**: when Lie-group symmetry makes an invariant error useful; InEKF is not a universal replacement for EKF.
+4. **Raw → KF → EKF**: use Sensor noise first, then switch to **Estimator nonlinear bench** with LQR fixed to isolate nonlinear prediction.
+5. **EKF → invariant filtering branch**: use the +179°/-179° SO(2) micro-bench to see why error geometry matters; InEKF is not a universal replacement for EKF.
 6. **Lin / Youm / InNKF / CoCo / FOCUS**: compare *where* learning enters—contact events, measurements, output residuals, process covariance, or observation reliability. This is a taxonomy, not a chronological ranking.
 7. Combine controller and observer under the same noise, model mismatch, glitch, and push scenarios.
 
@@ -196,10 +196,12 @@ Representative fixed checks from the audited implementation:
 
 - truth-state evaluation is timestamp aligned, so the Truth observer has exactly zero estimation RMSE,
 - the LQR gain matches an independent SciPy discrete-Riccati solution to below 2e-7 max absolute error,
-- the [position, angle] measurement pair gives observability rank 4 for the upright discrete model,
+- the local four-state model has controllability rank 4 and observability rank 4,
 - Linear MPC and the reduced outer MPC solve explicit input-box-constrained horizon problems,
 - Full NMPC exposes a 30-step nonlinear horizon and bounded iLQR-style iterations,
 - raw finite-difference velocity estimation fails under the fixed high-noise probe where KF remains stable,
+- the targeted LQR-fixed estimator nonlinear bench gives about 0.0080 KF RMSE versus 0.00323 EKF RMSE across five fixed seeds,
+- the SO(2) regression demonstrates that +179 deg and -179 deg differ by 2 deg, not 358 deg,
 - scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
 - learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims.
 
