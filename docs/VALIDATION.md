@@ -46,6 +46,8 @@ The checked-in tests also verify:
 - Full NMPC exposes N=30 and a bounded iterative solve,
 - Full NMPC reports finite solver timing, but wall-clock timing is host-dependent and is not a portable CI acceptance gate,
 - raw finite-difference estimation fails in most seeds under the fixed strong sensor-noise probe,
+- the estimator nonlinear bench fixes LQR, starts at 0.5 rad with very low sensor noise and no push, and yields KF RMSE about 0.0080 versus EKF about 0.00323 across the fixed five-seed check,
+- the SO(2) wrap regression maps +179 deg to -179 deg to a +2 deg residual instead of a -358 deg Euclidean jump,
 - Adaptive-R down-weights the deterministic measurement-glitch probe relative to the fixed-R KF.
 
 More exhaustive generated measurements are stored in:

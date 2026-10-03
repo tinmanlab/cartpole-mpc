@@ -44,10 +44,10 @@ const CONTROL_LAB_TOPICS = {
  ].join("")},
  ekf:{group:"Observer",title:"EKF — nonlinear mean, local linear covariance",lead:"state mean은 nonlinear f로 움직이고 covariance 전파에 필요한 Jacobian만 현재점에서 계산한다.",chips:["nonlinear f","Jacobian","local linearization"],runtime:{observer:"ekf"},body:[
   "<div class='section'><h3>KF에서 바뀌는 부분</h3><div class='math'>x_hat_minus = f(x_hat_plus,u)\\nF = df/dx evaluated at x_hat\\nP_minus = F P_plus F^T + Q\\n\\nmeasurement correction은 Kalman 구조 유지</div></div>",
-  "<div class='section'><h3>실험 해석 주의</h3><p>현재 기본 시나리오는 upright 근처가 많아서 KF와 EKF가 거의 같게 보일 수 있다. 이것은 두 알고리즘이 동등하다는 증거가 아니라 local linearization이 충분히 좋은 구간이라는 뜻이다.</p></div><div class='section'><h3>다음 문제</h3><p>rotation/pose는 평범한 Euclidean vector가 아니므로 error 자체를 어떤 geometry에서 정의할지가 중요해진다.</p></div>"
+  "<div class='section'><h3>직접 비교</h3><p>Scenario에서 <b>Estimator nonlinear bench · 28.6° · LQR</b>를 선택하고 controller를 LQR로 고정하면 매우 낮은 sensor noise에서 model nonlinearity를 분리할 수 있다. 고정 5-seed probe에서 state RMSE는 KF 약 0.0080, EKF 약 0.00323이었다.</p></div><div class='section'><h3>다음 문제</h3><p>rotation/pose는 평범한 Euclidean vector가 아니므로 error 자체를 어떤 geometry에서 정의할지가 중요해진다.</p></div>"
  ].join("")},
  inekf:{group:"Observer",title:"InEKF — Lie-group symmetry가 있을 때 invariant error를 쓰는 별도 EKF 계열",lead:"InEKF는 EKF의 무조건적인 다음 버전이 아니다. 적절한 Lie-group/group-affine 구조가 있을 때 invariant error로 linearization 특성을 개선한다. CartPole runtime은 SO(2) wrap만 보여준다.",chips:["Lie group","invariant error","contact aided"],runtime:{observer:"so2"},body:[
-  "<div class='section'><h3>CartPole runtime bridge</h3><div class='math'>r_theta = wrap(theta_meas-theta_hat_minus)\\ntheta_hat_plus = wrap(theta_hat_minus + delta_theta)</div><p>이것은 Hartley InEKF 그 자체가 아니다.</p></div>",
+  "<div class='section'><h3>CartPole runtime bridge</h3><div class='math'>r_theta = wrap(theta_meas-theta_hat_minus)\\ntheta_hat_plus = wrap(theta_hat_minus + delta_theta)\\n\\nexample: +179 deg -> -179 deg\\nEuclidean residual = -358 deg\\nSO(2) residual = +2 deg</div><p>이것은 Hartley InEKF 그 자체가 아니라 angle manifold에서 error 정의가 왜 중요한지 보여주는 micro-bench다.</p></div>",
   "<div class='section'><h3>Hartley에서 실제로 하는 일</h3><div class='math'>state: R, v, p, contact positions d_i\\nIMU propagation + leg FK contact observations\\ninvariant error dynamics\\n\\nunobservable: global translation, global yaw</div></div>",
   "<div class='section'><h3>다음 병목</h3><p>filter가 좋아도 어느 contact measurement를 믿을지 틀리면 update가 오히려 state를 망친다.</p></div>"
  ].join("")},

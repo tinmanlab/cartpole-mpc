@@ -179,8 +179,8 @@ It is therefore a FOCUS-style observation-reliability bridge, not a reproduction
 
 Useful comparisons:
 - Raw vs KF under sensor noise: differentiation noise versus model-based fusion.
-- KF vs EKF under larger nonlinear excursions/model mismatch: whether nonlinear mean propagation matters. The default fixed scenarios remain close enough to upright that KF and EKF can look nearly identical; that is a limitation of the experiment, not evidence that the algorithms are equivalent.
-- EKF vs SO(2) bridge near an angle-wrap test: geometry handling.
+- KF vs EKF with **Estimator nonlinear bench** and LQR fixed: the pole starts at 0.5 rad with very low sensor noise and no external push. In the fixed five-seed check, KF state RMSE is about 0.0080 and EKF about 0.00323. This bench is not a controller ranking.
+- EKF vs SO(2) bridge with the angle-wrap micro-bench: +179 deg and -179 deg are 2 deg apart on SO(2), while an unwrapped Euclidean residual is about -358 deg.
 - KF/EKF vs Adaptive-R under a measurement glitch: outlier down-weighting.
 - Base EKF vs residual output: offline residual fit versus closed-loop control benefit.
 

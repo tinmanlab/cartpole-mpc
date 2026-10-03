@@ -67,8 +67,10 @@ const ControlLab = (() => {
       if(this.scenario==='model'){this.params={...this.params,mc:s.mc*1.25,mp:s.mp*.8,l:s.l*1.15,friction:.15};this.sensorStd=[.012,.006];}
       if(this.scenario==='mixed'){this.params={...this.params,mc:s.mc*1.2,mp:s.mp*.85,l:s.l*1.1,friction:.12};this.sensorStd=[.04,.018];}
       if(this.scenario==='glitch'){this.sensorStd=[.012,.006];}
+      if(this.scenario==='nonlinear'){this.sensorStd=[.0005,.00025];}
     }
-    reset(state=null){this.configure();this.s=state?state.slice():[0,0,(this.rng.uniform()-.5)*.08,0];this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;return this.s.slice();}
+    defaultState(){if(this.scenario==='nonlinear')return [0,0,.5,0];return [0,0,(this.rng.uniform()-.5)*.08,0];}
+    reset(state=null){this.configure();this.s=state?state.slice():this.defaultState();this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;return this.s.slice();}
     applyPush(force,steps=10){this.pushForce=force;this.pushLeft=steps;}
     measurementVariance(){return this.sensorStd.map(s=>s*s);}
     sensor(){

@@ -86,6 +86,8 @@ for that scenario.
 
 The measurement-glitch scenario then adds an extra deterministic position outlier that is intentionally **not** encoded in baseline R. This makes it useful for demonstrating outlier down-weighting.
 
+The estimator nonlinear bench is different: it starts the pole at 0.5 rad (28.6 deg) with very low sensor noise and no parameter mismatch. It is intended for a fixed LQR-controller KF-versus-EKF comparison with no external push, so nonlinear prediction error is isolated from controller-family and disturbance effects. It is intentionally excluded from the general controller × observer matrix.
+
 Q is a tuned educational process covariance, not a hardware-identified parameter.
 
 ## Truth boundary

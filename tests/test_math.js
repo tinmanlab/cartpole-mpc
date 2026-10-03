@@ -81,7 +81,7 @@ assert(Math.abs(ar.R[0][0]-ar.baseR[0][0])<1e-15);
 assert(Math.abs(ar.R[1][1]-ar.baseR[1][1])<1e-15);
 
 // Sensor R must match the actually injected Gaussian standard deviation in each scenario.
-for(const scenario of ['nominal','sensor','model','mixed','glitch']){
+for(const scenario of ['nominal','sensor','model','mixed','nonlinear','glitch']){
   const p=new Lab.LabPlant({seed:4,scenario}),r=p.measurementVariance(),kf=new Lab.KFObserver(p.spec,{R:r});
   assert(Math.abs(kf.R[0][0]-p.sensorStd[0]**2)<1e-15);
   assert(Math.abs(kf.R[1][1]-p.sensorStd[1]**2)<1e-15);
@@ -108,6 +108,21 @@ assert(rr.trace.every(q=>Array.isArray(q.baseP)));
 assert.equal(residual.schema,'cartpole-control-observer-residual/v2');
 assert(residual.metrics.residualRmse<residual.metrics.baseRmse);
 
+// The targeted nonlinear scenario should make nonlinear mean propagation observable.
+const nlSeeds=[1,2,3,4,5];
+const nlKF=nlSeeds.map(seed=>Lab.runEpisode({controller:'lqr',observer:'kf',scenario:'nonlinear',seed,steps:250,actor,residualModel:residual,pushAt:999,pushForce:0}).rmseState);
+const nlEKF=nlSeeds.map(seed=>Lab.runEpisode({controller:'lqr',observer:'ekf',scenario:'nonlinear',seed,steps:250,actor,residualModel:residual,pushAt:999,pushForce:0}).rmseState);
+assert(mean(nlEKF)<.6*mean(nlKF),'nonlinear scenario should expose a clear EKF benefit over the upright linear KF');
+
+// SO(2) wrap micro-bench: +179 deg and -179 deg are 2 deg apart, not 358 deg apart.
+const epsAngle=Math.PI/180;
+const euc=new Lab.EKFObserver(plant.spec,{R:[1e-4,1e-4]}),so2=new Lab.SO2Observer(plant.spec,{R:[1e-4,1e-4]});
+euc.x=[0,0,Math.PI-epsAngle,0];so2.x=euc.x.slice();
+euc.P=Lab.diag([.1,.1,.1,.1]);so2.P=Lab.diag([.1,.1,.1,.1]);
+euc.update([0,-Math.PI+epsAngle]);so2.update([0,-Math.PI+epsAngle]);
+assert(Math.abs(euc.last.innovation[1])>6,'plain EKF residual should expose the raw wrap discontinuity');
+assert(Math.abs(so2.last.innovation[1]-2*epsAngle)<1e-9,'SO(2) bridge should wrap to the 2-degree residual');
+
 // Adaptive-R is an outlier bridge, not a generic high-noise improvement claim.
 const seeds=[1,2,3,4,5];
 const glitchKF=seeds.map(seed=>Lab.runEpisode({controller:'lqr',observer:'kf',scenario:'glitch',seed,steps:300,actor,residualModel:residual,pushAt:120,pushForce:3}).rmseState);
@@ -121,5 +136,6 @@ console.log(JSON.stringify({
   linearMpcGradientMaxAbsError:maxAbs(g,gn),
   truthRmse:truthRun.rmseState,
   residualOffline:residual.metrics,
+  nonlinear:{kf:mean(nlKF),ekf:mean(nlEKF)},
   glitch:{kf:mean(glitchKF),adaptiveR:mean(glitchAdaptive)}
 },null,2));

@@ -23,6 +23,17 @@ async def main():
         state2 = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
         assert state2["controller"] == "centroidal_mpc"
         assert state2["solver"]["horizon"] == 32
+
+        # Nonlinear teaching preset must be reachable through the semantic surface.
+        await page.evaluate("window.__webmcpTools.cartpole_set_scenario.execute({scenario:'nonlinear'})")
+        nonlinear_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_get_state.execute({})"))
+        assert nonlinear_state["scenario"] == "nonlinear"
+        assert abs(nonlinear_state["truth"][2]) > 0.4
+
+        kf_probe = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'lqr',observer:'kf',scenario:'nonlinear',seed:4,steps:250,pushForce:0})"))
+        ekf_probe = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'lqr',observer:'ekf',scenario:'nonlinear',seed:4,steps:250,pushForce:0})"))
+        assert ekf_probe["rmseState"] < 0.6 * kf_probe["rmseState"]
+
         assert await page.evaluate("document.documentElement.scrollWidth-window.innerWidth") <= 1
         await browser.close()
         print("browser smoke: PASS")
