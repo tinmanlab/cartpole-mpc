@@ -1,0 +1,60 @@
+/* BAM upstream parameters: Apache-2.0; see vendor/bam/NOTICE.md. */
+const BAM_PARAMS = {
+  "mx64": {
+    "kt": 1.6016832750318712,
+    "R": 2.3164043271967447,
+    "armature": 0.012265893049213158,
+    "friction_base": 6.217919698787649e-07,
+    "friction_stribeck": 0.12269525980968875,
+    "load_friction_motor": 0.3114720375111298,
+    "load_friction_external": 2.0462014258729542e-08,
+    "load_friction_motor_stribeck": 0.18774381222411038,
+    "load_friction_external_stribeck": 0.014065853481003015,
+    "load_friction_motor_quad": 0.006908512882777861,
+    "load_friction_external_quad": 0.009999980627672081,
+    "dtheta_stribeck": 2.575277366960116,
+    "alpha": 0.8409018066017007,
+    "friction_viscous": 0.02533701181690149,
+    "model": "m6",
+    "actuator": "mx64"
+  },
+  "mx106": {
+    "kt": 2.209828156174588,
+    "R": 2.033661749312417,
+    "armature": 0.026016184370993383,
+    "friction_base": 1.0232526438525893e-05,
+    "friction_stribeck": 0.12195409579603411,
+    "load_friction_motor": 0.19800553725822115,
+    "load_friction_external": 0.022215529897348624,
+    "load_friction_motor_stribeck": 0.19859970173941574,
+    "load_friction_external_stribeck": 0.08710328264676681,
+    "load_friction_motor_quad": 0.009999930103371748,
+    "load_friction_external_quad": 7.326919843140997e-05,
+    "dtheta_stribeck": 1.7463251741328727,
+    "alpha": 1.142827788004191,
+    "friction_viscous": 0.05071566473605552,
+    "model": "m6",
+    "actuator": "mx106"
+  },
+  "xl330": {
+    "kt": 0.3459739511711113,
+    "R": 2.501880848390462,
+    "armature": 0.001573222677933975,
+    "q_offset": 0.01499659309559756,
+    "command_delay": 0.010220594809412403,
+    "friction_base": 0.011919956825702578,
+    "friction_stribeck": 0.0008513719673776765,
+    "load_friction_motor": 0.22781736172050673,
+    "load_friction_external": 0.10651211228971481,
+    "load_friction_motor_stribeck": 1.4725366831870136e-08,
+    "load_friction_external_stribeck": 0.14201808120858034,
+    "load_friction_motor_quad": 0.00526632315329998,
+    "load_friction_external_quad": 0.00298581585293041,
+    "dtheta_stribeck": 0.2606668812858925,
+    "alpha": 8.528815753151498,
+    "friction_viscous": 0.005788445053875673,
+    "model": "m6",
+    "actuator": "xl330"
+  }
+};
+if(typeof module!=="undefined")module.exports=BAM_PARAMS;

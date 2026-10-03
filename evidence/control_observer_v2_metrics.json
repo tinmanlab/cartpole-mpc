@@ -1,0 +1,2116 @@
+{
+  "schema": "cartpole-control-observer-v2-evaluation/v1",
+  "steps": 300,
+  "push": {
+    "at": 120,
+    "force": 3,
+    "steps": 10
+  },
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "rows": [
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.008036924506557748,
+      "meanMaxAngleDeg": 2.8392988591326556,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.3123026065085805,
+      "meanMaxAngleDeg": 3.034519722833411,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.05382064589154473,
+      "meanMaxAngleDeg": 5.052489286948484,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.051909077942320025,
+      "meanMaxAngleDeg": 4.870376950339602,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.051909077942320025,
+      "meanMaxAngleDeg": 4.870376950339602,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.11472962843261314,
+      "meanMaxAngleDeg": 7.6526004058261625,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "pid",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06295650200164704,
+      "meanMaxAngleDeg": 7.647803035330669,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007484709754173229,
+      "meanMaxAngleDeg": 2.365799797450537,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.3130785825696096,
+      "meanMaxAngleDeg": 2.5607001948543076,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.05491515888101867,
+      "meanMaxAngleDeg": 4.4816041478270785,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.052802995271130616,
+      "meanMaxAngleDeg": 4.272121628915002,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.052802995271130616,
+      "meanMaxAngleDeg": 4.272121628915002,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.10032020104583657,
+      "meanMaxAngleDeg": 8.452507782387016,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "lqr",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06260357048231947,
+      "meanMaxAngleDeg": 6.9661813064684015,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007582137071218454,
+      "meanMaxAngleDeg": 3.1258690201727375,
+      "meanSolveMs": 0.030498298888887294,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.3182209540489262,
+      "meanMaxAngleDeg": 3.208453132530757,
+      "meanSolveMs": 0.01901092555555768,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.053932379973266865,
+      "meanMaxAngleDeg": 5.8641279657808445,
+      "meanSolveMs": 0.018708166666666304,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.0522233579171956,
+      "meanMaxAngleDeg": 5.629647938396321,
+      "meanSolveMs": 0.015618676666666463,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.0522233579171956,
+      "meanMaxAngleDeg": 5.629647938396321,
+      "meanSolveMs": 0.020400045555556717,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.13438405293076952,
+      "meanMaxAngleDeg": 4.985242081193793,
+      "meanSolveMs": 0.01963673777777697,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "linear_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06426753977748641,
+      "meanMaxAngleDeg": 8.767420684950626,
+      "meanSolveMs": 0.01443112444444144,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007334441267334418,
+      "meanMaxAngleDeg": 2.1974360226731426,
+      "meanSolveMs": 0.034511154444446045,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.3148050575942343,
+      "meanMaxAngleDeg": 2.309649704853584,
+      "meanSolveMs": 0.028010024444446214,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.05507962195245505,
+      "meanMaxAngleDeg": 4.273418115098873,
+      "meanSolveMs": 0.03249099999999948,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.0530597121449656,
+      "meanMaxAngleDeg": 4.0454401073783,
+      "meanSolveMs": 0.020370098888886586,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.0530597121449656,
+      "meanMaxAngleDeg": 4.0454401073783,
+      "meanSolveMs": 0.021127560000002682,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.13909852471598896,
+      "meanMaxAngleDeg": 9.731830750998032,
+      "meanSolveMs": 0.024434041111109205,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "centroidal_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06297140763914856,
+      "meanMaxAngleDeg": 6.748070946625242,
+      "meanSolveMs": 0.023560815555557234,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007389669407428478,
+      "meanMaxAngleDeg": 2.876411168593845,
+      "meanSolveMs": 1.5649186366666747,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.3185188541901168,
+      "meanMaxAngleDeg": 3.0082044381111572,
+      "meanSolveMs": 1.3525644655555673,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.054143158507778934,
+      "meanMaxAngleDeg": 5.512884544125966,
+      "meanSolveMs": 1.5023495822222221,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.052301527265113286,
+      "meanMaxAngleDeg": 5.291093574432242,
+      "meanSolveMs": 1.3301085066666756,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.052301527265113286,
+      "meanMaxAngleDeg": 5.291093574432242,
+      "meanSolveMs": 1.283332811111115,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.12854188916268816,
+      "meanMaxAngleDeg": 5.016668217384771,
+      "meanSolveMs": 1.6199592722222305,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "full_nmpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06374456653475007,
+      "meanMaxAngleDeg": 8.316803198701878,
+      "meanSolveMs": 1.3671570466666527,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.17518038237300249,
+      "meanMaxAngleDeg": 0.7146425561695378,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.32907671842987213,
+      "meanMaxAngleDeg": 9.339696396632402,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.194817338444804,
+      "meanMaxAngleDeg": 1.5136119112988857,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.18428260105272884,
+      "meanMaxAngleDeg": 1.3286881187479278,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.18428260105272884,
+      "meanMaxAngleDeg": 1.3286881187479278,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "residual",
+      "failures": 3,
+      "meanStateRmse": 0.22239443405011064,
+      "meanMaxAngleDeg": 35.50589123487544,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "nominal",
+      "controller": "ppo",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.18546786042820337,
+      "meanMaxAngleDeg": 3.1504180221716567,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.008036924506557748,
+      "meanMaxAngleDeg": 2.8392988591326556,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "raw",
+      "failures": 2,
+      "meanStateRmse": 2.2318418399870015,
+      "meanMaxAngleDeg": 27.688484803113315,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.255846785440916,
+      "meanMaxAngleDeg": 5.674821765892209,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.25635314302885126,
+      "meanMaxAngleDeg": 5.578725184895283,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.25635314302885126,
+      "meanMaxAngleDeg": 5.578725184895283,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.20614916720360021,
+      "meanMaxAngleDeg": 7.801925437872889,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "pid",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.10434726399697512,
+      "meanMaxAngleDeg": 8.787634333145869,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007484709754173229,
+      "meanMaxAngleDeg": 2.365799797450537,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 2.236422869358502,
+      "meanMaxAngleDeg": 35.65406501071716,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.262439721790646,
+      "meanMaxAngleDeg": 5.273531397897786,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.26248693398333095,
+      "meanMaxAngleDeg": 5.159642953014197,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.26248693398333095,
+      "meanMaxAngleDeg": 5.159642953014197,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.19920711065844707,
+      "meanMaxAngleDeg": 7.47687796568956,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "lqr",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.10511783823963217,
+      "meanMaxAngleDeg": 7.935066278518739,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007582137071218454,
+      "meanMaxAngleDeg": 3.1258690201727375,
+      "meanSolveMs": 0.031049406666710033,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "raw",
+      "failures": 2,
+      "meanStateRmse": 2.278102291631584,
+      "meanMaxAngleDeg": 8.429016079785164,
+      "meanSolveMs": 0.026095067888227266,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.2527389463432286,
+      "meanMaxAngleDeg": 5.941947978299225,
+      "meanSolveMs": 0.029423548888907036,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.25374147776022987,
+      "meanMaxAngleDeg": 5.726566681216274,
+      "meanSolveMs": 0.02437504999999267,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.25374147776022987,
+      "meanMaxAngleDeg": 5.726566681216274,
+      "meanSolveMs": 0.027603517777727876,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "residual",
+      "failures": 2,
+      "meanStateRmse": 0.25691399917598995,
+      "meanMaxAngleDeg": 5.554744829467191,
+      "meanSolveMs": 0.027062089677892514,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "linear_mpc",
+      "observer": "adaptive",
+      "failures": 1,
+      "meanStateRmse": 0.10534397941328033,
+      "meanMaxAngleDeg": 9.694862105073426,
+      "meanSolveMs": 0.0314804606289354,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007334441267334418,
+      "meanMaxAngleDeg": 2.1974360226731426,
+      "meanSolveMs": 0.02714550999998715,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 2.3042076059396863,
+      "meanMaxAngleDeg": 22.901615754166723,
+      "meanSolveMs": 0.032161486943383055,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.26240453378563217,
+      "meanMaxAngleDeg": 4.72103851025389,
+      "meanSolveMs": 0.018869017777758724,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.2625378872179397,
+      "meanMaxAngleDeg": 4.571925274369079,
+      "meanSolveMs": 0.019794988888881763,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.2625378872179397,
+      "meanMaxAngleDeg": 4.571925274369079,
+      "meanSolveMs": 0.023854500000021896,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.21266774899673524,
+      "meanMaxAngleDeg": 9.033037024963013,
+      "meanSolveMs": 0.01975767777773096,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "centroidal_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.10519133607895044,
+      "meanMaxAngleDeg": 7.393521550923294,
+      "meanSolveMs": 0.023315561111075012,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007389669407428478,
+      "meanMaxAngleDeg": 2.876411168593845,
+      "meanSolveMs": 1.4813658733333066,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "raw",
+      "failures": 1,
+      "meanStateRmse": 2.224677784910105,
+      "meanMaxAngleDeg": 11.60944254514799,
+      "meanSolveMs": 1.3279579236157861,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.25531592915184564,
+      "meanMaxAngleDeg": 5.775387181592424,
+      "meanSolveMs": 1.323257438888888,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.25617766370746514,
+      "meanMaxAngleDeg": 5.648928249870402,
+      "meanSolveMs": 1.5353808266666906,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.25617766370746514,
+      "meanMaxAngleDeg": 5.648928249870402,
+      "meanSolveMs": 1.430779353333354,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.23386178643868008,
+      "meanMaxAngleDeg": 6.252122821503002,
+      "meanSolveMs": 1.3403515200000442,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "full_nmpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.10395109101686634,
+      "meanMaxAngleDeg": 9.410187142588681,
+      "meanSolveMs": 1.5102813033333427,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.17518038237300249,
+      "meanMaxAngleDeg": 0.7146425561695378,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 2.462169184738264,
+      "meanMaxAngleDeg": 36.23127231953184,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.3005073250219643,
+      "meanMaxAngleDeg": 12.12566784990994,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "ekf",
+      "failures": 1,
+      "meanStateRmse": 0.3008541184600757,
+      "meanMaxAngleDeg": 20.494464918331303,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "so2",
+      "failures": 1,
+      "meanStateRmse": 0.3008541184600757,
+      "meanMaxAngleDeg": 20.494464918331303,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "residual",
+      "failures": 1,
+      "meanStateRmse": 0.29224281151033593,
+      "meanMaxAngleDeg": 25.69755818663014,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "sensor",
+      "controller": "ppo",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.1990587384417906,
+      "meanMaxAngleDeg": 6.449448766059466,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006980801450252452,
+      "meanMaxAngleDeg": 2.768570042743087,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.45944969112685485,
+      "meanMaxAngleDeg": 2.944513695133848,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.0667249157313284,
+      "meanMaxAngleDeg": 4.655528039046749,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.06442484562247104,
+      "meanMaxAngleDeg": 4.478368063754193,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.06442484562247104,
+      "meanMaxAngleDeg": 4.478368063754193,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.12720835924843074,
+      "meanMaxAngleDeg": 7.949257385424531,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "pid",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.060785029572349956,
+      "meanMaxAngleDeg": 6.637991772236191,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006695537330082637,
+      "meanMaxAngleDeg": 2.362305825765587,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.4566942116476825,
+      "meanMaxAngleDeg": 2.8581546605751496,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.06799855831586285,
+      "meanMaxAngleDeg": 4.141796515125726,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.06550546547100197,
+      "meanMaxAngleDeg": 3.940487570124429,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.06550546547100197,
+      "meanMaxAngleDeg": 3.940487570124429,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.11807276812962293,
+      "meanMaxAngleDeg": 8.703147099868868,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "lqr",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.06070083673400495,
+      "meanMaxAngleDeg": 6.056063673869944,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.0064524880060957334,
+      "meanMaxAngleDeg": 3.0138448791251413,
+      "meanSolveMs": 0.028163492222172664,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.4683349669182309,
+      "meanMaxAngleDeg": 3.0682476877272693,
+      "meanSolveMs": 0.024694531111179252,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.06562961209562151,
+      "meanMaxAngleDeg": 5.391984001805203,
+      "meanSolveMs": 0.027549145555563478,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.06380716444417915,
+      "meanMaxAngleDeg": 5.148494168787337,
+      "meanSolveMs": 0.02356592888903025,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.06380716444417915,
+      "meanMaxAngleDeg": 5.148494168787337,
+      "meanSolveMs": 0.022767488888829474,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "residual",
+      "failures": 2,
+      "meanStateRmse": 0.15035193077494233,
+      "meanMaxAngleDeg": 5.451032745694113,
+      "meanSolveMs": 0.024312144688623753,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "linear_mpc",
+      "observer": "adaptive",
+      "failures": 1,
+      "meanStateRmse": 0.0588866628110627,
+      "meanMaxAngleDeg": 7.562618978477,
+      "meanSolveMs": 0.02803772298283334,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006574147560067221,
+      "meanMaxAngleDeg": 2.1666899609679673,
+      "meanSolveMs": 0.020396122222231902,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.459127517106166,
+      "meanMaxAngleDeg": 2.911879848469236,
+      "meanSolveMs": 0.02069074333334558,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.06777303317393428,
+      "meanMaxAngleDeg": 4.185559243649557,
+      "meanSolveMs": 0.019908913333351343,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.06544830880113096,
+      "meanMaxAngleDeg": 3.742148222710259,
+      "meanSolveMs": 0.018586772222212552,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.06544830880113096,
+      "meanMaxAngleDeg": 3.742148222710259,
+      "meanSolveMs": 0.017998598888940856,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.14877862474451806,
+      "meanMaxAngleDeg": 10.746335878377701,
+      "meanSolveMs": 0.021799423333314832,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "centroidal_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.060011291506894576,
+      "meanMaxAngleDeg": 6.620430758673893,
+      "meanSolveMs": 0.0193199322222386,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.0063037634151921415,
+      "meanMaxAngleDeg": 2.801394413333931,
+      "meanSolveMs": 1.438552677777815,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 0.46781849930232017,
+      "meanMaxAngleDeg": 2.976852706964484,
+      "meanSolveMs": 1.3335889099999945,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.06626459505147507,
+      "meanMaxAngleDeg": 5.207648877591113,
+      "meanSolveMs": 1.5076430511111054,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.06434004359638568,
+      "meanMaxAngleDeg": 4.9831777070990695,
+      "meanSolveMs": 1.729495886666644,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.06434004359638568,
+      "meanMaxAngleDeg": 4.9831777070990695,
+      "meanSolveMs": 1.5129652788888375,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.14378667003968126,
+      "meanMaxAngleDeg": 6.027714134637799,
+      "meanSolveMs": 1.361935972222099,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "full_nmpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.05968671413744531,
+      "meanMaxAngleDeg": 7.404354875089976,
+      "meanSolveMs": 1.432134554444496,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.1292364931057598,
+      "meanMaxAngleDeg": 0.7444395117111685,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 0.46432532545114036,
+      "meanMaxAngleDeg": 36.021820115743736,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.1795414079749554,
+      "meanMaxAngleDeg": 2.14631668030523,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.1672416517657056,
+      "meanMaxAngleDeg": 2.284604438473395,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.1672416517657056,
+      "meanMaxAngleDeg": 2.284604438473395,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "residual",
+      "failures": 3,
+      "meanStateRmse": 0.1461910089319218,
+      "meanMaxAngleDeg": 35.57301234797138,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "model",
+      "controller": "ppo",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.16794332862958486,
+      "meanMaxAngleDeg": 3.902708712443703,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007175646594213572,
+      "meanMaxAngleDeg": 2.7878649775178985,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.4813882622502998,
+      "meanMaxAngleDeg": 16.702738597689308,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.17581150993580308,
+      "meanMaxAngleDeg": 4.93905506211662,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.17524934670743605,
+      "meanMaxAngleDeg": 4.791125028192939,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.17524934670743605,
+      "meanMaxAngleDeg": 4.791125028192939,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.16685118614183914,
+      "meanMaxAngleDeg": 8.100704169673868,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "pid",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.08512336045558266,
+      "meanMaxAngleDeg": 7.024090132589823,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006822646585022134,
+      "meanMaxAngleDeg": 2.357579181635984,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 1.498036270377063,
+      "meanMaxAngleDeg": 35.56482891633577,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.1804096189846683,
+      "meanMaxAngleDeg": 4.423044171217518,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.17931265647822447,
+      "meanMaxAngleDeg": 4.265865915977552,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.17931265647822447,
+      "meanMaxAngleDeg": 4.265865915977552,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.157201257430163,
+      "meanMaxAngleDeg": 7.710067067352815,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "lqr",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.08465204738842379,
+      "meanMaxAngleDeg": 5.8779947239654184,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006675453756883554,
+      "meanMaxAngleDeg": 3.0450703248355153,
+      "meanSolveMs": 0.031392599999983055,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "raw",
+      "failures": 1,
+      "meanStateRmse": 1.5135218657375724,
+      "meanMaxAngleDeg": 4.742782569904903,
+      "meanSolveMs": 0.028011796060629715,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.17332902280645043,
+      "meanMaxAngleDeg": 5.399418729537946,
+      "meanSolveMs": 0.02668700111101821,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.1733612109826291,
+      "meanMaxAngleDeg": 5.203832418908056,
+      "meanSolveMs": 0.02232795333340214,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.1733612109826291,
+      "meanMaxAngleDeg": 5.203832418908056,
+      "meanSolveMs": 0.029994986666659115,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "residual",
+      "failures": 3,
+      "meanStateRmse": 0.21357905937680943,
+      "meanMaxAngleDeg": 4.745828077196039,
+      "meanSolveMs": 0.02906268226562322,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "linear_mpc",
+      "observer": "adaptive",
+      "failures": 1,
+      "meanStateRmse": 0.08278379506745522,
+      "meanMaxAngleDeg": 8.142117224427786,
+      "meanSolveMs": 0.023630222839342477,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006695524574545579,
+      "meanMaxAngleDeg": 2.1636555254304706,
+      "meanSolveMs": 0.01898526888892876,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 1.5245496491758697,
+      "meanMaxAngleDeg": 22.022616828748188,
+      "meanSolveMs": 0.021720201302424465,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.18023664318920615,
+      "meanMaxAngleDeg": 4.2768051385972825,
+      "meanSolveMs": 0.01647182333339717,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.1792821837961758,
+      "meanMaxAngleDeg": 3.988149422278052,
+      "meanSolveMs": 0.020421402222168077,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.1792821837961758,
+      "meanMaxAngleDeg": 3.988149422278052,
+      "meanSolveMs": 0.021322365555453065,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.1772047014682706,
+      "meanMaxAngleDeg": 10.833572582815808,
+      "meanSolveMs": 0.021266081111098175,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "centroidal_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.08437671981164248,
+      "meanMaxAngleDeg": 6.235744346603068,
+      "meanSolveMs": 0.022471903333401617,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.006518031973092281,
+      "meanMaxAngleDeg": 2.8229379560068835,
+      "meanSolveMs": 1.4914584822222565,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.500057472668454,
+      "meanMaxAngleDeg": 5.756986683074512,
+      "meanSolveMs": 1.4162524711111473,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.1748933849996134,
+      "meanMaxAngleDeg": 5.391281490974573,
+      "meanSolveMs": 1.3355987311110624,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.17477313549692816,
+      "meanMaxAngleDeg": 5.19770928562668,
+      "meanSolveMs": 1.4212818644445118,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.17477313549692816,
+      "meanMaxAngleDeg": 5.19770928562668,
+      "meanSolveMs": 1.3820364555554745,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "residual",
+      "failures": 1,
+      "meanStateRmse": 0.1947401290057942,
+      "meanMaxAngleDeg": 6.057008388100361,
+      "meanSolveMs": 1.5498349163945155,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "full_nmpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.08285221680607431,
+      "meanMaxAngleDeg": 8.228421215410878,
+      "meanSolveMs": 1.611002314444316,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.13806986659770695,
+      "meanMaxAngleDeg": 0.7337527372372545,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 1.514472737741955,
+      "meanMaxAngleDeg": 36.04098910597476,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "kf",
+      "failures": 1,
+      "meanStateRmse": 0.24180018816343296,
+      "meanMaxAngleDeg": 16.54109096141319,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.2238270208790203,
+      "meanMaxAngleDeg": 10.628547539544652,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.2238270208790203,
+      "meanMaxAngleDeg": 10.628547539544652,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "residual",
+      "failures": 3,
+      "meanStateRmse": 0.21975433962220756,
+      "meanMaxAngleDeg": 34.79375855231399,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "mixed",
+      "controller": "ppo",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.18162225508366173,
+      "meanMaxAngleDeg": 4.738691523650345,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.008036924506557748,
+      "meanMaxAngleDeg": 2.8392988591326556,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.117377514519518,
+      "meanMaxAngleDeg": 2.6017890931578744,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.2923783639767245,
+      "meanMaxAngleDeg": 5.524859009941895,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.28928745012376783,
+      "meanMaxAngleDeg": 5.694440414376074,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.28928745012376783,
+      "meanMaxAngleDeg": 5.694440414376074,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.2527188964888643,
+      "meanMaxAngleDeg": 7.761981450771565,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "pid",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.2099660139637015,
+      "meanMaxAngleDeg": 4.765700389440941,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007484709754173229,
+      "meanMaxAngleDeg": 2.365799797450537,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.1167862704845761,
+      "meanMaxAngleDeg": 2.9399678823234625,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.29460695148908445,
+      "meanMaxAngleDeg": 8.213452917969622,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.29081242823514875,
+      "meanMaxAngleDeg": 8.400272831897762,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.29081242823514875,
+      "meanMaxAngleDeg": 8.400272831897762,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.23752193225692472,
+      "meanMaxAngleDeg": 8.257042245247552,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "lqr",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.21309715334570342,
+      "meanMaxAngleDeg": 6.982480348744933,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007582137071218454,
+      "meanMaxAngleDeg": 3.1258690201727375,
+      "meanSolveMs": 0.02664898000000297,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.125448472619184,
+      "meanMaxAngleDeg": 3.0729190143923213,
+      "meanSolveMs": 0.027563345555503882,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.29216294328103637,
+      "meanMaxAngleDeg": 5.626732486720353,
+      "meanSolveMs": 0.03090985000000122,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.2915888429702534,
+      "meanMaxAngleDeg": 5.408780123632813,
+      "meanSolveMs": 0.02814584000007825,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.2915888429702534,
+      "meanMaxAngleDeg": 5.408780123632813,
+      "meanSolveMs": 0.032619592222302644,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.2587630554239471,
+      "meanMaxAngleDeg": 6.346443693082344,
+      "meanSolveMs": 0.03081973777785606,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "linear_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.20832906954298694,
+      "meanMaxAngleDeg": 8.621246061110039,
+      "meanSolveMs": 0.031807356666718585,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007334441267334418,
+      "meanMaxAngleDeg": 2.1974360226731426,
+      "meanSolveMs": 0.02973891555545884,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.1271296838906686,
+      "meanMaxAngleDeg": 3.951349123001477,
+      "meanSolveMs": 0.029349031110978103,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.2928971029295633,
+      "meanMaxAngleDeg": 8.013691448980902,
+      "meanSolveMs": 0.023623908888758805,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.28889600111412134,
+      "meanMaxAngleDeg": 8.128626325658882,
+      "meanSolveMs": 0.021574368888824313,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.28889600111412134,
+      "meanMaxAngleDeg": 8.128626325658882,
+      "meanSolveMs": 0.02105323777779833,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.2443601991710462,
+      "meanMaxAngleDeg": 9.309867273901459,
+      "meanSolveMs": 0.02336024999998497,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "centroidal_mpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.21200678270811554,
+      "meanMaxAngleDeg": 7.926433595658169,
+      "meanSolveMs": 0.02115638000005371,
+      "meanSolverIterations": 1
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.007389669407428478,
+      "meanMaxAngleDeg": 2.876411168593845,
+      "meanSolveMs": 1.3823769955556378,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "raw",
+      "failures": 0,
+      "meanStateRmse": 1.1212271493420705,
+      "meanMaxAngleDeg": 2.9187138639539225,
+      "meanSolveMs": 1.4559753344443986,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "kf",
+      "failures": 0,
+      "meanStateRmse": 0.29214928599002205,
+      "meanMaxAngleDeg": 4.8523004541985815,
+      "meanSolveMs": 1.4365826733332343,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "ekf",
+      "failures": 0,
+      "meanStateRmse": 0.29105051227068945,
+      "meanMaxAngleDeg": 4.6716480301448895,
+      "meanSolveMs": 1.3579605922224598,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "so2",
+      "failures": 0,
+      "meanStateRmse": 0.29105051227068945,
+      "meanMaxAngleDeg": 4.6716480301448895,
+      "meanSolveMs": 1.3741831777777567,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "residual",
+      "failures": 0,
+      "meanStateRmse": 0.2484017224009741,
+      "meanMaxAngleDeg": 6.401422679849592,
+      "meanSolveMs": 1.4488396244443233,
+      "meanSolverIterations": 1.9988888888888887
+    },
+    {
+      "scenario": "glitch",
+      "controller": "full_nmpc",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.20821119665612176,
+      "meanMaxAngleDeg": 7.570733868925662,
+      "meanSolveMs": 1.4406119344442656,
+      "meanSolverIterations": 2
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "truth",
+      "failures": 0,
+      "meanStateRmse": 0.17518038237300249,
+      "meanMaxAngleDeg": 0.7146425561695378,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "raw",
+      "failures": 3,
+      "meanStateRmse": 1.1199496335348318,
+      "meanMaxAngleDeg": 35.32781419266438,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "kf",
+      "failures": 3,
+      "meanStateRmse": 0.332760104473604,
+      "meanMaxAngleDeg": 38.191421755964804,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "ekf",
+      "failures": 3,
+      "meanStateRmse": 0.3397695835308123,
+      "meanMaxAngleDeg": 35.353022808309014,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "so2",
+      "failures": 3,
+      "meanStateRmse": 0.3397695835308123,
+      "meanMaxAngleDeg": 35.353022808309014,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "residual",
+      "failures": 3,
+      "meanStateRmse": 0.32191782452780976,
+      "meanMaxAngleDeg": 35.52031946074735,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    },
+    {
+      "scenario": "glitch",
+      "controller": "ppo",
+      "observer": "adaptive",
+      "failures": 0,
+      "meanStateRmse": 0.2858210608999633,
+      "meanMaxAngleDeg": 9.853359562787197,
+      "meanSolveMs": 0,
+      "meanSolverIterations": 0
+    }
+  ]
+}

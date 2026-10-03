@@ -1,0 +1,13 @@
+{
+  "name": "cartpole-mpc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interactive CartPole lab for MPC, state estimation, and controller-observer integration",
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "check:build": "python3 scripts/build.py --check",
+    "check:js": "node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/topics.js && node --check src/app.js",
+    "test": "node tests/test_engine.js",
+    "check": "npm run check:js && npm run check:build && npm test"
+  }
+}
