@@ -12,7 +12,7 @@
 
 [High-resolution WebM recording](media/cartpole-mpc-demo.webm)
 
-The loop above is a real browser run of the integrated lab: **full nonlinear NMPC + adaptive measurement covariance**, with sensor noise, pushes, live state estimation, solver timing, and horizon visualization. The adaptive covariance path is an educational bridge to CoCo/FOCUS-style reliability handling; it is not a reproduction of those learned humanoid estimators.
+The loop above is a real browser run of the integrated lab: **full nonlinear NMPC + EKF**, under combined sensor noise/model mismatch with pushes, goal changes, live estimation, solver timing, and horizon visualization. Learned/robust estimator variants are taught separately so the front-page demo does not imply that a heuristic bridge is the default estimator.
 
 ## Start here
 
@@ -49,22 +49,24 @@ Change only one block and watch what changes in the same live simulation and gra
 ### Observer path
 
     raw sensor
-       ↓ model uncertainty
+       ↓ model + uncertainty
     Kalman Filter
-       ↓ nonlinear dynamics
+       ↓ nonlinear Euclidean dynamics
     EKF
-       ↓ state-space geometry
-    InEKF concept
+
+    suitable Lie-group / group-affine structure
+       ↓
+    InEKF branch
 
 Then learned information can enter at different points:
 
 | Method | What learning changes |
 |---|---|
-| Lin | contact on/off gate |
+| Lin | learned contact configuration/events |
 | Youm / NMN | learned velocity measurement |
 | InNKF | posterior state residual |
-| CoCo-InEKF | contact measurement covariance |
-| FOCUS | continuous FK measurement reliability |
+| CoCo-InEKF | contact-candidate velocity/process covariance |
+| FOCUS | continuous FK reliability + observation/process-noise modulation |
 
 ## What is actually implemented?
 
@@ -72,15 +74,15 @@ Then learned information can enter at different points:
 |---|---|
 | PID | live cascaded feedback controller |
 | LQR | Riccati state-feedback controller |
-| Linear MPC | N=30 finite-horizon receding controller |
+| Linear MPC | N=30 box-constrained receding-horizon optimization |
 | Centroidal-style MPC | N=32 reduced horizontal CoM planner + downstream full-state stabilizer |
 | Full nonlinear NMPC | N=30 nonlinear rollout, per-stage Jacobians, backward quadratic solve, bounded line search, warm start |
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
 | EKF | nonlinear prediction + numerical Jacobian covariance propagation |
-| Invariant-error bridge | SO(2) wrapped angle innovation; not the full Hartley humanoid InEKF |
+| SO(2) error bridge | wrapped angle innovation; not the full Hartley humanoid InEKF |
 | Learned residual | locally trained residual MLP behind the geometry-aware EKF |
-| Adaptive R | online measurement-covariance modulation; heuristic bridge to CoCo/FOCUS |
+| Adaptive R | innovation-based observation-covariance modulation; FOCUS-style structural bridge, not CoCo |
 
 The distinction between **implementation**, **architecture analogue**, and **paper-only concept** is deliberate. See [Implementation boundaries](docs/IMPLEMENTATION_BOUNDARIES.md).
 
@@ -173,8 +175,8 @@ Do not learn every acronym at once.
 2. **LQR → Linear MPC**: why a horizon and constraints change the problem.
 3. **Linear MPC → Centroidal / Full NMPC**: reduced-order versus full nonlinear prediction.
 4. **Raw → KF → EKF**: why a state estimator is needed and where P, Q, R, K appear.
-5. **EKF → InEKF**: why rotation/pose geometry changes the definition of estimation error.
-6. **Lin → Youm → InNKF → CoCo → FOCUS**: where learned information can safely enter a model-based estimator.
+5. **EKF → invariant filtering branch**: when Lie-group symmetry makes an invariant error useful; InEKF is not a universal replacement for EKF.
+6. **Lin / Youm / InNKF / CoCo / FOCUS**: compare *where* learning enters—contact events, measurements, output residuals, process covariance, or observation reliability. This is a taxonomy, not a chronological ranking.
 7. Combine controller and observer under the same noise, model mismatch, glitch, and push scenarios.
 
 More detail:
@@ -184,22 +186,38 @@ More detail:
 - [System architecture](docs/ARCHITECTURE.md)
 - [Implementation boundaries](docs/IMPLEMENTATION_BOUNDARIES.md)
 - [Validation](docs/VALIDATION.md)
+- [Algorithm correctness audit](docs/ALGORITHM_AUDIT.md)
 
 ## Fixed evidence
 
 The repo ships deterministic evidence under evidence/.
 
-Representative fixed probes from the current implementation:
+Representative fixed checks from the audited implementation:
 
-- six controller families pass the nominal truth-state probe,
-- reduced centroidal-style MPC exposes a 32-step horizon,
-- full NMPC exposes a 30-step nonlinear horizon and bounded iterative solve,
+- truth-state evaluation is timestamp aligned, so the Truth observer has exactly zero estimation RMSE,
+- the LQR gain matches an independent SciPy discrete-Riccati solution to below 2e-7 max absolute error,
+- the [position, angle] measurement pair gives observability rank 4 for the upright discrete model,
+- Linear MPC and the reduced outer MPC solve explicit input-box-constrained horizon problems,
+- Full NMPC exposes a 30-step nonlinear horizon and bounded iLQR-style iterations,
 - raw finite-difference velocity estimation fails under the fixed high-noise probe where KF remains stable,
-- learned/adaptive estimator paths are reported as CartPole results only, not humanoid benchmark claims.
+- scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
+- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims.
 
 Run:
 
     npm test
+
+
+## Read comparison results correctly
+
+The controller × observer table is a **common teaching contract**, not an official benchmark table.
+
+- The lab's pole-angle failure envelope is wider than the original PPO Studio training termination.
+- The frozen PPO actor can be driven by observer outputs it was not trained with.
+- Solver time depends on browser/CPU.
+- Lower RMSE in one fixed disturbance/noise cell is not a general algorithm ranking.
+- The InNKF-style residual model has no calibrated covariance for its corrected output; the base EKF P is kept separate.
+- CoCo has no executable CartPole analogue in this repo because the CartPole state has no persistent foot/contact candidates.
 
 ## WebMCP
 

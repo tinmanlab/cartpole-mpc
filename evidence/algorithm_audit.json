@@ -1,0 +1,74 @@
+{
+  "schema": "cartpole-mpc-algorithm-audit/v2",
+  "lqr": {
+    "max_abs_K_error_vs_scipy": 1.858625111594847e-07,
+    "K_js": [
+      -3.5256071116895424,
+      -5.650284947648893,
+      -50.97093650647291,
+      -12.804621100402738
+    ],
+    "K_scipy": [
+      -3.525607139386986,
+      -5.650285003519856,
+      -50.97093669233542,
+      -12.804621149911235
+    ],
+    "closed_loop_eigenvalues": [
+      [
+        0.8462806693684719,
+        0.0
+      ],
+      [
+        0.9177374067759377,
+        0.0
+      ],
+      [
+        0.9798070784252741,
+        0.015242063030912035
+      ],
+      [
+        0.9798070784252741,
+        -0.015242063030912035
+      ]
+    ]
+  },
+  "observability": {
+    "rank": 4,
+    "state_dim": 4
+  },
+  "controllability": {
+    "rank": 4,
+    "state_dim": 4
+  },
+  "kf_one_step": {
+    "max_abs_state_error_vs_numpy": 6.938893903907228e-18,
+    "max_abs_covariance_error_vs_numpy": 8.131516293641283e-20,
+    "max_abs_gain_error_vs_numpy": 3.3306690738754696e-16,
+    "max_abs_innovation_error_vs_numpy": 0.0
+  },
+  "linear_mpc": {
+    "scipy_success": true,
+    "js_cost": 20.02843726457593,
+    "scipy_optimum_cost": 20.028364134351857,
+    "relative_cost_gap": 3.6513328588981616e-06,
+    "first_action_js": 2.2905891548306143,
+    "first_action_scipy": 2.3056668567015923,
+    "first_action_abs_error": 0.01507770187097801
+  },
+  "full_nmpc": {
+    "scipy_success": true,
+    "js_cost": 27.302016899880073,
+    "scipy_optimum_cost": 27.30201690085794,
+    "relative_cost_gap": -3.581664607682209e-11,
+    "first_action_js": 2.374134329102058,
+    "first_action_scipy": 2.3741287411949736,
+    "first_action_abs_error": 5.587907084159127e-06,
+    "js_iterations": 2
+  },
+  "centroidal_reduced_model": {
+    "finite_difference_com_accel": 1.8181798350629863,
+    "force_over_mass": 1.8181818181818181,
+    "abs_error": 1.983118831816455e-06
+  }
+}

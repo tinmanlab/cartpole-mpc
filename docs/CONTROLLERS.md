@@ -1,82 +1,129 @@
 # Controllers
 
+This page distinguishes controller families by what mathematical structure they add. It is not a ranking.
+
+## Shared plant and timing
+
+All controller modes command the same nonlinear CartPole plant.
+
+- control period: 20 ms (50 Hz)
+- plant integration: four 5 ms semi-implicit steps per control period
+- input: horizontal force, clipped to the configured actuator limit
+- local failure boundary: cart track and a deliberately wider pole-angle envelope than the original PPO training task
+
+For LQR, KF, and linear MPC, the runtime discrete A and B matrices are numerical Jacobians of this same 20 ms nonlinear transition at the upright equilibrium. The hand-derived continuous Ac and Bc remain in the source for explanation, but are not silently forward-Euler-discretized for the runtime controller.
+
 ## PID
 
 Purpose: direct feedback without an explicit plant model.
 
+    e_p = position - target
     u = k_theta theta + k_omega omega
-        + k_p position_error + k_v velocity
-        + k_i integral(position_error)
+        + k_p e_p + k_v velocity
+        + k_i integral(e_p)
 
-Use it to learn what feedback alone can do before introducing optimal control.
+The position integral is clamped to limit wind-up in this toy implementation.
 
 ## LQR
 
-Purpose: derive one state-feedback gain from a linear model and quadratic cost.
+Purpose: derive a state-feedback gain from a linear model and quadratic cost.
 
     x_(k+1) = A x_k + B u_k
     J = sum(x^T Q x + u^T R u)
     u = -Kx
 
-The Riccati recursion used here is also important because related quadratic subproblems appear inside MPC/NMPC.
+The code solves the discrete algebraic Riccati equation iteratively. The algorithm audit cross-checks K against SciPy solve_discrete_are; the current maximum absolute difference is below 2e-7.
+
+LQR's Riccati problem has no input constraint. The implementation saturates the resulting feedback force to the actuator limit before sending it to the plant; that saturation is outside the LQR optimum.
 
 ## Linear MPC
 
-Purpose: make the future horizon explicit.
+Purpose: add a finite horizon and an explicit input box constraint.
 
-The controller uses the upright linear model over N=30, computes a finite-horizon feedback sequence, applies the force limit, uses the first control, then resolves next tick.
+    minimize  sum x_k^T Q x_k + R u_k^2 + x_N^T Q_f x_N
+    subject to
+              x_(k+1) = A x_k + B u_k
+              |u_k| <= u_max
 
-The horizon is real. It is not a decorative predicted line.
+The current controller uses:
+- N = 30,
+- a warm-started control sequence,
+- an analytic adjoint gradient of the linear-quadratic horizon cost,
+- projection onto the input box,
+- backtracking line search,
+- first-control-only receding-horizon application.
+
+This is a real box-constrained linear MPC optimization. It is intentionally small and dependency-free; it is not presented as a production QP solver.
 
 ## Centroidal-style MPC
 
-The humanoid architecture that motivated this page uses a reduced state based on centroidal momentum, configuration, contact wrench inputs, and a lower-level realization layer.
+The humanoid architecture that motivated this page uses a reduced state based on centroidal momentum/configuration, contact-wrench inputs, and a lower-level realization layer.
 
-CartPole cannot reproduce feet/contact wrenches honestly. This implementation therefore uses the real whole-system horizontal CoM:
+CartPole has no feet or independent contact-wrench decision variables. The implementation therefore preserves the hierarchy without inventing fake contacts.
+
+For the uniform pole model used by the plant, with l as pivot-to-pole-CoM distance:
 
     M = m_cart + m_pole
     c = x + (m_pole * l / M) sin(theta)
     c_dot = v + (m_pole * l / M) cos(theta) omega
 
-A reduced predictive controller plans future CoM motion. A full-state stabilizer then realizes that reference on the underactuated CartPole.
+Under the ideal horizontal reduced model:
 
-This preserves the important hierarchy:
+    c_ddot = F_net / M
 
-    reduced predictive planner
-             ↓
-       future reference
-             ↓
-    lower-level stabilization
-             ↓
-          actuator
+The outer planner uses a 32-step box-constrained MPC on [c, c_dot]. A look-ahead CoM reference is then passed to a full-state LQR stabilizer.
 
-It is an architecture analogue, not an OCS2 source port.
+    reduced CoM MPC
+          ↓
+    future [c, c_dot] reference
+          ↓
+    full-state stabilization
+          ↓
+    physical force
+
+External pushes and model mismatch are intentionally unknown to the outer reduced model.
+
+This is an actual reduced-order controller and a structural analogue of the humanoid centroidal-planner/lower-level-control hierarchy. It is not an OCS2 centroidal source port.
 
 ## Full nonlinear NMPC
 
-This controller puts the same nonlinear CartPole transition used by the live plant inside its horizon.
+This controller puts the same nominal nonlinear CartPole transition used by the live simulator inside its prediction horizon.
 
-Each control tick:
+At each control tick:
 1. warm-start the previous force sequence,
-2. nonlinear rollout over N=30,
-3. compute numerical stage Jacobians A_k and B_k,
-4. run a local quadratic backward solve,
-5. bounded forward line search,
-6. repeat at most twice,
-7. apply only u_0,
-8. shift the sequence.
+2. nonlinear rollout over N = 30,
+3. compute central-difference stage Jacobians A_k = df/dx and B_k = df/du,
+4. form an iLQR-style local quadratic approximation,
+5. run a backward Riccati-like solve,
+6. run a bounded forward line search with input clipping,
+7. repeat at most twice,
+8. apply only u_0,
+9. shift the sequence.
 
-This is an actual nonlinear receding-horizon controller.
+This is a genuine nonlinear receding-horizon controller, more specifically a small single-shooting iLQR-style NMPC implementation. Here "full" means the full four-state CartPole model is optimized rather than a reduced CoM model; it does not mean the humanoid full-order state from wb_humanoid_mpc is reproduced.
 
-It is not claimed to reproduce OCS2 sparse multiple-shooting SQP.
+It does not implement:
+- OCS2 sparse multiple shooting,
+- general nonlinear state constraints,
+- exact active-set handling of input constraints,
+- globalization or convergence guarantees equivalent to a production SQP solver.
+
+The force bound is enforced on candidate controls during the forward pass.
 
 ## PPO
 
-The PPO mode uses a frozen actor from the related CartPole PPO lab.
+The PPO mode uses the frozen discrete actor from the related CartPole PPO Studio.
 
-The comparison is conceptual:
+Runtime evaluation is deterministic: the larger of the two action probabilities selects -force or +force.
 
-    MPC/NMPC: solve an optimization problem online
-    PPO:      move optimization into offline training, then infer online
+Important comparison boundary:
+- the actor was trained under the PPO Studio task contract,
+- this lab uses its own local failure envelope and can route arbitrary observer estimates into the actor,
+- therefore the controller × observer table is an educational common-plant comparison, not the original PPO benchmark or a retraining result.
 
-Neither is presented as a universal winner.
+The conceptual contrast is:
+
+    MPC/NMPC: solve a model-based optimization online
+    PPO:      move the main optimization into training, then infer online
+
+Neither is presented as universally superior.
