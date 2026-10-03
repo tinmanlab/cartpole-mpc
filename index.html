@@ -9,21 +9,21 @@
 <section class="card">
  <div class="card-head"><div><b>공통 실시간 실험</b><small>Controller에는 선택한 observer의 x̂만 입력 · truth는 화면/평가에만 사용</small></div><span class="badge" id="statusBadge">RUNNING</span></div>
  <div class="runtime-controls">
-  <label>Controller<select id="controller"><option value="pid">PID</option><option value="lqr">LQR</option><option value="linear_mpc">Linear MPC</option><option value="centroidal_mpc">Centroidal-style MPC</option><option value="full_nmpc">Full nonlinear NMPC</option><option value="ppo">PPO</option></select></label>
-  <label>Observer<select id="observer"><option value="truth">Truth / oracle</option><option value="raw">Raw + finite diff</option><option value="kf">KF</option><option value="ekf">EKF</option><option value="so2">SO(2) error bridge</option><option value="residual">Learned residual</option><option value="adaptive">Adaptive R · outlier/reliability bridge</option></select></label>
-  <label>Scenario<select id="scenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed</option><option value="nonlinear">Estimator nonlinear bench · 28.6° · LQR</option><option value="glitch">Measurement glitch</option></select></label>
+  <label>Controller<select id="controller"><option value="pid">PID</option><option value="lqr">LQR</option><option value="linear_mpc">Linear MPC</option><option value="scenario_mpc">Scenario-risk MPC</option><option value="state_mpc">Linear MPC + soft state bound</option><option value="ltv_mpc">LTV MPC · SQP/RTI bridge</option><option value="centroidal_mpc">Centroidal-style MPC</option><option value="full_nmpc">Full nonlinear NMPC</option><option value="ppo">PPO</option></select></label>
+  <label>Observer<select id="observer"><option value="truth">Truth / oracle</option><option value="raw">Raw + finite diff</option><option value="kf">KF</option><option value="ekf">EKF</option><option value="so2">SO(2) error bridge</option><option value="mhe">Nonlinear shooting MHE</option><option value="residual">Learned residual</option><option value="adaptive">Adaptive R · outlier/reliability bridge</option></select></label>
+  <label>Scenario<select id="scenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias random walk</option><option value="actuator">Actuator lag + gain error</option><option value="latency">Command latency · 2 ticks</option><option value="nonlinear">Estimator nonlinear bench · 28.6° · LQR</option><option value="sim2real">Sim2real stack · hidden mismatch</option><option value="glitch">Measurement glitch</option></select></label>
   <label>Goal<select id="goal"><option value="0">0.0 m</option><option value="0.5">+0.5 m</option><option value="-0.5">−0.5 m</option></select></label>
  </div>
  <div class="pipeline"><div class="pipe-box"><b>Sensor</b><span id="pipeSensor">y=[p,θ]</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Observer</b><span id="pipeObserver">KF</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Controller</b><span id="pipeController">LQR</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Plant</b><span>nonlinear 200 Hz</span></div></div>
  <div class="world-wrap"><canvas class="world" id="world" width="960" height="360"></canvas>
   <div class="transport"><button class="primary" id="play">일시정지</button><button id="step">1 step</button><button id="reset">Reset</button><button id="pushL">← 3 N</button><button id="pushR">3 N →</button><span class="spacer"></span><span class="mono" id="clock">t=0.00 s</span></div>
-  <div class="metrics"><div class="metric"><small>θ truth</small><b id="mTheta">0°</b></div><div class="metric"><small>θ estimate</small><b id="mThetaHat">0°</b></div><div class="metric"><small>state RMSE</small><b id="mRmse">0</b></div><div class="metric"><small>force u</small><b id="mForce">0 N</b></div><div class="metric"><small>innovation</small><b id="mInnov">0</b></div><div class="metric"><small>solver</small><b id="mSolve">—</b></div><div class="metric"><small>horizon / iter</small><b id="mIter">—</b></div></div>
+  <div class="metrics"><div class="metric"><small>θ truth</small><b id="mTheta">0°</b></div><div class="metric"><small>θ estimate</small><b id="mThetaHat">0°</b></div><div class="metric"><small>state RMSE</small><b id="mRmse">0</b></div><div class="metric"><small>cmd / applied</small><b id="mForce">0 / 0 N</b></div><div class="metric"><small>innovation</small><b id="mInnov">0</b></div><div class="metric"><small>solver</small><b id="mSolve">—</b></div><div class="metric"><small>horizon / iter</small><b id="mIter">—</b></div></div>
  </div>
- <div class="graphs"><div class="graph"><div class="graph-head"><b>State trace</b><span>θ truth / estimate</span></div><canvas id="stateChart" width="320" height="145"></canvas></div><div class="graph"><div class="graph-head"><b>Control</b><span>u / external push</span></div><canvas id="controlChart" width="320" height="145"></canvas></div><div class="graph"><div class="graph-head"><b id="contextGraphTitle">Observer context</b><span id="contextGraphSub">σ(v), σ(ω)</span></div><canvas id="contextChart" width="320" height="145"></canvas></div></div>
+ <div class="graphs"><div class="graph"><div class="graph-head"><b>State trace</b><span>θ truth / estimate</span></div><canvas id="stateChart" width="320" height="145"></canvas></div><div class="graph"><div class="graph-head"><b>Control</b><span>command / applied / push</span></div><canvas id="controlChart" width="320" height="145"></canvas></div><div class="graph"><div class="graph-head"><b id="contextGraphTitle">Observer context</b><span id="contextGraphSub">σ(v), σ(ω)</span></div><canvas id="contextChart" width="320" height="145"></canvas></div></div>
 </section>
 <aside class="card lesson"><div class="lesson-inner"><div class="eyebrow" id="topicKind">OVERVIEW</div><h2 id="topicTitle"></h2><p class="lead" id="topicLead"></p><div class="chips" id="topicChips"></div><div class="use-row"><button class="primary" id="useTopic">이 모드로 실험</button><span class="badge" id="topicRuntime"></span></div><div id="topicBody"></div></div></aside>
 </div>
-<section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push로 controller × observer를 실행 · 결과는 이 CartPole lab 내부 paired evidence</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
+<section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push로 controller × observer를 실행 · 결과는 이 CartPole lab 내부 paired evidence</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias</option><option value="actuator">Actuator lag/gain</option><option value="latency">Command latency</option><option value="sim2real">Sim2real stack</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
 <p class="footer-note">Figure 연결은 pinned wb_humanoid_mpc comparator와 Figure evidence를 읽어 구성했습니다. CartPole은 발·contact wrench·floating-base가 없으므로 centroidal/full NMPC의 구조적 대응을 구현하며, humanoid capability로 과장하지 않습니다.</p>
 </main><script>/* BAM upstream parameters: Apache-2.0; see vendor/bam/NOTICE.md. */
 const BAM_PARAMS = {
@@ -161,6 +161,17 @@ const ControlLab = (() => {
   const inv2=M=>{const d=M[0][0]*M[1][1]-M[0][1]*M[1][0];if(Math.abs(d)<1e-12)throw Error('singular 2x2');return [[M[1][1]/d,-M[0][1]/d],[-M[1][0]/d,M[0][0]/d]];};
   const cloneM=A=>A.map(r=>r.slice());
   function maxAbsDiff(A,B){let m=0;for(let i=0;i<A.length;i++)for(let j=0;j<A[i].length;j++)m=Math.max(m,Math.abs(A[i][j]-B[i][j]));return m;}
+  function solveLinearSystem(A,b){
+    const n=A.length,M=A.map((r,i)=>r.slice().concat([b[i]]));
+    for(let k=0;k<n;k++){
+      let piv=k;for(let i=k+1;i<n;i++)if(Math.abs(M[i][k])>Math.abs(M[piv][k]))piv=i;
+      if(Math.abs(M[piv][k])<1e-12)throw Error('singular linear system');
+      [M[k],M[piv]]=[M[piv],M[k]];
+      const d=M[k][k];for(let j=k;j<=n;j++)M[k][j]/=d;
+      for(let i=0;i<n;i++)if(i!==k){const f=M[i][k];for(let j=k;j<=n;j++)M[i][j]-=f*M[k][j];}
+    }
+    return M.map(r=>r[n]);
+  }
   class RNG{constructor(seed=1){this.s=seed>>>0;this.spare=null;}uniform(){let t=this.s=(this.s+0x6D2B79F5)>>>0;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;}normal(){if(this.spare!==null){const v=this.spare;this.spare=null;return v;}let x,y,q;do{x=2*this.uniform()-1;y=2*this.uniform()-1;q=x*x+y*y;}while(q===0||q>=1);const k=Math.sqrt(-2*Math.log(q)/q);this.spare=y*k;return x*k;}}
   function linearModel(spec=PlantRef.DEFAULT_SPEC,dt=DT){
     const mc=spec.mc,mp=spec.mp,l=spec.l,g=spec.gravity,D=mc+.25*mp;
@@ -192,11 +203,11 @@ const ControlLab = (() => {
     for(let k=0;k<4;k++)s=PlantRef.integrate(s,spec,p,u,0,.005,0).state;
     s[2]=wrap(s[2]);return s;
   }
-  function numericJacobian(state,u,spec,eps=1e-5){
+  function numericJacobian(state,u,spec,eps=1e-5,params=null){
     const F=zeros(4,4);
     for(let j=0;j<4;j++){
       const xp=state.slice(),xm=state.slice();xp[j]+=eps;xm[j]-=eps;
-      const fp=nonlinearStep(xp,u,spec),fm=nonlinearStep(xm,u,spec);
+      const fp=nonlinearStep(xp,u,spec,params),fm=nonlinearStep(xm,u,spec,params);
       for(let i=0;i<4;i++){let d=fp[i]-fm[i];if(i===2)d=wrap(d);F[i][j]=d/(2*eps);}
     }
     return F;
@@ -205,26 +216,39 @@ const ControlLab = (() => {
     constructor(opts={}){this.spec={...PlantRef.DEFAULT_SPEC,actuator:'ideal',force:10,friction:0,...(opts.spec||{})};this.rng=new RNG(opts.seed||17);this.sensorRng=new RNG((opts.seed||17)+991);this.scenario=opts.scenario||'nominal';this.goal=0;this.reset();}
     setScenario(name){this.scenario=name;this.configure();}
     configure(){
-      const s=this.spec;this.params=nominalParams(s);this.sensorStd=[.008,.004];
+      const s=this.spec;this.params=nominalParams(s);this.sensorStd=[.008,.004];this.delaySteps=0;this.actuatorAlpha=1;this.actuatorGain=1;this.biasWalk=[0,0];
       if(this.scenario==='sensor'){this.sensorStd=[.06,.025];}
       if(this.scenario==='model'){this.params={...this.params,mc:s.mc*1.25,mp:s.mp*.8,l:s.l*1.15,friction:.15};this.sensorStd=[.012,.006];}
       if(this.scenario==='mixed'){this.params={...this.params,mc:s.mc*1.2,mp:s.mp*.85,l:s.l*1.1,friction:.12};this.sensorStd=[.04,.018];}
       if(this.scenario==='glitch'){this.sensorStd=[.012,.006];}
       if(this.scenario==='nonlinear'){this.sensorStd=[.0005,.00025];}
+      if(this.scenario==='bias'){this.biasWalk=[4e-4,1.5e-4];}
+      if(this.scenario==='actuator'){this.actuatorAlpha=.42;this.actuatorGain=.9;}
+      if(this.scenario==='latency'){this.delaySteps=2;}
+      if(this.scenario==='actuator_id'){this.actuatorAlpha=.52;this.actuatorGain=.88;this.delaySteps=2;}
+      if(this.scenario==='sim2real'){
+        const u=()=>this.rng.uniform();
+        this.params={...this.params,mc:s.mc*(.8+.4*u()),mp:s.mp*(.75+.5*u()),l:s.l*(.9+.2*u()),friction:.04+.18*u()};
+        this.sensorStd=[.012+.025*u(),.005+.012*u()];this.delaySteps=Math.floor(3*u());this.actuatorAlpha=.35+.45*u();this.actuatorGain=.82+.26*u();
+        this.biasWalk=[2e-4*(.5+u()),8e-5*(.5+u())];
+      }
     }
     defaultState(){if(this.scenario==='nonlinear')return [0,0,.5,0];return [0,0,(this.rng.uniform()-.5)*.08,0];}
-    reset(state=null){this.configure();this.s=state?state.slice():this.defaultState();this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;return this.s.slice();}
+    reset(state=null){this.configure();this.s=state?state.slice():this.defaultState();this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;this.sensorBias=[0,0];this.delayQueue=Array(this.delaySteps).fill(0);this.actuatorState=0;return this.s.slice();}
     applyPush(force,steps=10){this.pushForce=force;this.pushLeft=steps;}
     measurementVariance(){return this.sensorStd.map(s=>s*s);}
     sensor(){
-      let x=this.s[0]+this.sensorStd[0]*this.sensorRng.normal(),th=wrap(this.s[2]+this.sensorStd[1]*this.sensorRng.normal());
+      this.sensorBias[0]+=this.biasWalk[0]*this.sensorRng.normal();this.sensorBias[1]+=this.biasWalk[1]*this.sensorRng.normal();
+      let x=this.s[0]+this.sensorBias[0]+this.sensorStd[0]*this.sensorRng.normal(),th=wrap(this.s[2]+this.sensorBias[1]+this.sensorStd[1]*this.sensorRng.normal());
       if(this.scenario==='glitch' && (this.steps%180)>=90 && (this.steps%180)<108)x+=.35;
       const y=[x,th];this.lastSensor=y;return y;
     }
     step(u){
       const ext=this.pushLeft>0?this.pushForce:0;if(this.pushLeft>0)this.pushLeft--;
-      let s=this.s.slice(),peak=0;for(let k=0;k<4;k++){const r=PlantRef.integrate(s,this.spec,this.params,clamp(u,-this.spec.force,this.spec.force),ext,.005,0);s=r.state;peak=Math.max(peak,r.drive.tractionRatio||0);}
-      s[2]=wrap(s[2]);this.s=s;this.steps++;return {state:s.slice(),external:ext,peakTractionRatio:peak,failed:Math.abs(s[0])>2.4||Math.abs(s[2])>35*Math.PI/180};
+      this.delayQueue.push(clamp(u,-this.spec.force,this.spec.force));const delayed=this.delayQueue.shift();
+      this.actuatorState+=this.actuatorAlpha*(this.actuatorGain*delayed-this.actuatorState);const applied=clamp(this.actuatorState,-this.spec.force,this.spec.force);
+      let s=this.s.slice(),peak=0;for(let k=0;k<4;k++){const r=PlantRef.integrate(s,this.spec,this.params,applied,ext,.005,0);s=r.state;peak=Math.max(peak,r.drive.tractionRatio||0);}
+      s[2]=wrap(s[2]);this.s=s;this.steps++;return {state:s.slice(),external:ext,appliedCommand:applied,peakTractionRatio:peak,failed:Math.abs(s[0])>2.4||Math.abs(s[2])>35*Math.PI/180};
     }
   }
   class PIDController{
@@ -233,7 +257,7 @@ const ControlLab = (() => {
     act(x,goal=0){const ex=x[0]-goal;this.i=clamp(this.i+ex*DT,-1,1);const u=46*x[2]+10*x[3]+2.0*ex+3.2*x[1]+.18*this.i;return clamp(u,-this.limit,this.limit);}
   }
   class LQRController{
-    constructor(spec=PlantRef.DEFAULT_SPEC){this.limit=spec.force;const {A,B}=linearModel(spec),Q=diag([2,.5,55,3]);const r=dare(A,B,Q,.12);this.A=A;this.B=B;this.K=r.K[0];this.name='LQR';}
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){this.limit=spec.force;const {A,B}=linearModel(spec),Q=diag(opts.Qdiag||[2,.5,55,3]),R=opts.R??.12;const r=dare(A,B,Q,R);this.A=A;this.B=B;this.Q=Q;this.R=R;this.K=r.K[0];this.name='LQR';}
     reset(){}
     act(x,goal=0){const e=[x[0]-goal,x[1],wrap(x[2]),x[3]];return clamp(-dot(this.K,e),-this.limit,this.limit);}
   }
@@ -277,9 +301,9 @@ const ControlLab = (() => {
     return {U,X,J,iterations,converged:false};
   }
   class LinearMPCController{
-    constructor(spec=PlantRef.DEFAULT_SPEC){
-      const m=linearModel(spec);this.A=m.A;this.B=m.B;this.limit=spec.force;this.N=30;
-      this.Q=diag([2,.45,68,3.5]);this.Qf=diag([8,1.5,110,7]);this.R=.14;
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
+      const m=linearModel(spec);this.A=m.A;this.B=m.B;this.limit=spec.force;this.N=opts.N||30;
+      this.Q=diag(opts.Qdiag||[2,.45,68,3.5]);this.Qf=diag(opts.Qfdiag||[8,1.5,110,7]);this.R=opts.R??.14;
       this.U=Array(this.N).fill(0);this.name='Linear MPC';this.lastSolveMs=0;this.lastIterations=0;
     }
     reset(){this.U.fill(0);this.lastPrediction=[];this.lastControls=[];this.lastIterations=0;}
@@ -291,6 +315,96 @@ const ControlLab = (() => {
       this.lastCost=sol.J;this.lastIterations=sol.iterations;this.lastConverged=sol.converged;this.lastSolveMs=clock.now()-t0;return out;
     }
   }
+  function ensembleLinearObjective(models,x0,U,Q,R,Qf,risk=.5,bound=null){
+    const rows=models.map(m=>{
+      const X=linearRollout(m.A,m.B,x0,U);
+      if(bound){const cg=constrainedLinearCost(m.A,m.B,x0,U,Q,R,Qf,bound);return {X:cg.X,J:cg.J,g:constrainedLinearGradient(m.A,m.B,cg.X,U,Q,R,Qf,bound)};}
+      return {X,J:linearQuadraticCost(X,U,Q,R,Qf),g:linearQuadraticGradient(m.A,m.B,X,U,Q,R,Qf)};
+    });
+    const n=rows.length,meanJ=rows.reduce((s,r)=>s+r.J,0)/n,worst=rows.reduce((a,b)=>a.J>=b.J?a:b),meanG=Array(U.length).fill(0);
+    for(const row of rows)for(let k=0;k<U.length;k++)meanG[k]+=row.g[k]/n;
+    const g=meanG.map((v,k)=>v+risk*(worst.g[k]-v)),J=meanJ+risk*(worst.J-meanJ);
+    return {rows,J,g,worstCost:worst.J,meanCost:meanJ};
+  }
+  class ScenarioMPCController{
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
+      this.spec=spec;this.limit=spec.force;this.N=opts.N||30;this.Q=diag(opts.Qdiag||[3,.6,72,4]);this.Qf=diag(opts.Qfdiag||[10,2,120,8]);this.R=opts.R??.16;this.risk=opts.risk??.55;
+      const variants=opts.variants||[
+        {mc:1,mp:1,l:1,friction:0},
+        {mc:1.25,mp:.8,l:1.15,friction:.15},
+        {mc:.8,mp:1.25,l:.9,friction:.18},
+        {mc:1.2,mp:.75,l:1.1,friction:.22},
+        {mc:.85,mp:1.2,l:.9,friction:.05}
+      ];
+      this.models=variants.map(v=>{
+        const p={...nominalParams(spec),mc:spec.mc*v.mc,mp:spec.mp*v.mp,l:spec.l*v.l,friction:v.friction};
+        return {A:numericJacobian([0,0,0,0],0,spec,1e-5,p),B:numericInputJacobian([0,0,0,0],0,spec,1e-4,p),params:p};
+      });
+      this.nominalIndex=0;this.bound={index:0,soft:opts.softPosition??1.55,weight:opts.boundWeight??260,hard:opts.hardPosition??2.4};
+      this.U=Array(this.N).fill(0);this.name='Scenario-risk linear MPC';this.lastSolveMs=0;this.lastIterations=0;
+    }
+    reset(){this.U.fill(0);this.lastPrediction=[];this.lastControls=[];this.lastIterations=0;this.lastScenarioCosts=[];}
+    act(x,goal=0){
+      const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
+      let U=this.U.slice(),cur=ensembleLinearObjective(this.models,x0,U,this.Q,this.R,this.Qf,this.risk,this.bound),step=.6,iterations=0;
+      for(let it=0;it<70;it++){
+        let accepted=false;
+        for(let bt=0;bt<14;bt++){
+          const a=step*(.5**bt),Un=U.map((u,k)=>clamp(u-a*cur.g[k],-this.limit,this.limit));
+          const move=Un.reduce((ss,u,k)=>ss+(u-U[k])**2,0);if(move<1e-14)break;
+          const cand=ensembleLinearObjective(this.models,x0,Un,this.Q,this.R,this.Qf,this.risk,this.bound);
+          if(Number.isFinite(cand.J)&&cand.J<cur.J-1e-12){U=Un;cur=cand;step=Math.min(1,a*1.5);accepted=true;break;}
+        }
+        iterations++;if(!accepted)break;
+      }
+      const out=U[0];this.U=U.slice(1).concat(U.at(-1));const nom=cur.rows[this.nominalIndex];
+      this.lastPrediction=nom.X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();this.lastScenarioCosts=cur.rows.map(r=>r.J);
+      this.lastCost=cur.J;this.lastWorstCost=cur.worstCost;this.lastPredictedStateViolation=Math.max(0,...nom.X.map(q=>Math.abs(q[0])-this.bound.hard));this.lastIterations=iterations;this.lastSolveMs=clock.now()-t0;return out;
+    }
+  }
+
+  function boundPenalty(x,bound){
+    const idx=bound.index??0,soft=bound.soft??1.6,w=bound.weight??250,d=Math.abs(x[idx])-soft;
+    if(d<=0)return {cost:0,grad:Array(x.length).fill(0)};
+    const grad=Array(x.length).fill(0);grad[idx]=2*w*d*Math.sign(x[idx]);return {cost:w*d*d,grad};
+  }
+  function constrainedLinearCost(A,B,x0,U,Q,R,Qf,bound){
+    const X=linearRollout(A,B,x0,U);let J=quad(X.at(-1),Qf)+boundPenalty(X.at(-1),bound).cost;
+    for(let k=0;k<U.length;k++)J+=quad(X[k],Q)+R*U[k]*U[k]+boundPenalty(X[k],bound).cost;
+    return {X,J};
+  }
+  function constrainedLinearGradient(A,B,X,U,Q,R,Qf,bound){
+    const g=Array(U.length).fill(0),At=T(A),Bt=T(B),pgf=boundPenalty(X.at(-1),bound).grad;
+    let lam=mv(Qf,X.at(-1)).map((v,i)=>2*v+pgf[i]);
+    for(let k=U.length-1;k>=0;k--){
+      g[k]=2*R*U[k]+dot(Bt[0],lam);
+      const pg=boundPenalty(X[k],bound).grad,qx=mv(Q,X[k]).map((v,i)=>2*v+pg[i]);
+      lam=mv(At,lam).map((v,i)=>v+qx[i]);
+    }
+    return g;
+  }
+  class StateAwareLinearMPCController extends LinearMPCController{
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
+      super(spec,opts);this.bound={index:0,soft:opts.softPosition??1.55,weight:opts.boundWeight??300,hard:opts.hardPosition??2.4};
+      this.name='Linear MPC + soft state bound';
+    }
+    act(x,goal=0){
+      const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
+      let U=this.U.slice(),cur=constrainedLinearCost(this.A,this.B,x0,U,this.Q,this.R,this.Qf,this.bound),iterations=0,step=.5;
+      for(let it=0;it<100;it++){
+        const g=constrainedLinearGradient(this.A,this.B,cur.X,U,this.Q,this.R,this.Qf,this.bound);let accepted=false;
+        for(let bt=0;bt<14;bt++){
+          const a=step*(.5**bt),Un=U.map((u,k)=>clamp(u-a*g[k],-this.limit,this.limit)),cand=constrainedLinearCost(this.A,this.B,x0,Un,this.Q,this.R,this.Qf,this.bound);
+          if(cand.J<cur.J-1e-12){U=Un;cur=cand;step=Math.min(1,a*1.5);accepted=true;break;}
+        }
+        iterations++;if(!accepted)break;
+      }
+      const out=U[0];this.U=U.slice(1).concat(U.at(-1));this.lastPrediction=cur.X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();
+      this.lastCost=cur.J;this.lastIterations=iterations;this.lastConverged=true;this.lastPredictedStateViolation=Math.max(0,...cur.X.map(q=>Math.abs(q[0])-this.bound.hard));
+      this.lastSolveMs=clock.now()-t0;return out;
+    }
+  }
+
   class CentroidalMPCController{
     constructor(spec=PlantRef.DEFAULT_SPEC){
       this.spec=spec;this.limit=spec.force;this.N=32;this.mass=spec.mc+spec.mp;this.alpha=spec.mp*spec.l/this.mass;
@@ -312,8 +426,8 @@ const ControlLab = (() => {
       this.lastCost=sol.J;this.lastIterations=sol.iterations;this.lastConverged=sol.converged;this.lastSolveMs=clock.now()-t0;return u;
     }
   }
-  function numericInputJacobian(state,u,spec,eps=1e-4){
-    const fp=nonlinearStep(state,u+eps,spec),fm=nonlinearStep(state,u-eps,spec),B=zeros(4,1);
+  function numericInputJacobian(state,u,spec,eps=1e-4,params=null){
+    const fp=nonlinearStep(state,u+eps,spec,params),fm=nonlinearStep(state,u-eps,spec,params),B=zeros(4,1);
     for(let i=0;i<4;i++){let d=fp[i]-fm[i];if(i===2)d=wrap(d);B[i][0]=d/(2*eps);}return B;
   }
   function symmetrize(A){return A.map((r,i)=>r.map((v,j)=>.5*(v+A[j][i])));}
@@ -354,6 +468,34 @@ const ControlLab = (() => {
       }
       const out=clamp(U[0],-this.limit,this.limit);this.U=U.slice(1).concat(U.at(-1));this.lastPrediction=X.map(s=>[s[0]+goal,s[1],s[2],s[3]]);
       this.lastControls=U.slice();this.lastCost=best;this.lastIterations=iterations;this.lastSolveMs=clock.now()-t0;return out;
+    }
+  }
+
+  class LTVMPCController extends FullNMPCController{
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
+      super(spec);this.N=opts.N||30;this.U=Array(this.N).fill(0);
+      this.Q=diag(opts.Qdiag||[6,.8,76,4]);this.Qf=diag(opts.Qfdiag||[18,2.4,120,8]);this.R=opts.R??.12;
+      this.reg=opts.reg??1e-4;this.name='LTV MPC · one-step SQP/RTI bridge';
+    }
+    act(x,goal=0){
+      const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
+      let U=this.U.slice(),X=this.rollout(x0,U),best=this.cost(X,U),accepted=false,bestU=U,bestX=X,bestCost=best;
+      const {ks,Ks}=this.backward(X,U);
+      // One real-time-iteration style local quadratic update per control tick.
+      for(const alpha of [1,.5,.25,.1]){
+        const Un=Array(this.N),Xn=[x0.slice()];
+        for(let k=0;k<this.N;k++){
+          const dx=Xn[k].map((v,i)=>v-X[k][i]);
+          Un[k]=clamp(U[k]+alpha*ks[k]+dot(Ks[k],dx),-this.limit,this.limit);
+          Xn.push(nonlinearStep(Xn[k],Un[k],this.spec));
+        }
+        const J=this.cost(Xn,Un);
+        if(Number.isFinite(J)&&J<bestCost){accepted=true;bestCost=J;bestU=Un;bestX=Xn;break;}
+      }
+      if(accepted){U=bestU;X=bestX;best=bestCost;}
+      const out=clamp(U[0],-this.limit,this.limit);this.U=U.slice(1).concat(U.at(-1));
+      this.lastPrediction=X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();this.lastCost=best;
+      this.lastIterations=1;this.lastConverged=accepted;this.lastSolveMs=clock.now()-t0;return out;
     }
   }
 
@@ -402,35 +544,88 @@ const ControlLab = (() => {
     outputCovariance(){return null;}
   }
   class AdaptiveRObserver extends SO2Observer{
-    constructor(spec,opts={}){super(spec,opts);this.name='Adaptive R (FOCUS-style observation bridge)';this.baseR=cloneM(this.R);}
+    constructor(spec,opts={}){super(spec,opts);this.name='Adaptive R · outlier/reliability bridge';this.baseR=cloneM(this.R);}
     reset(y=[0,0]){super.reset(y);if(this.baseR)this.R=cloneM(this.baseR);}
     update(y){const yhat=mv(H,this.x),ix=y[0]-yhat[0],it=wrap(y[1]-yhat[1]),sx=Math.sqrt(this.baseR[0][0])+1e-9,st=Math.sqrt(this.baseR[1][1])+1e-9;const wx=Math.exp(-.5*(ix/(5*sx))**2),wt=Math.exp(-.5*(it/(5*st))**2);this.R=[[this.baseR[0][0]*(1+99*(1-wx)),0],[0,this.baseR[1][1]*(1+99*(1-wt))]];const out=super.update(y);this.last.reliability=[wx,wt];return out;}
   }
-  function makeController(name,spec,actor){if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
-  function makeObserver(name,spec,opts={}){if(name==='truth')return new TruthObserver();if(name==='raw')return new RawObserver();if(name==='kf')return new KFObserver(spec,opts);if(name==='ekf')return new EKFObserver(spec,opts);if(name==='so2')return new SO2Observer(spec,opts);if(name==='residual')return new ResidualObserver(spec,opts);if(name==='adaptive')return new AdaptiveRObserver(spec,opts);throw Error('unknown observer');}
-  function runEpisode({controller='lqr',observer='kf',scenario='nominal',seed=1,steps=500,goal=0,actor=null,residualModel=null,pushAt=120,pushForce=3}={}){
-    const plant=new LabPlant({seed,scenario}),ctl=makeController(controller,plant.spec,actor);
-    const obs=makeObserver(observer,plant.spec,{model:residualModel,R:plant.measurementVariance()});
-    plant.goal=goal;const y0=plant.sensor();obs.reset(y0,plant.s);ctl.reset();
-    let xh=obs.outputX?obs.outputX.slice():obs.x.slice(),se=0,ae=0,maxAngle=0,failed=false,solveMs=0,solveN=0,iterSum=0;
-    const trace=[];
-    for(let k=0;k<steps;k++){
-      const uu=ctl.act(xh,goal);
-      if(Number.isFinite(ctl.lastSolveMs)){solveMs+=ctl.lastSolveMs;solveN++;iterSum+=(ctl.lastIterations??0);}
-      if(k===pushAt)plant.applyPush(pushForce,10);
-      const out=plant.step(uu),y=plant.sensor();
-      xh=obs.step(y,uu,out.state);
-      const err=out.state.map((v,i)=>i===2?wrap(v-xh[i]):v-xh[i]);
-      se+=err.reduce((ss,v)=>ss+v*v,0);ae+=Math.abs(out.state[2]);maxAngle=Math.max(maxAngle,Math.abs(out.state[2]));
-      const Pout=obs.outputCovariance?obs.outputCovariance():obs.P;
-      trace.push({k,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()||[0,0],
-        P:Pout?cloneM(Pout):null,baseP:obs.P?cloneM(obs.P):null,reliability:obs.last?.reliability?.slice?.()||null,external:out.external});
-      if(out.failed){failed=true;break;}
+  class ShootingMHEObserver{
+    constructor(spec,opts={}){
+      this.spec=spec;this.window=opts.window||8;this.Rdiag=opts.R||[.008**2,.004**2];this.name='Nonlinear shooting MHE';
+      this.base=new EKFObserver(spec,opts);this.records=[];this.x=[0,0,0,0];this.P=null;this.last={innovation:[0,0],iterations:0,cost:0};
     }
-    return {controller,observer,scenario,steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,meanSolveMs:solveN?solveMs/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
+    reset(y=[0,0]){
+      this.base.reset(y);this.x=this.base.x.slice();this.P=this.base.P;this.records=[{y:y.slice(),u:null,baseX:this.base.x.slice(),baseP:cloneM(this.base.P)}];
+    }
+    residualVector(z0){
+      const first=this.records[0],sigA=first.baseP.map((r,i)=>Math.sqrt(Math.max(1e-9,r[i]))),r=[];
+      for(let i=0;i<4;i++)r.push((z0[i]-first.baseX[i])/sigA[i]);
+      let z=z0.slice(),lastInnov=[0,0];
+      for(let i=1;i<this.records.length;i++){
+        z=nonlinearStep(z,this.records[i].u,this.spec);
+        const yy=this.records[i].y,ep=(z[0]-yy[0])/Math.sqrt(this.Rdiag[0]),et=wrap(z[2]-yy[1])/Math.sqrt(this.Rdiag[1]);
+        r.push(ep,et);lastInnov=[yy[0]-z[0],wrap(yy[1]-z[2])];
+      }
+      return {r,state:z,innovation:lastInnov};
+    }
+    optimize(){
+      let z=this.records[0].baseX.slice(),best=this.residualVector(z),bestCost=dot(best.r,best.r),iterations=0;
+      const eps=[1e-4,1e-4,1e-5,1e-4];
+      for(let it=0;it<6;it++){
+        const base=this.residualVector(z),m=base.r.length,J=Array.from({length:m},()=>Array(4).fill(0));
+        for(let j=0;j<4;j++){
+          const zp=z.slice(),zm=z.slice();zp[j]+=eps[j];zm[j]-=eps[j];
+          const rp=this.residualVector(zp).r,rm=this.residualVector(zm).r;
+          for(let i=0;i<m;i++)J[i][j]=(rp[i]-rm[i])/(2*eps[j]);
+        }
+        const Hn=Array.from({length:4},()=>Array(4).fill(0)),g=Array(4).fill(0);
+        for(let a=0;a<4;a++)for(let b=0;b<4;b++)for(let i=0;i<m;i++)Hn[a][b]+=J[i][a]*J[i][b];
+        for(let a=0;a<4;a++){for(let i=0;i<m;i++)g[a]+=J[i][a]*base.r[i];Hn[a][a]+=1e-3;}
+        let delta;try{delta=solveLinearSystem(Hn,g.map(v=>-v));}catch(_){break;}
+        let accepted=false;
+        for(const alpha of [1,.5,.25,.1]){
+          const zn=z.map((v,i)=>v+alpha*delta[i]);zn[2]=wrap(zn[2]);const rr=this.residualVector(zn),c=dot(rr.r,rr.r);
+          if(Number.isFinite(c)&&c<bestCost){z=zn;best=rr;bestCost=c;accepted=true;break;}
+        }
+        iterations++;if(!accepted||Math.sqrt(dot(delta,delta))<1e-5)break;
+      }
+      return {state:best.state,cost:bestCost,iterations,innovation:best.innovation};
+    }
+    step(y,u){
+      const bx=this.base.step(y,u);this.P=this.base.P;this.records.push({y:y.slice(),u,baseX:bx.slice(),baseP:cloneM(this.base.P)});
+      while(this.records.length>this.window+1)this.records.shift();
+      if(this.records.length<3){this.x=bx.slice();this.last={innovation:this.base.last.innovation.slice(),iterations:0,cost:0};return this.x.slice();}
+      const sol=this.optimize();this.x=sol.state.slice();this.last={innovation:sol.innovation,iterations:sol.iterations,cost:sol.cost,window:this.records.length-1};return this.x.slice();
+    }
+    outputCovariance(){return null;}
   }
 
-  return {DT,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,nonlinearStep,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
+  function makeController(name,spec,actor,opts={}){if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec,opts);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec,opts);if(name==='scenario_mpc')return new ScenarioMPCController(spec,opts);if(name==='state_mpc')return new StateAwareLinearMPCController(spec,opts);if(name==='ltv_mpc')return new LTVMPCController(spec,opts);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
+  function makeObserver(name,spec,opts={}){if(name==='truth')return new TruthObserver();if(name==='raw')return new RawObserver();if(name==='kf')return new KFObserver(spec,opts);if(name==='ekf')return new EKFObserver(spec,opts);if(name==='so2')return new SO2Observer(spec,opts);if(name==='mhe')return new ShootingMHEObserver(spec,opts);if(name==='residual')return new ResidualObserver(spec,opts);if(name==='adaptive')return new AdaptiveRObserver(spec,opts);throw Error('unknown observer');}
+  function runEpisode({controller='lqr',observer='kf',scenario='nominal',seed=1,steps=500,goal=0,actor=null,residualModel=null,controllerOpts={},observerOpts={},pushAt=120,pushForce=3,initialState=null}={}){
+    const plant=new LabPlant({seed,scenario});if(initialState)plant.reset(initialState);const ctl=makeController(controller,plant.spec,actor,controllerOpts);
+    const baseR=plant.measurementVariance().map(v=>v*(observerOpts.RScale??1)),obs=makeObserver(observer,plant.spec,{...observerOpts,model:residualModel,R:observerOpts.R||baseR});
+    plant.goal=goal;const y0=plant.sensor();obs.reset(y0,plant.s);ctl.reset();
+    let xh=obs.outputX?obs.outputX.slice():obs.x.slice(),se=0,ae=0,maxAngle=0,maxPosition=0,failed=false,solveMs=0,solveN=0,iterSum=0,solveTimes=[],sumU2=0,maxU=0,sumActErr2=0;
+    const trace=[];
+    for(let k=0;k<steps;k++){
+      const uu=ctl.act(xh,goal);sumU2+=uu*uu;maxU=Math.max(maxU,Math.abs(uu));
+      if(Number.isFinite(ctl.lastSolveMs)){solveMs+=ctl.lastSolveMs;solveN++;solveTimes.push(ctl.lastSolveMs);iterSum+=(ctl.lastIterations??0);}
+      if(k===pushAt)plant.applyPush(pushForce,10);
+      const out=plant.step(uu),y=plant.sensor();sumActErr2+=(uu-(out.appliedCommand??uu))**2;
+      xh=obs.step(y,uu,out.state);
+      const err=out.state.map((v,i)=>i===2?wrap(v-xh[i]):v-xh[i]);
+      se+=err.reduce((ss,v)=>ss+v*v,0);ae+=Math.abs(out.state[2]);maxAngle=Math.max(maxAngle,Math.abs(out.state[2]));maxPosition=Math.max(maxPosition,Math.abs(out.state[0]));
+      const Pout=obs.outputCovariance?obs.outputCovariance():obs.P;
+      trace.push({k,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()||[0,0],
+        P:Pout?cloneM(Pout):null,baseP:obs.P?cloneM(obs.P):null,S:obs.last?.S?cloneM(obs.last.S):null,reliability:obs.last?.reliability?.slice?.()||null,observerIterations:obs.last?.iterations??0,observerCost:obs.last?.cost??0,observerWindow:obs.last?.window??0,external:out.external,appliedCommand:out.appliedCommand??uu});
+      if(out.failed){failed=true;break;}
+    }
+    const sortedSolve=solveTimes.slice().sort((a,b)=>a-b),p95SolveMs=sortedSolve.length?sortedSolve[Math.min(sortedSolve.length-1,Math.ceil(.95*sortedSolve.length)-1)]:0;
+    const deadlineMs=DT*1000,deadlineMisses=solveTimes.filter(v=>v>deadlineMs).length;
+    return {controller,observer,scenario,steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
+  }
+
+  return {DT,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
 })();
 if(typeof module!=='undefined')module.exports=ControlLab;
 </script><script>const CONTROL_LAB_ACTOR = {"n":5,"h":16,"o":2,"p":[0.38219838303708126,-1.988606512808776,-0.7470931140191951,-2.3569996363194017,-0.2679165467488728,0.05639313150145695,2.3379970518883213,0.6654590807871051,2.175382873041388,-0.42028469063802404,0.3861238839319376,-0.9711928300689232,-1.1807260669410395,-1.8057384225053674,-0.012572991264764325,-0.5161147980790138,1.785029438037536,1.094776277244274,1.307566592395835,0.2502736746552176,-0.12000797480590253,1.8088978433513578,1.2055180357143724,1.303750008320953,0.5284230420705751,0.20856666245082717,-1.6943334425574146,-1.1364068179751265,-1.6075086795405158,-0.057215352391426264,-0.009876853042350402,-1.9858076382534569,-1.4058764386387441,-2.02252624725305,-0.122630217234283,-0.933484326522284,1.7121036329526875,0.440595468599461,1.7986898633035548,0.06109134532832548,0.5105402610185393,1.3698053930839391,0.8324525737454824,1.4689590765402107,0.14387937939601195,0.19629351733813988,1.1781646586126864,0.7668067105309634,1.6612449036965835,-0.18145977367364982,0.4002867572137264,-1.5676095972663826,-0.9879577490970605,-2.238750602774637,-0.22212818639703086,-0.18538202691706285,1.9256916817498946,0.748145377766649,1.7474449298058587,0.3228099464876186,1.1977230836346453,-1.783418560287599,-0.9705549666553802,-1.6832201619281424,-0.20759829835404203,0.3379582417158838,-1.395187449195247,-0.9876103601667963,-1.1369276242055417,-0.5617097772660428,0.2787629298903198,-2.3753780934808657,-0.7251795289770248,-1.8062652278391282,-0.011805724397134456,-0.2330002481283753,-1.6729807772658631,-0.8539327310025052,-1.5287185182464242,0.293056123472111,-0.0030991835944336734,-0.02232287003243452,0.006149950961493269,-0.0141364910640921,0.02544611297131688,0.014875000223794734,-0.006059547203907192,-0.019672816707855204,0.025780020803785168,0.029735797742780557,-0.002687923075780292,0.009441473127463204,0.0018058603443271643,-0.023527611714218705,0.016168917647542552,-0.02445528387124622,2.7187888746404827,-2.2064088407003006,1.3640436122167843,-1.954814603876829,-1.0384259937146465,2.132829454373477,1.5897543286993676,-0.953488392324746,-0.5674551211602665,-1.6681160362708758,2.2830813612027345,-1.7125008622289488,1.118981726646821,1.2087701187981037,2.7236837525438107,1.9470524336956294,-2.7277484338225975,2.1768245046642276,-1.383039683723341,1.94603044513959,1.0350392421340675,-2.1486104025091484,-1.5956944878291013,0.9626252943891925,0.5513011313781953,1.6563517712214089,-2.2886881239848065,1.7148191434624904,-1.122337596563591,-1.232967175768675,-2.747490208884661,-1.9382457821202566,0.0270264701693227,-0.027026470169322657],"t":15360};</script><script>const CONTROL_LAB_RESIDUAL = {"schema":"cartpole-control-observer-residual/v2","kind":"InNKF-style educational output residual MLP","timingContract":"post-update residual for x_(k+1) after y_(k+1); correction is output-only and is not fed back into the base EKF","input":["innovation_x","innovation_theta","prev_innovation_x","prev_innovation_theta","u_div_10","vhat_div_3","theta_hat_div_.25","omega_hat_div_3","measurement_x_div_2.4","measurement_theta_div_.25"],"output":["dx","dv","dtheta","domega"],"hidden":20,"trainEpisodes":80,"validationEpisodes":20,"trainSamples":27760,"validationSamples":6940,"trainScenarios":["nominal","sensor","model","mixed","glitch"],"validationSeeds":"9000..9019","mean":[0.00017682440687377993,-9.624415551367892e-05,0.00020007593243853895,-8.56790948900796e-05,-0.0008858996965935589,-0.0009925703205734874,0.0014381469576458077,0.00042865764330995266,-0.0036219656730835975,0.0012302686299284727],"std":[0.04201251750381248,0.017310877143369863,0.041989286175271506,0.01731628389265165,0.1943592643755568,0.13860285265407007,0.15908679321248465,0.06903151684020639,0.06455265066668639,0.1714154119881201],"outMean":[-0.007125757687303444,0.002003283774819286,-2.5199434957829154e-05,-0.0019237456037968109],"outStd":[0.05289966163241663,0.23867087334341502,0.00797715208343155,0.09386563857541395],"w1":[[0.13013623141277778,-0.09668791643473358,0.12987945415466476,-0.038910086576156876,0.0006721618258561932,-0.3709409249724366,-0.392229753266123,-0.43794831385564,-0.10708689938816172,0.27611299627857444],[0.13251531418897092,0.2337051679660354,-0.04007194456159912,0.10537959126963892,0.16427720262288953,-0.16242924415254975,-0.08444602722063302,-0.17156138663623507,-0.5307876007161223,-0.2940344657785246],[-0.152679714981962,0.05866466655836158,-0.09787762855194755,-0.014083226242466638,-0.009253880647465018,-0.42037779800442426,0.6389380577877918,-0.24547627875538236,0.3429279693805728,-0.042027915745350745],[-0.22099727716047582,-0.002297132194201987,0.02234142154951685,-0.19240694935127675,0.16243787509401061,0.3129456413618798,0.22707253694870985,0.10229361540655921,0.7978740080755087,0.16472337766196024],[-0.09012776787539711,0.03635494418519283,-0.0473875229447796,-0.1462164356269586,0.3481827285642024,0.08442705313578164,0.04911105223797369,0.05661412825054565,0.15223552425911255,0.10731720212805246],[0.030681554705898777,0.0029909487560366315,-0.030325480127905594,-0.061813382642335865,0.1453721043856047,0.012922096171478483,-0.4065259658032698,0.4030230196540859,-0.31352302172064234,-0.3374951761662056],[0.1978426889412095,0.2820499213281634,0.002558885838619383,0.058087916708290575,0.08586861811909666,0.7215698883892739,-0.2816147650768759,-0.09419471441791748,-0.02394457445984768,-0.23072635907971678],[0.026128091612123202,-0.10479116513293255,-0.08203682897274164,0.19675686293386954,-0.29778985908732475,0.3180395855585709,0.14754434362846944,-0.07646801468037442,-0.4685652750158876,0.27095557201245385],[0.1062468518512758,0.06226562373143353,0.02579654685150984,0.10826177365672367,-0.08784272071150324,0.5320846085101307,-0.2858573761922795,0.023982475847458808,-0.256769452302112,0.12381704579269917],[0.22933284717135313,-0.2612372846236408,0.0817372116774734,-0.19360929056125786,-0.07834432470567167,-0.18043121725531278,1.0024600012447202,0.10740588006380737,-0.22890451402092807,0.027695738611497548],[0.304220324302234,0.07007614146113891,0.19090659086890982,0.1833322628626551,-0.3978259118019644,-0.8578116050561335,-0.8832613246774728,-0.9532016429056734,-0.509058782239257,-0.01862055183565889],[0.010938189947743772,0.17586151028909125,-0.29579627406985165,0.18048416770559192,-0.30164967216062744,-0.08947964584375045,0.10926070561371608,-0.023416937773943176,0.07146222408255001,-0.4794405073869699],[0.3490532132216009,-0.7006870868088089,0.26169527444744567,-0.26122895197402285,-0.6993132543787994,-0.29155561106853534,0.2577188564481478,-0.3597324076730847,-0.17789057062805386,-0.03544838475359616],[-0.47822910602455865,-0.3083487668720045,0.18724669405654945,0.11477620899164195,0.20220698621481406,-0.3321427040042752,-0.08033404756549964,-0.0017530920984009254,0.0600112620502466,0.2061083003670576],[-0.07085594757819469,-0.033457955290027076,0.07529951034406486,-0.04174178905831,-0.08275993277400742,-0.5127072687328667,0.15829985093058768,-0.43604378805808325,0.6086824852616782,0.11737297394775222],[-0.24099011465112433,-0.03057739594677912,-0.12322612133555177,-0.06555517209954988,0.16108916372536636,1.3697210844344774,0.916360872689012,0.41372805612528846,0.4274812688344122,0.1988550257425186],[-0.10681093369164178,0.09517531859408057,-0.06764246312950577,-0.013052006791768654,0.29522183872000585,0.0683925967816143,0.09442725467540733,0.5376674369165868,0.6356159932562901,-0.24581201792201213],[0.5804141447063478,0.2686143816955186,-0.22583261368895688,-0.17806547740548156,-0.119242610844413,-0.07537951246363069,-0.18462382512678865,-0.29516910173534805,-0.146304755421247,0.21142691639361924],[-0.03443420553874898,0.06360580579615899,-0.5364118922458998,-0.054222285070530445,0.038833111627810876,-0.10393327321722691,0.4999862264154043,0.0717517871387914,0.2095271020359251,-0.3539040165035076],[-0.05365194119241989,0.07789528455007853,0.026047514957990358,0.011692930636782402,0.04629050328624086,-0.7010369905813494,0.21782615214518217,-0.045937146382820135,0.5842294440229759,-0.3578945561165515]],"b1":[-0.8858165451266521,0.5226770508768501,0.36027037291756603,-0.15013407867143347,0.5805415035900802,-0.0020064528944603328,-2.926784552086785,-0.05285424029572372,1.843863392321969,3.463865209743588,-0.006801744879462704,0.03429241159397618,-0.10760125411620688,-0.0570063617486763,-0.19403675662451683,-0.00821717187945566,0.10834372089774064,-0.03473881657240317,-0.08383115400878396,0.06562216935395912],"w2":[[1.3153928264945032,-0.008542960157708277,0.10535441462095103,0.6283247262993813,0.814367884888251,0.5391876596404911,-1.371276721052759,0.6912880992779056,-0.8204690587307533,2.7396987883160033,0.07792327358705596,0.780223633852075,-0.10859403888035532,0.6284094314167398,-0.7771225786078703,0.2498250578607302,-0.5836033964428783,0.6193181436803004,-0.4502215885675114,1.1806630365313806],[0.6291057383511122,1.1469298939748414,0.6098163156792569,-0.15411667722189348,-0.7742206258074175,1.4193881373548698,-1.6410561952633465,-0.10594280065942957,-2.1331177971331745,0.608376776257679,0.05643270702351465,0.38390397243905855,-0.15607219749732684,0.5497080031352847,1.2824575705777628,0.7524001794146162,-0.27072659868075793,0.5580656384626743,-0.25786272685616024,-0.04443757601912026],[-0.16651838874509534,0.3247839885012131,0.3091597199960014,0.9032224763773637,0.5490823005441487,-0.20084615967893393,0.36395321466756464,0.5503876131521357,-0.013383430261120495,0.11404710073487603,0.7085485363279231,-0.1996756684122726,0.27448051976458493,0.2737965510429877,-0.1951197600740039,-1.213915980873399,0.3802369070614779,-0.05681916907800508,0.36858602208391983,-0.6454817851222405],[-0.7296978498624243,0.26912073265989983,0.5450532552211835,1.4140146753083618,0.7923892482881025,-0.3815555655576902,-0.044946984682765596,0.7978537485635177,-0.26122621128216345,-0.09528877045939871,1.4669574472072862,-0.8177119718517942,0.3636631739019072,0.24010988487417828,-0.8348706672266512,-0.9771546101732372,1.0147571433548757,-0.2674239063166994,0.8497699028235324,-0.882542388290918]],"b2":[-2.762742630197001,0.10576572858156118,-0.1524492409190883,-0.6848266824961375],"metrics":{"baseRmse":0.13283226619113953,"residualRmse":0.05465560378510575}};</script><script>'use strict';
@@ -454,6 +649,16 @@ const CONTROL_LAB_TOPICS = {
   "<div class='section'><h3>문제</h3><div class='math'>min sum(k=0..N-1) [x_k^T Q x_k + R u_k^2] + x_N^T Q_f x_N\\ns.t. x_(k+1)=A x_k+B u_k\\n     |u_k| <= u_max\\n\\nproject -> backtracking -> apply u_0 -> warm start</div></div>",
   "<div class='section'><h3>한계</h3><p>horizon 전체가 하나의 upright 선형모델이다. 실제 nonlinear plant가 멀어지면 model error가 커진다.</p></div>"
  ].join("")},
+ state_mpc:{group:"Controller",title:"State-constrained MPC — input bound만으로는 부족하다",lead:"MPC의 장점은 미래를 보는 것뿐 아니라 state/path constraint를 문제 안에 넣는 데 있다. 현재 browser mode는 cart position에 soft penalty를 넣어 input-only MPC와 차이를 보여준다.",chips:["state constraint","soft penalty","feasibility"],runtime:{controller:"state_mpc"},body:[
+  "<div class='section'><h3>입력 제약과 상태 제약은 다르다</h3><div class='math'>input: |u_k| <= u_max\nstate: |p_k| <= p_max\npath: g(x_k,u_k) <= 0</div><p>pole을 세우는 동안 cart가 트랙 끝으로 달아나는 해는 input constraint만으로는 합법일 수 있다.</p></div>",
+  "<div class='section'><h3>현재 구현</h3><p>Linear MPC와 같은 horizon/model을 쓰되 |p|가 soft boundary를 넘으면 quadratic penalty를 추가한다. 이것은 hard constrained QP가 아니며 feasibility guarantee를 주장하지 않는다.</p></div>",
+  "<div class='section'><h3>Humanoid로 확장</h3><p>joint/velocity/torque limits, torque-speed envelope, friction cone, unilateral contact, CoP/support, collision, swing clearance는 가능한 한 명시적 constraint로 모델링한다. penalty weight로 전부 숨기면 failure mode를 해석하기 어렵다.</p></div>"
+ ].join("")},
+ ltv_mpc:{group:"Controller",title:"LTV MPC / SQP-RTI — 매 tick 현재 trajectory 주변을 다시 선형화",lead:"고정 upright A,B를 계속 쓰는 Linear MPC와 nonlinear OCP를 여러 번 반복해 푸는 NMPC 사이의 핵심 연결고리다. 현재 warm-start trajectory에서 A_k,B_k를 다시 만들고 한 번의 local quadratic update만 수행한다.",chips:["successive linearization","time-varying A_k,B_k","real-time iteration"],runtime:{controller:"ltv_mpc"},body:[
+  "<div class='section'><h3>세 수준을 구분</h3><div class='math'>LTI MPC: one A,B around equilibrium\nLTV / RTI: A_k,B_k = Jacobian along current trajectory, one local update/tick\nNMPC: nonlinear f stays in OCP, multiple local iterations may be used</div></div>",
+  "<div class='section'><h3>왜 humanoid에 중요하나</h3><p>실시간 SQP-RTI 계열은 nonlinear robot model을 유지하면서도 매 제어주기 한 번의 linearization/QP step으로 deadline을 맞추는 전형적인 절충이다. contact mode가 고정된 구간에서는 특히 자연스럽다.</p></div>",
+  "<div class='section'><h3>현재 CartPole 구현</h3><p>nonlinear nominal rollout → per-stage numerical Jacobian → 한 번의 iLQR/SQP-style backward update → bounded line search → 첫 force 적용. OCS2/acados RTI source port는 아니다.</p></div>"
+ ].join("")},
  centroidal_mpc:{group:"Controller",title:"Centroidal-style MPC — reduced planner와 lower-level realization",lead:"Figure의 centroidal OCS2 lane은 momentum/configuration을 state로, contact wrench와 joint velocity를 input으로 최적화하고 inverse dynamics로 joint command를 만든다.",chips:["reduced-order","momentum","planner -> lower level"],runtime:{controller:"centroidal_mpc"},body:[
   "<div class='section'><h3>Figure pinned comparator의 실제 구조</h3><div class='math'>x = [h, q_b, q_j]\\nh = [v_com, L/m]\\nu = [W_left, W_right, qdot_j]\\n\\ncentroidal dynamics + state/input cost + ICP cost\\n+ gait/contact schedule + friction/contact constraints\\n-> SQP policy\\n-> q_des, qdot_des, contact wrench\\n-> inverse dynamics -> tau_ff</div></div>",
   "<div class='section'><h3>CartPole에 적용한 실제 대응</h3><p>발/contact wrench가 없고 pole은 underactuated라 humanoid 식을 그대로 복사하지 않는다. 시스템 전체 수평 CoM을 reduced MPC로 계획하고 look-ahead CoM reference를 full-state inner LQR가 실현한다.</p><div class='math'>M = m_c + m_p\\nc = x + (m_p l/M) sin(theta)\\nc_dot = v + (m_p l/M) cos(theta) omega\\nc_ddot = F_net/M   [ideal horizontal reduced model]\\n\\nouter box-constrained MPC: [c,c_dot] -> future CoM reference\\ninner feedback: [x-x_ref,v-v_ref,theta,omega] -> force</div><div class='take warn'>Figure centroidal OCS2를 포팅했다는 뜻이 아니라, reduced-planner -> lower-level realization 구조를 CartPole 물리에 맞게 구현한 analogue다. 외력 push와 model mismatch는 outer model에 알려주지 않는다.</div></div>",
@@ -463,6 +668,11 @@ const CONTROL_LAB_TOPICS = {
   "<div class='section'><h3>Figure pinned comparator의 실제 구조</h3><div class='math'>x = [q_b, q_j, qdot_b, qdot_j]\\nu = [W_left, W_right, qddot_j]\\n\\nfull rigid-body acceleration dynamics\\n+ state/input + joint torque costs\\n+ contact/swing/friction constraints\\n-> OCS2 multiple-shooting SQP\\n-> policy -> q_des, qdot_des, torque</div></div>",
   "<div class='section'><h3>CartPole의 실제 solver</h3><p>N=30. 동일 nonlinear Plant.integrate로 nominal trajectory를 rollout하고, 매 stage에서 A_k=d f/dx, B_k=d f/du를 수치 선형화한다. local quadratic backward solve 후 bounded forward line-search를 2회 수행하고 warm-start한다.</p><div class='math'>x_(k+1)=f(x_k,u_k)\\nA_k = df/dx, B_k = df/du\\nquadratic local subproblem\\n-> backward solve\\n-> line search + |u|<=u_max\\n-> apply u_0 only</div></div>",
   "<div class='section'><h3>왜 항상 더 좋은가?</h3><p>아니다. 더 정확한 model을 horizon에 넣는 대신 계산시간, local optimum, model mismatch, estimator error의 영향을 더 직접 받는다.</p></div>"
+ ].join("")},
+ robust_mpc:{group:"Controller",title:"Robust / stochastic MPC — 모델 하나가 아니라 uncertainty set을 고려",lead:"nominal MPC는 하나의 모델과 하나의 예측을 믿는다. sim2real에서는 parameter uncertainty, disturbance, estimation error를 prediction/constraint margin에 포함해야 한다.",chips:["tube MPC","min-max","chance constraints","scenario MPC"],runtime:null,body:[
+  "<div class='section'><h3>대표 계열</h3><div class='math'>Nominal MPC: one model\nTube MPC: nominal trajectory + invariant error tube\nMin-max MPC: optimize worst disturbance in a bounded set\nStochastic MPC: propagate distributions\nChance constraint: P(g(x,u)<=0) >= 1-epsilon\nScenario MPC: enforce sampled uncertainty scenarios</div></div>",
+  "<div class='section'><h3>어떤 uncertainty가 어디로 가나</h3><p>잘 식별되는 parametric uncertainty는 model set/domain에, fast zero-mean disturbance는 robust/stochastic term에, estimator uncertainty는 chance/tube margin에, mode/contact ambiguity는 hybrid/scenario layer에 넣는 식으로 분리한다.</p></div>",
+  "<div class='section'><h3>현재 CartPole runtime</h3><p><b>Scenario-risk MPC</b>는 서로 다른 mass/pole-mass/length linear models 세 개에 동일한 control sequence를 적용하고, mean cost + risk × (worst - mean)을 최소화한다. 이것은 finite-model ensemble robustification을 실제로 보여주지만 tube invariant set, min-max guarantee, chance-constraint 보장은 없다.</p></div><div class='section'><h3>Figure 경계</h3><p>Humanoid에서는 uncertainty의 종류를 먼저 식별한 뒤 native OCS2/acados formulation에서 tube/scenario/chance/risk-sensitive 방법을 선택한다. Domain randomization과 robust MPC를 같은 말로 쓰면 안 된다.</p></div>"
  ].join("")},
  ppo:{group:"Controller",title:"PPO — runtime solver를 training으로 옮기기",lead:"실행 때 horizon optimization 대신 학습된 actor가 observation에서 action을 낸다.",chips:["learned policy","offline training","cheap inference"],runtime:{controller:"ppo"},body:[
   "<div class='section'><h3>현재 구현</h3><p>기존 CartPole PPO Studio robust final-budget actor를 그대로 사용한다.</p></div>",
@@ -486,6 +696,15 @@ const CONTROL_LAB_TOPICS = {
   "<div class='section'><h3>Hartley에서 실제로 하는 일</h3><div class='math'>state: R, v, p, contact positions d_i\\nIMU propagation + leg FK contact observations\\ninvariant error dynamics\\n\\nunobservable: global translation, global yaw</div></div>",
   "<div class='section'><h3>다음 병목</h3><p>filter가 좋아도 어느 contact measurement를 믿을지 틀리면 update가 오히려 state를 망친다.</p></div>"
  ].join("")},
+ mhe:{group:"Observer",title:"MHE — 최근 sensor window 전체를 optimization으로 다시 맞춘다",lead:"KF/EKF가 한 step씩 재귀적으로 갱신하는 것과 달리 MHE는 최근 N개의 state/measurement를 한 window로 묶어 dynamics, measurement, physical constraints를 함께 최적화한다.",chips:["windowed optimization","arrival cost","constraints"],runtime:{observer:"mhe"},body:[
+  "<div class='section'><h3>정식 MHE</h3><div class='math'>min  Gamma(x_(k-N))\n   + sum ||w_i||_(Q^-1)^2\n   + sum ||v_i||_(R^-1)^2\ns.t. x_(i+1)=f(x_i,u_i)+w_i\n     y_i=h(x_i)+v_i\n     g(x_i)<=0</div><p>Gamma는 window 이전의 정보를 압축한 arrival cost다. 그래서 단순 sliding least-squares와 다르다.</p></div>",
+  "<div class='section'><h3>현재 CartPole runtime</h3><p>작은 browser lab에서는 EKF posterior를 approximate arrival prior로 쓰고, 최근 window의 첫 state 4개만 Gauss-Newton으로 최적화한 뒤 nonlinear plant로 single-shooting한다. process-noise trajectory나 hard state constraint까지 decision variable로 두는 full NMHE는 아니다.</p></div>",
+  "<div class='section'><h3>Humanoid로 확장할 때</h3><p>실제 legged/humanoid에서는 orientation EKF/InEKF + velocity/contact MHE처럼 문제를 분해하거나, acados/OSQP 기반 constrained MHE를 쓰는 편이 현실적이다. 2024 EKF+MHE legged 연구는 PogoX/Cassie/Go1에서 200 Hz, 0.1 s window를 실증했다.</p></div>"
+ ].join("")},
+ consistency:{group:"Observer",title:"Estimator consistency — RMSE가 낮아도 P가 틀리면 잘못된 filter",lead:"state error가 작다는 것과 filter가 자신의 uncertainty를 올바르게 표현한다는 것은 다른 문제다. controller가 covariance를 사용한다면 calibration까지 검증해야 한다.",chips:["NIS","NEES","chi-square","calibration"],runtime:null,body:[
+  "<div class='section'><h3>두 통계</h3><div class='math'>NIS = innovation^T S^-1 innovation\nNEES = error^T P^-1 error</div><p>NIS는 measurement prediction consistency, NEES는 state covariance consistency를 본다. dimension에 맞는 chi-square 범위와 장기 통계를 사용한다.</p></div>",
+  "<div class='section'><h3>왜 RMSE만 최적화하면 위험한가</h3><p>R을 과도하게 키우거나 P를 과도하게 작게 만들면 특정 trajectory RMSE는 좋아져도 filter가 over/under-confident해질 수 있다. commissioning tuner가 consistency penalty를 같이 쓰는 이유다.</p></div>"
+ ].join("")},
  lin:{group:"Hybrid estimator",title:"Lin — learned contact event로 contact-aided InEKF를 구동",lead:"Mini Cheetah에서는 4개 다리의 binary contact 조합을 16-class temporal classification으로 학습하고, 결과를 per-leg contact event로 사용한다.",chips:["learned contact configuration","temporal CNN","InEKF"],runtime:null,body:[
   "<div class='section'><h3>논문 구현</h3><div class='math'>150-frame history of 54-D features\\n[q,qdot,a,omega,foot position,foot velocity]\\n-> 2 Conv1D blocks + 3 FC layers\\n-> 16 contact configurations\\n-> decode per-leg contact events\\n-> add/remove contact states in InEKF</div></div>",
   "<div class='section'><h3>한계</h3><p>contact=true가 FK stationary constraint의 품질을 보장하지 않는다. slip/partial support를 한 비트로 표현하기 어렵다.</p></div>"
@@ -506,21 +725,41 @@ const CONTROL_LAB_TOPICS = {
   "<div class='section'><h3>핵심 식</h3><div class='math'>w_i in [0,1]\\nR_vel,i = R0 [1 + (1-w_i) S]\\ntau_i = clip(w_i/w_sat,0,1)\\nz_v,i = (1-tau_i) v_IMU + tau_i v_FK,i</div></div>",
   "<div class='section'><h3>Figure와 직접 연결</h3><p>Figure에서 contact source 품질이 velocity estimate와 closed-loop를 크게 바꿨기 때문에 measurement reliability가 현재 핵심 연구축이다.</p></div>",
   "<div class='section'><h3>CartPole 한계</h3><p>foot FK가 없으므로 FOCUS를 복제할 수 없다. 현재 Adaptive-R은 innovation-based outlier score로 observation R을 조절하는 구조적 bridge다. 같은 innovation으로 R을 바꾸므로 classical fixed-noise Kalman optimality를 주장하지 않는다. FOCUS의 learned per-foot reliability, FK/IMU velocity blending, foot-state Q modulation은 재현하지 않는다.</p></div>"
- ].join("")}
+ ].join("")},
+ sysid:{group:"Commissioning",title:"System Identification — tuning 전에 모델이 무엇을 틀렸는지 먼저 식별",lead:"controller weight가 잘못된 mass·inertia·friction·latency를 대신 보상하게 두면 sim2real에서 원인을 잃는다.",chips:["persistent excitation","physical parameters","identifiability"],runtime:null,body:[
+  "<div class='section'><h3>현재 CartPole 예제</h3><p>exciting input trajectory에서 one-step prediction error를 최소화해 mc, mp, l, friction을 constrained CEM으로 식별한다. held-out transition error도 따로 확인한다.</p></div>",
+  "<div class='section'><h3>중요한 전제</h3><p>데이터가 parameter를 구분할 만큼 excite하지 않으면 optimizer가 숫자를 내도 식별된 것이 아니다. parameter sensitivity/Fisher information, condition number, repeated trajectories를 확인해야 한다.</p></div>",
+  "<div class='section'><h3>Humanoid</h3><p>physically consistent inertia, CoM, transmission/actuator constants, friction/compliance, kinematic offsets, latency를 분리해 식별한다. contact가 들어가면 contact wrench와 inertial parameter가 서로 설명을 빼앗지 않도록 experiment design이 중요하다.</p></div>"
+ ].join("")},
+ tuning:{group:"Commissioning",title:"Auto-tuning — parameter 종류에 맞는 optimizer를 고른다",lead:"모든 hyperparameter를 같은 black-box optimizer에 넣는 것은 좋은 commissioning이 아니다. differentiable, discrete, safety-critical, estimator calibration 문제를 분리한다.",chips:["DiffTune","Bayesian optimization","Safe BO","bilevel calibration"],runtime:null,body:[
+  "<div class='section'><h3>방법 선택</h3><div class='math'>smooth MPC weights -> differentiable closed-loop tuning\ndiscrete horizon/solver -> BO / structured search\nhardware gains -> Safe BO\nQ_e,R_e,kinematics -> likelihood / bilevel calibration\ncontext-dependent gains -> contextual tuning</div></div>",
+  "<div class='section'><h3>현재 evidence가 보여준 것</h3><p>CartPole CEM controller tuner는 train을 개선했지만 held-out validation/test를 악화해 reject됐다. 반면 consistency-aware estimator calibration은 held-out에서도 개선되어 accept됐다. optimizer보다 acceptance contract가 더 중요하다.</p></div>",
+  "<div class='section'><h3>연결 연구</h3><p>DiffTune-MPC는 closed-loop objective에서 MPC cost parameter gradient를 구하고, legged Safe BO는 실제 하드웨어 gain을 safe set 안에서 탐색한다. 2026 bilevel estimator calibration은 covariance와 kinematic offset을 estimator-in-the-loop로 공동 보정한다.</p></div>"
+ ].join("")},
+ commissioning:{group:"Commissioning",title:"Commissioning — model을 맞추고, estimator와 controller를 따로/함께 검증한다",lead:"좋은 알고리즘을 고르는 것만으로 sim2real은 끝나지 않는다. 식별 → calibration → tuning → held-out validation → hardware-safe adaptation의 순서가 필요하다.",chips:["system ID","calibration","held-out validation","co-design"],runtime:null,body:[
+  "<div class='section'><h3>권장 순서</h3><div class='math'>1. model/actuator/latency identification\n2. sensor + kinematic calibration\n3. estimator Q_e,R_e,P0 calibration + consistency\n4. controller Q_c,R_c,Qf,N,constraint tuning\n5. estimator-in-the-loop closed-loop tuning\n6. held-out domain randomization / worst-case validation\n7. safe hardware residual tuning\n8. runtime adaptation</div></div>",
+  "<div class='section'><h3>이 repo에서 실제 제공</h3><p>src/commissioning.js가 constrained plant parameter identification, CEM-based controller tuning, estimator covariance calibration, train/validation/test split, stress report를 실행한다. 이 tuner 자체를 SOTA라고 주장하지 않고, Figure에서는 DiffTune/BO/Safe-BO/bilevel calibration으로 교체 가능한 공통 evaluation contract를 만드는 것이 목적이다.</p></div>",
+  "<div class='section'><h3>절대 한 metric만 최적화하지 않는다</h3><p>controller는 tracking·effort·constraint margin·failure·actuator mismatch를 함께 보고, estimator는 RMSE뿐 아니라 NIS/NEES consistency를 같이 본다. tuned parameter가 validation/test에서 악화되면 채택하지 않는다.</p></div>"
+ ].join("")},
+ sim2real:{group:"Commissioning",title:"Sim2Real stress stack — mismatch를 한 층씩 켜서 실패 원인을 분리",lead:"한 번에 randomization을 모두 켜면 실패 이유를 모른다. model, sensor, bias, actuator lag/gain, command latency, outlier를 단독 scenario로 먼저 실행하고 마지막에 combined sim2real stack을 쓴다.",chips:["single-factor ablation","model mismatch","latency","actuator lag","sensor bias","held-out seeds"],runtime:{scenario:"sim2real"},body:[
+  "<div class='section'><h3>현재 hidden mismatch preset</h3><div class='math'>mass / pole mass / length mismatch\n+ friction\n+ 0-2 control-tick command delay\n+ first-order actuator lag and gain error\n+ measurement noise\n+ sensor bias random walk\n+ external push when requested</div></div>",
+  "<div class='section'><h3>무엇을 기록해야 하나</h3><p>command와 실제 applied command의 차이, state-estimation RMSE, max position/angle, control RMS, solver time, failure를 함께 기록한다. humanoid에서는 torque-speed, current-loop, thermal, contact/slip, joint compliance, network jitter가 추가된다.</p></div>",
+  "<div class='section'><h3>Randomization의 역할</h3><p>randomization은 identification을 대신하지 않는다. 먼저 nominal model과 uncertainty bound를 데이터로 식별하고, 그 범위 안에서 train/calibration을 수행한 뒤 더 넓은 held-out/OOD 범위에서 failure boundary를 측정한다.</p></div>"
+ ].join("")},
 };
-const CONTROL_LAB_TOPIC_ORDER=["overview","pid","lqr","linear_mpc","centroidal_mpc","full_nmpc","ppo","raw","kf","ekf","inekf","lin","youm","innkf","coco","focus"];
+const CONTROL_LAB_TOPIC_ORDER=["overview","pid","lqr","linear_mpc","state_mpc","ltv_mpc","centroidal_mpc","full_nmpc","robust_mpc","ppo","raw","kf","ekf","inekf","mhe","consistency","lin","youm","innkf","coco","focus","sysid","tuning","commissioning","sim2real"];
 if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TOPIC_ORDER};
 </script><script>'use strict';
 (function(){
   const $=function(id){return document.getElementById(id);};
   const L=ControlLab,P=Plant,actor=CONTROL_LAB_ACTOR,residualModel=CONTROL_LAB_RESIDUAL||null;
   const TOPICS=CONTROL_LAB_TOPICS,ORDER=CONTROL_LAB_TOPIC_ORDER;
-  const controllerLabels={pid:'PID',lqr:'LQR',linear_mpc:'Linear MPC',centroidal_mpc:'Centroidal-style MPC',full_nmpc:'Full nonlinear NMPC',ppo:'PPO'};
-  const observerLabels={truth:'Truth',raw:'Raw + diff',kf:'KF',ekf:'EKF',so2:'SO(2) error bridge',residual:'Learned residual',adaptive:'Adaptive R · outlier/reliability bridge'};
-  const relationControllers="<div class='relation'><div class='rel-row'><span class='rel-node'>PID · direct feedback</span><span class='rel-arrow'>→ model</span><span class='rel-node'>LQR · Riccati feedback</span><span class='rel-arrow'>→ horizon</span><span class='rel-node'>Linear MPC</span></div><div class='rel-row'><span class='rel-node'>reduced model</span><span class='rel-arrow'>→</span><span class='rel-node'>Centroidal-style MPC</span><span class='rel-arrow'>vs</span><span class='rel-node'>Full nonlinear NMPC</span></div><div class='rel-row'><span class='rel-node'>offline learning</span><span class='rel-arrow'>→</span><span class='rel-node'>PPO</span></div></div>";
-  const relationObservers="<div class='relation'><div class='rel-row'><span class='rel-node'>raw</span><span class='rel-arrow'>→ model + uncertainty</span><span class='rel-node'>KF</span><span class='rel-arrow'>→ nonlinear Euclidean</span><span class='rel-node'>EKF</span></div><div class='rel-row'><span class='rel-node'>Lie-group symmetry</span><span class='rel-arrow'>→ invariant-error branch</span><span class='rel-node'>InEKF</span></div><div class='rel-row'><span class='rel-node'>Lin · contact event</span><span class='rel-node'>Youm · measurement</span><span class='rel-node'>InNKF · output residual</span><span class='rel-node'>CoCo · process covariance</span><span class='rel-node'>FOCUS · observation reliability</span></div></div>";
+  const controllerLabels={pid:'PID',lqr:'LQR',linear_mpc:'Linear MPC',scenario_mpc:'Scenario-risk MPC',state_mpc:'Linear MPC + state bound',ltv_mpc:'LTV MPC · RTI',centroidal_mpc:'Centroidal-style MPC',full_nmpc:'Full nonlinear NMPC',ppo:'PPO'};
+  const observerLabels={truth:'Truth',raw:'Raw + diff',kf:'KF',ekf:'EKF',so2:'SO(2) error bridge',mhe:'Nonlinear shooting MHE',residual:'Learned residual',adaptive:'Adaptive R · outlier/reliability bridge'};
+  const relationControllers="<div class='relation'><div class='rel-row'><span class='rel-node'>PID · direct feedback</span><span class='rel-arrow'>→ model</span><span class='rel-node'>LQR · Riccati feedback</span><span class='rel-arrow'>→ horizon</span><span class='rel-node'>Linear MPC</span><span class='rel-arrow'>→ state/path constraints</span><span class='rel-node'>Constraint-aware MPC</span><span class='rel-arrow'>→ relinearize</span><span class='rel-node'>LTV / SQP-RTI</span></div><div class='rel-row'><span class='rel-node'>reduced model</span><span class='rel-arrow'>→</span><span class='rel-node'>Centroidal-style MPC</span><span class='rel-arrow'>vs</span><span class='rel-node'>Full nonlinear NMPC</span></div><div class='rel-row'><span class='rel-node'>offline learning</span><span class='rel-arrow'>→</span><span class='rel-node'>PPO</span></div></div>";
+  const relationObservers="<div class='relation'><div class='rel-row'><span class='rel-node'>raw</span><span class='rel-arrow'>→ model + uncertainty</span><span class='rel-node'>KF</span><span class='rel-arrow'>→ nonlinear Euclidean</span><span class='rel-node'>EKF</span><span class='rel-arrow'>→ window</span><span class='rel-node'>MHE</span></div><div class='rel-row'><span class='rel-node'>Lie-group symmetry</span><span class='rel-arrow'>→ invariant-error branch</span><span class='rel-node'>InEKF</span></div><div class='rel-row'><span class='rel-node'>Lin · contact event</span><span class='rel-node'>Youm · measurement</span><span class='rel-node'>InNKF · output residual</span><span class='rel-node'>CoCo · process covariance</span><span class='rel-node'>FOCUS · observation reliability</span></div></div>";
   let topic=(location.hash||'#overview').slice(1);if(!TOPICS[topic])topic='overview';
-  let plant,controller,observer,running=true,lastTs=0,acc=0,trace=[],sumErr=0,nErr=0,lastEstimate=[0,0,0,0],lastMeasurement=[0,0],lastInnovation=[0,0],lastForce=0;
+  let plant,controller,observer,running=true,lastTs=0,acc=0,trace=[],sumErr=0,nErr=0,lastEstimate=[0,0,0,0],lastMeasurement=[0,0],lastInnovation=[0,0],lastForce=0,lastAppliedForce=0;
 
   function spec(){return Object.assign({},P.DEFAULT_SPEC,{actuator:'ideal',force:10,friction:0});}
   function nav(){
@@ -533,8 +772,8 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
     Array.from($('topicNav').querySelectorAll('button')).forEach(function(b){b.addEventListener('click',function(){setTopic(b.dataset.topic);});});
   }
   function relationForCurrent(){
-    if(['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0)return relationControllers;
-    if(['raw','kf','ekf','inekf','lin','youm','innkf','coco','focus'].indexOf(topic)>=0)return relationObservers;
+    if(['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0)return relationControllers;
+    if(['raw','kf','ekf','inekf','mhe','lin','youm','innkf','coco','focus'].indexOf(topic)>=0)return relationObservers;
     return relationControllers+relationObservers;
   }
   function renderTopic(){
@@ -554,7 +793,7 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
   function setTopic(k){if(!TOPICS[k])return;topic=k;history.replaceState(null,'','#'+k);renderTopic();}
   function useTopic(){
     const r=TOPICS[topic].runtime;if(!r)return;
-    if(r.controller)$('controller').value=r.controller;if(r.observer)$('observer').value=r.observer;rebuild();
+    if(r.controller)$('controller').value=r.controller;if(r.observer)$('observer').value=r.observer;if(r.scenario)$('scenario').value=r.scenario;rebuild();
   }
   function rebuild(){
     plant=new L.LabPlant({seed:31,scenario:$('scenario').value,spec:spec()});plant.goal=+$('goal').value;
@@ -562,7 +801,7 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
     observer=L.makeObserver($('observer').value,plant.spec,{model:residualModel,R:plant.measurementVariance()});
     const y=plant.sensor();observer.reset(y,plant.s);controller.reset();trace=[];sumErr=0;nErr=0;
     lastEstimate=observer.outputX&&observer.outputX.slice?observer.outputX.slice():(observer.x&&observer.x.slice?observer.x.slice():plant.s.slice());
-    lastMeasurement=y;lastInnovation=[0,0];lastForce=0;running=true;updatePipeline();renderAll();
+    lastMeasurement=y;lastInnovation=[0,0];lastForce=0;lastAppliedForce=0;running=true;updatePipeline();renderAll();
   }
   function stepOne(){
     // Discrete-time order: x_hat_k -> u_k -> plant x_(k+1) -> y_(k+1)
@@ -571,11 +810,11 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
     const u=controller.act(lastEstimate,plant.goal),out=plant.step(u),y=plant.sensor(),xh=observer.step(y,u,out.state);
     const e=out.state.map(function(v,i){return i===2?L.wrap(v-xh[i]):v-xh[i];});
     sumErr+=e.reduce(function(ss,v){return ss+v*v;},0);nErr+=4;lastEstimate=xh.slice();lastMeasurement=y.slice();
-    lastInnovation=observer.last&&observer.last.innovation?observer.last.innovation.slice():[0,0];lastForce=u;
+    lastInnovation=observer.last&&observer.last.innovation?observer.last.innovation.slice():[0,0];lastForce=u;lastAppliedForce=out.appliedCommand??u;
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
     trace.push({t:plant.steps*L.DT,truth:out.state.slice(),estimate:xh.slice(),u:u,external:out.external,innovation:lastInnovation.slice(),
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
-      reliability:observer.last&&observer.last.reliability?observer.last.reliability.slice():null,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0});
+      reliability:observer.last&&observer.last.reliability?observer.last.reliability.slice():null,appliedCommand:out.appliedCommand??u,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0});
     if(trace.length>500)trace.shift();if(out.failed)running=false;
   }
   function drawCart(g,s,color,dashed,alpha,scaleX,ground,center){
@@ -595,34 +834,37 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
     series.forEach(function(s){g.strokeStyle=s.color;g.lineWidth=2;g.setLineDash(s.dash||[]);g.beginPath();s.values.forEach(function(v,i){const xx=i/Math.max(1,s.values.length-1)*(W-5)+2,yy=H/2-v/M*(H*.40);if(i)g.lineTo(xx,yy);else g.moveTo(xx,yy);});g.stroke();});g.setLineDash([]);
   }
   function stateChart(){drawSeries($('stateChart'),[{values:trace.map(function(q){return q.truth[2]*180/Math.PI;}),color:'#2f78c4'},{values:trace.map(function(q){return q.estimate[2]*180/Math.PI;}),color:'#b87825',dash:[5,4]}]);}
-  function controlChart(){drawSeries($('controlChart'),[{values:trace.map(function(q){return q.u;}),color:'#14845d'},{values:trace.map(function(q){return q.external;}),color:'#bd4b4b',dash:[4,3]}]);}
+  function controlChart(){drawSeries($('controlChart'),[{values:trace.map(function(q){return q.u;}),color:'#14845d'},{values:trace.map(function(q){return q.appliedCommand??q.u;}),color:'#b87825',dash:[5,3]},{values:trace.map(function(q){return q.external;}),color:'#bd4b4b',dash:[2,3]}]);}
   function updateContextGraphLabels(){
-    const ctl=['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0;$('contextGraphTitle').textContent=ctl?'Controller context':'Observer context';$('contextGraphSub').textContent=ctl?'planned horizon / control':'sigma(v), sigma(omega), reliability';
+    const ctl=['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0;
+    $('contextGraphTitle').textContent=ctl?'Controller context':topic==='mhe'?'MHE window':'Observer context';
+    $('contextGraphSub').textContent=ctl?'planned horizon / control':topic==='mhe'?'objective / iterations':'sigma(v), sigma(omega), reliability';
   }
   function contextChart(){
-    const canvas=$('contextChart'),ctlTopic=['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0;
+    const canvas=$('contextChart'),ctlTopic=['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo'].indexOf(topic)>=0;
     if(ctlTopic&&controller&&Array.isArray(controller.lastPrediction)&&controller.lastPrediction.length){
       const pred=controller.lastPrediction,us=controller.lastControls||[];drawSeries(canvas,[{values:pred.map(function(x){return x[2]*180/Math.PI;}),color:'#14845d'},{values:us,color:'#7659b0',dash:[4,3]}]);return;
     }
+    if(topic==='mhe'&&trace.length){drawSeries(canvas,[{values:trace.map(q=>q.observerCost||0),color:'#7659b0'},{values:trace.map(q=>q.observerIterations||0),color:'#278b98',dash:[4,3]}]);return;}
     const rows=trace.filter(function(q){return q.P;});if(rows.length){const sv=rows.map(function(q){return Math.sqrt(Math.max(0,q.P[1][1]));}),sw=rows.map(function(q){return Math.sqrt(Math.max(0,q.P[3][3]));}),rel=rows.map(function(q){return q.reliability?Math.min.apply(null,q.reliability):0;}),ss=[{values:sv,color:'#7659b0'},{values:sw,color:'#278b98'}];if(rows.some(function(q){return q.reliability;}))ss.push({values:rel,color:'#14845d',dash:[4,3]});drawSeries(canvas,ss);return;}
     const g=canvas.getContext('2d');g.clearRect(0,0,canvas.width,canvas.height);g.fillStyle='#7b8d9c';g.font='11px system-ui';
     g.fillText($('observer').value==='residual'?'보정 출력에는 calibrated P가 없습니다 · base EKF P만 내부 유지':'이 모드는 output covariance P를 제공하지 않습니다.',10,24);
   }
   function renderMetrics(){
-    $('clock').textContent='t='+(plant.steps*L.DT).toFixed(2)+' s';$('mTheta').textContent=(plant.s[2]*180/Math.PI).toFixed(2)+'°';$('mThetaHat').textContent=(lastEstimate[2]*180/Math.PI).toFixed(2)+'°';$('mRmse').textContent=Math.sqrt(sumErr/Math.max(1,nErr)).toFixed(3);$('mForce').textContent=lastForce.toFixed(2)+' N';$('mInnov').textContent=Math.hypot.apply(null,lastInnovation).toFixed(3);
+    $('clock').textContent='t='+(plant.steps*L.DT).toFixed(2)+' s';$('mTheta').textContent=(plant.s[2]*180/Math.PI).toFixed(2)+'°';$('mThetaHat').textContent=(lastEstimate[2]*180/Math.PI).toFixed(2)+'°';$('mRmse').textContent=Math.sqrt(sumErr/Math.max(1,nErr)).toFixed(3);$('mForce').textContent=lastForce.toFixed(2)+' / '+lastAppliedForce.toFixed(2)+' N';$('mInnov').textContent=Math.hypot.apply(null,lastInnovation).toFixed(3);
     $('mSolve').textContent=controller&&Number.isFinite(controller.lastSolveMs)&&controller.lastSolveMs>0?controller.lastSolveMs.toFixed(2)+' ms':'—';$('mIter').textContent=controller&&controller.lastPrediction&&controller.lastPrediction.length?String(controller.lastPrediction.length-1)+' / '+String(controller.lastIterations??0):'—';$('statusBadge').textContent=running?'RUNNING':'PAUSED';$('play').textContent=running?'일시정지':'재생';
   }
   function updatePipeline(){$('pipeSensor').textContent='y=['+lastMeasurement.map(function(v){return v.toFixed(2);}).join(',')+']';$('pipeObserver').textContent=observerLabels[$('observer').value];$('pipeController').textContent=controllerLabels[$('controller').value];}
   function renderAll(){world();stateChart();controlChart();contextChart();renderMetrics();updatePipeline();}
   function loop(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.08,(ts-lastTs)/1000);lastTs=ts;if(running){acc+=dt;let n=0;while(acc>=L.DT&&n<4){stepOne();acc-=L.DT;n++;}}renderAll();requestAnimationFrame(loop);}
   function compare(){
-    const sc=$('compareScenario').value,cs=['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo'],os=['truth','raw','kf','ekf','so2','residual','adaptive'];let html='<thead><tr><th>Controller</th>'+os.map(function(o){return '<th>'+observerLabels[o]+'</th>';}).join('')+'</tr></thead><tbody>';
+    const sc=$('compareScenario').value,cs=['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo'],os=['truth','raw','kf','ekf','so2','residual','adaptive'];let html='<thead><tr><th>Controller</th>'+os.map(function(o){return '<th>'+observerLabels[o]+'</th>';}).join('')+'</tr></thead><tbody>';
     cs.forEach(function(c){html+='<tr><td>'+controllerLabels[c]+'</td>';os.forEach(function(o){const r=L.runEpisode({controller:c,observer:o,scenario:sc,seed:77,steps:240,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:96,pushForce:3});html+="<td class='"+(r.failed?'fail':'pass')+"'>"+(r.failed?'FAIL':'✓')+' · '+r.rmseState.toFixed(2)+(r.meanSolveMs?'<br><small>'+r.meanSolveMs.toFixed(1)+'ms</small>':'')+'</td>';});html+='</tr>';});$('matrix').innerHTML=html+'</tbody>';
   }
   function statePayload(){
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
     return {topic:topic,controller:$('controller').value,observer:$('observer').value,scenario:$('scenario').value,t:plant.steps*L.DT,goal:plant.goal,
-      truth:plant.s.slice(),estimate:lastEstimate.slice(),measurement:lastMeasurement.slice(),innovation:lastInnovation.slice(),force:lastForce,
+      truth:plant.s.slice(),estimate:lastEstimate.slice(),measurement:lastMeasurement.slice(),innovation:lastInnovation.slice(),force:lastForce,appliedForce:lastAppliedForce,
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
       covarianceScope:Pout?'output-estimate':'base-filter-only-or-not-applicable',
       solver:{solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0,horizon:controller.lastPrediction&&controller.lastPrediction.length?controller.lastPrediction.length-1:0,cost:controller.lastCost===undefined?null:controller.lastCost},
@@ -633,14 +875,14 @@ if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TO
     const reg=async function(tool){return mc.registerTool(tool,{signal:ac.signal});};
     try{
       await reg({name:'cartpole_get_state',description:'Read the detailed CartPole control-observer lab state and solver metrics.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:ro,execute:async function(){return JSON.stringify(statePayload());}});
-      await reg({name:'cartpole_set_controller',description:'Select a controller.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo']}},required:['controller'],additionalProperties:false},annotations:rw,execute:async function(a){$('controller').value=a.controller;rebuild();return 'controller='+a.controller;}});
-      await reg({name:'cartpole_set_observer',description:'Select an observer.',inputSchema:{type:'object',properties:{observer:{type:'string',enum:['truth','raw','kf','ekf','so2','residual','adaptive']}},required:['observer'],additionalProperties:false},annotations:rw,execute:async function(a){$('observer').value=a.observer;rebuild();return 'observer='+a.observer;}});
+      await reg({name:'cartpole_set_controller',description:'Select a controller.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo']}},required:['controller'],additionalProperties:false},annotations:rw,execute:async function(a){$('controller').value=a.controller;rebuild();return 'controller='+a.controller;}});
+      await reg({name:'cartpole_set_observer',description:'Select an observer.',inputSchema:{type:'object',properties:{observer:{type:'string',enum:['truth','raw','kf','ekf','so2','mhe','residual','adaptive']}},required:['observer'],additionalProperties:false},annotations:rw,execute:async function(a){$('observer').value=a.observer;rebuild();return 'observer='+a.observer;}});
       await reg({name:'cartpole_set_topic',description:'Open an educational topic without changing plant state.',inputSchema:{type:'object',properties:{topic:{type:'string',enum:ORDER}},required:['topic'],additionalProperties:false},annotations:rw,execute:async function(a){setTopic(a.topic);return 'topic='+a.topic;}});
-      await reg({name:'cartpole_set_scenario',description:'Select scenario.',inputSchema:{type:'object',properties:{scenario:{type:'string',enum:['nominal','sensor','model','mixed','nonlinear','glitch']}},required:['scenario'],additionalProperties:false},annotations:rw,execute:async function(a){$('scenario').value=a.scenario;rebuild();return 'scenario='+a.scenario;}});
+      await reg({name:'cartpole_set_scenario',description:'Select scenario.',inputSchema:{type:'object',properties:{scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','nonlinear','sim2real','glitch']}},required:['scenario'],additionalProperties:false},annotations:rw,execute:async function(a){$('scenario').value=a.scenario;rebuild();return 'scenario='+a.scenario;}});
       await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
       await reg({name:'cartpole_reset',description:'Reset experiment.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:rw,execute:async function(){rebuild();return 'reset';}});
       await reg({name:'cartpole_run_steps',description:'Advance live experiment.',inputSchema:{type:'object',properties:{steps:{type:'integer',minimum:1,maximum:500}},required:['steps'],additionalProperties:false},annotations:rw,execute:async function(a){for(let i=0;i<a.steps;i++)stepOne();renderAll();return JSON.stringify(statePayload());}});
-      await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','centroidal_mpc','full_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','so2','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','nonlinear','glitch']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
+      await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','so2','mhe','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','nonlinear','sim2real','glitch']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
       $('webmcpBadge').textContent='WebMCP tools registered';$('webmcpBadge').classList.add('ok');
     }catch(e){console.warn(e);$('webmcpBadge').textContent='WebMCP registration failed';$('webmcpBadge').classList.add('warn');}
   }

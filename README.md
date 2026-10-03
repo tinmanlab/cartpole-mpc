@@ -1,6 +1,6 @@
 # CartPole MPC
 
-> An interactive control-and-estimation lab for seeing how **PID, LQR, linear MPC, reduced-order centroidal-style MPC, full nonlinear NMPC, PPO, KF, EKF, invariant filtering, and learned estimator corrections** fit together on one shared CartPole plant.
+> An interactive control-and-estimation lab for seeing how **PID, LQR, linear/LTV/nonlinear MPC, reduced-order centroidal-style MPC, PPO, KF, EKF, invariant filtering, MHE, learned estimator corrections, and sim2real commissioning** fit together on one shared CartPole plant.
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
@@ -40,8 +40,11 @@ Change only one block and watch what changes in the same live simulation and gra
     LQR
      ↓ add finite horizon
     Linear MPC
+     ├─ uncertainty ensemble → Scenario-risk MPC
+     ↓ relinearize each tick
+    LTV / SQP-RTI bridge
      ├─ reduced model → Centroidal-style MPC
-     └─ full nonlinear model → Full NMPC
+     └─ nonlinear OCP → Full NMPC
 
     PPO is the parallel learned-policy path:
     online optimization ↔ offline-trained policy
@@ -53,8 +56,8 @@ Change only one block and watch what changes in the same live simulation and gra
     Kalman Filter
        ↓ nonlinear Euclidean dynamics
     EKF
-
-    suitable Lie-group / group-affine structure
+     ├─ recent-window optimization → MHE
+     └─ suitable Lie-group / group-affine structure
        ↓
     InEKF branch
 
@@ -75,12 +78,15 @@ Then learned information can enter at different points:
 | PID | live cascaded feedback controller |
 | LQR | Riccati state-feedback controller |
 | Linear MPC | N=30 box-constrained receding-horizon optimization |
+| Scenario-risk MPC | N=30 shared-input finite-model ensemble objective; mean + worst-case risk term |
 | Centroidal-style MPC | N=32 reduced horizontal CoM planner + downstream full-state stabilizer |
+| LTV MPC / RTI bridge | one warm-started successive-linearization update per tick |
 | Full nonlinear NMPC | N=30 nonlinear rollout, per-stage Jacobians, backward quadratic solve, bounded line search, warm start |
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
 | EKF | nonlinear prediction + numerical Jacobian covariance propagation |
 | SO(2) error bridge | wrapped angle innovation; not the full Hartley humanoid InEKF |
+| Nonlinear shooting MHE | recent-window nonlinear single-shooting estimate with EKF arrival prior; not full constrained NMHE |
 | Learned residual | locally trained residual MLP behind the geometry-aware EKF |
 | Adaptive R | innovation-based observation-covariance modulation; FOCUS-style structural bridge, not CoCo |
 
@@ -140,14 +146,24 @@ Useful lessons:
 - [PID](https://tinmanlab.github.io/cartpole-mpc/#pid)
 - [LQR](https://tinmanlab.github.io/cartpole-mpc/#lqr)
 - [Linear MPC](https://tinmanlab.github.io/cartpole-mpc/#linear_mpc)
+- [Scenario-risk MPC](https://tinmanlab.github.io/cartpole-mpc/#robust_mpc)
+- [State-constrained MPC](https://tinmanlab.github.io/cartpole-mpc/#state_mpc)
+- [LTV / SQP-RTI bridge](https://tinmanlab.github.io/cartpole-mpc/#ltv_mpc)
 - [Centroidal-style MPC](https://tinmanlab.github.io/cartpole-mpc/#centroidal_mpc)
 - [Full nonlinear NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc)
+- [Robust / stochastic MPC](https://tinmanlab.github.io/cartpole-mpc/#robust_mpc)
 - [Kalman Filter](https://tinmanlab.github.io/cartpole-mpc/#kf)
 - [EKF](https://tinmanlab.github.io/cartpole-mpc/#ekf)
+- [MHE](https://tinmanlab.github.io/cartpole-mpc/#mhe)
 - [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf)
 - [InNKF](https://tinmanlab.github.io/cartpole-mpc/#innkf)
 - [CoCo-InEKF](https://tinmanlab.github.io/cartpole-mpc/#coco)
 - [FOCUS](https://tinmanlab.github.io/cartpole-mpc/#focus)
+- [Estimator consistency](https://tinmanlab.github.io/cartpole-mpc/#consistency)
+- [System identification](https://tinmanlab.github.io/cartpole-mpc/#sysid)
+- [Auto-tuning](https://tinmanlab.github.io/cartpole-mpc/#tuning)
+- [Commissioning](https://tinmanlab.github.io/cartpole-mpc/#commissioning)
+- [Sim2Real stress stack](https://tinmanlab.github.io/cartpole-mpc/#sim2real)
 
 ### Run locally
 
@@ -173,11 +189,13 @@ Do not learn every acronym at once.
 
 1. **PID → LQR**: feedback versus model-derived feedback.
 2. **LQR → Linear MPC**: why a horizon and constraints change the problem.
-3. **Linear MPC → Centroidal / Full NMPC**: reduced-order versus full nonlinear prediction.
+3. **Linear MPC → LTV/SQP-RTI → Centroidal / Full NMPC**: fixed linearization, successive relinearization, reduced order, and nonlinear OCP.
 4. **Raw → KF → EKF**: use Sensor noise first, then switch to **Estimator nonlinear bench** with LQR fixed to isolate nonlinear prediction.
 5. **EKF → invariant filtering branch**: use the +179°/-179° SO(2) micro-bench to see why error geometry matters; InEKF is not a universal replacement for EKF.
 6. **Lin / Youm / InNKF / CoCo / FOCUS**: compare *where* learning enters—contact events, measurements, output residuals, process covariance, or observation reliability. This is a taxonomy, not a chronological ranking.
-7. Combine controller and observer under the same noise, model mismatch, glitch, and push scenarios.
+7. **EKF/InEKF → MHE**: recursive filtering versus windowed constrained estimation.
+8. **Commissioning**: identify the model, calibrate Q_e/R_e, tune Q_c/R_c, then reject candidates that fail held-out validation/test.
+9. Combine controller and observer under sensor, model, actuator/latency, bias, glitch, and push stress.
 
 More detail:
 
@@ -187,6 +205,16 @@ More detail:
 - [Implementation boundaries](docs/IMPLEMENTATION_BOUNDARIES.md)
 - [Validation](docs/VALIDATION.md)
 - [Algorithm correctness audit](docs/ALGORITHM_AUDIT.md)
+- [Commissioning and auto-tuning](docs/COMMISSIONING.md)
+- [Linear/LTV/nonlinear/hybrid model hierarchy](docs/MODEL_HIERARCHY.md)
+- [Coverage matrix](docs/COVERAGE_MATRIX.md)
+- [Transfer map to Figure/humanoids](docs/FIGURE_TRANSFER.md)
+- [Sim2Real failure diagnosis](docs/SIM2REAL_DIAGNOSIS.md)
+- [Tuning methods](docs/TUNING_METHODS.md)
+- [Experiment design and acceptance](docs/EXPERIMENT_DESIGN.md)
+- [Robot-scale commissioning checklist](docs/ROBOT_SCALE_CHECKLIST.md)
+- [Theory failure map](docs/THEORY_FAILURE_MAP.md)
+- [Reference / native-authority map](docs/REFERENCE_MAP.md)
 
 ## Fixed evidence
 
@@ -209,6 +237,12 @@ Run:
 
     npm test
 
+For the slower offline commissioning experiment:
+
+    npm run commission
+
+This writes evidence/commissioning.json and evidence/diagnosis.json. The diagnosis layer maps measured failure signatures back to model, estimator, constraint, actuator, timing, or tuning hypotheses; it is a deterministic triage aid, not an autonomous proof of root cause.
+
 
 ## Read comparison results correctly
 
@@ -220,6 +254,24 @@ The controller × observer table is a **common teaching contract**, not an offic
 - Lower RMSE in one fixed disturbance/noise cell is not a general algorithm ranking.
 - The InNKF-style residual model has no calibrated covariance for its corrected output; the base EKF P is kept separate.
 - CoCo has no executable CartPole analogue in this repo because the CartPole state has no persistent foot/contact candidates.
+
+## Commissioning, not just demos
+
+The repo now includes a slow offline commissioning lane in addition to the browser lab:
+
+    system ID
+    → estimator calibration + NIS/NEES consistency
+    → controller tuning
+    → held-out validation/test gate
+    → combined sim2real stress
+
+The current deterministic receipt deliberately contains both outcomes:
+- estimator calibration is **accepted** because held-out validation and test improve,
+- the controller tuning candidate is **rejected** because its training score improves while validation/test degrade.
+
+This is intentional. A tuner result is not a controller until it passes held-out admission.
+
+See [Commissioning](docs/COMMISSIONING.md) and [Coverage matrix](docs/COVERAGE_MATRIX.md).
 
 ## WebMCP
 
@@ -242,6 +294,7 @@ The visual UI and WebMCP tools operate the same experiment state. Without WebMCP
     │   ├── plant.js
     │   ├── topics.js
     │   ├── app.js
+    │   ├── commissioning.js
     │   ├── styles.css
     │   └── shell.html
     ├── assets/

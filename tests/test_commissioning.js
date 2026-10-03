@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('assert');
+const C=require('../src/commissioning');
+const id=C.identifyPlant({steps:180,seed:7});
+assert(id.heldout.identifiedLoss < .01*id.heldout.nominalLoss,'system ID should materially reduce held-out one-step model error');
+assert(id.heldout.identifiedRolloutLoss < id.heldout.nominalRolloutLoss,'identified model should improve held-out rollout error');
+for(const k of ['mc','mp','l','friction'])assert(Number.isFinite(id.identified[k]));
+assert(id.identifiability&&Number.isFinite(id.identifiability.maxAbsOffDiagonalCorrelation));
+assert(id.identifiability.correlation.length===4);
+const aid=C.identifyActuator();
+assert(aid.identified.delaySteps===aid.trueParams.delaySteps,'actuator ID should recover discrete delay');
+assert(aid.heldout.identifiedLoss < .01*aid.heldout.nominalLoss,'actuator ID should materially reduce held-out command/application error');
+console.log(JSON.stringify({systemIdentification:id,actuatorIdentification:aid},null,2));

@@ -6,12 +6,16 @@ This file prevents educational analogues from silently becoming capability claim
 |---|---|---|
 | PID | actual live cascaded CartPole feedback | humanoid low-level controller |
 | LQR | actual DARE/Riccati state feedback | constrained optimal controller |
-| Linear MPC | actual N=30 box-constrained receding-horizon optimization | production QP MPC |
+| Linear MPC | actual N=30 input-box-constrained receding-horizon optimization | production sparse QP MPC |
+| Scenario-risk MPC | actual finite 3-model ensemble objective with mean + worst-model risk term | tube/min-max/chance MPC guarantee |
+| State-aware Linear MPC | actual soft cart-position penalty in horizon | hard state-constrained MPC / feasibility guarantee |
+| LTV MPC / RTI bridge | actual one-update successive-linearization controller | acados/OCS2 SQP-RTI |
 | Centroidal-style MPC | actual N=32 reduced CoM planner + downstream stabilizer | OCS2 centroidal port |
 | Full nonlinear NMPC | actual N=30 single-shooting iLQR-style NMPC | OCS2 multiple-shooting SQP |
 | PPO | actual frozen CartPole actor, deterministic evaluation | newly trained policy for this lab |
 | KF | actual linear Kalman filter | hardware-tuned estimator |
 | EKF | actual nonlinear mean + numerical-Jacobian covariance propagation | InEKF |
+| Shooting MHE | actual recent-window nonlinear single-shooting estimate | constrained sparse MHE/NMHE |
 | SO(2) error bridge | wrapped-angle EKF measurement handling | Hartley contact-aided InEKF |
 | InNKF-style runtime | trained output-only residual MLP | paper TCN/SE2(3) reproduction |
 | CoCo page | paper-faithful conceptual explanation only | Adaptive-R implementation of CoCo |
@@ -70,3 +74,15 @@ CartPole success does not establish:
 - actuator safety,
 - OCS2 timing parity,
 - SOTA superiority.
+
+## Commissioning boundaries
+
+| Item | In this repository | Not claimed |
+|---|---|---|
+| System identification | constrained CartPole mc/mp/l/friction fit | full robot inertial/actuator ID |
+| Estimator calibration | Q_e/R_e educational CEM with NIS/NEES penalty | statistically complete hardware calibration |
+| Controller tuning | LQR Q_c/R_c educational CEM + held-out reject gate | SOTA differentiable/Safe-BO tuner |
+| Sim2real stack | hidden model/noise/bias/delay/lag/gain mismatch | humanoid contact/thermal/network completeness |
+| Robust MPC beyond finite scenarios | taxonomy/coverage page | executable tube/min-max/chance MPC guarantee |
+
+The tuning algorithms are examples of the commissioning contract, not the recommended solver for every robot.

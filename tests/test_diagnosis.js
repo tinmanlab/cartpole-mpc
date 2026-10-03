@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('assert'),fs=require('fs');
+const {diagnose}=require('../scripts/diagnose_commissioning');
+const e=JSON.parse(fs.readFileSync('./evidence/commissioning.json','utf8'));
+const d=diagnose(e);
+assert.equal(d.schema,'cartpole-diagnosis/v1');
+const ids=new Set(d.findings.map(x=>x.id));
+for(const id of ['D01_MODEL_ID','D02_ACTUATOR_ID','D03_ESTIMATOR_CALIBRATION','D04_CONTROLLER_TUNING','D04B_MPC_TUNING','D04C_MODEL_HIERARCHY','D04D_ROBUST_MPC_FORMULATION','D08_REALTIME','D09_COMBINED_SIM2REAL'])assert(ids.has(id),id);
+assert.equal(d.findings.find(x=>x.id==='D03_ESTIMATOR_CALIBRATION').status,'PASS');
+assert.equal(d.findings.find(x=>x.id==='D04_CONTROLLER_TUNING').status,'REJECT');
+console.log(JSON.stringify({findings:d.findings.map(x=>({id:x.id,status:x.status}))},null,2));

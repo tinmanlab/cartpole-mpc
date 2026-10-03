@@ -1,0 +1,641 @@
+{
+  "schema": "cartpole-diagnosis/v1",
+  "sourceSchema": "cartpole-commissioning-evidence/v1",
+  "sourceGeneratedAt": "2026-10-03T15:15:45.313Z",
+  "findings": [
+    {
+      "id": "D01_MODEL_ID",
+      "severity": "high",
+      "status": "PASS",
+      "evidence": {
+        "heldoutNominal": 0.00005379310103578318,
+        "heldoutIdentified": 8.085694042467685e-9,
+        "ratio": 0.0001503109857356816,
+        "identifiability": {
+          "parameterOrder": [
+            "mc",
+            "mp",
+            "l",
+            "friction"
+          ],
+          "sensitivityNorms": [
+            0.5021945125388313,
+            0.19327876058958374,
+            0.9977851021488098,
+            0.12551417515172852
+          ],
+          "correlation": [
+            [
+              1,
+              0.6161736718284396,
+              0.5656931101934998,
+              0.5301413784390707
+            ],
+            [
+              0.6161736718284396,
+              1,
+              0.14559634986015926,
+              0.2356890744202075
+            ],
+            [
+              0.5656931101934998,
+              0.14559634986015926,
+              0.9999999999999999,
+              0.4015645415875453
+            ],
+            [
+              0.5301413784390707,
+              0.2356890744202075,
+              0.4015645415875453,
+              1.0000000000000002
+            ]
+          ],
+          "maxAbsOffDiagonalCorrelation": 0.6161736718284396,
+          "warning": null
+        }
+      },
+      "interpretation": "identified physical parameters materially improve held-out prediction",
+      "next": "If INVESTIGATE: inspect residual structure, sensitivity correlation, excitation and model class before controller tuning."
+    },
+    {
+      "id": "D02_ACTUATOR_ID",
+      "severity": "high",
+      "status": "PASS",
+      "evidence": {
+        "true": {
+          "gain": 0.88,
+          "alpha": 0.52,
+          "delaySteps": 2
+        },
+        "identified": {
+          "gain": 0.8796865702168829,
+          "alpha": 0.522681307865287,
+          "delaySteps": 2
+        },
+        "heldoutRatio": 0.000007120349368277738
+      },
+      "interpretation": "gain/lag/delay identification closes most command-to-applied mismatch",
+      "next": "Do not let controller gains compensate for an unidentified actuator."
+    },
+    {
+      "id": "D03_ESTIMATOR_CALIBRATION",
+      "severity": "high",
+      "status": "PASS",
+      "evidence": {
+        "train": {
+          "baseline": 0.0889177215690434,
+          "calibrated": 0.07275030684004641
+        },
+        "validation": {
+          "baseline": 0.07191552430171955,
+          "calibrated": 0.051378164500877316
+        },
+        "test": {
+          "baseline": 0.0731564738484521,
+          "calibrated": 0.05196923657934929
+        }
+      },
+      "interpretation": "estimator calibration improves held-out validation and test",
+      "next": "Keep the calibrated candidate only with its validity domain and consistency report."
+    },
+    {
+      "id": "D04_CONTROLLER_TUNING",
+      "severity": "high",
+      "status": "REJECT",
+      "evidence": {
+        "train": {
+          "baseline": 0.8868891615540477,
+          "tuned": 0.7114596866609884
+        },
+        "validation": {
+          "baseline": 0.7172536481032018,
+          "tuned": 0.7364198693883339
+        },
+        "test": {
+          "baseline": 0.6676952786339873,
+          "tuned": 0.7073860123130975
+        }
+      },
+      "interpretation": "training improvement does not generalize to held-out closed-loop conditions",
+      "next": "Reject candidate; preserve baseline and inspect objective, uncertainty split, constraints and model mismatch."
+    },
+    {
+      "id": "D04B_MPC_TUNING",
+      "severity": "high",
+      "status": "PASS",
+      "evidence": {
+        "baseline": {
+          "N": 30,
+          "R": 0.14,
+          "Qdiag": [
+            2,
+            0.45,
+            68,
+            3.5
+          ],
+          "Qfdiag": [
+            8,
+            1.5,
+            110,
+            7
+          ]
+        },
+        "tuned": {
+          "N": 45,
+          "R": 0.084,
+          "Qdiag": [
+            2,
+            0.45,
+            54.400000000000006,
+            2.8000000000000003
+          ],
+          "Qfdiag": [
+            8,
+            1.5,
+            88,
+            5.6000000000000005
+          ]
+        },
+        "scores": {
+          "train": {
+            "baseline": 1.5449506257060983,
+            "tuned": 0.9835013766956929
+          },
+          "validation": {
+            "baseline": 1.7769200598719868,
+            "tuned": 1.1852410038723624
+          },
+          "test": {
+            "baseline": 1.5799794580806092,
+            "tuned": 1.3552398697011117
+          }
+        }
+      },
+      "interpretation": "structured MPC horizon/cost candidate improves held-out validation and test",
+      "next": "Keep candidate only inside the tested scenario envelope; robot-scale tuning should use native solver sensitivities/BO as appropriate."
+    },
+    {
+      "id": "D04C_MODEL_HIERARCHY",
+      "severity": "medium",
+      "status": "INFO",
+      "evidence": {
+        "rows": [
+          {
+            "controller": "lqr",
+            "thetaDeg": 2.864788975654116,
+            "failures": 0,
+            "maxPosition": 0.09632639116112153,
+            "rmsControl": 0.27707507231386513
+          },
+          {
+            "controller": "lqr",
+            "thetaDeg": 8.594366926962348,
+            "failures": 0,
+            "maxPosition": 0.2922655144268549,
+            "rmsControl": 0.8373993331496236
+          },
+          {
+            "controller": "lqr",
+            "thetaDeg": 17.188733853924695,
+            "failures": 0,
+            "maxPosition": 0.64427503889115,
+            "rmsControl": 1.6491776918495173
+          },
+          {
+            "controller": "lqr",
+            "thetaDeg": 25.783100780887047,
+            "failures": 0,
+            "maxPosition": 1.223535958657109,
+            "rmsControl": 2.540523247661395
+          },
+          {
+            "controller": "linear_mpc",
+            "thetaDeg": 2.864788975654116,
+            "failures": 0,
+            "maxPosition": 0.6018525592375804,
+            "rmsControl": 0.18842501321176364
+          },
+          {
+            "controller": "linear_mpc",
+            "thetaDeg": 8.594366926962348,
+            "failures": 0,
+            "maxPosition": 1.816414499052344,
+            "rmsControl": 0.5686462309511793
+          },
+          {
+            "controller": "linear_mpc",
+            "thetaDeg": 17.188733853924695,
+            "failures": 3,
+            "maxPosition": 2.411188438449495,
+            "rmsControl": 1.5977830613416792
+          },
+          {
+            "controller": "linear_mpc",
+            "thetaDeg": 25.783100780887047,
+            "failures": 3,
+            "maxPosition": 2.41233478282204,
+            "rmsControl": 3.2232407328869823
+          },
+          {
+            "controller": "state_mpc",
+            "thetaDeg": 2.864788975654116,
+            "failures": 0,
+            "maxPosition": 0.5988617544679773,
+            "rmsControl": 0.18851238144658589
+          },
+          {
+            "controller": "state_mpc",
+            "thetaDeg": 8.594366926962348,
+            "failures": 0,
+            "maxPosition": 1.7217963255534385,
+            "rmsControl": 0.5814495489796848
+          },
+          {
+            "controller": "state_mpc",
+            "thetaDeg": 17.188733853924695,
+            "failures": 3,
+            "maxPosition": 2.4146891406607196,
+            "rmsControl": 1.5767575534009943
+          },
+          {
+            "controller": "state_mpc",
+            "thetaDeg": 25.783100780887047,
+            "failures": 3,
+            "maxPosition": 2.40184934728423,
+            "rmsControl": 3.150111885157562
+          },
+          {
+            "controller": "ltv_mpc",
+            "thetaDeg": 2.864788975654116,
+            "failures": 0,
+            "maxPosition": 0.4311067255321898,
+            "rmsControl": 0.1991271120465142
+          },
+          {
+            "controller": "ltv_mpc",
+            "thetaDeg": 8.594366926962348,
+            "failures": 0,
+            "maxPosition": 1.3068344997117132,
+            "rmsControl": 0.6012151316087995
+          },
+          {
+            "controller": "ltv_mpc",
+            "thetaDeg": 17.188733853924695,
+            "failures": 3,
+            "maxPosition": 2.4063490673274694,
+            "rmsControl": 1.453572539685197
+          },
+          {
+            "controller": "ltv_mpc",
+            "thetaDeg": 25.783100780887047,
+            "failures": 3,
+            "maxPosition": 2.4231916382772942,
+            "rmsControl": 3.2030030829500116
+          },
+          {
+            "controller": "full_nmpc",
+            "thetaDeg": 2.864788975654116,
+            "failures": 0,
+            "maxPosition": 0.3655030693459113,
+            "rmsControl": 0.2037644837081147
+          },
+          {
+            "controller": "full_nmpc",
+            "thetaDeg": 8.594366926962348,
+            "failures": 0,
+            "maxPosition": 1.1090714970472653,
+            "rmsControl": 0.6146407807326754
+          },
+          {
+            "controller": "full_nmpc",
+            "thetaDeg": 17.188733853924695,
+            "failures": 0,
+            "maxPosition": 2.333066550247045,
+            "rmsControl": 1.2362029771317387
+          },
+          {
+            "controller": "full_nmpc",
+            "thetaDeg": 25.783100780887047,
+            "failures": 3,
+            "maxPosition": 2.41668550896816,
+            "rmsControl": 3.1894931740302526
+          }
+        ]
+      },
+      "interpretation": "initial-angle sweep measures the validity envelope of fixed-linear, successive-linearization, state-aware and nonlinear formulations under the same truth-state plant",
+      "next": "Use the sweep to choose the next model class; do not infer a universal controller ranking from one CartPole envelope."
+    },
+    {
+      "id": "D04D_ROBUST_MPC_FORMULATION",
+      "severity": "high",
+      "status": "REJECT",
+      "evidence": {
+        "rows": [
+          {
+            "controller": "linear_mpc",
+            "scenario": "model",
+            "failures": 0,
+            "rmseState": 0.06400201729722563,
+            "maxPosition": 1.2683590632465502,
+            "rmsControl": 1.0393985447155183,
+            "rmsCommandMismatch": 4.136394060587227e-17,
+            "meanSolveMs": 3.254746637878865,
+            "p95SolveMs": 4.005051333340816,
+            "deadlineMissRate": 0
+          },
+          {
+            "controller": "scenario_mpc",
+            "scenario": "model",
+            "failures": 1,
+            "rmseState": 0.0655396206863008,
+            "maxPosition": 1.9838547799242303,
+            "rmsControl": 1.2858342740934185,
+            "rmsCommandMismatch": 3.586607758426901e-17,
+            "meanSolveMs": 21.3348228163062,
+            "p95SolveMs": 42.87855666666292,
+            "deadlineMissRate": 0.36832611832611833
+          },
+          {
+            "controller": "linear_mpc",
+            "scenario": "sim2real",
+            "failures": 1,
+            "rmseState": 0.10066528708408502,
+            "maxPosition": 1.6629145976091442,
+            "rmsControl": 1.5558735742612624,
+            "rmsCommandMismatch": 0.865608891782203,
+            "meanSolveMs": 6.7431821298350725,
+            "p95SolveMs": 8.04529900000974,
+            "deadlineMissRate": 0
+          },
+          {
+            "controller": "scenario_mpc",
+            "scenario": "sim2real",
+            "failures": 2,
+            "rmseState": 0.1069678243991331,
+            "maxPosition": 2.0159368619701987,
+            "rmsControl": 1.8702620417177265,
+            "rmsCommandMismatch": 1.2199401284245124,
+            "meanSolveMs": 21.119075156589602,
+            "p95SolveMs": 39.115002333332086,
+            "deadlineMissRate": 0.3643129051711142
+          }
+        ]
+      },
+      "interpretation": "finite-model risk formulation does not improve the paired stress probe; uncertainty-set/objective/constraint/runtime design remains inadequate",
+      "next": "Do not relabel scenario diversity as robustness. Revisit uncertainty coverage, constraints, risk measure and compute budget before deployment."
+    },
+    {
+      "id": "D05_SINGLE_FACTOR_LQR",
+      "severity": "medium",
+      "status": "INFO",
+      "evidence": {
+        "controller": "lqr",
+        "observer": "ekf",
+        "ranked": [
+          {
+            "scenario": "sim2real",
+            "deltaRmse": 0.06432376582307989,
+            "deltaMaxPosition": 0.11653902472165273,
+            "deltaCommandMismatch": 1.362296456365916,
+            "failures": 0
+          },
+          {
+            "scenario": "sensor",
+            "deltaRmse": 0.04971556543427203,
+            "deltaMaxPosition": 0.09645598772561575,
+            "deltaCommandMismatch": 3.684493184215032e-17,
+            "failures": 0
+          },
+          {
+            "scenario": "glitch",
+            "deltaRmse": 0.15866641216925564,
+            "deltaMaxPosition": 0.09219453384538279,
+            "deltaCommandMismatch": 1.2515235219534276e-17,
+            "failures": 0
+          },
+          {
+            "scenario": "model",
+            "deltaRmse": 0.007899638886539148,
+            "deltaMaxPosition": 0.055237558186129965,
+            "deltaCommandMismatch": 7.784210707349782e-18,
+            "failures": 0
+          },
+          {
+            "scenario": "actuator",
+            "deltaRmse": 0.011122170893250329,
+            "deltaMaxPosition": 0.031762731259352944,
+            "deltaCommandMismatch": 0.5662544875022001,
+            "failures": 0
+          },
+          {
+            "scenario": "bias",
+            "deltaRmse": 0.00046087654296147335,
+            "deltaMaxPosition": 0.021432299043311537,
+            "deltaCommandMismatch": 7.340358056038701e-19,
+            "failures": 0
+          },
+          {
+            "scenario": "latency",
+            "deltaRmse": 0.017732728504626392,
+            "deltaMaxPosition": -0.00310410566595698,
+            "deltaCommandMismatch": 1.1407205855197058,
+            "failures": 0
+          }
+        ]
+      },
+      "interpretation": "single-factor ranking localizes which realism axis most changes this pipeline before combined randomization",
+      "next": "Start debugging with the highest-ranked single factor, not the combined sim2real scenario."
+    },
+    {
+      "id": "D05_SINGLE_FACTOR_FULL_NMPC",
+      "severity": "medium",
+      "status": "INFO",
+      "evidence": {
+        "controller": "full_nmpc",
+        "observer": "ekf",
+        "ranked": [
+          {
+            "scenario": "sim2real",
+            "deltaRmse": 0.04323961873141506,
+            "deltaMaxPosition": 0.6293950473407144,
+            "deltaCommandMismatch": 0.8725891576338402,
+            "failures": 1
+          },
+          {
+            "scenario": "sensor",
+            "deltaRmse": 0.04970949291564518,
+            "deltaMaxPosition": 0.4995644047928882,
+            "deltaCommandMismatch": 3.698394484147422e-17,
+            "failures": 0
+          },
+          {
+            "scenario": "model",
+            "deltaRmse": 0.006718046796121285,
+            "deltaMaxPosition": 0.29326532531610483,
+            "deltaCommandMismatch": 8.834019662016967e-18,
+            "failures": 0
+          },
+          {
+            "scenario": "actuator",
+            "deltaRmse": 0.0089207075102333,
+            "deltaMaxPosition": 0.15052866813655408,
+            "deltaCommandMismatch": 0.4005665559749618,
+            "failures": 0
+          },
+          {
+            "scenario": "bias",
+            "deltaRmse": 0.0004600542638371896,
+            "deltaMaxPosition": 0.12583946344243324,
+            "deltaCommandMismatch": 5.0255310836295884e-18,
+            "failures": 0
+          },
+          {
+            "scenario": "latency",
+            "deltaRmse": 0.012301101876062814,
+            "deltaMaxPosition": 0.011812730850884412,
+            "deltaCommandMismatch": 0.7871610845913152,
+            "failures": 0
+          },
+          {
+            "scenario": "glitch",
+            "deltaRmse": 0.15866782783985872,
+            "deltaMaxPosition": -0.6343874201709965,
+            "deltaCommandMismatch": 9.046795757819122e-18,
+            "failures": 0
+          }
+        ]
+      },
+      "interpretation": "single-factor ranking localizes which realism axis most changes this pipeline before combined randomization",
+      "next": "Start debugging with the highest-ranked single factor, not the combined sim2real scenario."
+    },
+    {
+      "id": "D06_STATE_CONSTRAINT_SIGNAL",
+      "severity": "medium",
+      "status": "PASS",
+      "evidence": {
+        "linear": {
+          "failures": 1,
+          "maxPosition": 2.2504430208105646
+        },
+        "stateAware": {
+          "failures": 0,
+          "maxPosition": 1.992208688617892
+        }
+      },
+      "interpretation": "compares an input-bounded MPC with a soft state-bound analogue; improvement indicates objective/constraint formulation matters independently of solver sophistication",
+      "next": "For robot scale replace soft educational penalty with explicit native state/path constraints and feasibility diagnostics."
+    },
+    {
+      "id": "D07_TRANSPORT_SIGNATURE",
+      "severity": "medium",
+      "status": "INFO",
+      "evidence": {
+        "latencyCommandMismatch": 0.7065644809253917,
+        "actuatorCommandMismatch": 0.3643853176886812
+      },
+      "interpretation": "nonzero command-to-applied mismatch separates transport/actuator failure from pure controller-state tracking error",
+      "next": "On hardware log commanded and applied torque/current with synchronized timestamps."
+    },
+    {
+      "id": "D08_REALTIME",
+      "severity": "high",
+      "status": "INVESTIGATE",
+      "evidence": {
+        "meanDeadlineMissRate": 0.00008012820512820513
+      },
+      "interpretation": "solver/runtime deadline violations exist",
+      "next": "Do not generalize host timing; on Figure record p50/p95/p99, scheduler, concurrency and solver residuals."
+    },
+    {
+      "id": "D09_COMBINED_SIM2REAL",
+      "severity": "high",
+      "status": "BOUNDARY_FOUND",
+      "evidence": {
+        "rows": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "failures": 0,
+            "rmseState": 0.07883495520988466,
+            "maxPosition": 0.3204734164963207,
+            "rmsCommandMismatch": 0.8703741854756278
+          },
+          {
+            "controller": "lqr",
+            "observer": "mhe",
+            "failures": 0,
+            "rmseState": 0.07856143191620568,
+            "maxPosition": 0.34050374535190286,
+            "rmsCommandMismatch": 0.7216925200072356
+          },
+          {
+            "controller": "linear_mpc",
+            "observer": "ekf",
+            "failures": 2,
+            "rmseState": 0.07889341768102892,
+            "maxPosition": 2.352511320221547,
+            "rmsCommandMismatch": 0.5405159158421268
+          },
+          {
+            "controller": "linear_mpc",
+            "observer": "mhe",
+            "failures": 2,
+            "rmseState": 0.07894931355966438,
+            "maxPosition": 2.402434252015922,
+            "rmsCommandMismatch": 0.4557129456275521
+          },
+          {
+            "controller": "state_mpc",
+            "observer": "ekf",
+            "failures": 1,
+            "rmseState": 0.07804707795490747,
+            "maxPosition": 2.166374522852067,
+            "rmsCommandMismatch": 0.6185000086676608
+          },
+          {
+            "controller": "state_mpc",
+            "observer": "mhe",
+            "failures": 1,
+            "rmseState": 0.07787825350321208,
+            "maxPosition": 2.1989619191996947,
+            "rmsCommandMismatch": 0.5136612187467119
+          },
+          {
+            "controller": "ltv_mpc",
+            "observer": "ekf",
+            "failures": 1,
+            "rmseState": 0.07624319328044939,
+            "maxPosition": 2.0160012385992054,
+            "rmsCommandMismatch": 0.6104305210407287
+          },
+          {
+            "controller": "ltv_mpc",
+            "observer": "mhe",
+            "failures": 1,
+            "rmseState": 0.07606743136734724,
+            "maxPosition": 2.067192990469238,
+            "rmsCommandMismatch": 0.5077560233339377
+          },
+          {
+            "controller": "full_nmpc",
+            "observer": "ekf",
+            "failures": 0,
+            "rmseState": 0.07582502974728611,
+            "maxPosition": 1.7989086437137238,
+            "rmsCommandMismatch": 0.6263119557910027
+          },
+          {
+            "controller": "full_nmpc",
+            "observer": "mhe",
+            "failures": 0,
+            "rmseState": 0.07530736873902677,
+            "maxPosition": 1.880239640081345,
+            "rmsCommandMismatch": 0.519386309641925
+          }
+        ]
+      },
+      "interpretation": "combined hidden mismatch exposes a failure boundary not visible in all nominal runs",
+      "next": "If failures exist, return to D05 single-factor evidence before changing algorithms."
+    }
+  ]
+}
