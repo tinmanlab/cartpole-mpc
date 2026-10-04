@@ -46,3 +46,7 @@ Their source is not bundled here except for the CartPole plant lineage noted abo
 - The local MPC transcription and residual checks are not claimed to be upstream code. OSQP is used separately as an independent numerical reference.
 
 `vendor/manifest.json`, `package-lock.json` and `scripts/vendor_runtime.py --check` provide exact artifact/source identity. No upstream endorsement or hardware safety certification is implied.
+
+## Optional native NMPC research dependencies
+
+The optional scripts use acados v0.6.0 (upstream commit `503364817c872d474ab5bed219c26760ac267769`), its pinned HPIPM/BLASFEO submodules, CasADi 3.7.2 and SciPy. The acados formulation interface follows the upstream `examples/acados_python/getting_started/minimal_example_ocp.py` and discrete-dynamics examples. The official example is reproduced unchanged before applying our restricted uniform-rod model and experiment protocol. Upstream numerical implementation remains in the optional local checkout/environment, with its original license notices; no native solver source or binary is shipped as a browser asset by this change. See `docs/NATIVE_NMPC.md` for provenance, references and scope. This project is not an upstream endorsement or an acados humanoid reproduction.

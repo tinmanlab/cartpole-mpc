@@ -10,6 +10,10 @@ The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `asset
 
 See [runtime, assets and failure contracts](docs/MUJOCO_WASM_RUNTIME.md) for exact versions, masses/inertias, model scope, upstream code reuse and verification commands.
 
+## Optional native solver study
+
+[Native NMPC experiment](docs/NATIVE_NMPC.md) reproduces acados v0.6.0 + HPIPM against the same MuJoCo WASM plant and EKF. An 18-run development comparison separates solver choice from terminal-cost design: solver replacement alone retains the known failures, while a full Riccati terminal cost improves the tested cases with either the existing QP or native NMPC. This optional offline lane does **not** change the public browser solver/default and does not establish hardware readiness. See `evidence/native_nmpc.json` for source identities, actual outcomes and separately scoped timings.
+
 ## Start here
 
 The entire lab uses one control loop:
