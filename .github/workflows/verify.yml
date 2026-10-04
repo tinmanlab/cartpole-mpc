@@ -24,6 +24,8 @@ jobs:
           cache-dependency-path: requirements-native.txt
       - run: npm ci
       - run: pip install -r requirements-native.txt playwright==1.61.0
+      - name: Separate constraint-active diagnostic and independent native checks
+        run: python tests/test_constraint_diagnostic.py
       - run: python -m playwright install --with-deps chromium
       - name: No-admissible finalization and retry regression
         run: |
