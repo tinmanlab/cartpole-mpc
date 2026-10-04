@@ -213,3 +213,67 @@ Committed receipts are `evidence/process_selection.json`, `process_reference.jso
 Primary implementation references: FilterPy Kalman/EKF innovation-covariance and measurement-log-likelihood interfaces, https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/kalman_filter.html and https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/EKF.html . These support the statistical definitions, not the measured local control outcomes. Existing `src/commissioning.js` broader CEM tuning is still separate; this deliberately small grid is an interpretable selection baseline, not a claim to reproduce DiffTune, EM, Safe BO or a SOTA covariance optimizer.
 
 Remaining gaps are full Q/P0/model/bias/time calibration, closed-loop objective-aware design, and the interactive Lyapunov/recovery-region lesson. Completing this one selection/evaluation chain does not close the entire commissioning curriculum or certify hardware.
+
+## Task-aware four-pair design study
+
+This is the first bounded end-to-end **task definition → theory-informed baseline → fair candidate search → validation lock → independent task test → explicit application** path. It answers the selection question rather than adding another controller/observer family. It reuses the canonical MuJoCo WASM plant, existing LQR/quadprog hard-rail MPC, KF/EKF, and the existing stationary measurement-covariance estimator. The optional adapter does not alter their numerical algorithms or defaults.
+
+### Frozen task and data boundary
+
+`tests/fixtures/design_study.json` was recovered from the interrupted task before implementation or execution. Its frozen SHA-256 is `1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445`. There are four pairs: LQR/KF, LQR/EKF, hard-rail MPC/KF and hard-rail MPC/EKF. Every pair has the same nine candidate configurations, the same three training cases and the same three validation cases available to its shortlist. Test outcomes are not used to revise parameters or choose a different pair.
+
+The declared 12 s task uses the same cart rail +/-2.4 m, absolute angle envelope 35 degrees, commanded force +/-10 N, state ordering and sensor amplitude (0.06 m position / 0.025 rad angle). The final 100 samples must satisfy position RMS <=0.15 m and angle RMS <=0.06 rad. These are chosen requirements, not physical constants or statistical safety certificates. Both controller families obey the same plant/command limits and task checks; MPC additionally enforces nominal predicted rail/input bounds, whereas LQR uses force clipping. Different formulations are not claimed to have identical theoretical guarantees.
+
+The externally evaluated, dimensionless task score is
+
+    mean[(position_error/0.25 m)^2 + 0.2*(theta/0.1 rad)^2
+         + 0.05*(command/5 N)^2 + 0.02*(command_increment/2 N)^2].
+
+The first command increment is measured from zero. Score terms use x_k and u_k; final-window requirements use post-step x_(k+1). State-estimation RMSE, force/command increment, saturation and construction/solve/observer/full-step timing are recorded separately. A failed or partial episode has no full-duration score. Selection ranks hard failures first, final-task failures next, and then the common task score only for complete sets. Partial common-prefix metrics remain diagnostics, not replacement successes.
+
+### What is computed, measured and tuned
+
+The theory-informed start uses declared state scales [0.5 m, 1 m/s, 0.15 rad, 0.5 rad/s]. Controller Q_c is their inverse square, so Q_c=diag(4,1,44.444...,4). R_c is an effort multiplier divided by (3 N)^2. The full nominal discrete Riccati solution is independently checked and supplies the LQR gain and MPC terminal cost for each R_c; the horizon is fixed at 30 control steps. This is a Bryson-style design starting point, not identification of a universal ideal weight or a proof of constrained/nonlinear optimality.
+
+R_e is estimated once from 512 separate simulated stationary sensor readings. The fitter never receives injected variance or truth. Calibration screens can reject unsupported whiteness/diagonal-covariance assumptions but are not stationarity proofs. Only the evaluator uses true state to measure the engineering task; controller and observer inputs are estimates/measurements/requested commands. All dynamic cases intentionally use the same declared sensor amplitude while retaining their named model/actuator/noise-color mechanisms.
+
+The two design factors are R_c effort multiplier [0.5,1,2] and effective Q_e multiplier [0.1,1,10]. Q_e shape [2e-5,2e-3,2e-5,4e-3], P0 diagonal [0.1,1,0.04,1], measured R_e, horizon, model and physical limits stay fixed. Q_e is an effective task-design parameter here, not newly identified physical process noise. Every pair gets all nine training evaluations; its top two plus the declared baseline enter validation. If baseline is already shortlisted it is not duplicated. This is the same maximum budget and selection rule, not artificially different search effort.
+
+Validation locks one candidate for each pair. Only validation-eligible pairs may be recommended. If scores are within 1% of the best, the predeclared order LQR/KF, LQR/EKF, MPC/KF, MPC/EKF chooses the simpler pair. This is an explicit simplicity policy, not a theorem or a timing benchmark. Host timing is not used to pick a noisy winner; no WCET or sensor-to-hardware deadline admission is inferred from this study.
+
+### Recorded decision: retain the baseline, do not manufacture an improvement
+
+The run executes 108 training episodes, 24 validation episodes and 48 test episodes, 180 in total (108,000 simulated state transitions). All four pairs select their theory-informed baseline factors R_c multiplier=1 and Q_e multiplier=1. Candidate values do not need to change for the search to be useful: retaining a defensible baseline is a valid outcome.
+
+Validation task scores are approximately 0.246464 for LQR/KF and MPC/KF, and 0.246276 for LQR/EKF and MPC/EKF. This is within the declared 1% equivalence band. The locked recommendation is therefore LQR/KF, by the existing policy rather than by claiming its raw score is lowest. With a full Riccati terminal cost, the LQR and MPC policies agree extremely closely in these sampled conditions; this grid does not establish an advantage for nominal state-constraint handling. It is not evidence that MPC is universally unnecessary.
+
+All four selected pairs meet the four primary test tasks. The locked LQR/KF recipe records aggregate tracking RMSE about 0.11018 m and task score about 0.238569. Baseline and selected are identical, so the measured improvement is zero. The point is selection/application justification, not a claimed performance gain. On the two boundary cases only one meets the final-task requirement: the colored-noise case fails its final angle-RMS requirement, while the delayed-command case passes this particular fixed test. Neither boundary case expands the primary-only admission scope. No other pair is chosen using those test results.
+
+Admission for manual application requires complete primary coverage, all primary selected tasks passing, no candidate-only primary task failure, and at most 2% primary task-score regression against the same pair's baseline when both complete. The primary gate passes for the locked recommendation. Its scope is explicit reruns of those declared simulated tasks, not all neighboring states, different sensors, arbitrary targets or hardware. Boundary results never expand the gate. All now-known conditions are development/regression data on reuse.
+
+### Shared-page application is real, scoped and reversible
+
+The page shows the task and source of parameters, per-pair selection, all nine training candidates and their validation disposition, every test result, and a parameter readout. A user may explicitly apply only the admitted recommendation to one named primary task. This constructs the actual existing controller/observer with the selected weights and measured R, resets the shared MuJoCo plant to that task's seed/initial state, and starts paused. It runs the same task runner as the experiment, including scheduled external force, and stops after 600 steps.
+
+Ordinary setting changes or Reset leave the task recipe and return to the original experiment semantics; the scope label changes accordingly. Additional manual push buttons are disabled for the recipe and the existing push action rejects such a change until reset. Lesson execution itself only pauses the live experiment and never silently changes its current controller, observer, state or default. A failed rerun clears the prior selection and disables application rather than showing an old recommendation as fresh.
+
+### Verification and limits
+
+`tests/test_design_study.mjs` covers the common task score, partial/failure treatment, four-pair/parameter construction, full Riccati checks, sensor-only initialization, measured R, fixed P0, test-getter poisoning of the selector, stable tie policy, immutable selection, non-reselection and rejected application. `tests/test_design_reference.py` independently redoes covariance, SciPy DARE/gain, every task-score component, candidate/shortlist/pair rank and final admission from compact raw trajectories. OSQP comparisons also check actual first commands when the nominal rail is inactive. Existing native references remain responsible for active-rail solver correctness.
+
+The actual browser performs the complete selection rather than displaying a precomputed winner. Its recommendation and test summaries match the Node execution. Manual application is checked by replaying a scheduled-push primary case in the shared viewer and comparing its final state and task score with the recorded run. No WebMCP shim is required for that UI test. This is not independent hardware approval or a deployed public page merely because the test passed.
+
+Reproduction, using the existing native reference environment:
+
+    node tests/test_design_study.mjs
+    node scripts/run_design_study.mjs
+    python tests/test_design_reference.py
+    python tests/test_design_browser.py
+
+The main summary is `evidence/design_study.json`; independent checks are `design_reference.json` and `design_browser.json`. Raw audit series/selected traces regenerate under ignored `test-results/design_study_full.json`. The common task adapter is local experiment wiring, not a new solver or general workflow framework. Existing R-only/Q-predictive calibration lessons remain intact and are separately regressed.
+
+The remaining scope is deliberate: other weights/horizons, full covariance/parameter identification, formal uncertainty/terminal-set certification, larger nonlinear operating regions and target-runtime timing were not optimized. The immediate result is one usable conditional choice and its provenance, not a globally optimal controller/observer for every robot.
+
+Primary method references: MathWorks LQR documentation on inverse-squared design scales/Bryson initialization, https://www.mathworks.com/help/control/ref/lti.lqr.html ; official OSQP constrained MPC example, https://osqp.org/docs/examples/mpc.html ; MIT LQR assumptions and value function, https://underactuated.mit.edu/lqr.html . These justify method definitions, not the repository's measured outcomes.
+
+Application additionally checks the locked task/design settings, measured covariance and evaluated case identities. Changing those fields cannot reuse a previous admission. Selection itself rejects overlapping training/validation IDs or seeds, and never reads a test getter. This is evidence-bound simulation application, not a security boundary for arbitrary JavaScript or physical hardware.

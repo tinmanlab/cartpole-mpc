@@ -28,6 +28,10 @@ Position tracking RMSE and per-component estimation RMSE are separate. Physical 
 
 The shared page now includes **보정 → 추정 → 제어 인과 실험**. It estimates position/angle measurement variance from a separate 512-reading stationary fixture, then compares the same existing LQR/EKF using a small assumed R_e, the measured R_e, and an intentionally inflated R_e. Q_e, gains, limits and cases stay fixed. Select a recorded saturation sample to see sensor readings, estimates, per-state force-error contributions, requested/clipped/applied forces and tracking. A same-data observer replay separates filter comparison from the different closed-loop trajectories. This is a specific educational experiment, not optimal Q/R co-tuning, hardware calibration or a default change. See [verification and limitations](docs/VALIDATION.md#measurement-calibration-causal-lesson).
 
+## Task-aware controller–observer selection
+
+The shared page now provides a complete **declared task → Riccati-based initial design → equal candidate search → validation lock → independent test → manual live application** path for LQR/MPC × KF/EKF. Sensor R is measured separately; control-cost and effective process-noise scales are selected against the same normalized closed-loop objective. The recorded choice retains the baseline and recommends LQR/KF under a predeclared 1% simplicity tie policy; this is a scoped choice, not a global optimum or universal ranking. The primary test passes, the colored-noise boundary still has a task failure, and defaults remain unchanged. See [the complete task/selection contract](docs/VALIDATION.md#task-aware-four-pair-design-study) and `evidence/design_study.json`.
+
 ## Start here
 
 The entire lab uses one control loop:

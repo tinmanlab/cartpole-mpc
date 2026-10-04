@@ -1,0 +1,41 @@
+{
+  "schema":"cartpole-task-aware-design/v1",
+  "purpose":"One closed-loop task, four existing controller/observer pairs, equal bounded design budget, train/validation lock then independent test; no global optimum or hardware claim",
+  "controlDt":0.02,
+  "steps":600,
+  "calibration":{"seed":7103,"samples":512,"fixtureState":[0.18,0,0.03,0],"scenario":"sensor","stationaryAssumption":true},
+  "calibrationScreen":{"minimumSamples":32,"maximumAbsLagOne":0.2,"maximumAbsChannelCorrelation":0.2},
+  "sensorFixture":{"sigmaPosition_m":0.06,"sigmaAngle_rad":0.025,"scope":"Same test injection amplitudes in all cases; calibration estimator sees readings only. Colored noise and actuator/model mechanisms remain as declared by scenario."},
+  "theoryDesign":{"stateScales":[0.5,1.0,0.15,0.5],"forceScale_N":3,"QeBase":[0.00002,0.002,0.00002,0.004],"P0diag":[0.1,1,0.04,1],"horizon":30,"terminal":"full nominal discrete Riccati for each actual Qc/Rc","note":"Qc_i=1/stateScale_i^2 and Rc=effortMultiplier/forceScale^2. Scales are declared engineering design choices, not identified physical values or safety bounds."},
+  "candidateGrid":{"effortMultipliers":[0.5,1,2],"processMultipliers":[0.1,1,10],"baseline":{"effortMultiplier":1,"processMultiplier":1},"shortlist":2,"includeBaseline":true},
+  "pairs":[
+    {"id":"lqr-kf","controller":"lqr","observer":"kf","simplicityOrder":0},
+    {"id":"lqr-ekf","controller":"lqr","observer":"ekf","simplicityOrder":1},
+    {"id":"mpc-kf","controller":"hard_mpc","observer":"kf","simplicityOrder":2},
+    {"id":"mpc-ekf","controller":"hard_mpc","observer":"ekf","simplicityOrder":3}
+  ],
+  "task":{"railLimit_m":2.4,"angleEnvelope_rad":0.6108652381980153,"forceLimit_N":10,"finalWindowSteps":100,"finalPositionRms_m":0.15,"finalAngleRms_rad":0.06,
+    "objective":{"position":{"scale":0.25,"weight":1},"angle":{"scale":0.1,"weight":0.2},"force":{"scale":5,"weight":0.05},"deltaForce":{"scale":2,"weight":0.02}},
+    "score":"Mean of declared normalized tracking, upright-angle, effort and command-increment squared costs. Evaluate x_k/u_k; first delta-u is from zero. Failed/partial runs receive no full-duration score.",
+    "executionBudget_ms":20,"timingScope":"Host construction/solve/observer/full-step measurements reported separately. Not used to choose a stochastic timing winner or claim WCET/sensor-to-hardware admission."},
+  "selection":{"order":"hard failure count, final-task failure count, mean score for full-completed sets, exact ties prefer baseline then fixed candidate ID","crossPairTieRelative":0.01,"crossPairRule":"Among validation-eligible pairs within 1% of minimum validation score, choose fixed lower simplicityOrder. It is a policy, not proof of algorithm dominance.","testRule":"Lock one candidate per pair and one recommended pair BEFORE test. Report baseline and selected for every pair. Test can reject the locked recommendation but cannot select another one.","primaryNonRegressionTolerance":0.02,"adoptionScope":"Optional manual application to the declared simulation task only; all primary cases must meet task, no candidate-only primary task failure, and mean primary task score <=1.02*same-pair baseline if both complete. Boundaries do not expand admission."},
+  "training":[
+    {"id":"train-sensor-7207","seed":7207,"scenario":"sensor","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"train-model-7211","seed":7211,"scenario":"model","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null},
+    {"id":"train-push-7219","seed":7219,"scenario":"sensor","initialState":[0,0,0.1,0],"goal":0.5,"push":{"step":250,"force":1,"duration":10}}
+  ],
+  "validation":[
+    {"id":"validation-sensor-7307","seed":7307,"scenario":"sensor","initialState":[0,0,0.08,0],"goal":0.4,"push":null},
+    {"id":"validation-mixed-7311","seed":7311,"scenario":"mixed","initialState":[0,0,-0.08,0],"goal":-0.4,"push":null},
+    {"id":"validation-push-7321","seed":7321,"scenario":"sensor","initialState":[0,0,-0.1,0],"goal":-0.5,"push":{"step":250,"force":-1,"duration":10}}
+  ],
+  "test":[
+    {"id":"test-sensor-7403","group":"primary","seed":7403,"scenario":"sensor","initialState":[0,0,0.05,0],"goal":0.3,"push":null},
+    {"id":"test-sensor-7411","group":"primary","seed":7411,"scenario":"sensor","initialState":[0.1,0,-0.05,0],"goal":-0.3,"push":null},
+    {"id":"test-model-7417","group":"primary","seed":7417,"scenario":"model","initialState":[0,0,0.08,0],"goal":0.45,"push":null},
+    {"id":"test-mixed-7433","group":"primary","seed":7433,"scenario":"mixed","initialState":[0,0,-0.08,0],"goal":-0.45,"push":{"step":250,"force":1,"duration":10}},
+    {"id":"test-colored-7507","group":"boundary","seed":7507,"scenario":"colored","initialState":[0,0,0.1,0],"goal":0.5,"push":null},
+    {"id":"test-delay-7517","group":"boundary","seed":7517,"scenario":"latency","initialState":[0,0,-0.1,0],"goal":-0.5,"push":null}
+  ],
+  "claims":["This finite 2-parameter grid is an interpretable joint design search, not a globally optimal co-design or complete identification.","Qc shape, horizon, P0 and measured Re are fixed. Varying Qe is an effective task-tuning choice and is not labelled calibrated physical noise.","LQR has force clipping and common physical rail/angle evaluation; MPC additionally enforces nominal predicted rail/input constraints. Both use same task and nominal model, but their optimization formulations differ.","Truth is used only for simulated task evaluation; no controller or observer receives it.","Every candidate gets the same training cases; selection does not inspect test data or timing measurements. New tests are held out only for this first study, then become regression data.","A validation winner failing admission is retained as a rejected result, not replaced by the best test performer."]
+}

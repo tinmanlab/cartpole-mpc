@@ -1,0 +1,161 @@
+{
+  "schema": "cartpole-task-design-reference/v1",
+  "passed": true,
+  "measurementCovarianceError": 3.469446951953614e-18,
+  "riccatiMatrixMaxError": 2.209617377957329e-09,
+  "gainMaxError": 2.6695090582506964e-11,
+  "scoredDynamicFrames": 108000,
+  "maximumScoreError": 5.551115123125783e-17,
+  "candidateRankAndAdmissionReconstructed": true,
+  "lockedRecommendation": "lqr-kf",
+  "accepted": true,
+  "independentQpChecks": [
+    {
+      "caseId": "test-sensor-7403",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 5.248106393906937e-10
+    },
+    {
+      "caseId": "test-sensor-7403",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 5.248106393906937e-10
+    },
+    {
+      "caseId": "test-sensor-7411",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 6.668669089160417e-10
+    },
+    {
+      "caseId": "test-sensor-7411",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 6.668669089160417e-10
+    },
+    {
+      "caseId": "test-model-7417",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 1.50390688791191e-09
+    },
+    {
+      "caseId": "test-model-7417",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 1.50390688791191e-09
+    },
+    {
+      "caseId": "test-mixed-7433",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 1.205053834496539e-09
+    },
+    {
+      "caseId": "test-mixed-7433",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 1.205053834496539e-09
+    },
+    {
+      "caseId": "test-colored-7507",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 5.965494764836876e-10
+    },
+    {
+      "caseId": "test-colored-7507",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 5.965494764836876e-10
+    },
+    {
+      "caseId": "test-delay-7517",
+      "pairId": "mpc-kf",
+      "arm": "baseline",
+      "firstActionError": 9.232454800667256e-10
+    },
+    {
+      "caseId": "test-delay-7517",
+      "pairId": "mpc-kf",
+      "arm": "candidate",
+      "firstActionError": 9.232454800667256e-10
+    },
+    {
+      "caseId": "test-sensor-7403",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 5.248106393906937e-10
+    },
+    {
+      "caseId": "test-sensor-7403",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 5.248106393906937e-10
+    },
+    {
+      "caseId": "test-sensor-7411",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 6.668669089160417e-10
+    },
+    {
+      "caseId": "test-sensor-7411",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 6.668669089160417e-10
+    },
+    {
+      "caseId": "test-model-7417",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 1.50390688791191e-09
+    },
+    {
+      "caseId": "test-model-7417",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 1.50390688791191e-09
+    },
+    {
+      "caseId": "test-mixed-7433",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 1.205053834496539e-09
+    },
+    {
+      "caseId": "test-mixed-7433",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 1.205053834496539e-09
+    },
+    {
+      "caseId": "test-colored-7507",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 5.965494764836876e-10
+    },
+    {
+      "caseId": "test-colored-7507",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 5.965494764836876e-10
+    },
+    {
+      "caseId": "test-delay-7517",
+      "pairId": "mpc-ekf",
+      "arm": "baseline",
+      "firstActionError": 9.232454800667256e-10
+    },
+    {
+      "caseId": "test-delay-7517",
+      "pairId": "mpc-ekf",
+      "arm": "candidate",
+      "firstActionError": 9.232454800667256e-10
+    }
+  ],
+  "evidenceSha256": "6bdda3f4d9c808383084a508af99ee327aa67570b0e62091e41b4de372239b97",
+  "sourceSha256": "216447d576d48285f43d071b4469a1e57e07789458bdc12542ae53d33580d7a5",
+  "scope": "Computational and selection-contract verification, not performance dominance, rare-failure certification or deployment authority"
+}

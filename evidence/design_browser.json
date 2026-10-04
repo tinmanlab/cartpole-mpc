@@ -1,0 +1,15 @@
+{
+  "schema": "cartpole-design-browser/v1",
+  "passed": true,
+  "actualWasm": true,
+  "noNoiseOracle": true,
+  "computedSelectionMatchesNode": true,
+  "noAutomaticStateOrDefaultChange": true,
+  "liveAppliedAndReplayedMatchedCase": true,
+  "ordinaryConfigExitsRecipe": true,
+  "appliedAssetReadoutMatchesModel": true,
+  "failedRerunClearsRecommendation": true,
+  "pageErrors": [],
+  "webmcpShim": false,
+  "deployed": false
+}

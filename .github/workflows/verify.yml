@@ -59,3 +59,9 @@ jobs:
           npm run validate:process
           python tests/test_process_reference.py
           python tests/test_process_browser.py
+
+      - name: Common task design, independent ranking and actual application
+        run: |
+          npm run validate:design
+          python tests/test_design_reference.py
+          python tests/test_design_browser.py

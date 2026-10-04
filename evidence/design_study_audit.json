@@ -1,0 +1,503 @@
+{
+  "schema": "cartpole-task-design-audit/v1",
+  "baseCommit": "1c9056726761cb5374754e77448caca1f4d1ab31",
+  "sourceSha256": {
+    "src/design_study.js": "1e5f850ca5181dd99e0c9e29b116f1ca0a96d114f724f15f11ce0b89e7b911db",
+    "src/design_view.js": "63d4ef4c5bba11f720236f15f16963afe4cb8190440020494ec62de38db1b7ce",
+    "src/app.js": "eb6920893eddc6a8445e9bcfd398a79a3cf66faf65b2a39ea4838ddf32fc0e77",
+    "src/shell.html": "0195606671efbe7382bf35a5bac1201c9cd8bcf3175f6f09ecea89a536f3694b",
+    "src/styles.css": "51a69bfb95a7bc00524a13c0bef409834c201df2dacc74963e681d2e328cc397",
+    "scripts/build.py": "9b9c99b7f63e0d45f7cb41486a0922ea29b015aea52f75ec609c5843f86b5b6a",
+    "scripts/run_design_study.mjs": "66cb186b5fd5b98b5e5672f4a77563d6b2bd125aa98f44620e09997fe33c21d7",
+    "tests/test_design_study.mjs": "1ff524b15234cca3e01da6f45bff29a6c4e8e622d75c32d526564d89aff78056",
+    "tests/test_design_reference.py": "216447d576d48285f43d071b4469a1e57e07789458bdc12542ae53d33580d7a5",
+    "tests/test_design_browser.py": "e555db9729c0c1305e4b21e87975a8595062412ffebf1416a2e5b724477a6aff",
+    "tests/fixtures/design_study.json": "1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445",
+    "index.html": "ffb547fdf0aba9b240e239932348c2586d8651d4a3117da215d559f3f3b8831a",
+    "README.md": "c066847ae33ce206485c96525ad819a2ba8736b2927b069d0d215444b4fbe738",
+    "docs/VALIDATION.md": "7eefeeeeee38244863350c1f56439130babd19db22ae35e13d3cd4e4d02b2c76",
+    "package.json": "6e8d0ab76465e4ff1b3551de6d3b8926307f9b36d4b49ba94271815df7c68468",
+    ".github/workflows/verify.yml": "566e603f8c45d38f2af1d3f2831b87524beaa523587037a0b0fa153ff710974e"
+  },
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:calibration",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:process",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_process_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:design",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_design_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_design_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_process_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "method": "Measured stationary Re; declared inverse-squared-scale Qc/Rc; actual Riccati design; four existing pairs each with nine two-factor candidates; task-first training and separate validation; locked recommendation before independent test; explicit manual application to one admitted primary case.",
+  "verificationHistory": [
+    "Fail-first missing task module and missing browser workflow were reproduced.",
+    "Added regression exposed overlap admitted by direct selector API; corrected data-separation check.",
+    "Application rejects changed settings, test cases or measured covariance instead of reusing admission.",
+    "A final applied-model label check exposed stale asset dimensions after switching into a mixed-condition recipe. Only the readout was corrected; recipe numerical outputs and selected results were unchanged.",
+    "Per-case review corrected an early textual failure attribution: the colored-noise boundary misses the angle task, not the delayed-command case. Actual outcomes and locked selection were never changed."
+  ],
+  "manifestSha256": "1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445",
+  "trialCounts": {
+    "training": 108,
+    "validation": 24,
+    "test": 48,
+    "total": 180
+  },
+  "independentlyScoredFrames": 108000,
+  "independentQpFirstActionChecks": 24,
+  "fit": {
+    "source": "stationary-measurements",
+    "samples": 512,
+    "mean": [
+      0.17966702471915566,
+      0.02989665484398374
+    ],
+    "covariance": [
+      [
+        0.0038184080967448926,
+        8.828842812681364e-05
+      ],
+      [
+        8.828842812681364e-05,
+        0.0006114458873465743
+      ]
+    ],
+    "Rdiag": [
+      0.0038184080967448926,
+      0.0006114458873465743
+    ],
+    "standardDeviation": [
+      0.06179326902458627,
+      0.024727431879323303
+    ],
+    "channelCorrelation": 0.057780806517891574,
+    "lagOne": [
+      -0.0013514023116897522,
+      -0.019422302611464926
+    ],
+    "usable": true,
+    "warnings": [],
+    "covarianceUnits": [
+      [
+        "m^2",
+        "m*rad"
+      ],
+      [
+        "m*rad",
+        "rad^2"
+      ]
+    ],
+    "biasIdentified": false,
+    "scope": "Repeatability around an unknown constant in a stationary fixture. Diagnostic screens are not proof of stationarity/whiteness. No Q_e, constant bias, dynamics or delay is identified."
+  },
+  "selectedPairs": [
+    {
+      "pairId": "lqr-kf",
+      "candidate": {
+        "id": "r1-q1",
+        "effortMultiplier": 1,
+        "processMultiplier": 1,
+        "baseline": true
+      },
+      "eligible": true,
+      "validationScore": 0.24646371509591933
+    },
+    {
+      "pairId": "lqr-ekf",
+      "candidate": {
+        "id": "r1-q1",
+        "effortMultiplier": 1,
+        "processMultiplier": 1,
+        "baseline": true
+      },
+      "eligible": true,
+      "validationScore": 0.2462764800923832
+    },
+    {
+      "pairId": "mpc-kf",
+      "candidate": {
+        "id": "r1-q1",
+        "effortMultiplier": 1,
+        "processMultiplier": 1,
+        "baseline": true
+      },
+      "eligible": true,
+      "validationScore": 0.24646371509590007
+    },
+    {
+      "pairId": "mpc-ekf",
+      "candidate": {
+        "id": "r1-q1",
+        "effortMultiplier": 1,
+        "processMultiplier": 1,
+        "baseline": true
+      },
+      "eligible": true,
+      "validationScore": 0.24627648009239303
+    }
+  ],
+  "recommendedPair": "lqr-kf",
+  "admission": {
+    "selectionId": "{\"pairs\":[[\"lqr-kf\",\"r1-q1\"],[\"lqr-ekf\",\"r1-q1\"],[\"mpc-kf\",\"r1-q1\"],[\"mpc-ekf\",\"r1-q1\"]],\"recommendedPairId\":\"lqr-kf\"}",
+    "settingsSignature": "{\"controlDt\":0.02,\"steps\":600,\"theoryDesign\":{\"stateScales\":[0.5,1,0.15,0.5],\"forceScale_N\":3,\"QeBase\":[0.00002,0.002,0.00002,0.004],\"P0diag\":[0.1,1,0.04,1],\"horizon\":30,\"terminal\":\"full nominal discrete Riccati for each actual Qc/Rc\",\"note\":\"Qc_i=1/stateScale_i^2 and Rc=effortMultiplier/forceScale^2. Scales are declared engineering design choices, not identified physical values or safety bounds.\"},\"sensorFixture\":{\"sigmaPosition_m\":0.06,\"sigmaAngle_rad\":0.025,\"scope\":\"Same test injection amplitudes in all cases; calibration estimator sees readings only. Colored noise and actuator/model mechanisms remain as declared by scenario.\"},\"calibration\":{\"seed\":7103,\"samples\":512,\"fixtureState\":[0.18,0,0.03,0],\"scenario\":\"sensor\",\"stationaryAssumption\":true},\"task\":{\"railLimit_m\":2.4,\"angleEnvelope_rad\":0.6108652381980153,\"forceLimit_N\":10,\"finalWindowSteps\":100,\"finalPositionRms_m\":0.15,\"finalAngleRms_rad\":0.06,\"objective\":{\"position\":{\"scale\":0.25,\"weight\":1},\"angle\":{\"scale\":0.1,\"weight\":0.2},\"force\":{\"scale\":5,\"weight\":0.05},\"deltaForce\":{\"scale\":2,\"weight\":0.02}},\"score\":\"Mean of declared normalized tracking, upright-angle, effort and command-increment squared costs. Evaluate x_k/u_k; first delta-u is from zero. Failed/partial runs receive no full-duration score.\",\"executionBudget_ms\":20,\"timingScope\":\"Host construction/solve/observer/full-step measurements reported separately. Not used to choose a stochastic timing winner or claim WCET/sensor-to-hardware admission.\"},\"candidateGrid\":{\"effortMultipliers\":[0.5,1,2],\"processMultipliers\":[0.1,1,10],\"baseline\":{\"effortMultiplier\":1,\"processMultiplier\":1},\"shortlist\":2,\"includeBaseline\":true},\"pairs\":[{\"id\":\"lqr-kf\",\"controller\":\"lqr\",\"observer\":\"kf\",\"simplicityOrder\":0},{\"id\":\"lqr-ekf\",\"controller\":\"lqr\",\"observer\":\"ekf\",\"simplicityOrder\":1},{\"id\":\"mpc-kf\",\"controller\":\"hard_mpc\",\"observer\":\"kf\",\"simplicityOrder\":2},{\"id\":\"mpc-ekf\",\"controller\":\"hard_mpc\",\"observer\":\"ekf\",\"simplicityOrder\":3}],\"selection\":{\"order\":\"hard failure count, final-task failure count, mean score for full-completed sets, exact ties prefer baseline then fixed candidate ID\",\"crossPairTieRelative\":0.01,\"crossPairRule\":\"Among validation-eligible pairs within 1% of minimum validation score, choose fixed lower simplicityOrder. It is a policy, not proof of algorithm dominance.\",\"testRule\":\"Lock one candidate per pair and one recommended pair BEFORE test. Report baseline and selected for every pair. Test can reject the locked recommendation but cannot select another one.\",\"primaryNonRegressionTolerance\":0.02,\"adoptionScope\":\"Optional manual application to the declared simulation task only; all primary cases must meet task, no candidate-only primary task failure, and mean primary task score <=1.02*same-pair baseline if both complete. Boundaries do not expand admission.\"}}",
+    "testCaseSignature": "[{\"id\":\"test-sensor-7403\",\"group\":\"primary\",\"seed\":7403,\"scenario\":\"sensor\",\"initialState\":[0,0,0.05,0],\"goal\":0.3,\"push\":null},{\"id\":\"test-sensor-7411\",\"group\":\"primary\",\"seed\":7411,\"scenario\":\"sensor\",\"initialState\":[0.1,0,-0.05,0],\"goal\":-0.3,\"push\":null},{\"id\":\"test-model-7417\",\"group\":\"primary\",\"seed\":7417,\"scenario\":\"model\",\"initialState\":[0,0,0.08,0],\"goal\":0.45,\"push\":null},{\"id\":\"test-mixed-7433\",\"group\":\"primary\",\"seed\":7433,\"scenario\":\"mixed\",\"initialState\":[0,0,-0.08,0],\"goal\":-0.45,\"push\":{\"step\":250,\"force\":1,\"duration\":10}},{\"id\":\"test-colored-7507\",\"group\":\"boundary\",\"seed\":7507,\"scenario\":\"colored\",\"initialState\":[0,0,0.1,0],\"goal\":0.5,\"push\":null},{\"id\":\"test-delay-7517\",\"group\":\"boundary\",\"seed\":7517,\"scenario\":\"latency\",\"initialState\":[0,0,-0.1,0],\"goal\":-0.5,\"push\":null}]",
+    "recommendedPairId": "lqr-kf",
+    "accepted": true,
+    "reasons": [],
+    "primaryCases": 4,
+    "baselineScore": 0.23856881801413687,
+    "candidateScore": 0.23856881801413687,
+    "relativeScore": 1,
+    "testCanReselect": false,
+    "hardwareAdmission": false,
+    "scope": "Optional manual application to the declared simulation task only; all primary cases must meet task, no candidate-only primary task failure, and mean primary task score <=1.02*same-pair baseline if both complete. Boundaries do not expand admission."
+  },
+  "summary": [
+    {
+      "pairId": "lqr-kf",
+      "selectedCandidateId": "r1-q1",
+      "groups": [
+        {
+          "group": "primary",
+          "cases": 4,
+          "bothCompleted": 4,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23856881801413687,
+              "trackingRmse": 0.11018176423356885,
+              "forceRms": 2.0865827980330067,
+              "deltaForceRms": 1.8491744811350495,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23856881801413687,
+              "trackingRmse": 0.11018176423356885,
+              "forceRms": 2.0865827980330067,
+              "deltaForceRms": 1.8491744811350495,
+              "saturatedSamples": 2
+            }
+          ]
+        },
+        {
+          "group": "boundary",
+          "cases": 2,
+          "bothCompleted": 2,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5702693507724698,
+              "trackingRmse": 0.16968015534452263,
+              "forceRms": 2.657818133643603,
+              "deltaForceRms": 1.450295770500616,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5702693507724698,
+              "trackingRmse": 0.16968015534452263,
+              "forceRms": 2.657818133643603,
+              "deltaForceRms": 1.450295770500616,
+              "saturatedSamples": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pairId": "lqr-ekf",
+      "selectedCandidateId": "r1-q1",
+      "groups": [
+        {
+          "group": "primary",
+          "cases": 4,
+          "bothCompleted": 4,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23849771116062313,
+              "trackingRmse": 0.1101790308509731,
+              "forceRms": 2.087902397403989,
+              "deltaForceRms": 1.8494832836864628,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23849771116062313,
+              "trackingRmse": 0.1101790308509731,
+              "forceRms": 2.087902397403989,
+              "deltaForceRms": 1.8494832836864628,
+              "saturatedSamples": 2
+            }
+          ]
+        },
+        {
+          "group": "boundary",
+          "cases": 2,
+          "bothCompleted": 2,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5678568131875139,
+              "trackingRmse": 0.16925714205257678,
+              "forceRms": 2.6761354795633268,
+              "deltaForceRms": 1.4517432056928985,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5678568131875139,
+              "trackingRmse": 0.16925714205257678,
+              "forceRms": 2.6761354795633268,
+              "deltaForceRms": 1.4517432056928985,
+              "saturatedSamples": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pairId": "mpc-kf",
+      "selectedCandidateId": "r1-q1",
+      "groups": [
+        {
+          "group": "primary",
+          "cases": 4,
+          "bothCompleted": 4,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23856881801411917,
+              "trackingRmse": 0.11018176423355752,
+              "forceRms": 2.086582798033608,
+              "deltaForceRms": 1.8491744811355806,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23856881801411917,
+              "trackingRmse": 0.11018176423355752,
+              "forceRms": 2.086582798033608,
+              "deltaForceRms": 1.8491744811355806,
+              "saturatedSamples": 2
+            }
+          ]
+        },
+        {
+          "group": "boundary",
+          "cases": 2,
+          "bothCompleted": 2,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5702693507723645,
+              "trackingRmse": 0.16968015534449513,
+              "forceRms": 2.657818133644565,
+              "deltaForceRms": 1.4502957705010346,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5702693507723645,
+              "trackingRmse": 0.16968015534449513,
+              "forceRms": 2.657818133644565,
+              "deltaForceRms": 1.4502957705010346,
+              "saturatedSamples": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pairId": "mpc-ekf",
+      "selectedCandidateId": "r1-q1",
+      "groups": [
+        {
+          "group": "primary",
+          "cases": 4,
+          "bothCompleted": 4,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23849771116230684,
+              "trackingRmse": 0.11017903085143847,
+              "forceRms": 2.0879023973995534,
+              "deltaForceRms": 1.8494832836830246,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 4,
+              "taskPassed": 4,
+              "score": 0.23849771116230684,
+              "trackingRmse": 0.11017903085143847,
+              "forceRms": 2.0879023973995534,
+              "deltaForceRms": 1.8494832836830246,
+              "saturatedSamples": 2
+            }
+          ]
+        },
+        {
+          "group": "boundary",
+          "cases": 2,
+          "bothCompleted": 2,
+          "excludedFromFullDuration": 0,
+          "arms": [
+            {
+              "arm": "baseline",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5678568131923944,
+              "trackingRmse": 0.169257142053744,
+              "forceRms": 2.6761354795462777,
+              "deltaForceRms": 1.4517432056892667,
+              "saturatedSamples": 2
+            },
+            {
+              "arm": "candidate",
+              "completed": 2,
+              "taskPassed": 1,
+              "score": 0.5678568131923944,
+              "trackingRmse": 0.169257142053744,
+              "forceRms": 2.6761354795462777,
+              "deltaForceRms": 1.4517432056892667,
+              "saturatedSamples": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resultInterpretation": "The baseline (Rc multiplier1/Qe multiplier1) was retained for every pair. LQR/KF is recommended by the declared 1% simplicity tie policy, not lowest raw score or global optimality. Primary test passes; colored-noise boundary fails its final angle requirement; no baseline-relative performance improvement is claimed.",
+  "independentErrors": {
+    "covariance": 3.469446951953614e-18,
+    "riccatiMatrix": 2.209617377957329e-09,
+    "gain": 2.6695090582506964e-11,
+    "score": 5.551115123125783e-17
+  },
+  "browser": {
+    "schema": "cartpole-design-browser/v1",
+    "passed": true,
+    "actualWasm": true,
+    "noNoiseOracle": true,
+    "computedSelectionMatchesNode": true,
+    "noAutomaticStateOrDefaultChange": true,
+    "liveAppliedAndReplayedMatchedCase": true,
+    "ordinaryConfigExitsRecipe": true,
+    "appliedAssetReadoutMatchesModel": true,
+    "failedRerunClearsRecommendation": true,
+    "pageErrors": [],
+    "webmcpShim": false,
+    "deployed": false
+  },
+  "priorR24AndPredictiveQReceiptsNumericallyUnchanged": true,
+  "coreDynamicsControllerObserverAndDependenciesUnchanged": true,
+  "defaultChanged": false,
+  "remaining": [
+    "Only two declared design factors and one task envelope, not full global co-design",
+    "No terminal invariant-set or nonlinear robustness certificate",
+    "Host timing is recorded, not hardware/WCET admission",
+    "Sensor bias, full covariance/model/time identification remains separate",
+    "Further reuse of known test cases is regression, not a perpetually untouched assessment"
+  ],
+  "hardwareAdmission": "NOT_EVALUATED",
+  "independentApproval": false,
+  "mergeDeployment": "Not implied by this implementation receipt",
+  "evidence": [
+    "design_study.json",
+    "design_reference.json",
+    "design_browser.json",
+    "design_study_browser.png"
+  ]
+}

@@ -3,6 +3,7 @@
 <main>
 <p class="footer-note"><a href="chain.html">N-pendulum 확장 실험 →</a> · 1개 cart 입력과 직렬 N-link · 기존 4-state 기능의 자동 일반화가 아닌 별도 검증 모드</p>
 <div class="titlebar"><div><h1>같은 CartPole에서 모델·제어·추정을 구분해 실험한다</h1><p>왼쪽 실시간 plant/graph 규격은 모든 개념 페이지에서 동일하고, 오른쪽 설명만 선택한 controller·observer에 맞춰 바뀝니다.</p></div><div class="legend"><span><i class="sw truth"></i>truth</span><span><i class="sw estimate"></i>estimate</span><span><i class="sw prediction"></i>MPC horizon</span><span><i class="sw uncert"></i>uncertainty</span></div></div>
+<p><button id="openDesign">공통 과제로 조합·파라미터 선택하기</button></p>
 <p><button id="openCalibration">보정 → 추정 → 제어 인과 실험으로 이동</button></p>
 <nav class="topic-nav" id="topicNav" aria-label="학습 주제"></nav>
 <div class="workspace">
@@ -17,6 +18,7 @@
  </div>
  <p id="terminalStatus" class="footer-note" role="status"></p>
  <p id="informationScope" class="footer-note"></p><div class="pipeline"><div class="pipe-box"><b>Sensor</b><span id="pipeSensor">y=[p,θ]</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Observer</b><span id="pipeObserver">KF</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Controller</b><span id="pipeController">LQR</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Plant</b><span>MuJoCo WASM · 200 Hz</span></div></div>
+ <p id="designLiveScope" class="footer-note" role="status">일반 실험 · 공통 과제 설정 미적용</p>
  <p id="assetStatus" class="footer-note">MJCF loading; simulation is disabled until the official engine and asset are ready.</p><div class="world-wrap"><canvas class="world" id="world" width="960" height="360"></canvas>
   <div class="transport"><button class="primary" id="play">일시정지</button><button id="step">1 step</button><button id="reset">Reset</button><button id="pushL">← 3 N</button><button id="pushR">3 N →</button><span class="spacer"></span><span class="mono" id="clock">t=0.00 s</span></div>
   <div class="metrics"><div class="metric"><small>θ truth</small><b id="mTheta">0°</b></div><div class="metric"><small>θ estimate</small><b id="mThetaHat">0°</b></div><div class="metric"><small>위치 추정 RMSE</small><b id="mRmse">0</b></div><div class="metric"><small>위치 추종 RMSE</small><b id="mTracking">—</b></div><div class="metric"><small>cmd / applied</small><b id="mForce">0 / 0 N</b></div><div class="metric"><small>잔차 p / θ (단위별)</small><b id="mInnov">0</b></div><div class="metric"><small>solver</small><b id="mSolve">—</b></div><div class="metric"><small>horizon / iter</small><b id="mIter">—</b></div></div>
@@ -48,6 +50,19 @@
 <p class="footer-note">NIS 평균만 최소화하면 공분산을 과대평가할 수 있습니다. log det S를 포함해도 잘못된 모델·시간상관·지연이 해결되지는 않습니다. 후보를 고른 점수와 제어의 목표는 다릅니다. 다음 실험에 이 TEST를 다시 사용하면 알려진 회귀 조건입니다. <a href="https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/kalman_filter.html">KF likelihood의 기준 구현</a></p></section>
 <p class="footer-note">이 실험의 정답 상태는 오차·힘 기여를 설명하는 평가에만 사용합니다. R_e 추정기는 센서 기록만 입력받습니다. 시뮬레이션의 정지 고정장치·잡음 주입 자체는 선언된 실험 가정이며 실물 검증이 아닙니다. 과도한 R_e는 일부 오차를 줄여도 모델 신뢰도·응답을 다르게 하므로 자동 권장하지 않습니다.</p>
 <p class="footer-note">근거: <a href="https://www.itl.nist.gov/div898/handbook/mpc/section6/mpc6221.htm" target="_blank" rel="noopener noreferrer">NIST 반복성 측정</a> · <a href="https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html" target="_blank" rel="noopener noreferrer">KF 공분산의 역할</a> · <a href="evidence/calibration_lesson.json">전체 고정 비교 결과</a></p></div></section>
+<section class="card design-lesson" id="designLesson" aria-labelledby="designTitle"><div class="card-head"><div><b id="designTitle">하나의 과제 · LQR/MPC × KF/EKF 선택과 검증</b><small>새 controller·observer 없이 기존 네 조합을 같은 목적·제약·센서 정보·후보 예산으로 비교합니다.</small></div><span class="badge">명시적 수동 적용만</span></div>
+<p>과제: 12초 위치 추종, 실제 레일 ±2.4 m · 절대각 35° · 명령 ±10 N. 마지막 2초의 위치 RMS ≤0.15 m, 각도 RMS ≤0.06 rad를 별도로 요구합니다. 센서 표준편차는 위치 0.06 m / 각도 0.025 rad인 선언된 시험 조건입니다. 실제 보정기는 별도의 512개 정지 측정만 받습니다.</p>
+<p><code>J_task = mean[(e_p/0.25)² + 0.2(θ/0.1)² + 0.05(u/5)² + 0.02(Δu/2)²]</code><br>힘·명령 변화 비용은 설계한 선호도이지 자연법칙이 아닙니다. 실패는 점수와 분리하고 조기 중단을 좋은 전체 구간 점수로 취급하지 않습니다. 내부 Q_c/R_c는 이 평가 비용과 별도의 설계변수입니다.</p>
+<p>각 조합의 시작점은 선언한 상태·힘 척도의 역제곱 가중치와 full Riccati 설계입니다. 힘 비용 배율 3개 × 유효 Q_e 배율 3개 = 9개 후보. 같은 TRAIN 3개 → 상위 2개+기준의 VALIDATION → 조합·파라미터 잠금 → 별도 TEST 6개를 사용합니다. 통과 조합의 validation 점수가 1% 이내이면 고정된 단순성 순서로 선택합니다. 수학적 전역 최적을 찾는 알고리즘이 아닙니다.</p>
+<button id="designRun">공통 목적의 설계·선택·시험 실행</button><p id="designStatus" role="status">아직 실행하지 않았습니다. 실행은 위 공통 시뮬레이션을 일시정지할 뿐 설정을 바꾸지 않습니다.</p>
+<div class="table-wrap"><table class="matrix" id="designPairs"><thead><tr><th>조합</th><th>선택 후보</th><th>기준 대비</th><th>VALIDATION</th><th>J_task</th><th>추천</th></tr></thead><tbody></tbody></table></div>
+<label>과정을 확인할 조합<select id="designPair"><option value="lqr-kf">lqr-kf</option></select></label>
+<div class="table-wrap"><table class="matrix" id="designCandidates"><thead><tr><th>후보 ID</th><th>출발점</th><th>TRAIN 실패/목표미달</th><th>TRAIN J</th><th>VAL 실패/목표미달</th><th>VAL J</th><th>판정</th></tr></thead><tbody></tbody></table></div>
+<p id="designTestScope">TEST 결과로 다른 후보를 재선택하지 않습니다.</p><div class="table-wrap"><table class="matrix" id="designTests"><thead><tr><th>TEST</th><th>범위</th><th>기준 / 선택 실행</th><th>목표 달성</th><th>J_task</th><th>위치 RMSE</th><th>공통 샘플</th></tr></thead><tbody></tbody></table></div>
+<pre id="designParameters" class="calibration-readout"></pre><p id="designVerdict" class="take">아직 추천·채택 결과가 없습니다.</p>
+<label>명시적으로 재실행할 primary 조건<select id="designApplyCase" disabled></select></label><button id="designApply" disabled>승인된 설정을 공통 실험에 적용</button>
+<p class="footer-note">TEST는 고정 추천을 거부할 수 있지만 다른 조합을 새로 고르지 않습니다. 승인도 명시된 primary 시뮬레이션 과제에만 해당하며 boundary·하드웨어·실시간 WCET로 확대하지 않습니다. 적용하면 해당 초기 상태로 돌아가 일시정지합니다. 일반 설정 변경·Reset은 연구 설정을 해제합니다. 이전 공분산 선택 실험과 달리 여기서는 실제 폐루프 목적을 사용하며, 유효 Q_e 탐색값을 물리적 잡음 식별값이라고 부르지 않습니다.</p>
+<p><a href="evidence/design_study.json">전체 설계·선택·시험 근거</a> · <a href="docs/VALIDATION.md#task-aware-four-pair-design-study">과제와 주장 범위</a></p></section>
 <section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push · DONE은 구간 완료일 뿐 목표 추종·안전 보장 아님 · 추종/추정 오차를 별도 표기</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias</option><option value="actuator">Actuator lag/gain</option><option value="latency">Command latency</option><option value="sim2real">Sim2real stack</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
 <p class="footer-note">CartPole에는 발·contact wrench·floating base가 없습니다. 논문 소개, 축약 비유, 실제 구현을 각 페이지에서 구분하며 그래프는 현재 선택된 runtime의 값만 보여줍니다.</p>
 </main><script>/* CORE */</script><script>/* ACTOR */</script><script>/* RESIDUAL */</script><script>/* TOPICS */</script><script>/* APP */</script></body></html>

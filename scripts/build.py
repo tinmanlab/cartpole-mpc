@@ -23,13 +23,15 @@ def build() -> str:
             read(SRC / "qp.js"),
             read(SRC / "engine.js"),
             read(SRC / "calibration_lab.js"),
+            read(SRC / "design_study.js"),
+            "const CONTROL_LAB_DESIGN_MANIFEST = " + read(ROOT / "tests/fixtures/design_study.json") + ";",
             "const CONTROL_LAB_CALIBRATION_MANIFEST = " + read(ROOT / "tests/fixtures/calibration_lab.json") + ";",
             "const CONTROL_LAB_PROCESS_MANIFEST = " + read(ROOT / "tests/fixtures/process_selection.json") + ";",
         ]),
         "ACTOR": "const CONTROL_LAB_ACTOR = " + json.dumps(actor, separators=(",", ":")) + ";",
         "RESIDUAL": "const CONTROL_LAB_RESIDUAL = " + json.dumps(residual, separators=(",", ":")) + ";",
         "TOPICS": read(SRC / "topics.js"),
-        "APP": read(SRC / "calibration_view.js") + "\n" + read(SRC / "app.js"),
+        "APP": read(SRC / "calibration_view.js") + "\n" + read(SRC / "design_view.js") + "\n" + read(SRC / "app.js"),
     }
     for key, value in parts.items():
         token = "/* " + key + " */"
