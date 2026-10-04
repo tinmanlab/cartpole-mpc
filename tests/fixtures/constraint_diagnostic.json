@@ -1,0 +1,16 @@
+{
+  "schema":"cartpole-constraint-diagnostic/v1",
+  "purpose":"F2 follow-up: distinguish an active nominal rail plan from noisy nonlinear closed-loop success, without retuning or replacing the existing benchmark",
+  "baseTask":"tests/fixtures/design_study.json",
+  "controllerParameters":"Retain the r1-q1 baseline, measured Re, original P0 and horizon=30 for every case",
+  "steps":600,
+  "cases":[
+    {"id":"interior","seed":23011,"scenario":"nominal","initialState":[0,0,0.05,0],"goal":0.3,"push":null},
+    {"id":"right-near-rail","seed":23017,"scenario":"nominal","initialState":[2.35,0.3,0.12,-0.05],"goal":2.05,"push":null},
+    {"id":"left-near-rail","seed":23021,"scenario":"nominal","initialState":[-2.35,-0.3,-0.12,0.05],"goal":-2.05,"push":null},
+    {"id":"right-model-error","seed":23027,"scenario":"model","initialState":[2.35,0.3,0.12,-0.05],"goal":2.05,"push":null},
+    {"id":"left-model-error","seed":23033,"scenario":"model","initialState":[-2.35,-0.3,-0.12,0.05],"goal":-2.05,"push":null}
+  ],
+  "invariants":["One unchanged uniform-rod MuJoCo WASM plant; no new physics or actuator authority","All full runs use measured position/angle and estimated velocities; true initial velocity is not initialized into the observer","Exact-state probes are only labelled offline model diagnostics, never a claimed sensor-only control result","Nominal force and world rail bounds remain 10 N and 2.4 m; success/score requirements remain the original task's","Report active-constraint coverage as observed. No minimum number of wins or successful runs is required to pass code validation","Matched mirror cases separate directional effects; model-error cases keep the same declared sensor amplitudes","Do not change cases or retune against their results; future reuse is regression evidence"],
+  "claimBoundary":"No global ranking, new optimum, robust safety or hardware admission. Planning feasibility, estimator error, actual envelope failure and task achievement are separate outcomes."
+}
