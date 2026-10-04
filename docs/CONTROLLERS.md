@@ -32,13 +32,13 @@ Purpose: derive a state-feedback gain from a linear model and quadratic cost.
     J = sum(x^T Q x + u^T R u)
     u = -Kx
 
-The code solves the discrete algebraic Riccati equation iteratively. The algorithm audit cross-checks K against SciPy solve_discrete_are; the current maximum absolute difference is below 2e-7.
+The code solves the discrete algebraic Riccati equation iteratively. The algorithm audit cross-checks K against SciPy solve_discrete_are; the recorded error belongs to the exact source/version of that receipt, not an invariant performance claim.
 
 LQR's Riccati problem has no input constraint. The implementation saturates the resulting feedback force to the actuator limit before sending it to the plant; that saturation is outside the LQR optimum.
 
 ## Linear MPC
 
-Purpose: add a finite horizon and an explicit input box constraint.
+Purpose: solve an explicit finite-horizon input-box problem repeatedly. Finite-horizon LQR also exists; a horizon alone is not the distinction.
 
     minimize  sum x_k^T Q x_k + R u_k^2 + x_N^T Q_f x_N
     subject to
@@ -54,11 +54,11 @@ The `hard_mpc` variant adds world-coordinate rail bounds at every predicted stag
 
 Purpose: make model uncertainty part of the optimization rather than only part of an external stress test.
 
-The CartPole controller builds three local linear models with different cart mass, pole mass and pole length. One shared control sequence is evaluated on all of them. The objective is
+The CartPole controller builds five local linear models with different cart mass, pole mass, pole length and viscous friction. One shared control sequence is evaluated on all of them. The objective is
 
     J = mean_i J_i + rho * (max_i J_i - mean_i J_i)
 
-with the same input box constraint for every scenario. The gradient combines the mean gradient with the gradient of the current worst model.
+with a shared input box and a soft goal-error band. The limited projected-gradient search combines mean and worst-model gradients; it does not impose a hard rail on every model or establish exact convergence.
 
 This is an executable finite-scenario risk controller. It teaches the distinction between:
 
@@ -137,7 +137,7 @@ Important comparison boundary:
 The conceptual contrast is:
 
     MPC/NMPC: solve a model-based optimization online
-    PPO:      move the main optimization into training, then infer online
+    PPO:      policy-gradient training for its own reward/data, then frozen actor inference
 
 Neither is presented as universally superior.
 
@@ -152,3 +152,15 @@ Runtime `terminalCost` metadata distinguishes computed nominal Riccati from conf
 A failed constructor leaves the previous complete state snapshot stopped, not a new plant running with an old controller. It requires a successful reset/reconfiguration. The startup path still fails visibly if there is no valid initial configuration.
 
 This is a local nominal tail-cost approximation, not a terminal invariant set, global nonlinear stability proof, robust recovery region or hardware certificate. Physics remains official MuJoCo WASM and the browser QP solver remains the pinned upstream quadprog. No acados runtime or new dependency is added by this option.
+
+## Additional interpretation rules
+
+The implemented PID is coupled feedback, not a universal cascade design. LQR's standard optimality/stability statements need the applicable stabilizability/detectability and positive cost assumptions; force saturation and nonlinear mismatch are outside its unconstrained optimum.
+
+The soft state_mpc band uses |p-p_goal|, not absolute world p. A nonzero goal moves that band. Its `lastPredictedStateViolation` diagnostic instead reports absolute world rail excursion. The one-update LTV mode and limited soft-penalty search report cost-decrease acceptance separately from unverified optimality (`converged=null`).
+
+The reduced CoM plan contains only c/c_dot; no fabricated theta/omega future is shown. Planner force differs from the force returned by downstream LQR. Primary NMPC forecasts displayed after a backup switch are explicitly primary-only, not a rollout of backup control. A saturated LQR backup has no verified global recovery/safety domain here.
+
+Clipped iLQR forward inputs do not constitute exact constrained QP/DDP active-set optimization. SQP-RTI involves a numerical/execution strategy distinct from the browser's single local update. New names and null convergence diagnostics change reporting, not the sampled control sequence.
+
+PPO need not imitate or compress any MPC solution. Its frozen actor, normalization, discrete actions, reward and training envelope differ from these optimization controllers; a common table is not an official fair benchmark ranking.

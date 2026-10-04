@@ -1,5 +1,7 @@
 # Algorithm Correctness Audit — 2026-10-03
 
+> HISTORICAL snapshot at its stated revision/configuration. Numeric results and prior implementation descriptions below are preserved as evidence, not current runtime claims. Current semantics are owned by IMPLEMENTATION_BOUNDARIES.md, MODEL_HIERARCHY.md, CONTROLLERS.md, OBSERVERS.md and MUJOCO_WASM_RUNTIME.md.
+
 Base public revision audited: `0b17aa572d432c33614fd02db26a3d2a5f9ba519`.
 
 This audit treats four things separately:

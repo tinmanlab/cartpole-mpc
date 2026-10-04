@@ -16,7 +16,7 @@ The lab keeps one plant and changes the control or estimation block around it.
         ↓
       plant
 
-The browser always renders the same:
+The browser preserves one shared layout (not every mode supplies every diagnostic):
 - CartPole truth and estimate overlay,
 - disturbance controls,
 - state trace,
@@ -98,9 +98,9 @@ Simulator truth is used for:
 - error/evidence metrics,
 - the explicit Truth/oracle baseline.
 
-Normal controller modes receive the selected observer state estimate, not simulator truth.
+Non-oracle controller configurations receive the selected observer estimate. Choosing Truth/oracle explicitly feeds simulator truth to the controller; offline ID/training can also use truth and must disclose it.
 
-The audited oracle regression requires exactly zero estimator RMSE; any nonzero oracle RMSE indicates timestamp misalignment.
+The audited oracle regression requires exactly zero estimator RMSE; a nonzero oracle RMSE flags an alignment/data-flow defect to investigate, not a unique diagnosis.
 
 ## Learned-output covariance boundary
 
@@ -111,3 +111,9 @@ Therefore:
 - corrected output P = not calibrated / unavailable.
 
 The UI deliberately does not draw baseP as confidence bounds for the neural-corrected estimate.
+
+## Display and state authority
+
+The active runtime configuration is published only after successful construction. A selected lesson is explanatory navigation, not implicit controller selection. Diagnostic plots are labelled by the actual running pair, use independent physical-unit scales, and do not fabricate unavailable quantities. The reduced CoM planner supplies no full-state forecast. Componentwise estimation error and true reference-tracking error are separate; compatibility mixed-unit metrics are not the visible score.
+
+Simulation post-step timestamps do not implement acquisition/arrival clocks, out-of-sequence sensor fusion, target-processor WCET or physical sensor-to-actuator deadlines. Those remain separate integration requirements.

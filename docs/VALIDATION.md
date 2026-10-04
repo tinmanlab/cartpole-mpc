@@ -93,3 +93,9 @@ npm run test:browser
 ```
 
 The existing verify workflow runs these checks; there is no separate service or new workflow framework. Earlier commissioning receipts remain historical at their recorded source identities. This option does not imply that the 13-section commissioning campaign was regenerated or that hardware was evaluated.
+
+## Educational correctness regression
+
+`tests/test_education.mjs` checks all lesson scopes/sources, real five-model count, unavailable convergence for local-update modes, genuine reduced-only prediction and componentwise metrics. A pre-edit local control-sequence capture also checks that reporting corrections preserve sampled actions. Browser regression visits all 28 topics, verifies source links and readable line breaks, checks that reading leaves runtime unchanged, and inspects reduced-forecast/metric-unit metadata.
+
+A scripted string/metadata test is not proof of every explanatory sentence. Primary-source review, code inspection, numerical checks and human-readable UI inspection remain separate evidence. Earlier dated audit/commissioning files retain their source snapshots; do not cite them as freshly rerun campaign results.

@@ -29,6 +29,15 @@ async def main():
 
         await page.wait_for_function("document.querySelector('#webmcpBadge').textContent.includes('registered')")
         assert await page.locator("#topicNav button").count() == 28
+        assert await page.locator('#lessonScope').count()==1
+        before_topic=await page.evaluate('window.controlLab.getState().controller')
+        for topic_id in await page.evaluate('CONTROL_LAB_TOPIC_ORDER'):
+            await page.evaluate("k=>window.__webmcpTools.cartpole_set_topic.execute({topic:k})",topic_id)
+            assert await page.locator('#lessonScope').text_content()
+            assert await page.locator('#topicBody .source-link').count()>0, topic_id
+            assert not await page.locator('#topicBody .math').evaluate_all("els=>els.some(e=>e.textContent.includes(String.fromCharCode(92)+'n'))"), topic_id
+        assert await page.evaluate('window.controlLab.getState().controller')==before_topic
+
         await page.evaluate("window.__webmcpTools.cartpole_set_topic.execute({topic:'full_nmpc'})")
         await page.click("#useTopic")
         state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
@@ -43,6 +52,11 @@ async def main():
         state2 = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
         assert state2["controller"] == "centroidal_mpc"
         assert state2["solver"]["horizon"] == 32
+        await page.screenshot(path=str(ROOT/'evidence/education_reduced_view.png'),full_page=True)
+        assert state2['solver']['predictionSpace']=='reduced-com'
+        assert await page.locator('#contextChart').get_attribute('data-space')=='reduced-com'
+        assert await page.locator('#world').get_attribute('data-ghosts')=='none-reduced-plan'
+
 
         await page.evaluate("window.__webmcpTools.cartpole_set_controller.execute({controller:'state_mpc'})")
         state_mpc_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:4})"))
@@ -53,6 +67,8 @@ async def main():
         assert ltv_state["controller"] == "ltv_mpc"
         assert ltv_state["solver"]["horizon"] == 30
         assert ltv_state["solver"]["iterations"] == 1
+        assert ltv_state['solver']['converged'] is None
+        assert isinstance(ltv_state['solver']['updateAccepted'],bool)
 
         await page.evaluate("window.__webmcpTools.cartpole_set_observer.execute({observer:'ukf'})")
         ukf_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
@@ -91,6 +107,9 @@ async def main():
         await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:12})")
         live = json.loads(await page.evaluate("window.__webmcpTools.cartpole_get_state.execute({})"))
         assert "appliedForce" in live
+        assert live['metrics']['stateUnits']==['m','m/s','rad','rad/s']
+        assert 'estimationRmseByState' in live['metrics']
+        assert 'positionTrackingRmse' in live['metrics']
 
         await page.evaluate("window.__webmcpTools.cartpole_set_observer.execute({observer:'ekf'})")
         await page.evaluate("window.__webmcpTools.cartpole_set_scenario.execute({scenario:'dropout'})")
@@ -202,7 +221,7 @@ async def main():
         await blocked.close()
 
         assert not native_errors,native_errors
-        result={'schema':'cartpole-browser-wasm/v1','physics':final['physics'],'solver':final['solver'],
+        result={'educationScopesAndUnitsPassed':True,'noSyntheticReducedPrediction':True,'schema':'cartpole-browser-wasm/v2','physics':final['physics'],'solver':final['solver'],
             'wasmHttp200':True,'mjcfHttp200':True,'legacyIntegratorForbidden':True,'pageErrors':errors+native_errors,
             'webmcpNativeAvailable':await native_page.evaluate("!!((document.modelContext||navigator.modelContext)?.registerTool)"),
             'webmcpAdapterTest':'first page only uses an explicitly injected registration shim',

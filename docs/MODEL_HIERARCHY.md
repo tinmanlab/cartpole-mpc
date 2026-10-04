@@ -1,120 +1,73 @@
-# Model hierarchy: fixed linearization, LTV, NMPC, reduced order, and hybrid systems
+# Model, formulation, transcription and solver: independent choices
 
-A common source of confusion is the phrase "use the nonlinear model directly."
+This is a map of choices, not a ladder in which each entry universally improves on the previous one. The controller selected in the live UI is independent of the lesson being read. Concrete runtime implementations are classified in [Implementation boundaries](IMPLEMENTATION_BOUNDARIES.md).
 
-There are several distinct levels.
+## 1. Fixed LTI and time-varying linear models
 
-## 1. Fixed LTI model
+The local upright model uses deviations about an equilibrium:
 
-Linearize once around an equilibrium:
+    e_(k+1) = A e_k + B delta_u_k
 
-    delta x_(k+1) = A delta x_k + B delta u_k
+The lab constructs A/B from the same nominal discrete MuJoCo transition as the nonlinear prediction model. This provides local model consistency, not global accuracy away from upright. LQR, KF and Linear MPC use this linearization. An LTI dynamics model alone does not make an optimization problem convex: cost and constraints also matter.
 
-The same A and B are reused at every time.
-
-Advantages are speed, convex formulations, and easy analysis. The limitation is that validity is local to the operating region.
-
-This is what the CartPole LQR/KF/Linear MPC use around upright.
-
-## 2. LTV / successive-linearization MPC
-
-Keep a nonlinear model as the source of truth, but relinearize along the current nominal trajectory:
+An LTV model has A_k/B_k varying with time. It can be prescribed independently or obtained by linearizing a nonlinear model along a nominal trajectory. For the latter:
 
     A_k = df/dx at (xbar_k, ubar_k)
     B_k = df/du at (xbar_k, ubar_k)
+    delta_x_(k+1) ≈ A_k delta_x_k + B_k delta_u_k + d_k
+    d_k = f(xbar_k, ubar_k) - xbar_(k+1)
 
-Then solve one local time-varying subproblem.
+The affine defect d_k vanishes only when the nominal trajectory is dynamically feasible (with the stated discretization). A general trajectory linearization cannot silently omit it.
 
-The LTV MPC / SQP-RTI bridge performs one real-time-iteration-style update per control tick:
+## 2. Nonlinear MPC is a problem formulation
 
-    warm start
-    → nonlinear nominal rollout
-    → trajectory-dependent Jacobians
-    → one local quadratic update
-    → apply first command
-    → repeat next tick
-
-It is not an acados or OCS2 source port.
-
-## 3. Nonlinear MPC
-
-The OCP itself retains:
+A nonlinear OCP retains nonlinear dynamics and/or cost/constraints in its optimization problem. A dynamics example is:
 
     x_(k+1) = f(x_k, u_k)
 
-The solver still usually uses derivatives and local approximations internally.
+SQP and iLQR-type methods use derivatives and local approximations; sampling-based or derivative-free methods need not construct those same local linear models. Therefore neither 'NMPC never linearizes' nor 'every NMPC algorithm repeatedly linearizes' is a general definition.
 
-Therefore NMPC does not mean "never linearize." It means the nonlinear dynamics remain part of the optimization problem rather than being replaced permanently by one fixed A,B model.
+Finite-horizon LQR exists too. Receding-horizon execution and the chosen constrained optimization formulation distinguish the implemented MPC, not simply the presence of a finite horizon. Input-only and soft-constrained MPC are legitimate formulations; hard state constraints are an application choice.
 
-The CartPole Full NMPC uses nonlinear rollout and multiple local iLQR-style iterations.
+## 3. Transcription, solver and execution strategy are different axes
 
-## 4. Reduced-order MPC
+| Axis | Examples | Does not by itself establish |
+|---|---|---|
+| Prediction model | LTI, LTV, nonlinear; reduced or full order | solver, convexity or performance |
+| Constraint formulation | input/state/path, hard/slack/penalty, stochastic | true-plant safety under mismatch |
+| Transcription | single shooting, multiple shooting, collocation | a particular optimizer |
+| Numerical method | active-set QP, SQP, IPM, iLQR/DDP variants | correct model or real-time execution |
+| Execution strategy | solve to a tolerance, limited iterations, RTI preparation/feedback | convergence or deadline certification |
 
-For large robots, the full rigid-body system may be too expensive or unnecessarily detailed for the planning layer.
+Single shooting can be appropriate for large systems; dimension alone does not rule it out. Multiple shooting can expose useful sparsity and improve some conditioning/initialization properties, but adds state variables and continuity constraints. Select using the problem structure, derivatives, memory, constraints and measured execution cost.
 
-Centroidal MPC retains quantities such as center of mass, centroidal momentum, contact wrench, and selected configuration variables. A lower-level inverse-dynamics/WBC layer realizes the reduced plan.
+The browser `ltv_mpc` is one iLQR-style local update with bounded forward line search. It is not acados/OCS2 constrained SQP-RTI. Its cost-decrease flag is `updateAccepted`; nonlinear optimality is not tested, so `converged` is null. The browser full nonlinear controller performs up to two local updates. Clipping its force does not reproduce an exact constrained QP or a box-DDP active-set solve.
 
-The CartPole centroidal-style controller is a structural analogue:
-- reduced horizontal CoM prediction,
-- future CoM reference,
-- full-state downstream stabilization.
+## 4. Reduced versus full models
 
-## 5. Full-order rigid-body NMPC
+The local reduced controller plans only horizontal center of mass c and velocity c_dot. Its ideal continuous momentum relation is M*c_ddot=F_net. The discrete planner and downstream LQR are approximations; its planned force and applied LQR force differ. It supplies no theta/omega forecast, so no fabricated full-state ghost trajectory is displayed.
 
-A humanoid full-order OCP can include floating-base configuration, joint configuration, velocities, contact wrench, joint acceleration or torque, and collision/contact constraints.
+Humanoid centroidal formulations can retain momentum, CoM and different subsets of configuration/contact variables. There is no single mandatory state/input ordering. A particular pinned comparator's wrench/joint-velocity formulation is an example, not the definition of all centroidal MPC. Full-order formulations may use torques, accelerations, contact forces or other parameterizations with corresponding equations and constraints.
 
-This is qualitatively different in scale from four-state CartPole.
+Pinocchio supplies rigid-body dynamics/kinematics and derivatives; it is not itself an OCP solver. OCS2 and acados supply different optimization facilities. The optional native research branch and a deployed browser implementation are separate scopes; a library's supported feature is not a feature reproduced in this lab.
 
-Use sparse rigid-body dynamics and mature solvers rather than scaling the browser implementation.
+## 5. Contact and hybrid dynamics
 
-Recommended native authorities for Figure-like work:
-- Pinocchio for rigid-body dynamics and derivatives,
-- OCS2 for switched/nonlinear optimal control,
-- acados for NMPC/MHE, multiple shooting, SQP/RTI and sensitivities.
+Contact transitions can introduce switching, impacts and uncertainty. Under ideal sticking contact, a constraint such as J_c(q)*v=0 applies. It does not cover slip, rolling, deformable contacts or unknown contact state without further modeling. Friction cones, unilateral normal forces and complementarity/mode schedules have different assumptions.
 
-## 6. Humanoids are hybrid systems
+These dimensions are absent from the two-DOF slider/rod MJCF. CartPole success transfers diagnostic methods and interface contracts, not validated humanoid contact control or hardware authority.
 
-Humanoid dynamics change with contact mode:
+## 6. Estimation choices
 
-    left support
-    double support
-    right support
-    flight
+KF/EKF/UKF are recursive estimation choices; invariant-error geometry is another axis; MHE uses a moving optimization window. MHE can be linear or nonlinear, and neither MHE nor InEKF is a compulsory successor to EKF. Constraints, delayed sensing, noise model, observability and computational budget determine suitability.
 
-Constraints can include normal force >= 0, friction cone, stance-foot velocity = 0, swing clearance, joint/torque/velocity limits, and self collision.
+The local MHE optimizes four initial-window state variables, uses an approximate EKF arrival prior and eight transitions (0.16 s). It has no process-noise trajectory decisions, hard state constraints or calibrated output covariance. See [Observers](OBSERVERS.md).
 
-So "nonlinear" is still not the whole story. A transferable architecture must represent continuous nonlinear dynamics, discrete contact modes, path constraints, mode-dependent constraints, and contact uncertainty.
+## References and use
 
-## 7. Estimation has the same hierarchy
+- MIT LQR/finite-horizon/trajectory linearization: https://underactuated.mit.edu/lqr.html
+- acados features, RTI phases and partial condensing: https://docs.acados.org/features/
+- OCS2 methods and switched-system interfaces: https://leggedrobotics.github.io/ocs2/overview.html
+- OSQP convex MPC formulation: https://osqp.org/docs/examples/mpc.html
 
-    KF     fixed linear dynamics
-    EKF    nonlinear mean + local Jacobian
-    InEKF  invariant error when Lie-group structure is useful
-    MHE    optimize a recent window with dynamics/measurements/constraints
-    NMHE   nonlinear moving-horizon problem
-
-The CartPole Nonlinear shooting MHE is intentionally limited:
-- EKF posterior is used as an approximate arrival prior,
-- only the first state of the window is optimized,
-- the nonlinear plant is single-shot through the window,
-- no process-noise trajectory or hard state constraints are decision variables.
-
-A full humanoid MHE should use a mature sparse QP/NLP implementation. A practical legged example combines orientation EKF with constrained velocity MHE at 200 Hz:
-https://arxiv.org/abs/2405.20567
-
-## Transfer rule
-
-The transferable idea is not a particular solver.
-
-The transferable contract is:
-
-    model(x,u,mode,parameters)
-    derivatives(x,u)
-    constraints(x,u,mode)
-    estimator(sensor history, controls)
-    controller(estimated state, reference)
-    diagnostics(residuals, constraint margins, timing)
-    uncertainty/model parameters
-    scenario generator
-
-Figure should map this contract to its real rigid-body/contact stack rather than reusing CartPole-specific equations.
+The reusable boundary is model, derivatives, constraints, estimator information, control reference, numerical diagnostics and execution timing. Reusing that boundary does not authorize copying CartPole parameter values or safety claims to another robot.

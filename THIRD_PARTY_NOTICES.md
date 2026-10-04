@@ -8,7 +8,7 @@ src/plant.js contains a JavaScript adaptation of selected actuator/friction equa
 - License: Apache License 2.0
 - License text: licenses/Apache-2.0.txt
 
-The CartPole coupling, educational scenarios, controller/observer implementations, MPC/NMPC solvers, and UI are local to this repository.
+The CartPole coupling, educational scenarios, local controller/observer adapters, small iLQR-style routines and UI are local. The main QP numerical solver is upstream quadprog, and physics is upstream MuJoCo WASM, as attributed below; not all numerical solvers are locally authored.
 
 ## Figure / wb_humanoid_mpc
 
@@ -27,7 +27,7 @@ Visual and documentation patterns were informed by:
 - https://github.com/tinmanlab/cartpole-transformer
 - https://github.com/tinmanlab/cartpole-diffusion-v02
 
-Their source is not bundled here except for the CartPole plant lineage noted above.
+The frozen PPO actor artifact is reused from the related CartPole training project. This is not a newly trained policy or a reproduced paper benchmark. Other source reuse is identified by the specific lineage/notices in this file.
 
 ## Official MuJoCo WebAssembly runtime
 

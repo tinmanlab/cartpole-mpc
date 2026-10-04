@@ -1,5 +1,7 @@
 # Sim2real correctness review — 2026-10-04
 
+> HISTORICAL snapshot at its stated revision/configuration. Numeric results and prior implementation descriptions below are preserved as evidence, not current runtime claims. Current semantics are owned by IMPLEMENTATION_BOUNDARIES.md, MODEL_HIERARCHY.md, CONTROLLERS.md, OBSERVERS.md and MUJOCO_WASM_RUNTIME.md.
+
 > Historical first audit at `fc7a8e7`: its defects and numerical failures are retained as original evidence. The follow-up [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md) replaces the browser physics and QP optimizer and closes the strict parity gap; use its current receipts for runtime status.
 
 ## Decision

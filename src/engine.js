@@ -330,7 +330,7 @@ const ControlLab = (() => {
     }
     act(x,goal=0){
       const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
-      let U=this.U.slice(),cur=constrainedLinearCost(this.A,this.B,x0,U,this.Q,this.R,this.Qf,this.bound),iterations=0,step=.5;
+      let U=this.U.slice(),cur=constrainedLinearCost(this.A,this.B,x0,U,this.Q,this.R,this.Qf,this.bound),iterations=0,step=.5;const initialCost=cur.J;
       for(let it=0;it<100;it++){
         const g=constrainedLinearGradient(this.A,this.B,cur.X,U,this.Q,this.R,this.Qf,this.bound);let accepted=false;
         for(let bt=0;bt<14;bt++){
@@ -340,7 +340,7 @@ const ControlLab = (() => {
         iterations++;if(!accepted)break;
       }
       const out=U[0];this.U=U.slice(1).concat(U.at(-1));this.lastPrediction=cur.X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();
-      this.lastCost=cur.J;this.lastIterations=iterations;this.lastConverged=true;this.lastPredictedStateViolation=Math.max(0,...cur.X.map(q=>Math.abs(q[0])-this.bound.hard));
+      this.lastCost=cur.J;this.lastIterations=iterations;this.lastConverged=null;this.lastUpdateAccepted=cur.J<initialCost;this.lastTermination='bounded-search; optimality-not-verified';this.lastPredictedStateViolation=Math.max(0,...cur.X.map(q=>Math.abs(q[0]+goal)-this.bound.hard));
       this.lastSolveMs=clock.now()-t0;return out;
     }
   }
@@ -351,7 +351,7 @@ const ControlLab = (() => {
       this.A=[[1,DT],[0,1]];this.B=[[.5*DT*DT/this.mass],[DT/this.mass]];
       this.Q=diag([14,2.2]);this.Qf=diag([28,5]);this.R=.045;this.U=Array(this.N).fill(0);
       const inner=new LQRController(spec);this.innerK=inner.K.slice();this.lookahead=12;
-      this.name='Centroidal-style reduced MPC';this.lastSolveMs=0;this.lastIterations=0;
+      this.name='Reduced CoM planner + LQR';this.predictionSpace='reduced-com';this.lastSolveMs=0;this.lastIterations=0;
     }
     reset(){this.U.fill(0);this.lastPredictionReduced=[];this.lastPrediction=[];this.lastControls=[];this.lastReference=[0,0];this.lastIterations=0;}
     reducedState(x,goal){const c=x[0]+this.alpha*Math.sin(x[2]),cd=x[1]+this.alpha*Math.cos(x[2])*x[3];return [c-goal,cd];}
@@ -362,7 +362,7 @@ const ControlLab = (() => {
       const look=sol.X[Math.min(this.lookahead,sol.X.length-1)],xRef=look[0]+goal,vRef=look[1];
       const e=[x[0]-xRef,x[1]-vRef,wrap(x[2]),x[3]],u=clamp(-dot(this.innerK,e),-this.limit,this.limit);
       this.lastPlannerForce=plannerForce;this.lastReference=[xRef,vRef];this.lastControls=sol.U.slice();this.lastPredictionReduced=sol.X.map(z=>[z[0]+goal,z[1]]);
-      this.lastPrediction=sol.X.map((z,k)=>{const a=Math.min(1,k/Math.max(1,this.lookahead)),th=x[2]*(1-a),om=x[3]*(1-a);return [z[0]+goal,z[1],th,om];});
+      this.lastPrediction=[];this.predictionSpace='reduced-com'; // No θ/ω forecast exists in this planner.
       this.lastCost=sol.J;this.lastIterations=sol.iterations;this.lastConverged=sol.converged;this.lastSolver=sol.solver;this.lastKktResidual=sol.kktResidual;this.lastPrimalResidual=sol.primalResidual;this.lastStateConstrained=sol.stateConstrained;this.lastSolveMs=clock.now()-t0;return u;
     }
   }
@@ -429,7 +429,7 @@ const ControlLab = (() => {
     constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
       super(spec);this.N=opts.N||30;this.U=Array(this.N).fill(0);
       this.Q=diag(opts.Qdiag||[6,.8,76,4]);this.Qf=diag(opts.Qfdiag||[18,2.4,120,8]);this.R=opts.R??.12;
-      this.reg=opts.reg??1e-4;this.name='LTV MPC · one-step SQP/RTI bridge';
+      this.reg=opts.reg??1e-4;this.name='LTV approximation · one iLQR update';
     }
     act(x,goal=0){
       const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
@@ -449,7 +449,7 @@ const ControlLab = (() => {
       if(accepted){U=bestU;X=bestX;best=bestCost;}
       const out=clamp(U[0],-this.limit,this.limit);this.U=U.slice(1).concat(U.at(-1));
       this.lastPrediction=X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();this.lastCost=best;
-      this.lastIterations=1;this.lastConverged=accepted;this.lastSolveMs=clock.now()-t0;return out;
+      this.lastIterations=1;this.lastConverged=null;this.lastUpdateAccepted=accepted;this.lastTermination='one-local-update; optimality-not-verified';this.lastSolveMs=clock.now()-t0;return out;
     }
   }
 
@@ -474,7 +474,7 @@ const ControlLab = (() => {
     step(y,u){const before=this.x.slice(),F=numericJacobian(before,u,this.spec);this.x=nonlinearStep(before,u,this.spec);this.P=add(mul(mul(F,this.P),T(F)),this.Q);return this.update(y);}
   }
   class SO2Observer extends EKFObserver{
-    constructor(spec,opts){super(spec,opts);this.name='SO(2) invariant-error bridge';this.wrapInnovation=true;}
+    constructor(spec,opts){super(spec,opts);this.name='SO(2) wrapped-angle EKF';this.wrapInnovation=true;}
   }
   class RawObserver{
     constructor(){this.name='Raw sensor';this.prev=null;this.x=[0,0,0,0];this.P=null;}
@@ -604,7 +604,7 @@ const ControlLab = (() => {
     const baseR=plant.measurementVariance().map(v=>v*(observerOpts.RScale??1)),obs=makeObserver(observer,plant.spec,{...observerOpts,model:residualModel,R:observerOpts.R||baseR});
     plant.goal=goal;const y0=plant.sensor();obs.reset(y0,plant.s);ctl.reset();
     let xh=obs.outputX?obs.outputX.slice():obs.x.slice(),se=0,ae=0,maxAngle=0,maxPosition=0,failed=false,solveMs=0,solveN=0,iterSum=0,solveTimes=[],sumU2=0,maxU=0,sumActErr2=0;
-    const trace=[];
+    const trace=[],seByState=[0,0,0,0];let trackingSE=0;
     for(let k=0;k<steps;k++){
       const uu=ctl.act(xh,goal);sumU2+=uu*uu;maxU=Math.max(maxU,Math.abs(uu));
       if(Number.isFinite(ctl.lastSolveMs)){solveMs+=ctl.lastSolveMs;solveN++;solveTimes.push(ctl.lastSolveMs);iterSum+=(ctl.lastIterations??0);}
@@ -612,6 +612,7 @@ const ControlLab = (() => {
       const out=plant.step(uu),y=plant.sensor();sumActErr2+=(uu-(out.appliedCommand??uu))**2;
       xh=obs.step(plant.sensorMeta.fresh?y:null,uu,out.state);
       const err=out.state.map((v,i)=>i===2?wrap(v-xh[i]):v-xh[i]);
+      err.forEach((v,i)=>seByState[i]+=v*v);trackingSE+=(out.state[0]-goal)**2;
       se+=err.reduce((ss,v)=>ss+v*v,0);ae+=Math.abs(out.state[2]);maxAngle=Math.max(maxAngle,Math.abs(out.state[2]));maxPosition=Math.max(maxPosition,Math.abs(out.state[0]));
       const Pout=obs.outputCovariance?obs.outputCovariance():obs.P;
       trace.push({k,terminalCost:ctl.terminalInfo?.kind??null,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()??null,measurementUsed:obs.last?.measurementUsed??plant.sensorMeta.fresh,
@@ -620,7 +621,7 @@ const ControlLab = (() => {
     }
     const sortedSolve=solveTimes.slice().sort((a,b)=>a-b),p95SolveMs=sortedSolve.length?sortedSolve[Math.min(sortedSolve.length-1,Math.ceil(.95*sortedSolve.length)-1)]:0;
     const deadlineMs=DT*1000,deadlineMisses=solveTimes.filter(v=>v>deadlineMs).length;
-    return {controller,observer,scenario,terminalCost:ctl.terminalInfo??null,physics:physicsInfo(),informationProvenance:{measurementCovariance:observerOpts.R?'provided':'injected-noise-oracle',runtimeState:observer==='truth'?'simulation-truth':'sensor-estimate',predictionModel:'nominal-model'},steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
+    return {controller,observer,scenario,estimationRmseByState:seByState.map(v=>Math.sqrt(v/Math.max(1,trace.length))),positionTrackingRmse:Math.sqrt(trackingSE/Math.max(1,trace.length)),stateUnits:['m','m/s','rad','rad/s'],legacyRmseScope:'mixed-units; not a controller score',terminalCost:ctl.terminalInfo??null,physics:physicsInfo(),informationProvenance:{measurementCovariance:observerOpts.R?'provided':'injected-noise-oracle',runtimeState:observer==='truth'?'simulation-truth':'sensor-estimate',predictionModel:'nominal-model'},steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
   }
 
   return {DT,setPhysicsBackend,physicsInfo,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,riccatiTerminal,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,nonlinearStepSubsteps,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,SupervisedNMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,UKFObserver,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};

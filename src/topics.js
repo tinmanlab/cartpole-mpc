@@ -1,137 +1,703 @@
 'use strict';
+// Theory sources and local implementation scope are per-topic; reading does not select a runtime.
 const CONTROL_LAB_TOPICS = {
- overview:{group:"개요",title:"Controller와 Observer를 한 시스템으로 읽기",lead:"Controller는 무슨 힘을 낼지, Observer는 지금 상태가 무엇인지 푼다. 둘은 직렬 연결되므로 좋은 controller도 나쁜 state estimate 위에서는 무너질 수 있다.",chips:["same plant","same sensor contract","truth = evaluator only"],runtime:null,body:[
-  "<div class='section'><h3>먼저 분리한다</h3><div class='math'>Plant:      x(k+1) = f(x(k),u(k))\\nSensor:     y(k) = h(x(k)) + noise\\nObserver:   (y,u) -> x_hat, P\\nController: x_hat -> u</div><div class='take'>plant를 고정하고 controller 또는 observer 하나만 바꾸는 것이 이 lab의 비교 규칙이다.</div></div>",
-  "<div class='section'><h3>두 개의 계보</h3><p>Controller는 feedback과 prediction을 확장하고, Observer는 model/geometry에 learning을 어디에 삽입할지 확장한다.</p></div>"
- ].join("")},
- pid:{group:"Controller",title:"PID — 모델 없이 오차에 직접 반응",lead:"pole angle과 angle-rate를 빠르게 잡고 cart position/velocity를 느리게 되돌리는 결합 PID/PD.",chips:["feedback","no plant model","gain tuning"],runtime:{controller:"pid"},body:[
-  "<div class='section'><h3>왜 필요한가</h3><p>목표와 실제값의 오차만 있으면 모델을 몰라도 feedback을 만들 수 있다. 대신 여러 state의 trade-off는 사람이 gain에 넣는다.</p></div>",
-  "<div class='section'><h3>핵심 식</h3><div class='math'>e_p = p - p*\\nu = k_theta theta + k_omega omega + k_p e_p + k_v v + k_i integral(e_p)dt</div></div>",
-  "<div class='section'><h3>Humanoid와 연결</h3><p>MPC/WBC 위에도 actuator 근처 PD feedback이 남을 수 있다. PID는 상위 planner가 아니라 가장 아래 feedback의 직관이다.</p></div>"
- ].join("")},
- lqr:{group:"Controller",title:"LQR — 모델과 비용으로 feedback gain을 계산",lead:"선형 dynamics와 state/control 비용 Q,R에서 Riccati equation으로 K를 계산한다.",chips:["linear model","Riccati","state feedback"],runtime:{controller:"lqr"},body:[
-  "<div class='section'><h3>PID에서 무엇이 달라지나</h3><p>gain을 개별 오차마다 손으로 조절하는 대신 A,B,Q,R이 전체 state feedback K를 결정한다.</p></div>",
-  "<div class='section'><h3>핵심 식</h3><div class='math'>x(k+1) = A x(k) + B u(k)\\nJ = sum[x^T Q x + u^T R u]\\nu = -Kx</div></div>",
-  "<div class='section'><h3>MPC로 가는 다리</h3><p>LQR의 quadratic cost와 Riccati recursion은 MPC/NMPC의 local quadratic subproblem에서도 다시 나온다.</p></div>"
- ].join("")},
- linear_mpc:{group:"Controller",title:"Linear MPC — LQR에 horizon과 입력 제약을 추가",lead:"upright 주변의 discrete A,B로 N-step 미래를 예측하고, |u|<=u_max box constraint 안에서 control sequence를 매 tick 다시 최적화한다.",chips:["finite horizon","receding horizon","box-constrained input"],runtime:{controller:"linear_mpc"},body:[
-  "<div class='section'><h3>현재 실제 구현</h3><p>N=30. 공식 MuJoCo WASM plant의 upright discrete Jacobian A,B를 사용하고, 입력 제약을 포함한 QP를 검증된 quadprog Goldfarb–Idnani solver로 푼다. 유한성·제약 위반·KKT 잔차를 검사한 뒤 첫 control만 적용하고 다음 tick에 다시 푼다. 이 solver는 이전 해를 warm start로 사용하지 않는다.</p></div>",
-  "<div class='section'><h3>문제</h3><div class='math'>min sum(k=0..N-1) [x_k^T Q x_k + R u_k^2] + x_N^T Q_f x_N\\ns.t. x_(k+1)=A x_k+B u_k\\n     |u_k| <= u_max\\n\\nassemble QP -> quadprog -> check residuals -> apply u_0 -> repeat</div></div>",
-  "<div class='section'><h3>예측 구간이 끝난 뒤의 비용</h3><p>Terminal cost는 마지막 상태에서 이후에 남을 제어 부담을 평가한다. Original은 설정된 대각 가중치이고, Riccati는 같은 nominal A,B,Q,R로 계산한 전체 행렬 P를 사용한다. 위치·속도·각도 사이의 결합항도 유지하며, 수렴과 잔차를 검사한다. Linear MPC와 hard-rail MPC의 Terminal cost 선택에서 비교할 수 있다. 이는 local tail-cost 근사이며 terminal invariant set이나 실제 로봇의 안전 보장이 아니다.</p></div>",
-  "<div class='section'><h3>한계</h3><p>horizon 전체가 하나의 upright 선형모델이다. 실제 nonlinear plant가 멀어지면 model error가 커진다.</p></div>"
- ].join("")},
- state_mpc:{group:"Controller",title:"State-constrained MPC — input bound만으로는 부족하다",lead:"MPC의 장점은 미래를 보는 것뿐 아니라 state/path constraint를 문제 안에 넣는 데 있다. 현재 browser mode는 cart position에 soft penalty를 넣어 input-only MPC와 차이를 보여준다.",chips:["state constraint","soft penalty","feasibility"],runtime:{controller:"state_mpc"},body:[
-  "<div class='section'><h3>입력 제약과 상태 제약은 다르다</h3><div class='math'>input: |u_k| <= u_max\nstate: |p_k| <= p_max\npath: g(x_k,u_k) <= 0</div><p>pole을 세우는 동안 cart가 트랙 끝으로 달아나는 해는 input constraint만으로는 합법일 수 있다.</p></div>",
-  "<div class='section'><h3>현재 구현</h3><p>state_mpc는 |p|가 soft boundary를 넘으면 quadratic penalty를 추가하는 비교용 구현이다. 반면 controller 선택의 Constrained MPC · hard rail은 |p_k|<=2.4 m를 quadprog의 선형 제약에 직접 넣는다. 후자는 예측 상태의 제약을 검사하지만, 잡음·모델 오차가 있는 실제 상태의 안전이나 recursive feasibility까지 보장하지 않는다.</p></div>",
-  "<div class='section'><h3>Humanoid로 확장</h3><p>joint/velocity/torque limits, torque-speed envelope, friction cone, unilateral contact, CoP/support, collision, swing clearance는 가능한 한 명시적 constraint로 모델링한다. penalty weight로 전부 숨기면 failure mode를 해석하기 어렵다.</p></div>"
- ].join("")},
- ltv_mpc:{group:"Controller",title:"LTV MPC / SQP-RTI — 매 tick 현재 trajectory 주변을 다시 선형화",lead:"고정 upright A,B를 계속 쓰는 Linear MPC와 nonlinear OCP를 여러 번 반복해 푸는 NMPC 사이의 핵심 연결고리다. 현재 warm-start trajectory에서 A_k,B_k를 다시 만들고 한 번의 local quadratic update만 수행한다.",chips:["successive linearization","time-varying A_k,B_k","real-time iteration"],runtime:{controller:"ltv_mpc"},body:[
-  "<div class='section'><h3>세 수준을 구분</h3><div class='math'>LTI MPC: one A,B around equilibrium\nLTV / RTI: A_k,B_k = Jacobian along current trajectory, one local update/tick\nNMPC: nonlinear f stays in OCP, multiple local iterations may be used</div></div>",
-  "<div class='section'><h3>왜 humanoid에 중요하나</h3><p>실시간 SQP-RTI 계열은 nonlinear robot model을 유지하면서도 매 제어주기 한 번의 linearization/QP step으로 deadline을 맞추는 전형적인 절충이다. contact mode가 고정된 구간에서는 특히 자연스럽다.</p></div>",
-  "<div class='section'><h3>현재 CartPole 구현</h3><p>nonlinear nominal rollout → per-stage numerical Jacobian → 한 번의 iLQR/SQP-style backward update → bounded line search → 첫 force 적용. OCS2/acados RTI source port는 아니다.</p></div>"
- ].join("")},
- centroidal_mpc:{group:"Controller",title:"Centroidal-style MPC — reduced planner와 lower-level realization",lead:"Figure의 centroidal OCS2 lane은 momentum/configuration을 state로, contact wrench와 joint velocity를 input으로 최적화하고 inverse dynamics로 joint command를 만든다.",chips:["reduced-order","momentum","planner -> lower level"],runtime:{controller:"centroidal_mpc"},body:[
-  "<div class='section'><h3>Figure pinned comparator의 실제 구조</h3><div class='math'>x = [h, q_b, q_j]\\nh = [v_com, L/m]\\nu = [W_left, W_right, qdot_j]\\n\\ncentroidal dynamics + state/input cost + ICP cost\\n+ gait/contact schedule + friction/contact constraints\\n-> SQP policy\\n-> q_des, qdot_des, contact wrench\\n-> inverse dynamics -> tau_ff</div></div>",
-  "<div class='section'><h3>CartPole에 적용한 실제 대응</h3><p>발/contact wrench가 없고 pole은 underactuated라 humanoid 식을 그대로 복사하지 않는다. 시스템 전체 수평 CoM을 reduced MPC로 계획하고 look-ahead CoM reference를 full-state inner LQR가 실현한다.</p><div class='math'>M = m_c + m_p\\nc = x + (m_p l/M) sin(theta)\\nc_dot = v + (m_p l/M) cos(theta) omega\\nc_ddot = F_net/M   [ideal horizontal reduced model]\\n\\nouter box-constrained MPC: [c,c_dot] -> future CoM reference\\ninner feedback: [x-x_ref,v-v_ref,theta,omega] -> force</div><div class='take warn'>Figure centroidal OCS2를 포팅했다는 뜻이 아니라, reduced-planner -> lower-level realization 구조를 CartPole 물리에 맞게 구현한 analogue다. 외력 push와 model mismatch는 outer model에 알려주지 않는다.</div></div>",
-  "<div class='section'><h3>핵심 trade-off</h3><p>작은 predictive problem을 빠르게 풀 수 있지만 reduced model과 실제 full dynamics 사이 realization gap이 생긴다.</p></div>"
- ].join("")},
- full_nmpc:{group:"Controller",title:"Full nonlinear NMPC — nonlinear plant 자체를 horizon에 넣기",lead:"Figure full-order lane은 q와 qdot 전체를 state로 두고 contact wrench와 joint acceleration을 input으로 최적화한다. CartPole판도 nonlinear f(x,u)를 직접 rollout한다.",chips:["full state","nonlinear rollout","iterative solve"],runtime:{controller:"full_nmpc"},body:[
-  "<div class='section'><h3>Figure pinned comparator의 실제 구조</h3><div class='math'>x = [q_b, q_j, qdot_b, qdot_j]\\nu = [W_left, W_right, qddot_j]\\n\\nfull rigid-body acceleration dynamics\\n+ state/input + joint torque costs\\n+ contact/swing/friction constraints\\n-> OCS2 multiple-shooting SQP\\n-> policy -> q_des, qdot_des, torque</div></div>",
-  "<div class='section'><h3>CartPole의 실제 solver</h3><p>N=30. 동일 nonlinear Plant.integrate로 nominal trajectory를 rollout하고, 매 stage에서 A_k=d f/dx, B_k=d f/du를 수치 선형화한다. local quadratic backward solve 후 bounded forward line-search를 2회 수행하고 warm-start한다.</p><div class='math'>x_(k+1)=f(x_k,u_k)\\nA_k = df/dx, B_k = df/du\\nquadratic local subproblem\\n-> backward solve\\n-> line search + |u|<=u_max\\n-> apply u_0 only</div></div>",
-  "<div class='section'><h3>왜 항상 더 좋은가?</h3><p>아니다. 더 정확한 model을 horizon에 넣는 대신 계산시간, local optimum, model mismatch, estimator error의 영향을 더 직접 받는다.</p></div>"
- ].join("")},
- safety:{group:"Controller",title:"Safety supervisor — 최적제어와 별도로 unsafe prediction을 감시",lead:"좋은 MPC cost가 safety guarantee는 아니다. 현재 bridge는 NMPC predicted trajectory가 cart/angle margin을 넘으면 local LQR backup으로 전환한다.",chips:["runtime monitor","backup controller","degraded mode"],runtime:{controller:"supervised_nmpc"},body:[
-  "<div class='section'><h3>현재 executable bridge</h3><div class='math'>u_nom = NMPC(x_hat)\\nif predicted |p| > p_margin or |theta| > theta_margin:\\n    u = LQR_backup(x_hat)\\nelse:\\n    u = u_nom</div><p>large-angle fixed probe에서는 input-only Full NMPC가 track boundary를 넘는 조건에서 backup supervisor가 cart excursion을 줄였다.</p></div>",
-  "<div class='section'><h3>이것이 보장하지 않는 것</h3><p>CBF, viability kernel, reachability, invariant terminal set의 formal safety guarantee는 없다. 실제 humanoid에서는 verified backup policy, safety filter, collision/contact constraints, hardware interlock와 함께 별도 safety case가 필요하다.</p></div>",
-  "<div class='section'><h3>핵심 교훈</h3><p>controller objective를 더 세게 튜닝하는 것과 safety layer를 두는 것은 같은 일이 아니다. runtime fault/degradation이 있으면 nominal optimizer 밖에서 admissibility를 감시해야 한다.</p></div>"
- ].join("")},
- robust_mpc:{group:"Controller",title:"Robust / stochastic MPC — 모델 하나가 아니라 uncertainty set을 고려",lead:"nominal MPC는 하나의 모델과 하나의 예측을 믿는다. sim2real에서는 parameter uncertainty, disturbance, estimation error를 prediction/constraint margin에 포함해야 한다.",chips:["tube MPC","min-max","chance constraints","scenario MPC"],runtime:null,body:[
-  "<div class='section'><h3>대표 계열</h3><div class='math'>Nominal MPC: one model\nTube MPC: nominal trajectory + invariant error tube\nMin-max MPC: optimize worst disturbance in a bounded set\nStochastic MPC: propagate distributions\nChance constraint: P(g(x,u)<=0) >= 1-epsilon\nScenario MPC: enforce sampled uncertainty scenarios</div></div>",
-  "<div class='section'><h3>어떤 uncertainty가 어디로 가나</h3><p>잘 식별되는 parametric uncertainty는 model set/domain에, fast zero-mean disturbance는 robust/stochastic term에, estimator uncertainty는 chance/tube margin에, mode/contact ambiguity는 hybrid/scenario layer에 넣는 식으로 분리한다.</p></div>",
-  "<div class='section'><h3>현재 CartPole runtime</h3><p><b>Scenario-risk MPC</b>는 서로 다른 mass/pole-mass/length linear models 세 개에 동일한 control sequence를 적용하고, mean cost + risk × (worst - mean)을 최소화한다. 이것은 finite-model ensemble robustification을 실제로 보여주지만 tube invariant set, min-max guarantee, chance-constraint 보장은 없다.</p></div><div class='section'><h3>Figure 경계</h3><p>Humanoid에서는 uncertainty의 종류를 먼저 식별한 뒤 native OCS2/acados formulation에서 tube/scenario/chance/risk-sensitive 방법을 선택한다. Domain randomization과 robust MPC를 같은 말로 쓰면 안 된다.</p></div>"
- ].join("")},
- ppo:{group:"Controller",title:"PPO — runtime solver를 training으로 옮기기",lead:"실행 때 horizon optimization 대신 학습된 actor가 observation에서 action을 낸다.",chips:["learned policy","offline training","cheap inference"],runtime:{controller:"ppo"},body:[
-  "<div class='section'><h3>현재 구현</h3><p>기존 CartPole PPO Studio robust final-budget actor를 그대로 사용한다.</p></div>",
-  "<div class='section'><h3>구조</h3><div class='math'>observation -> Actor -> pi(left), pi(right)\\ntraining: PPO clipped objective + GAE\\nruntime: network forward -> action</div></div>",
-  "<div class='section'><h3>MPC와 차이</h3><p>MPC는 현재 model로 미래를 매번 푼다. PPO는 대응을 training optimization을 통해 weight에 압축한다.</p></div>"
- ].join("")},
- raw:{group:"Observer",title:"Raw sensor — 센서를 그냥 쓰면 왜 안 되나",lead:"p와 theta만 직접 측정하고 v와 omega를 finite difference로 만든다.",chips:["baseline","finite difference","noise amplification"],runtime:{observer:"raw"},body:[
-  "<div class='section'><h3>핵심 식</h3><div class='math'>v_hat ~= (p_k-p_(k-1))/dt\\nomega_hat ~= wrap(theta_k-theta_(k-1))/dt</div></div>",
-  "<div class='section'><h3>문제</h3><p>작은 measurement noise가 dt로 나뉘면서 velocity noise로 크게 증폭된다.</p></div>"
- ].join("")},
- kf:{group:"Observer",title:"Kalman Filter — prediction과 measurement 신뢰도를 결합",lead:"선형 dynamics로 hidden velocity까지 예측하고 P,Q,R로 sensor correction의 크기를 매 tick 계산한다.",chips:["P Q R","Kalman gain","linear/Gaussian"],runtime:{observer:"kf"},body:[
-  "<div class='section'><h3>핵심</h3><div class='math'>x_hat_minus = A x_hat_plus + B u\\nP_minus = A P_plus A^T + Q\\nr = y - H x_hat_minus\\nK = P_minus H^T (H P_minus H^T + R)^-1\\nx_hat_plus = x_hat_minus + K r</div></div>",
-  "<div class='section'><h3>hidden state가 왜 고쳐지나</h3><p>A의 dynamics coupling이 P에 cross-covariance를 만들고, measurement residual이 K의 velocity row를 통해 hidden state correction으로 들어간다.</p></div>"
- ].join("")},
- ekf:{group:"Observer",title:"EKF — nonlinear mean, local linear covariance",lead:"state mean은 nonlinear f로 움직이고 covariance 전파에 필요한 Jacobian만 현재점에서 계산한다.",chips:["nonlinear f","Jacobian","local linearization"],runtime:{observer:"ekf"},body:[
-  "<div class='section'><h3>KF에서 바뀌는 부분</h3><div class='math'>x_hat_minus = f(x_hat_plus,u)\\nF = df/dx evaluated at x_hat\\nP_minus = F P_plus F^T + Q\\n\\nmeasurement correction은 Kalman 구조 유지</div></div>",
-  "<div class='section'><h3>직접 비교</h3><p>Scenario에서 <b>Estimator nonlinear bench · 28.6° · LQR</b>를 선택하고 controller를 LQR로 고정하면 매우 낮은 sensor noise에서 model nonlinearity를 분리할 수 있다. 고정 5-seed probe에서 state RMSE는 KF 약 0.0080, EKF 약 0.00323이었다.</p></div><div class='section'><h3>다음 문제</h3><p>rotation/pose는 평범한 Euclidean vector가 아니므로 error 자체를 어떤 geometry에서 정의할지가 중요해진다.</p></div>"
- ].join("")},
- ukf:{group:"Observer",title:"UKF — Jacobian 대신 sigma points로 nonlinear 분포를 전파",lead:"UKF는 EKF의 상위 버전이 아니라 다른 nonlinear Gaussian approximation이다. Jacobian을 직접 쓰지 않고 deterministic sigma points를 nonlinear plant에 통과시켜 평균과 covariance를 다시 구성한다.",chips:["sigma points","nonlinear propagation","Gaussian belief"],runtime:{observer:"ukf"},body:[
-  "<div class='section'><h3>핵심</h3><div class='math'>x,P -> sigma points {chi_i}\\nchi_i^- = f(chi_i,u)\\nx_hat^- = sum W_i chi_i^-\\nP^- = sum W_i (chi_i^- - x_hat^-)(...)^T + Q\\nmeasurement sigma points -> K -> correction</div></div>",
-  "<div class='section'><h3>언제 의미가 있나</h3><p>Jacobian 계산이 어렵거나 local linearization error가 큰 smooth nonlinear system에서 유용하다. 하지만 belief가 Gaussian 하나로 표현되기 어렵거나 contact mode가 multimodal이면 UKF만으로 구조 문제가 해결되지는 않는다.</p></div>",
-  "<div class='section'><h3>이 CartPole 결과</h3><p>현재 nominal/nonlinear bench에서는 EKF와 UKF가 거의 같은 결과를 낸다. 이것은 UKF가 불필요하다는 뜻이 아니라 현재 4-state smooth dynamics와 noise regime에서 두 Gaussian approximation이 비슷하게 충분하다는 뜻이다.</p></div>"
- ].join("")},
- inekf:{group:"Observer",title:"InEKF — Lie-group symmetry가 있을 때 invariant error를 쓰는 별도 EKF 계열",lead:"InEKF는 EKF의 무조건적인 다음 버전이 아니다. 적절한 Lie-group/group-affine 구조가 있을 때 invariant error로 linearization 특성을 개선한다. CartPole runtime은 SO(2) wrap만 보여준다.",chips:["Lie group","invariant error","contact aided"],runtime:{observer:"so2"},body:[
-  "<div class='section'><h3>CartPole runtime bridge</h3><div class='math'>r_theta = wrap(theta_meas-theta_hat_minus)\\ntheta_hat_plus = wrap(theta_hat_minus + delta_theta)\\n\\nexample: +179 deg -> -179 deg\\nEuclidean residual = -358 deg\\nSO(2) residual = +2 deg</div><p>이것은 Hartley InEKF 그 자체가 아니라 angle manifold에서 error 정의가 왜 중요한지 보여주는 micro-bench다.</p></div>",
-  "<div class='section'><h3>Hartley에서 실제로 하는 일</h3><div class='math'>state: R, v, p, contact positions d_i\\nIMU propagation + leg FK contact observations\\ninvariant error dynamics\\n\\nunobservable: global translation, global yaw</div></div>",
-  "<div class='section'><h3>다음 병목</h3><p>filter가 좋아도 어느 contact measurement를 믿을지 틀리면 update가 오히려 state를 망친다.</p></div>"
- ].join("")},
- mhe:{group:"Observer",title:"MHE — 최근 sensor window 전체를 optimization으로 다시 맞춘다",lead:"KF/EKF가 한 step씩 재귀적으로 갱신하는 것과 달리 MHE는 최근 N개의 state/measurement를 한 window로 묶어 dynamics, measurement, physical constraints를 함께 최적화한다.",chips:["windowed optimization","arrival cost","constraints"],runtime:{observer:"mhe"},body:[
-  "<div class='section'><h3>정식 MHE</h3><div class='math'>min  Gamma(x_(k-N))\n   + sum ||w_i||_(Q^-1)^2\n   + sum ||v_i||_(R^-1)^2\ns.t. x_(i+1)=f(x_i,u_i)+w_i\n     y_i=h(x_i)+v_i\n     g(x_i)<=0</div><p>Gamma는 window 이전의 정보를 압축한 arrival cost다. 그래서 단순 sliding least-squares와 다르다.</p></div>",
-  "<div class='section'><h3>현재 CartPole runtime</h3><p>작은 browser lab에서는 EKF posterior를 approximate arrival prior로 쓰고, 최근 window의 첫 state 4개만 Gauss-Newton으로 최적화한 뒤 nonlinear plant로 single-shooting한다. process-noise trajectory나 hard state constraint까지 decision variable로 두는 full NMHE는 아니다.</p></div>",
-  "<div class='section'><h3>Humanoid로 확장할 때</h3><p>실제 legged/humanoid에서는 orientation EKF/InEKF + velocity/contact MHE처럼 문제를 분해하거나, acados/OSQP 기반 constrained MHE를 쓰는 편이 현실적이다. 2024 EKF+MHE legged 연구는 PogoX/Cassie/Go1에서 200 Hz, 0.1 s window를 실증했다.</p></div>"
- ].join("")},
- consistency:{group:"Observer",title:"Estimator consistency — RMSE가 낮아도 P가 틀리면 잘못된 filter",lead:"state error가 작다는 것과 filter가 자신의 uncertainty를 올바르게 표현한다는 것은 다른 문제다. controller가 covariance를 사용한다면 calibration까지 검증해야 한다.",chips:["NIS","NEES","chi-square","calibration"],runtime:null,body:[
-  "<div class='section'><h3>두 통계</h3><div class='math'>NIS = innovation^T S^-1 innovation\nNEES = error^T P^-1 error</div><p>NIS는 measurement prediction consistency, NEES는 state covariance consistency를 본다. dimension에 맞는 chi-square 범위와 장기 통계를 사용한다.</p></div>",
-  "<div class='section'><h3>왜 RMSE만 최적화하면 위험한가</h3><p>R을 과도하게 키우거나 P를 과도하게 작게 만들면 특정 trajectory RMSE는 좋아져도 filter가 over/under-confident해질 수 있다. commissioning tuner가 consistency penalty를 같이 쓰는 이유다.</p></div>"
- ].join("")},
- lin:{group:"Hybrid estimator",title:"Lin — learned contact event로 contact-aided InEKF를 구동",lead:"Mini Cheetah에서는 4개 다리의 binary contact 조합을 16-class temporal classification으로 학습하고, 결과를 per-leg contact event로 사용한다.",chips:["learned contact configuration","temporal CNN","InEKF"],runtime:null,body:[
-  "<div class='section'><h3>논문 구현</h3><div class='math'>150-frame history of 54-D features\\n[q,qdot,a,omega,foot position,foot velocity]\\n-> 2 Conv1D blocks + 3 FC layers\\n-> 16 contact configurations\\n-> decode per-leg contact events\\n-> add/remove contact states in InEKF</div></div>",
-  "<div class='section'><h3>한계</h3><p>contact=true가 FK stationary constraint의 품질을 보장하지 않는다. slip/partial support를 한 비트로 표현하기 어렵다.</p></div>"
- ].join("")},
- youm:{group:"Hybrid estimator",title:"Youm NMN — NN이 body velocity를 measurement로",lead:"contact probability뿐 아니라 body linear velocity 자체를 learned pseudo-measurement로 InEKF에 추가한다.",chips:["GRU","neural measurement","velocity"],runtime:null,body:[
-  "<div class='section'><h3>논문 구현</h3><div class='math'>[a,omega,q,qdot,q_des(prev)]\\n-> GRU(hidden 128) + MLP[256,128]\\n-> foot contact probabilities c_hat\\n-> body-frame linear velocity v_hat_body\\n\\ncontact probability -> leg-kinematics measurement gate\\nv_hat_body = R^T v + noise -> right-invariant IEKF measurement</div><p>실물 inference에서는 contact probability와 velocity에 LPF를 적용하고, contact는 0.5 threshold를 사용한다. learned velocity는 저속 bias 억제를 위해 조건부로 사용한다.</p></div>",
-  "<div class='section'><h3>권한이 커진다</h3><p>Lin은 update gate를 학습하지만 Youm은 metric velocity measurement를 학습한다. sim-to-real bias가 더 직접적으로 들어올 수 있다.</p></div>"
- ].join("")},
- innkf:{group:"Hybrid estimator",title:"InNKF — physics filter posterior의 residual을 학습",lead:"InEKF를 버리지 않고 posterior가 남기는 systematic state error를 TCN이 예측해 Lie-group-consistent correction을 추가한다.",chips:["TCN","posterior residual","hybrid"],runtime:{observer:"residual"},body:[
-  "<div class='section'><h3>논문 구조</h3><div class='math'>InEKF -> X_bar_plus\\n50-step history + X_bar_plus -> TCN -> 9 tangent coefficients\\neta_hat in se_2(3) -> E_hat = Exp(eta_hat)\\nX_bar_plusplus = E_hat^-1 X_bar_plus</div><p>중요: compensated X_bar_plusplus는 최종 출력이고 base InEKF state로 다시 feedback하지 않는다. 논문 TCN hidden은 [128,128,128,256,256].</p></div>",
-  "<div class='section'><h3>CartPole 구현</h3><p>SO(2)-aware EKF posterior 뒤에 output-only residual MLP를 붙인다. corrected output은 base EKF로 feedback하지 않으며 base P를 corrected-output covariance라고 표시하지 않는다. 현재 v2 artifact의 held-out residual RMSE는 약 0.133에서 0.055로 감소했지만, offline residual 개선이 closed-loop 개선을 보장하지 않는다.</p></div>"
- ].join("")},
- coco:{group:"Hybrid estimator",title:"CoCo-InEKF — binary contact 대신 directional contact process covariance",lead:"각 persistent contact candidate의 body-frame velocity/process covariance를 연속적으로 학습한다. 이것은 FOCUS처럼 observation R만 조절하는 방식과 다르다.",chips:["process covariance","directional slip","differentiable InEKF"],runtime:null,body:[
-  "<div class='section'><h3>논문 구현</h3><div class='math'>all contact candidates stay in filter state\nContactNet(history) -> 6 lower-triangular values L_i\nSigma_Ci = L_i L_i^T >= 0\np_Ci_dot = -R w_Ci,  w_Ci ~ N(0,Sigma_Ci)\n\nSigma_Ci enters contact process uncertainty Q</div><p>학습은 differentiable InEKF를 통한 BPTT와 body-frame velocity state-error loss로 수행한다. binary contact gating이 핵심이 아니다.</p></div>",
-  "<div class='section'><h3>왜 CartPole 실행 모드를 연결하지 않나</h3><p>CartPole에는 persistent foot/contact-candidate states가 없다. 따라서 Adaptive-R을 CoCo 구현처럼 보여주는 것이 오개념을 만든다. 이 페이지는 논문 구조 설명만 제공한다.</p></div>"
- ].join("")},
-  focus:{group:"Hybrid estimator",title:"FOCUS — contact가 아니라 FK measurement reliability",lead:"발이 닿았는지보다 그 발로 계산한 FK velocity를 지금 믿어도 되는지를 continuous weight로 학습한다.",chips:["continuous reliability","FK velocity","sensor history"],runtime:{observer:"adaptive"},body:[
-  "<div class='section'><h3>핵심 식</h3><div class='math'>w_i in [0,1]\\nR_vel,i = R0 [1 + (1-w_i) S]\\ntau_i = clip(w_i/w_sat,0,1)\\nz_v,i = (1-tau_i) v_IMU + tau_i v_FK,i</div></div>",
-  "<div class='section'><h3>Figure와 직접 연결</h3><p>Figure에서 contact source 품질이 velocity estimate와 closed-loop를 크게 바꿨기 때문에 measurement reliability가 현재 핵심 연구축이다.</p></div>",
-  "<div class='section'><h3>CartPole 한계</h3><p>foot FK가 없으므로 FOCUS를 복제할 수 없다. 현재 Adaptive-R은 innovation-based outlier score로 observation R을 조절하는 구조적 bridge다. 같은 innovation으로 R을 바꾸므로 classical fixed-noise Kalman optimality를 주장하지 않는다. FOCUS의 learned per-foot reliability, FK/IMU velocity blending, foot-state Q modulation은 재현하지 않는다.</p></div>"
- ].join("")},
- sysid:{group:"Commissioning",title:"System Identification — tuning 전에 모델이 무엇을 틀렸는지 먼저 식별",lead:"controller weight가 잘못된 mass·inertia·friction·latency를 대신 보상하게 두면 sim2real에서 원인을 잃는다.",chips:["persistent excitation","physical parameters","identifiability"],runtime:null,body:[
-  "<div class='section'><h3>현재 CartPole 예제</h3><p>exciting input trajectory에서 one-step prediction error를 최소화해 mc, mp, l, friction을 constrained CEM으로 식별한다. held-out transition error도 따로 확인한다.</p></div>",
-  "<div class='section'><h3>중요한 전제</h3><p>데이터가 parameter를 구분할 만큼 excite하지 않으면 optimizer가 숫자를 내도 식별된 것이 아니다. parameter sensitivity/Fisher information, condition number, repeated trajectories를 확인해야 한다.</p></div>",
-  "<div class='section'><h3>Humanoid</h3><p>physically consistent inertia, CoM, transmission/actuator constants, friction/compliance, kinematic offsets, latency를 분리해 식별한다. contact가 들어가면 contact wrench와 inertial parameter가 서로 설명을 빼앗지 않도록 experiment design이 중요하다.</p></div>"
- ].join("")},
- tuning:{group:"Commissioning",title:"Auto-tuning — parameter 종류에 맞는 optimizer를 고른다",lead:"모든 hyperparameter를 같은 black-box optimizer에 넣는 것은 좋은 commissioning이 아니다. differentiable, discrete, safety-critical, estimator calibration 문제를 분리한다.",chips:["DiffTune","Bayesian optimization","Safe BO","bilevel calibration"],runtime:null,body:[
-  "<div class='section'><h3>방법 선택</h3><div class='math'>smooth MPC weights -> differentiable closed-loop tuning\ndiscrete horizon/solver -> BO / structured search\nhardware gains -> Safe BO\nQ_e,R_e,kinematics -> likelihood / bilevel calibration\ncontext-dependent gains -> contextual tuning</div></div>",
-  "<div class='section'><h3>현재 evidence가 보여준 것</h3><p>CartPole CEM controller tuner는 train을 개선했지만 held-out validation/test를 악화해 reject됐다. 반면 consistency-aware estimator calibration은 held-out에서도 개선되어 accept됐다. optimizer보다 acceptance contract가 더 중요하다.</p></div>",
-  "<div class='section'><h3>연결 연구</h3><p>DiffTune-MPC는 closed-loop objective에서 MPC cost parameter gradient를 구하고, legged Safe BO는 실제 하드웨어 gain을 safe set 안에서 탐색한다. 2026 bilevel estimator calibration은 covariance와 kinematic offset을 estimator-in-the-loop로 공동 보정한다.</p></div>"
- ].join("")},
- commissioning:{group:"Commissioning",title:"Commissioning — model을 맞추고, estimator와 controller를 따로/함께 검증한다",lead:"좋은 알고리즘을 고르는 것만으로 sim2real은 끝나지 않는다. 식별 → calibration → tuning → held-out validation → hardware-safe adaptation의 순서가 필요하다.",chips:["system ID","calibration","held-out validation","co-design"],runtime:null,body:[
-  "<div class='section'><h3>권장 순서</h3><div class='math'>1. model/actuator/latency identification\n2. sensor + kinematic calibration\n3. estimator Q_e,R_e,P0 calibration + consistency\n4. controller Q_c,R_c,Qf,N,constraint tuning\n5. estimator-in-the-loop closed-loop tuning\n6. held-out domain randomization / worst-case validation\n7. safe hardware residual tuning\n8. runtime adaptation</div></div>",
-  "<div class='section'><h3>이 repo에서 실제 제공</h3><p>src/commissioning.js가 constrained plant parameter identification, CEM-based controller tuning, estimator covariance calibration, train/validation/test split, stress report를 실행한다. 이 tuner 자체를 SOTA라고 주장하지 않고, Figure에서는 DiffTune/BO/Safe-BO/bilevel calibration으로 교체 가능한 공통 evaluation contract를 만드는 것이 목적이다.</p></div>",
-  "<div class='section'><h3>절대 한 metric만 최적화하지 않는다</h3><p>controller는 tracking·effort·constraint margin·failure·actuator mismatch를 함께 보고, estimator는 RMSE뿐 아니라 NIS/NEES consistency를 같이 본다. tuned parameter가 validation/test에서 악화되면 채택하지 않는다.</p></div>"
- ].join("")},
- sim2real:{group:"Commissioning",title:"Sim2Real stress stack — mismatch를 한 층씩 켜서 실패 원인을 분리",lead:"한 번에 randomization을 모두 켜면 실패 이유를 모른다. model, sensor, bias, actuator lag/gain, command latency, outlier를 단독 scenario로 먼저 실행하고 마지막에 combined sim2real stack을 쓴다.",chips:["single-factor ablation","model mismatch","latency","actuator lag","sensor bias","held-out seeds"],runtime:{scenario:"sim2real"},body:[
-  "<div class='section'><h3>현재 hidden mismatch preset</h3><div class='math'>mass / pole mass / length mismatch\n+ friction\n+ 0-2 control-tick command delay\n+ first-order actuator lag and gain error\n+ measurement noise\n+ sensor bias random walk\n+ external push when requested</div></div>",
-  "<div class='section'><h3>무엇을 기록해야 하나</h3><p>command와 실제 applied command의 차이, state-estimation RMSE, max position/angle, control RMS, solver time, failure를 함께 기록한다. humanoid에서는 torque-speed, current-loop, thermal, contact/slip, joint compliance, network jitter가 추가된다.</p></div>",
-  "<div class='section'><h3>Randomization의 역할</h3><p>randomization은 identification을 대신하지 않는다. 먼저 nominal model과 uncertainty bound를 데이터로 식별하고, 그 범위 안에서 train/calibration을 수행한 뒤 더 넓은 held-out/OOD 범위에서 failure boundary를 측정한다.</p></div>"
- ].join("")},
- faults:{group:"Commissioning",title:"Fault & degradation injection — noise가 아니라 고장/성능저하를 따로 본다",lead:"sim2real failure는 Gaussian noise만으로 설명되지 않는다. correlated noise, stale packet, stuck sensor, jitter, speed-dependent force limit, thermal derating을 각각 분리해 signature를 확인한다.",chips:["colored noise","dropout","stuck sensor","jitter","torque-speed","thermal"],runtime:{scenario:"colored"},body:[
-  "<div class='section'><h3>센서 failure</h3><div class='math'>colored: n_k = rho n_(k-1) + sqrt(1-rho^2) sigma eps_k\\ndropout: hold-last + stale metadata\\nstuck: repeated value despite plant motion</div><p>white-Gaussian R tuning만으로 해결하려 하지 않고 innovation autocorrelation, timestamp freshness, fault isolation을 별도 진단한다.</p></div>",
-  "<div class='section'><h3>actuator/transport degradation</h3><div class='math'>jitter: command hold / variable arrival\\ntorque-speed: F_max(v) decreases with |v|\\nthermal: sustained effort -> state T -> F_max(T) derating</div><p>humanoid에서는 motor current/voltage, torque-speed curve, drive bandwidth, thermal/current limits, bus voltage, scheduler jitter로 교체한다.</p></div>",
-  "<div class='section'><h3>왜 중요하나</h3><p>같은 tracking error라도 원인이 sensor model, transport, actuator envelope, thermal state 중 무엇인지에 따라 수정해야 할 모델과 계층이 완전히 달라진다.</p></div>"
- ].join("")},
+  "overview": {
+    "group": "개요",
+    "title": "제어·추정 — 기능의 연결이지 성능 순위가 아니다",
+    "lead": "목표 추종, 상태 추정, 계산 성공은 서로 다른 평가다. 읽는 주제를 바꾸는 것과 실제 실행 구성을 바꾸는 것도 구분한다.",
+    "chips": [
+      "signal contract",
+      "units",
+      "oracle exception"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>신호와 시각</h3><div class=\"math\">x_hat(k) → u_cmd(k) → actuator → MuJoCo x(k+1)\ny(k+1) → observer predict/update → x_hat(k+1)</div><p>x=[p,v,θ,ω]의 단위는 [m,m/s,rad,rad/s]. controller는 추정값으로 입력을 만들고, 다음 측정을 받은 observer가 같은 시각의 상태를 갱신한다. 센서가 누락되면 새 관측처럼 재사용하지 않는다.</p></div><div class=\"section\"><h3>정답의 사용 범위</h3><p>일반 observer 모드에서 truth는 표시·평가용이다. <b>Truth / oracle을 선택하면 controller도 정답을 받는 예외</b>이며 배포 가능한 센서가 아니다. 식별·학습 데이터에도 시뮬레이션 truth가 사용될 수 있으므로 runtime과 offline 정보 출처를 나눈다.</p></div><div class=\"section\"><h3>비교 읽는 법</h3><p>Q_c,R_c는 제어 비용, Q_e,R_e는 추정 잡음 공분산이다. 위치 추종 오차와 추정 오차를 따로 보고, 서로 다른 단위를 무가중 합한 legacy rmseState로 controller 순위를 매기지 않는다. 같은 seed라도 controller가 바뀌면 실제 궤적도 바뀐다.</p></div>",
+    "scope": "concept",
+    "sources": [
+      {
+        "label": "실제 구현과 범위",
+        "url": "docs/IMPLEMENTATION_BOUNDARIES.md"
+      },
+      {
+        "label": "평가 설계",
+        "url": "docs/EXPERIMENT_DESIGN.md"
+      }
+    ]
+  },
+  "pid": {
+    "group": "Controller",
+    "title": "PID/PD 결합 — 직접 오차 피드백",
+    "lead": "이 모드는 cart position의 적분항과 angle/rate/position/velocity 피드백을 조합한다. 모든 로봇에 이 gain이나 부호가 맞는 것은 아니다.",
+    "chips": [
+      "feedback",
+      "gain/sign convention",
+      "saturation"
+    ],
+    "runtime": {
+      "controller": "pid"
+    },
+    "body": "<div class=\"section\"><h3>현재 코드</h3><div class=\"math\">e_p = p_hat - p_goal\nu = angle/rate feedback + position/velocity feedback + integral term</div><p>별도의 예측 dynamics 없이 추정 state의 오차에 gain을 곱해 force를 만든다. 이 관측값을 만드는 observer는 모델을 사용할 수 있으므로 시스템 전체가 model-free라는 뜻은 아니다.</p></div><div class=\"section\"><h3>적용 전제</h3><p>부호는 좌표·입력 방향에 의존한다. 포화, 적분 windup, 센서 미분 잡음, actuator 대역폭을 확인해야 한다. 이 실험은 전역 swing-up이나 다관절 안정성을 증명하지 않는다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      },
+      {
+        "label": "실제 구현과 범위",
+        "url": "docs/IMPLEMENTATION_BOUNDARIES.md"
+      }
+    ]
+  },
+  "lqr": {
+    "group": "Controller",
+    "title": "LQR — 명시한 선형·이차 문제의 최적 피드백",
+    "lead": "무한시간 선형계·이차 비용의 해와, 그 gain을 비선형 plant에 적용한 결과를 구분한다. 여기서는 실제 force가 포화되므로 무제약 LQR 정리가 그대로 적용되지 않는다.",
+    "chips": [
+      "linear model",
+      "Riccati",
+      "state feedback"
+    ],
+    "runtime": {
+      "controller": "lqr"
+    },
+    "body": "<div class=\"section\"><h3>문제와 조건</h3><div class=\"math\">e(k+1)=A e(k)+B u(k)\nJ=Σ[eᵀ Q_c e + uᵀ R_c u]\nu=-K e</div><p>일반 이론은 Q_c가 양의 준정부호, R_c가 양의 정부호이며 stabilizability와 적절한 detectability 조건 등을 요구한다. 이 lab의 Riccati 옵션은 더 좁게 양의 정부호 Q_c를 요구한다.</p></div><div class=\"section\"><h3>남는 한계</h3><p>upright nominal 선형화에서 계산한 K를 비선형계에 적용하므로 유효 영역과 포화를 따로 검증한다. finite-horizon LQR도 존재하며 horizon 자체가 MPC만의 특징은 아니다. Kalman filter와 조합한 분리원리 역시 그 선형·잡음·비용 가정 안에서 해석한다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "MIT LQR 강의",
+        "url": "https://underactuated.mit.edu/lqr.html"
+      },
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      }
+    ]
+  },
+  "linear_mpc": {
+    "group": "Controller",
+    "title": "Linear MPC — 유한 구간을 풀고 첫 입력만 적용",
+    "lead": "MPC는 하나의 모델 종류가 아니라 반복 최적화 제어 방식이다. 여기서는 fixed-LTI dynamics, convex quadratic cost, input bounds를 사용한다.",
+    "chips": [
+      "finite horizon",
+      "receding horizon",
+      "box-constrained input"
+    ],
+    "runtime": {
+      "controller": "linear_mpc"
+    },
+    "body": "<div class=\"section\"><h3>실제 solver</h3><div class=\"math\">min Σ[e_kᵀ Q_c e_k + R_c u_k²] + e_Nᵀ P_f e_N\ns.t. e_(k+1)=A e_k+B u_k, |u_k|≤u_max</div><p>N=30, 20 ms 주기. upright MuJoCo 전이의 Jacobian으로 A,B를 만들고 pinned quadprog로 QP를 푼다. 입력·잔차 검사 후 첫 force만 적용한다. 이 quadprog 경로는 warm start를 사용하지 않는다.</p></div><div class=\"section\"><h3>Terminal cost</h3><p>Original은 지정된 대각 P_f, Riccati는 같은 A,B,Q_c,R_c의 전체 tail-cost 행렬이다. 비대각 결합항을 유지한다. 무제약 선형 무한시간 문제에서의 의미와 비선형·제약 시스템의 local 근사를 구분하며, terminal invariant set이나 recursive feasibility 보장은 추가로 필요하다.</p></div><div class=\"section\"><h3>모델·제약·결과</h3><p>hard_mpc는 별도로 world-position rail 제약을 넣는다. input-only MPC도 올바른 MPC다. 선형 dynamics라는 이유만으로 임의 비용·제약의 문제가 convex가 되는 것은 아니며, 예측 제약 만족이 true plant의 제약 만족은 아니다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "OSQP 공식 MPC 예제",
+        "url": "https://osqp.org/docs/examples/mpc.html"
+      },
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      },
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      }
+    ]
+  },
+  "state_mpc": {
+    "group": "Controller",
+    "title": "상태 비용과 제약 — soft penalty와 hard rail을 구분",
+    "lead": "state_mpc는 위치 오차에 비용을 더하는 근사 구현이다. hard_mpc의 물리적 레일 제약과 동일하지 않다.",
+    "chips": [
+      "state constraint",
+      "soft penalty",
+      "feasibility"
+    ],
+    "runtime": {
+      "controller": "state_mpc"
+    },
+    "body": "<div class=\"section\"><h3>현재 좌표 기준</h3><div class=\"math\">soft cost: λ max(0, |p−p_goal|−b)²\nhard rail: −2.4 m ≤ p_k ≤ 2.4 m</div><p>state_mpc의 softPosition은 <b>|p−p_goal|</b>에 대한 목표 주변 band다. 목표가 바뀌면 band도 이동한다. hard_mpc는 world coordinate의 |p|≤2.4 m를 QP에 직접 넣는다.</p></div><div class=\"section\"><h3>수치 판정</h3><p>soft 모드는 projected gradient와 line search를 제한 횟수 실행한다. 비용 감소·루프 종료는 최적해 수렴 증명이 아니므로 converged는 미검증으로 표시한다. hard/soft 선택은 요구사항에 따른 설계이며 soft MPC를 가짜 MPC라고 부르지 않는다.</p></div><div class=\"section\"><h3>확장 조건</h3><p>발 접촉·마찰·충돌·토크 제한은 모델과 운용 조건에 맞춰 명시한다. no-slip은 가정이며 미끄러짐·rolling·compliant contact에는 다른 상태와 제약이 필요하다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      },
+      {
+        "label": "OSQP 공식 MPC 예제",
+        "url": "https://osqp.org/docs/examples/mpc.html"
+      }
+    ]
+  },
+  "ltv_mpc": {
+    "group": "Controller",
+    "title": "LTV 근사 — 한 번의 iLQR형 갱신",
+    "lead": "LTV는 시간에 따라 변하는 선형 모델, SQP는 최적화 방법, RTI는 제한된 갱신·실행 전략이다. 서로 동의어가 아니다.",
+    "chips": [
+      "LTV model",
+      "one iLQR update",
+      "not SQP-RTI reproduction"
+    ],
+    "runtime": {
+      "controller": "ltv_mpc"
+    },
+    "body": "<div class=\"section\"><h3>현재 실제 동작</h3><div class=\"math\">A_k=∂f/∂x, B_k=∂f/∂u at (xbar_k,ubar_k)\nδx_(k+1)≈A_k δx_k+B_k δu_k+d_k\nd_k=f(xbar_k,ubar_k)−xbar_(k+1)</div><p>이 버튼은 nonlinear rollout의 stage별 Jacobian을 만들고 iLQR형 backward pass와 bounded line search를 한 번 수행한다. constrained QP와 preparation/feedback phase를 갖춘 acados SQP-RTI를 재현하지 않는다.</p></div><div class=\"section\"><h3>일반화 경계</h3><p>실행 가능한 nominal rollout이면 d_k=0이지만 임의 trajectory에서는 생략하면 안 된다. LTV MPC가 꼭 online relinearization에서 나오는 것도, 한 번의 갱신이 항상 deadline을 충족하는 것도 아니다. 수렴 여부 대신 실제 갱신 수락 여부를 따로 표시한다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "acados 공식 기능별 예제",
+        "url": "https://docs.acados.org/features/"
+      },
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      }
+    ]
+  },
+  "centroidal_mpc": {
+    "group": "Controller",
+    "title": "축약 CoM 계획 — 전신 제어기의 구조적 비유",
+    "lead": "두 상태의 수평 CoM planner와 full-state LQR를 연결한다. 접촉력·floating base를 포함한 humanoid centroidal controller의 재현은 아니다.",
+    "chips": [
+      "reduced-order",
+      "momentum",
+      "planner -> lower level"
+    ],
+    "runtime": {
+      "controller": "centroidal_mpc"
+    },
+    "body": "<div class=\"section\"><h3>정확한 물리 관계와 근사</h3><div class=\"math\">M=m_c+m_p, α=m_p l/M\nc=p+α sinθ, c_dot=v+α cosθ·ω\nM c_ddot=F_net</div><p>이 이상화된 CartPole의 연속시간 수평 운동량 관계에서 F_net은 actuator와 외부 수평 힘의 합이다. 외력과 actuator 오차는 현재 nominal planner가 모른다.</p></div><div class=\"section\"><h3>실제 연결</h3><p>N=32의 2-state QP는 future [c,c_dot]를 계획한다. look-ahead reference를 받은 inner LQR가 다른 실제 force를 출력한다. planner force와 applied force는 같다고 가정할 수 없다.</p></div><div class=\"section\"><h3>시각화 경계</h3><p>이 planner에는 θ,ω 예측이 없다. 이를 임의로 0까지 줄인 4-state ghost를 실제 예측처럼 그리지 않는다. context graph에는 실제 [c,c_dot]만 표시하며, 축약 reference의 실현 가능성은 별도 문제다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      },
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      }
+    ]
+  },
+  "full_nmpc": {
+    "group": "Controller",
+    "title": "Nonlinear MPC — 4-state nominal dynamics를 유지",
+    "lead": "여기서 Full은 CartPole의 네 상태 전체를 뜻한다. humanoid full rigid-body model이나 전역적으로 정확한 solver라는 뜻은 아니다.",
+    "chips": [
+      "full state",
+      "nonlinear rollout",
+      "iterative solve"
+    ],
+    "runtime": {
+      "controller": "full_nmpc"
+    },
+    "body": "<div class=\"section\"><h3>실제 구현</h3><p>N=30, official MuJoCo WASM의 nonlinear nominal transition으로 single shooting한다. 수치 Jacobian과 iLQR형 backward/forward 갱신을 최대 두 번 수행하고 force를 clip한다. 일반 constrained SQP나 box-DDP 해법과 같다고 표현하지 않는다.</p></div><div class=\"section\"><h3>모델과 알고리즘</h3><p>NMPC는 nonlinear f를 OCP에 남긴다는 뜻이다. SQP/iLQR 계열은 내부에서 국소 미분 근사를 사용하지만, sampling·derivative-free MPC까지 모두 선형화한다고 일반화할 수 없다. single/multiple shooting은 전사 방식이고 iLQR/SQP/IPM은 해법이다.</p></div><div class=\"section\"><h3>검증할 것</h3><p>제한 횟수 종료는 수렴·전역 최적성 보장이 아니다. clip한 rollout의 입력 범위, nonlinear defect, feasibility, 계산시간과 실패를 따로 기록한다. 모델 fidelity와 controller 성능은 동의어가 아니다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "acados 공식 기능별 예제",
+        "url": "https://docs.acados.org/features/"
+      },
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      },
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      }
+    ]
+  },
+  "safety": {
+    "group": "Controller",
+    "title": "Backup 감독기 — 위험 예측과 실제 안전을 구분",
+    "lead": "현재 NMPC의 nominal 예측이 margin을 넘으면 LQR로 바꾸는 휴리스틱이다. 실패 상황을 모두 처리하는 안전 필터는 아니다.",
+    "chips": [
+      "heuristic supervisor",
+      "primary-plan scope",
+      "not certified safety"
+    ],
+    "runtime": {
+      "controller": "supervised_nmpc"
+    },
+    "body": "<div class=\"section\"><h3>현재 조건</h3><p>predicted world |p|와 |θ|를 검사한다. 화면의 primary plan은 backup 입력을 적용한 뒤의 경로가 아니므로 별도로 표시한다. 모든 solver exception·센서 오류·지연을 이 감독기가 복구하는 것은 아니다.</p></div><div class=\"section\"><h3>실물 적용 경계</h3><p>포화 LQR가 안전한 backup이라는 보장은 없다. 검증한 복구 영역, watchdog, 힘·에너지 제한, platform별 보호정지와 interlock이 필요하다. 시뮬레이터를 일시정지하는 처리는 실물 비상정지를 대신하지 않는다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "실제 구현과 범위",
+        "url": "docs/IMPLEMENTATION_BOUNDARIES.md"
+      },
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      }
+    ]
+  },
+  "robust_mpc": {
+    "group": "Controller",
+    "title": "불확실성 MPC — model set, tube, 확률 제약은 서로 다르다",
+    "lead": "현재 실행은 finite-model scenario-risk 목적함수다. 이 결과를 tube MPC나 확률적 안전 보장으로 승격하지 않는다.",
+    "chips": [
+      "5 nominal variants",
+      "finite-model cost",
+      "no probability guarantee"
+    ],
+    "runtime": {
+      "controller": "scenario_mpc"
+    },
+    "body": "<div class=\"section\"><h3>현재 모델과 solver</h3><div class=\"math\">J=(1−ρ) mean_i J_i + ρ max_i J_i\n0≤ρ≤1인 해석: 평균과 표본 중 최대 비용의 절충</div><p>기본 5개 mass/length/friction 모델에 같은 control sequence를 적용한다. mean과 worst sampled cost를 혼합하고 목표 주변 soft band를 더한다. 제한된 projected-gradient 갱신이며 scenario별 hard rail을 강제하지 않는다.</p></div><div class=\"section\"><h3>별도 방법</h3><p>Tube는 허용 오차 집합과 feedback, min-max는 명시한 adversarial set, chance constraint는 분포·확률 가정이 필요하다. 몇 개 모델을 시험한 것만으로 이 보장이 생기지 않는다. model sampling과 domain randomization도 같은 알고리즘은 아니다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      },
+      {
+        "label": "제어기 구현",
+        "url": "docs/CONTROLLERS.md"
+      }
+    ]
+  },
+  "ppo": {
+    "group": "Controller",
+    "title": "PPO — 학습된 정책의 추론",
+    "lead": "PPO는 policy-gradient 학습 알고리즘이지 MPC 해를 그대로 저장하는 방법이 아니다. 현재는 고정된 actor의 forward pass만 수행한다.",
+    "chips": [
+      "learned policy",
+      "offline training",
+      "cheap inference"
+    ],
+    "runtime": {
+      "controller": "ppo"
+    },
+    "body": "<div class=\"section\"><h3>현재 실행</h3><p>정규화된 observation을 actor에 넣고 left/right 중 높은 확률의 방향을 골라 ±force를 출력한다. action을 확률적으로 샘플링하는 평가와도 구분한다. 새 actor를 여기서 학습한 것은 아니다.</p></div><div class=\"section\"><h3>공정한 비교</h3><p>PPO의 reward, training observations, 종료조건, 데이터가 다른데 MPC와 같은 표에 놓았다는 사실만으로 우열을 정할 수 없다. 특정 MPC를 모방 학습했다는 근거도 없으며, policy가 constraint나 안전을 보장하지 않는다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "PPO 원 논문",
+        "url": "https://arxiv.org/abs/1707.06347"
+      },
+      {
+        "label": "실제 구현과 범위",
+        "url": "docs/IMPLEMENTATION_BOUNDARIES.md"
+      }
+    ]
+  },
+  "raw": {
+    "group": "Observer",
+    "title": "Raw + 차분 — 관측 가능한 값의 기준선",
+    "lead": "센서에서 p,θ만 받고 속도는 연속된 유효 측정의 차분으로 계산한다.",
+    "chips": [
+      "baseline",
+      "finite difference",
+      "noise amplification"
+    ],
+    "runtime": {
+      "observer": "raw"
+    },
+    "body": "<div class=\"section\"><h3>시간 간격</h3><div class=\"math\">v_hat=(p_new−p_previous_valid)/Δt\nω_hat=wrap(θ_new−θ_previous_valid)/Δt</div><p>누락 중에는 값을 유지하되 측정 갱신으로 계산하지 않는다. 다음 유효 측정의 속도는 실제 경과한 샘플 간격 Δt로 나눈다. calibrated P는 제공하지 않는다.</p></div><div class=\"section\"><h3>잡음 해석</h3><p>독립이고 동일 분산인 두 측정 잡음에서 차분 분산은 2σ²/Δt²다. 유색 잡음이면 상관항을 포함해야 한다. 이 기준선이 모든 센서에 부적절하다는 뜻은 아니다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "kf": {
+    "group": "Observer",
+    "title": "Kalman filter — 선형 모형 아래의 재귀 추정",
+    "lead": "잡음·초기 prior·관측 가능성 가정과 코드의 heuristic 설정을 구분한다. Gaussian 가정에서는 조건부 평균/공분산을 계산하며, 비Gaussian에서는 같은 최적성 주장을 그대로 적용하지 않는다.",
+    "chips": [
+      "P Q R",
+      "Kalman gain",
+      "linear/Gaussian"
+    ],
+    "runtime": {
+      "observer": "kf"
+    },
+    "body": "<div class=\"section\"><h3>핵심 식</h3><div class=\"math\">x_minus=A x_plus+B u\nP_minus=A P_plus Aᵀ+Q_e\nν=y−H x_minus\nS=H P_minus Hᵀ+R_e\nK=P_minus Hᵀ S⁻¹\nx_plus=x_minus+Kν</div><p>코드에서 controller와 observer는 각각 Q/R 이름을 쓰지만 역할은 다르다. 여기의 Q_e,R_e는 discrete-time 잡음 공분산이다. correlated noise에는 이 기본식 외의 항이 필요하다.</p></div><div class=\"section\"><h3>실제 센서와 정보</h3><p>현재 H는 [p,θ] 선택 행렬이다. dynamics coupling과 cross covariance로 속도를 교정하지만 관측 불가능한 상태를 자동 복구하지는 않는다. R_e는 시뮬레이터 주입 분산을 사용하므로 실측 calibration과 구분한다. 누락에는 predict-only, covariance 갱신에는 Joseph form을 사용한다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      },
+      {
+        "label": "FilterPy 공식 KF 문서",
+        "url": "https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html"
+      }
+    ]
+  },
+  "ekf": {
+    "group": "Observer",
+    "title": "EKF — nonlinear mean과 국소 covariance 근사",
+    "lead": "mean은 nominal nonlinear transition으로, covariance는 그 Jacobian으로 전파한다. EKF도 선형화하며, 언제나 KF보다 정확한 것은 아니다.",
+    "chips": [
+      "nonlinear f",
+      "Jacobian",
+      "local linearization"
+    ],
+    "runtime": {
+      "observer": "ekf"
+    },
+    "body": "<div class=\"section\"><h3>실제 구현</h3><div class=\"math\">x_minus=f(x_plus,u)\nF=∂f/∂x at x_plus\nP_minus=F P_plus Fᵀ+Q_e</div><p>20 ms MuJoCo nominal 전이의 central-difference Jacobian을 사용한다. 측정 함수는 현재 linear selection H라서 update는 기본 Kalman 형태다. 일반 nonlinear h에는 측정 Jacobian도 필요하다.</p></div><div class=\"section\"><h3>비교 전제</h3><p>Nonlinear bench는 controller·noise·초기 상태를 고정한 예제다. 과거의 mixed-unit RMSE 수치를 현재 보편 성능처럼 제시하지 않는다. 관측 가능성, 초기 오차, 편향, 공분산 일관성을 함께 평가한다. 기본 EKF의 unwrapped measurement residual과 SO(2) 비교 모드의 차이도 확인한다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      },
+      {
+        "label": "모델·전사·솔버 구분",
+        "url": "docs/MODEL_HIERARCHY.md"
+      }
+    ]
+  },
+  "ukf": {
+    "group": "Observer",
+    "title": "UKF — sigma points를 통한 모멘트 근사",
+    "lead": "sigma points는 무작위 표본이 아니다. 비선형 전이를 통한 평균·공분산 근사이며, Jacobian을 쓰지 않는다는 이유로 항상 정확하거나 빠른 것은 아니다.",
+    "chips": [
+      "sigma points",
+      "nonlinear propagation",
+      "Gaussian belief"
+    ],
+    "runtime": {
+      "observer": "ukf"
+    },
+    "body": "<div class=\"section\"><h3>현재 prediction</h3><p>4-state covariance에서 sigma points를 만들고 nonlinear nominal 전이에 통과시킨다. 각도는 circular mean과 wrapped difference를 사용한다. 단일 local belief 표현이므로 넓은 각도·multimodal contact에는 한계가 있다.</p></div><div class=\"section\"><h3>현재 measurement update</h3><div class=\"math\">P_xz=P_minus Hᵀ\nS=H P_minus Hᵀ+R_e\nK=P_xz S⁻¹</div><p>이 lab의 h(x)=[p,θ]는 local angle chart에서 선형이므로 측정 sigma points를 다시 만드는 구현이 아니다. process Q_e까지 포함한 P_minus를 H로 투영한다. 일반 nonlinear h에서는 재-sigma-point나 augmented-noise 구성을 별도로 설계해야 한다.</p></div><div class=\"section\"><h3>분포 해석</h3><p>Gaussian posterior를 정확히 계산한다고 부르지 않는다. nonlinear mapping은 Gaussian을 보존하지 않으며, 이 구현은 모멘트를 단일 local covariance로 요약한다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "inekf": {
+    "group": "Observer",
+    "title": "InEKF와 SO(2) — 같은 구현이 아니다",
+    "lead": "적절한 Lie-group 대칭성을 쓰는 invariant filter와 각도 wrap을 구분한다.",
+    "chips": [
+      "Lie group",
+      "invariant error",
+      "contact aided"
+    ],
+    "runtime": {
+      "observer": "so2"
+    },
+    "body": "<div class=\"section\"><h3>실행되는 것</h3><div class=\"math\">θ_meas=−179°, θ_hat=+179°\nraw difference=−358°; wrapped difference=+2°</div><p>SO(2) 모드는 EKF의 각도 innovation과 보정 각도를 wrap한다. 별도의 Hartley contact-aided InEKF 상태·접촉모델은 없다. 일반 EKF에도 angle wrap을 넣을 수 있으며 이것만으로 InEKF가 되지 않는다.</p></div><div class=\"section\"><h3>논문의 범위</h3><p>Hartley의 contact-inertial model은 IMU와 leg kinematics를 결합한다. 적절한 group-affine 구조에서 log-linear error 특성이 유용하다. bias 확장과 접촉 오류가 있을 때 모든 성질이 그대로 유지된다고 일반화하지 않는다. absolute sensing이 없으면 전역 translation/yaw gauge가 남는다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "Hartley contact-aided InEKF",
+        "url": "https://arxiv.org/abs/1904.09251"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "mhe": {
+    "group": "Observer",
+    "title": "MHE — window 최적화라는 별도 추정 선택",
+    "lead": "MHE는 EKF 뒤에 반드시 추가하는 상위 단계가 아니다. window, 제약, 지연 처리의 이점과 계산·arrival approximation 부담을 비교해 선택한다.",
+    "chips": [
+      "windowed optimization",
+      "arrival cost",
+      "constraints"
+    ],
+    "runtime": {
+      "observer": "mhe"
+    },
+    "body": "<div class=\"section\"><h3>일반 형태</h3><div class=\"math\">min Γ(x_(k−N))+Σ||w_i||²_(Q_e⁻¹)+Σ||v_i||²_(R_e⁻¹)\ns.t. x_(i+1)=f(x_i,u_i)+w_i, y_i=h(x_i)+v_i\noptional state/input constraints</div><p>arrival cost는 window 이전 정보의 요약이다. 선형 MHE도 있고 nonlinear MHE도 있으며, hard constraints는 사용 목적에 따라 선택한다.</p></div><div class=\"section\"><h3>현재 제한</h3><p>window=8 transition, 0.16 s. EKF posterior를 approximate arrival로 두고 첫 state의 4개 변수만 Gauss-Newton으로 최적화한다. arrival의 측정은 다시 세지 않는다. process-noise trajectory와 hard state constraints, calibrated output covariance는 없다. 표시된 residual은 window fit 뒤의 값이지 prefit innovation NIS가 아니다.</p></div><div class=\"section\"><h3>논문 예제와 구분</h3><p>EKF+MHE legged 연구는 orientation과 velocity 문제를 분리하고 OSQP를 사용한 200 Hz/0.1 s 예제를 보고했다. 그 환경·센서·구성의 결과이며 이 browser의 실행 주기나 필수 표준이 아니다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "EKF+MHE 원문",
+        "url": "https://arxiv.org/html/2405.20567v1"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "consistency": {
+    "group": "Observer",
+    "title": "공분산 일관성 — 통계의 가정을 먼저 확인",
+    "lead": "낮은 추정 오차와 정직한 불확실성은 다르다. 수치상 P가 존재하는 것과 calibrated P라는 것은 같은 말이 아니다.",
+    "chips": [
+      "NIS",
+      "NEES",
+      "chi-square",
+      "calibration"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>두 통계</h3><div class=\"math\">NIS=νᵀ S⁻¹ν  (measurement dimension)\nNEES=eᵀ P⁻¹e (tested nonsingular error coordinates)</div><p>NIS는 prefit innovation과 S를, NEES는 동일 시각의 truth와 estimate error/P를 사용한다. Gaussian·정확한 covariance 모형 아래에서 각각 유효 차원의 χ² 분포를 따른다. nonlinear/adaptive filter의 통계는 진단이지 자동 증명이 아니다.</p></div><div class=\"section\"><h3>해석 주의</h3><p>평균이 기대 차원에 가깝다는 것만으로 충분하지 않다. 시간상관, 편향, whiteness, coverage, 반복 trial과 유효 자유도를 확인한다. adaptive R을 같은 innovation으로 정하면 고정-noise χ² 가정도 달라진다. raw/residual/MHE의 미제공 output P를 0이나 base P로 대체하지 않는다.</p></div>",
+    "scope": "concept",
+    "sources": [
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      },
+      {
+        "label": "평가 설계",
+        "url": "docs/EXPERIMENT_DESIGN.md"
+      }
+    ]
+  },
+  "lin": {
+    "group": "Hybrid estimator",
+    "title": "Lin — learned contact event",
+    "lead": "논문은 proprioceptive history로 contact event를 추정해 contact-aided invariant filter에 전달한다. CartPole에서 이 contact classifier를 실행하지는 않는다.",
+    "chips": [
+      "learned contact configuration",
+      "temporal CNN",
+      "InEKF"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>학습이 들어가는 위치</h3><p>센서 이력 → contact event → kinematic update의 포함 여부. 이는 state 전체를 직접 추정하는 NN이나 covariance learning과 다른 interface다.</p></div><div class=\"section\"><h3>일반화 경계</h3><p>contact=true여도 발의 stationary/no-slip 가정이 유효한지는 별도다. 특정 논문의 window·layer·threshold를 모든 로봇의 필수 설계로 가져오지 않는다. 정확한 재현 시에는 원문과 code revision을 고정해 확인한다.</p></div>",
+    "scope": "paper",
+    "sources": [
+      {
+        "label": "Lin et al. CoRL 논문",
+        "url": "https://proceedings.mlr.press/v164/lin22b.html"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "youm": {
+    "group": "Hybrid estimator",
+    "title": "Youm NMN — learned measurement",
+    "lead": "신경망의 contact·velocity 정보를 invariant filter의 측정으로 결합하는 논문 계열이다. 이 lab에는 해당 로봇과 network의 재현이 없다.",
+    "chips": [
+      "GRU",
+      "neural measurement",
+      "velocity"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>학습이 들어가는 위치</h3><p>시뮬레이션에서 학습한 상태 관련 예측을 measurement로 fuse한다. contact gating만 학습하는 방법보다 metric velocity의 편향이 더 직접적으로 추정에 들어갈 수 있다.</p></div><div class=\"section\"><h3>신뢰도와 중복 정보</h3><p>같은 IMU·encoder로 만든 learned measurement와 filter prior는 독립이지 않을 수 있다. source frame, 지연, normalization, bias, cross-correlation과 OOD를 검증해야 한다. 특정 layer 크기와 threshold는 이 페이지의 일반 규칙으로 제시하지 않는다.</p></div>",
+    "scope": "paper",
+    "sources": [
+      {
+        "label": "Youm NMN 원문 초록",
+        "url": "https://arxiv.org/abs/2402.00366"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "innkf": {
+    "group": "Hybrid estimator",
+    "title": "InNKF 비유 — posterior 출력 보정",
+    "lead": "원 논문은 invariant state와 temporal neural compensator를 결합한다. 여기서 실행되는 것은 SO(2)-aware EKF 뒤의 작은 residual MLP다.",
+    "chips": [
+      "TCN",
+      "posterior residual",
+      "hybrid"
+    ],
+    "runtime": {
+      "observer": "residual"
+    },
+    "body": "<div class=\"section\"><h3>현재 정보 흐름</h3><p>기본 EKF posterior → residual MLP → corrected output. corrected output을 base EKF에는 되먹이지 않지만 controller는 그 출력을 받으므로 plant/sensor를 통한 폐루프 영향은 존재한다.</p></div><div class=\"section\"><h3>공분산과 재현 범위</h3><p>base P는 corrected-output P가 아니다. 이 구현에는 보정 출력의 calibrated covariance가 없다. 논문의 TCN, SE₂(3) 구성, 학습·하드웨어 성능을 재현한 것으로 부르지 않는다. offline residual fit 향상은 폐루프 개선의 충분조건이 아니다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "InNKF 원문",
+        "url": "https://arxiv.org/html/2503.00344v1"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "coco": {
+    "group": "Hybrid estimator",
+    "title": "CoCo-InEKF — contact process covariance",
+    "lead": "원문은 contact candidate의 velocity/process covariance를 학습하고 candidate state를 유지한다. observation R을 단순히 키우는 방법과 다르다.",
+    "chips": [
+      "process covariance",
+      "directional slip",
+      "differentiable InEKF"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>논문에서 학습하는 것</h3><p>각 후보의 lower-triangular L로 Σ=L Lᵀ를 구성해 directional uncertainty를 표현한다. 이는 positive-semidefinite를 보장할 뿐 모든 고유값이 양수이거나 물리 contact label이 정확하다는 보장은 아니다.</p></div><div class=\"section\"><h3>학습 데이터의 범위</h3><p>직접 contact label이 필요 없다는 말은 state ground truth도 필요 없다는 뜻이 아니다. 원문의 state-error training은 시뮬레이션 정답을 사용한다. CartPole에는 해당 contact-state가 없으므로 이 페이지는 논문 설명이며 Adaptive-R을 CoCo 구현으로 연결하지 않는다.</p></div>",
+    "scope": "paper",
+    "sources": [
+      {
+        "label": "CoCo-InEKF 원문 §III",
+        "url": "https://arxiv.org/html/2605.15122v1"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "focus": {
+    "group": "Hybrid estimator",
+    "title": "FOCUS 비유 — contact와 FK 신뢰도를 구분",
+    "lead": "공식 초록에서 확인되는 아이디어는 per-foot FK reliability로 velocity observation과 covariance를 조정하는 것이다.",
+    "chips": [
+      "abstract verified",
+      "local heuristic only",
+      "no reproduction"
+    ],
+    "runtime": {
+      "observer": "adaptive"
+    },
+    "body": "<div class=\"section\"><h3>논문과 로컬의 차이</h3><p>FOCUS는 FK velocity와 IMU-propagated velocity를 reliability에 따라 결합한다. 현재 Adaptive-R은 position/angle innovation 기반 휴리스틱이며 foot, FK blending, learned reliability network가 없다.</p></div><div class=\"section\"><h3>가정과 근거 수준</h3><p>동일 센서에서 얻은 prior·pseudo-measurement의 상관을 무시하면 과신할 수 있다. 현재 R_e 조절은 같은 innovation을 사용하므로 classical fixed-noise optimality는 주장하지 않는다. 이번 검토에서 원문 상세식을 직접 재확인하지 못해 network 크기·세부 scale 공식을 일반 법칙처럼 싣지 않는다.</p></div>",
+    "scope": "analogue",
+    "sources": [
+      {
+        "label": "FOCUS 공식 초록",
+        "url": "https://arxiv.org/abs/2609.02222"
+      },
+      {
+        "label": "관측기·단위·통계 조건",
+        "url": "docs/OBSERVERS.md"
+      }
+    ]
+  },
+  "sysid": {
+    "group": "Commissioning",
+    "title": "System ID — 최적화 숫자와 식별 가능성을 구분",
+    "lead": "모델 파라미터의 유일성·물리 타당성·별도 궤적 예측을 확인한 다음 제어 튜닝을 해석한다.",
+    "chips": [
+      "persistent excitation",
+      "physical parameters",
+      "identifiability"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>현재 offline 예제</h3><p>src/commissioning.js는 simulation truth state로 one-step prediction error를 맞춘다. actuator 실험도 realized force를 사용한다. 이는 privileged simulation ID이며 encoder/IMU만으로 같은 파라미터를 식별했다는 증거는 아니다.</p></div><div class=\"section\"><h3>확인할 것</h3><p>excitation, sensitivity rank/conditioning, parameter correlations와 admissible inertia를 확인한다. 낮은 one-step fit이 유일한 파라미터나 장기 rollout 정확도를 보장하지 않는다. contact force·inertia·friction·gain이 서로 오차를 설명할 수 있으므로 실험을 분리한다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "Commissioning 구현",
+        "url": "docs/COMMISSIONING.md"
+      },
+      {
+        "label": "식별 한계",
+        "url": "docs/THEORY_FAILURE_MAP.md"
+      }
+    ]
+  },
+  "tuning": {
+    "group": "Commissioning",
+    "title": "Auto-tuning — 방법보다 평가·가정이 먼저",
+    "lead": "단일 black-box optimizer도 타당한 baseline일 수 있다. 파라미터 구조·미분 가능성·비용·위험에 따라 방법을 선택하며 SOTA라는 명칭으로 결정하지 않는다.",
+    "chips": [
+      "DiffTune",
+      "Bayesian optimization",
+      "Safe BO",
+      "bilevel calibration"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>방법 선택</h3><p>연속 weight는 유효한 민감도가 있을 때 gradient, 이산 horizon·solver는 structured/mixed-variable search가 후보이다. 일반 CMA-ES를 정수·범주 변수에 그대로 적용하는 것은 별도 설계가 필요하다. 양수 parameterization은 한 방법이지 모든 값에 지수함수가 필수인 것은 아니다.</p></div><div class=\"section\"><h3>Safe BO 경계</h3><p>Safe BO는 안전 seed, confidence/model 가정, 제한된 탐색 영역과 독립 보호장치가 있을 때 고려한다. 모든 hardware tuning에 필수이거나 failure-free 보장을 자동 제공하지 않는다. DiffTune도 smooth/regular solution과 solver 민감도 가정을 확인해야 한다.</p></div><div class=\"section\"><h3>현재 구현과 시험 분리</h3><p>현재 CEM과 작은 structured search는 연구 방법의 재현이 아니다. train/validation으로 선택하고 잠근 test로 평가한다. 현재 legacy tuner는 validation과 test를 admission에 함께 사용하므로 반복 개발 후 그 test를 untouched라고 부를 수 없다. 새 terminal 검증은 고정 manifest의 별도 실험이다.</p></div>",
+    "scope": "concept",
+    "sources": [
+      {
+        "label": "DiffTune-MPC",
+        "url": "https://arxiv.org/abs/2312.11384"
+      },
+      {
+        "label": "Safe BO 원 논문",
+        "url": "https://proceedings.mlr.press/v229/widmer23a.html"
+      },
+      {
+        "label": "튜닝 방법과 한계",
+        "url": "docs/TUNING_METHODS.md"
+      }
+    ]
+  },
+  "commissioning": {
+    "group": "Commissioning",
+    "title": "Commissioning — 모델·정보·평가를 검증하는 반복 과정",
+    "lead": "식별→보정→설계→검증은 실무상 기본 순서이지 유일한 최적 경로나 필수 알고리즘 목록이 아니다. 검증 결과에 따라 앞 단계로 돌아간다.",
+    "chips": [
+      "system ID",
+      "calibration",
+      "held-out validation",
+      "co-design"
+    ],
+    "runtime": null,
+    "body": "<div class=\"section\"><h3>먼저 고정할 계약</h3><p>좌표·단위·시간·sensor validity·command/realized input·정보 출처를 먼저 정의한다. 그다음 모델/actuator 식별, observer calibration, controller 설계, 폐루프 검증을 수행한다. model ID를 튜닝 마지막에 넣는 고정 순서는 권장하지 않는다.</p></div><div class=\"section\"><h3>같이 기록할 항목</h3><p>tracking, componentwise estimation error, force와 slew, 실제/예측 제약, 실패/거부, residuals와 sensor-to-application age를 구분한다. state envelope 안에서 끝났다는 DONE은 목표 추종이나 safety certificate가 아니다.</p></div><div class=\"section\"><h3>일반화 한계</h3><p>finite scenario의 zero failure는 임의 OOD의 보장이 아니다. Q_e의 continuous spectral density와 discrete covariance도 다르다. robot-scale에서는 sensor observability와 contact/hardware 보호조건을 다시 검증해야 한다.</p></div>",
+    "scope": "concept",
+    "sources": [
+      {
+        "label": "Commissioning",
+        "url": "docs/COMMISSIONING.md"
+      },
+      {
+        "label": "시험 범위",
+        "url": "docs/VALIDATION.md"
+      }
+    ]
+  },
+  "sim2real": {
+    "group": "Commissioning",
+    "title": "Sim2real stress — 동일 오차에도 원인은 다르다",
+    "lead": "동역학·센서·actuator·전송의 단독 변화와 결합 변화를 나눠 보되, 실제 구현한 것만 설명한다.",
+    "chips": [
+      "single-factor ablation",
+      "model mismatch",
+      "latency",
+      "actuator lag",
+      "sensor bias",
+      "held-out seeds"
+    ],
+    "runtime": {
+      "scenario": "sim2real"
+    },
+    "body": "<div class=\"section\"><h3>현재 plant</h3><p>정해진 mass/length/friction/gain/lag/delay와 sensor-noise/bias 조건이다. actuator는 horizontal force port의 이상화 또는 heuristic 제한이다. 모터 전기회로·전원·접촉 robot의 완전한 모델이 아니다.</p></div><div class=\"section\"><h3>시간과 관측</h3><p>요청 u_cmd와 applied force는 다를 수 있고 observer가 모르는 입력 오차가 생긴다. 현재 timing은 synchronous simulated loop 계산 시간이다. acquisition/arrival timestamp·out-of-sequence fusion·하드웨어 통신 deadline을 실증한 것이 아니다.</p></div><div class=\"section\"><h3>재현성과 확장</h3><p>randomization은 identification을 대체하지 않는다. 조건·seed·초기 상태·goal·주기·asset hash를 함께 기록한다. 경계 사례를 발견했다고 전체 uncertainty set을 탐색한 것은 아니며 simulation-to-simulation 수치 일치도 real-world 검증과 다르다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "MuJoCo 모델 경계",
+        "url": "docs/MUJOCO_WASM_RUNTIME.md"
+      },
+      {
+        "label": "진단 항목",
+        "url": "docs/THEORY_FAILURE_MAP.md"
+      }
+    ]
+  },
+  "faults": {
+    "group": "Commissioning",
+    "title": "고장·성능저하 — 누락, 고착, 잡음은 서로 다르다",
+    "lead": "센서 누락을 이전 값의 새 관측으로 처리하지 않는다. 같은 값이 도착한 고착과 알려진 통신 누락은 구분한다.",
+    "chips": [
+      "colored noise",
+      "dropout",
+      "stuck sensor",
+      "jitter",
+      "torque-speed",
+      "thermal"
+    ],
+    "runtime": {
+      "scenario": "colored"
+    },
+    "body": "<div class=\"section\"><h3>센서</h3><p>colored는 시간상관 잡음, dropout은 stale metadata와 predict-only, stuck은 repeated but delivered 값을 갖는 별도 fault다. 일정 횟수 outlier 검출만으로 fault isolation·관측 가능성 회복을 보장하지 않는다.</p></div><div class=\"section\"><h3>구동·전송</h3><p>jitter는 command hold/변동 지연의 단순화, torque_speed와 thermal은 force 제한의 heuristic이다. 실제 motor의 전압·전류·역기전력·냉각·배터리 모델을 검증한 것으로 해석하지 않는다.</p></div><div class=\"section\"><h3>진단 원칙</h3><p>무엇이 주입됐는지 아는 test harness와 실제 sensor-only fault detector를 혼동하지 않는다. 이 페이지의 성공은 주어진 fault script의 결과이며 실물 fault-tolerant control의 인증이 아니다.</p></div>",
+    "scope": "implemented",
+    "sources": [
+      {
+        "label": "구현 범위",
+        "url": "docs/IMPLEMENTATION_BOUNDARIES.md"
+      },
+      {
+        "label": "MuJoCo runtime",
+        "url": "docs/MUJOCO_WASM_RUNTIME.md"
+      }
+    ]
+  }
 };
-const CONTROL_LAB_TOPIC_ORDER=["overview","pid","lqr","linear_mpc","state_mpc","ltv_mpc","centroidal_mpc","full_nmpc","safety","robust_mpc","ppo","raw","kf","ekf","ukf","inekf","mhe","consistency","lin","youm","innkf","coco","focus","sysid","tuning","commissioning","sim2real","faults"];
+const CONTROL_LAB_TOPIC_ORDER=["overview", "pid", "lqr", "linear_mpc", "state_mpc", "ltv_mpc", "centroidal_mpc", "full_nmpc", "safety", "robust_mpc", "ppo", "raw", "kf", "ekf", "ukf", "inekf", "mhe", "consistency", "lin", "youm", "innkf", "coco", "focus", "sysid", "tuning", "commissioning", "sim2real", "faults"];
 if(typeof module!=="undefined")module.exports={CONTROL_LAB_TOPICS,CONTROL_LAB_TOPIC_ORDER};

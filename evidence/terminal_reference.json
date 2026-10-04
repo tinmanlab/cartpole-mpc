@@ -1,9 +1,9 @@
 {
   "schema": "cartpole-terminal-reference/v1",
-  "fixtureSha256": "80ba0278aee3f2ec1310ff8438291434e3165537b5a81c347a413cb42e18ce73",
+  "fixtureSha256": "f75d6d3d69ee02cfafe48d2c3e065c3e3b5010dc311a7937f095c4e696be3a27",
   "scipyVersion": "1.15.3",
   "sourceSha256": {
-    "src/engine.js": "3ffe403e374350f4e2636724bbbed301469c7dd6c0c0f054769ef2edc824dbb8",
+    "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
     "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
     "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
     "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
