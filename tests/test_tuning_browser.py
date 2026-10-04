@@ -5,6 +5,15 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 class Quiet(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
+
+def evidence_response(mode):
+    # Exactly one positional argument: Playwright supplies a Request when a
+    # callback has a second positional parameter, even if it has a default.
+    body=json.dumps({'experimentValid':True,'mode':mode,'campaigns':[]})
+    def respond(route):
+        route.fulfill(content_type='application/json',body=body)
+    return respond
+
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Quiet,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 try:
@@ -25,12 +34,13 @@ try:
     after=page.evaluate('window.controlLab.getState()')
     for key in ['controller','observer','t','truth','estimate','terminalCost']:assert before[key]==after[key],key
     page.locator('#tuningDetails').screenshot(path=str(ROOT/'evidence/sequential_tuning_browser.png'))
-    # A completed rejection/partial comparison must not become fake 0/12 successes.
+    # Completed rejection/partial comparison must not become fake 0/12 successes.
     for mode in ['completed-no-admissible','completed-partial-admissibility']:
-        page.route('**/evidence/sequential_tuning.json',lambda route,mode=mode:route.fulfill(content_type='application/json',body=json.dumps({'experimentValid':True,'mode':mode,'campaigns':[]})))
+        response=evidence_response(mode)
+        page.route('**/evidence/sequential_tuning.json',response)
         page.click('#loadTuningComparison');page.wait_for_function('document.querySelector("#tuningComparisonStatus").dataset.state==="error"')
         assert page.locator('#tuningComparison tbody tr').count()==0
-        page.unroute('**/evidence/sequential_tuning.json')
+        page.unroute('**/evidence/sequential_tuning.json',response)
     page.route('**/evidence/sequential_tuning.json',lambda route:route.fulfill(status=404,body='not found'))
     page.click('#loadTuningComparison');page.wait_for_function('document.querySelector("#tuningComparisonStatus").dataset.state==="error"')
     assert page.locator('#tuningComparison tbody tr').count()==0
