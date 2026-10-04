@@ -1,0 +1,5 @@
+# Optional research lane; default browser/CI dependencies are unchanged.
+-r requirements-native.txt
+# acados v0.6.0 explicitly tests the 3.7 series; do not silently install newer CasADi.
+casadi==3.7.2
+# acados_template is installed from the exact local upstream checkout in docs/NATIVE_NMPC.md.

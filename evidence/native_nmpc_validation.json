@@ -1,0 +1,51 @@
+{
+  "schema": "cartpole-native-nmpc-validation/v1",
+  "date": "2026-10-04",
+  "baseCommit": "9b5a0b0b13b315799b75ee966a00ea7a7b2324d5",
+  "officialExample": {
+    "upstreamCommit": "503364817c872d474ab5bed219c26760ac267769",
+    "path": "examples/acados_python/getting_started/minimal_example_ocp.py",
+    "sourceSha256": "c266c7531806e9f06a0c1dff5d0038ecff8d4d9f0c4182dc33f2a327f56f2857",
+    "unmodified": true,
+    "exitCode": 0,
+    "logSha256": "41c4829f9352607253b81f1c674d0e96ec89f3450caa8fde40d04f49a8a4757f",
+    "casadiVersion": "3.7.2"
+  },
+  "commands": [
+    {
+      "command": ".venv-native/bin/python tests/test_native_nmpc.py",
+      "exitCode": 0,
+      "tests": 6
+    },
+    {
+      "command": ".venv-native/bin/python scripts/run_native_nmpc.py",
+      "exitCode": 0,
+      "cases": 18
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    }
+  ],
+  "experimentSourcesStillMatch": true,
+  "modelParity": {
+    "cases": 36,
+    "maxTransitionError": 6.661338147750939e-16,
+    "maxJacobianError": 2.1004198380580874e-11,
+    "passed": true
+  },
+  "experimentReceipt": "native_nmpc.json",
+  "historicalExploratoryReceipt": "native_nmpc_baseline.json",
+  "admission": {
+    "publicBrowserChanged": false,
+    "nativeControllerDeployed": false,
+    "independentApproval": false,
+    "hardware": "NOT_EVALUATED",
+    "terminalDesign": "DEVELOPMENT_CASES_ONLY"
+  },
+  "notes": [
+    "Terminal experiment was chosen after reviewing baseline failures; not an untouched final test.",
+    "Default regression CI does not execute optional native tests. Native commands above were run locally.",
+    "Native sources and shared libraries are optional ignored local build products; source/library hashes are in the experiment receipt."
+  ]
+}

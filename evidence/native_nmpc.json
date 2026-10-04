@@ -1,0 +1,1527 @@
+{
+  "schema": "cartpole-native-nmpc/v2",
+  "upstream": {
+    "version": "v0.6.0",
+    "commit": "503364817c872d474ab5bed219c26760ac267769",
+    "submodules": [
+      "d6251233923c9b475fe894fb729fb63ab693e301 external/blasfeo (d625123)",
+      " e3a56c1caddd7f12d125d84f337b9a9e5c186271 external/hpipm (e3a56c1)"
+    ]
+  },
+  "nativeLibrarySha256": {
+    "libacados.so": "f05b33b21ca8d1101837631e96e09c523505cfc570a1a97b2cee0f681a4f6205",
+    "libhpipm.so": "f1732096d339dd2ce257e7394d838fb937642b5f0251e9753b9e095511c7dd43",
+    "libblasfeo.so": "99c110cf1f4f0f302cd8adfc84bb939c2761ab41d1bd9c6f6d5c4e21293ebaec"
+  },
+  "versions": {
+    "casadi": "3.7.2",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3"
+  },
+  "host": {
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "build": "Release / GENERIC BLASFEO and HPIPM / OpenMP OFF"
+  },
+  "sourceSha256": {
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "src/engine.js": "38611647cbe7c348aca8b417a54ede7850c645819ab311fc0056ddbae4f41295",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
+    "scripts/native_nmpc.py": "fec4aa29c39269306fb8eba07ad7875a9a6d4f300386420b18fbceb829afde81",
+    "scripts/native_plant_bridge.mjs": "68aadc37718ec38f069ab3b1c32db103f3e46a3dcece4e6353677425bbb29a40",
+    "scripts/run_native_nmpc.py": "722150b671248bd90b5232e8eaa1e0726779e365ab21c2aeb9de5897783c316d",
+    "tests/test_native_nmpc.py": "961f7d22c0d698a8526399c2485416001a69fb6d779a27b6839551658af0d25e"
+  },
+  "modelAudit": {
+    "cases": 36,
+    "maxTransitionError": 6.661338147750939e-16,
+    "maxJacobianError": 2.1004198380580874e-11,
+    "transitionTolerance": 1e-10,
+    "jacobianTolerance": 1e-07,
+    "physics": {
+      "backend": "mujoco-wasm",
+      "version": "3.7.0",
+      "asset": "assets/cartpole.xml",
+      "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+      "stepCalls": 1584,
+      "cachedModels": 3,
+      "integrator": "Euler",
+      "physicsDt": 0.005,
+      "controlDt": 0.02
+    },
+    "passed": true
+  },
+  "problem": {
+    "horizon": 30,
+    "controlDt": 0.02,
+    "Q": [
+      2.0,
+      0.45,
+      68.0,
+      3.5
+    ],
+    "R": 0.14,
+    "forceBound": 10,
+    "railBound": 2.4,
+    "costScaling": "all ones, W=2Q and W_e=2P; matches summed JS cost",
+    "push": {
+      "step": 96,
+      "force": 3,
+      "durationSteps": 10
+    },
+    "episodeSteps": 240
+  },
+  "terminalDesigns": {
+    "originalDiagonal": [
+      8.0,
+      1.5,
+      110.0,
+      7.0
+    ],
+    "dareFullMatrix": [
+      [
+        163.67495216052276,
+        121.06070030212527,
+        372.679683483486,
+        98.23226109561757
+      ],
+      [
+        121.06070030212527,
+        159.4907989214219,
+        507.0468749801198,
+        134.6809738077319
+      ],
+      [
+        372.679683483486,
+        507.0468749801198,
+        3126.453154742294,
+        598.6651524561618
+      ],
+      [
+        98.23226109561757,
+        134.6809738077319,
+        598.6651524561618,
+        157.159631800407
+      ]
+    ],
+    "meaning": "SciPy DARE for nominal discrete A/B/Q/R; local terminal cost, no invariant terminal set or global safety claim"
+  },
+  "acceptanceTolerances": {
+    "dynamics": 1e-05,
+    "constraint": 1e-07,
+    "initial": 1e-08,
+    "cost": 1e-06
+  },
+  "solverConstructionHostMs": 5003.380581008969,
+  "rows": [
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        -0.6535075408711263,
+        -0.32922743786200265,
+        0.004629714850681719,
+        0.01745487872866296
+      ],
+      "finalEstimate": [
+        -0.6530618466656375,
+        -0.31910056055799657,
+        -0.0011299581929301505,
+        -0.049031917401134564
+      ],
+      "positionTrackingRmse_m": 0.6072671099367641,
+      "angleRms_rad": 0.027714742213199993,
+      "maxPosition_m": 0.6535075408711263,
+      "rmsForce_N": 0.9323028406105804,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.8501170000004095,
+        "p95": 1.6429400999997135,
+        "p99": 2.044926250000007,
+        "max": 30.339645999999448
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 1.5421254938701168,
+        "p95": 2.489080405212007,
+        "p99": 3.131131005357019,
+        "max": 32.668628002284095
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 1.5439970011357218,
+        "p95": 2.4911908229114483,
+        "p99": 3.1337520599481645,
+        "max": 32.67139699892141
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        -0.6529457553349797,
+        -0.3290260849740268,
+        0.00462659944125592,
+        0.01745609300694343
+      ],
+      "finalEstimate": [
+        -0.6525000611280214,
+        -0.3188992076321377,
+        -0.0011330736037695995,
+        -0.04903070325739573
+      ],
+      "positionTrackingRmse_m": 0.6070669292934939,
+      "angleRms_rad": 0.027693235103131722,
+      "maxPosition_m": 0.6529457553349797,
+      "rmsForce_N": 0.9322431598463515,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.453,
+        "p95": 0.61,
+        "p99": 0.9031199999999986,
+        "max": 1.055
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 5.847093998454511,
+        "p95": 6.8404429068323225,
+        "p99": 8.492184582864857,
+        "max": 35.96368199214339
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8421054953942075,
+        "p95": 1.0869536359678023,
+        "p99": 1.1910144137800667,
+        "max": 1.3819199812132865
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 6.746305007254705,
+        "p95": 7.794762402772903,
+        "p99": 9.466863344714504,
+        "max": 36.7775569902733
+      },
+      "maxAdmittedDynamicsDefect": 7.667846392556132e-12,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 2.842170943040401e-14,
+      "maxAdmittedNlpResidual": 9.995342153956699e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.11987772647895133,
+        "max_dynamics_defect": 2.931682674400804e-16,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 104.57310544820713,
+        "status": 0,
+        "native_ms": 0.453,
+        "host_ms": 6.362935993820429,
+        "algorithm": "SQP",
+        "residuals": [
+          2.2851054382044822e-11,
+          2.931682674400804e-16,
+          0.0,
+          1.0217455738107741e-15
+        ],
+        "iterations": 3,
+        "cost_error": 1.4210854715202004e-14,
+        "nonlinearOptimalityConverged": true
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 143,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        -0.6529449058330334,
+        -0.32902626101665744,
+        0.004626388946929008,
+        0.017455719726480134
+      ],
+      "finalEstimate": [
+        -0.6524992116255779,
+        -0.31889938366048703,
+        -0.0011332840980550676,
+        -0.04903107653677298
+      ],
+      "positionTrackingRmse_m": 0.6070666451061343,
+      "angleRms_rad": 0.027693207010574466,
+      "maxPosition_m": 0.6529449058330334,
+      "rmsForce_N": 0.932243449551008,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.607,
+        "p95": 0.8788499999999997,
+        "p99": 1.04661,
+        "max": 1.076
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 10.843165015103295,
+        "p95": 13.581103266915305,
+        "p99": 15.946563787001637,
+        "max": 17.00743500259705
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8615100086899474,
+        "p95": 1.2211466397275217,
+        "p99": 1.308719422086142,
+        "max": 1.338468020549044
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 11.73429198388476,
+        "p95": 14.607081751455551,
+        "p99": 17.086442688596417,
+        "max": 17.89167898823507
+      },
+      "maxAdmittedDynamicsDefect": 9.413796789222925e-06,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 4.263256414560601e-14,
+      "maxAdmittedNlpResidual": 0.023404745709626695,
+      "admittedButNotNlpConvergedSteps": 90,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.11989486894320861,
+        "max_dynamics_defect": 3.619028801082891e-06,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 104.57304928723262,
+        "status": 0,
+        "native_ms": 0.24000000000000002,
+        "host_ms": 5.249240988632664,
+        "algorithm": "SQP_RTI",
+        "residuals": [
+          0.0007783905391249846,
+          3.619028801082891e-06,
+          0.0,
+          6.543332194150796e-11
+        ],
+        "iterations": 1,
+        "cost_error": 1.4210854715202004e-14,
+        "nonlinearOptimalityConverged": false,
+        "fallbackUsed": false,
+        "solverAlgorithmApplied": "SQP_RTI"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4282196766711252,
+        0.04646921905140337,
+        -0.0025346761349848493,
+        0.021238412532489228
+      ],
+      "finalEstimate": [
+        0.4286653732804652,
+        0.05659620593199813,
+        -0.008294353380709277,
+        -0.045248766245504196
+      ],
+      "positionTrackingRmse_m": 0.2392147385053747,
+      "angleRms_rad": 0.026562681055724964,
+      "maxPosition_m": 0.4750521768048415,
+      "rmsForce_N": 1.1907906603797445,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.3493540000008579,
+        "p95": 0.4993902499997602,
+        "p99": 0.6489216700002709,
+        "max": 5.258500000001732
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8316504972754046,
+        "p95": 1.3358925483771598,
+        "p99": 1.6039876322611226,
+        "max": 5.988588003674522
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 0.8331169956363738,
+        "p95": 1.3373435474932192,
+        "p99": 1.6058428378892122,
+        "max": 5.990917008602992
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.42823529995236836,
+        0.04643631498827627,
+        -0.0025301980749260398,
+        0.02123503231176031
+      ],
+      "finalEstimate": [
+        0.42868099655996306,
+        0.05656330179492992,
+        -0.008289875318346348,
+        -0.045252146271320376
+      ],
+      "positionTrackingRmse_m": 0.23918938564068476,
+      "angleRms_rad": 0.026546801722699877,
+      "maxPosition_m": 0.47499676350711834,
+      "rmsForce_N": 1.190671402287929,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.46900000000000003,
+        "p95": 0.6871,
+        "p99": 0.8632699999999984,
+        "max": 1.083
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 5.740772001445293,
+        "p95": 7.9087046018685205,
+        "p99": 9.804080705216615,
+        "max": 10.04105800529942
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8121684950310737,
+        "p95": 1.0269627018715253,
+        "p99": 1.3418903539422897,
+        "max": 2.8270230104681104
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 6.631784504861571,
+        "p95": 8.68397535232361,
+        "p99": 10.961900706752202,
+        "max": 12.176673975773156
+      },
+      "maxAdmittedDynamicsDefect": 1.3218419414595672e-13,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 1.4210854715202004e-14,
+      "maxAdmittedNlpResidual": 9.68510167620451e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.35138633637026945,
+        "max_dynamics_defect": 4.408311823217437e-15,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 0.5533634647581945,
+        "status": 0,
+        "native_ms": 0.549,
+        "host_ms": 9.923229983542114,
+        "algorithm": "SQP",
+        "residuals": [
+          6.147391407029801e-08,
+          4.408311823217437e-15,
+          0.0,
+          1.035138633637027e-15
+        ],
+        "iterations": 2,
+        "cost_error": 1.1102230246251565e-16,
+        "nonlinearOptimalityConverged": true
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "nominal",
+        "seed": 43,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 147,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4282370265588929,
+        0.04643354486374857,
+        -0.0025300507239823028,
+        0.021235684601135712
+      ],
+      "finalEstimate": [
+        0.4286827231665625,
+        0.05656053167015796,
+        -0.008289727967330743,
+        -0.04525149397752603
+      ],
+      "positionTrackingRmse_m": 0.23918867988773526,
+      "angleRms_rad": 0.026546717793936997,
+      "maxPosition_m": 0.47499665310030215,
+      "rmsForce_N": 1.1906738854144006,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.6745,
+        "p95": 1.1952,
+        "p99": 1.424209999999999,
+        "max": 2.281
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 11.423973002820276,
+        "p95": 17.03049170464509,
+        "p99": 20.586969437717922,
+        "max": 22.426231997087598
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8232175023294985,
+        "p95": 1.2111218238715078,
+        "p99": 1.4999520120909426,
+        "max": 2.1609629911836237
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 12.32664099370595,
+        "p95": 18.323190601950046,
+        "p99": 21.53459154098527,
+        "max": 24.150629003997892
+      },
+      "maxAdmittedDynamicsDefect": 9.682489934430272e-06,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 1.4210854715202004e-14,
+      "maxAdmittedNlpResidual": 0.07070909872322773,
+      "admittedButNotNlpConvergedSteps": 90,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.3513734790477547,
+        "max_dynamics_defect": 1.5221967734398308e-06,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 0.5533229510124292,
+        "status": 0,
+        "native_ms": 0.194,
+        "host_ms": 5.317278002621606,
+        "algorithm": "SQP_RTI",
+        "residuals": [
+          0.00028010610204487474,
+          1.5221967734398308e-06,
+          0.0,
+          7.225339736600815e-11
+        ],
+        "iterations": 1,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": false,
+        "fallbackUsed": false,
+        "solverAlgorithmApplied": "SQP_RTI"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "envelope-failure",
+      "reason": null,
+      "appliedSteps": 237,
+      "finalTruth": [
+        -2.407981285648681,
+        -0.4668255052296521,
+        0.11526975233152226,
+        -0.05804787427143106
+      ],
+      "finalEstimate": [
+        -2.3887552998342354,
+        -0.41811678366872285,
+        0.1034102550400802,
+        -0.19641829481099993
+      ],
+      "positionTrackingRmse_m": 1.4261497773719043,
+      "angleRms_rad": 0.049449261721941015,
+      "maxPosition_m": 2.407981285648681,
+      "rmsForce_N": 1.7194820442884071,
+      "solverTimeMs": {
+        "samples": 237,
+        "p50": 0.5158159999991767,
+        "p95": 2.7385603999999146,
+        "p99": 3.707815840000546,
+        "max": 5.458102000000508
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 237,
+        "p50": 1.1061929981224239,
+        "p95": 3.8642546045593895,
+        "p99": 5.646011327626166,
+        "max": 7.683070987695828
+      },
+      "completeIterationHostMs": {
+        "samples": 237,
+        "p50": 1.107361022150144,
+        "p95": 3.8661283964756854,
+        "p99": 5.649661037605238,
+        "max": 7.68533899099566
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "envelope-failure",
+      "reason": null,
+      "appliedSteps": 236,
+      "finalTruth": [
+        -2.4011360134279065,
+        -0.5185046573663071,
+        0.11781652680361412,
+        -0.007912841249691459
+      ],
+      "finalEstimate": [
+        -2.3773777164163907,
+        -0.45165499911986184,
+        0.10312111501277504,
+        -0.1723821001537143
+      ],
+      "positionTrackingRmse_m": 1.4181898366184689,
+      "angleRms_rad": 0.049377790332562094,
+      "maxPosition_m": 2.4011360134279065,
+      "rmsForce_N": 1.715649455109651,
+      "solverTimeMs": {
+        "samples": 236,
+        "p50": 0.7625,
+        "p95": 2.33025,
+        "p99": 3.9943000000000035,
+        "max": 6.62
+      },
+      "controllerHostTimeMs": {
+        "samples": 236,
+        "p50": 8.592680998845026,
+        "p95": 13.063903759757522,
+        "p99": 16.256721300305806,
+        "max": 20.50281100673601
+      },
+      "bridgeRoundTripMs": {
+        "samples": 236,
+        "p50": 0.9199979976983741,
+        "p95": 1.5017190016806126,
+        "p99": 2.139084562077188,
+        "max": 3.3049800258595496
+      },
+      "completeIterationHostMs": {
+        "samples": 236,
+        "p50": 9.604883001884446,
+        "p95": 14.445321496168617,
+        "p99": 17.282100964803256,
+        "max": 21.655463991919532
+      },
+      "maxAdmittedDynamicsDefect": 8.006928453596629e-13,
+      "maxAdmittedConstraintViolation": 4.440892098500626e-15,
+      "maxCostError": 2.2737367544323206e-13,
+      "maxAdmittedNlpResidual": 9.976451335156484e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 3.4774910593457546,
+        "max_dynamics_defect": 8.881784197001252e-16,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 611.0168274236348,
+        "status": 0,
+        "native_ms": 1.8159999999999998,
+        "host_ms": 7.724110997514799,
+        "algorithm": "SQP",
+        "residuals": [
+          1.2652208170038648e-09,
+          8.881784197001252e-16,
+          0.0,
+          9.976451335156484e-08
+        ],
+        "iterations": 6,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": true
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 180,
+      "outcome": "envelope-failure",
+      "reason": null,
+      "appliedSteps": 236,
+      "finalTruth": [
+        -2.401112175933322,
+        -0.5185940847416048,
+        0.11780691328504053,
+        -0.007835287291049901
+      ],
+      "finalEstimate": [
+        -2.3773548349865576,
+        -0.4517620910291729,
+        0.10311223359733218,
+        -0.17228044863263905
+      ],
+      "positionTrackingRmse_m": 1.4181814759669509,
+      "angleRms_rad": 0.049375605521193876,
+      "maxPosition_m": 2.401112175933322,
+      "rmsForce_N": 1.7155990025112757,
+      "solverTimeMs": {
+        "samples": 236,
+        "p50": 0.9079999999999999,
+        "p95": 2.458,
+        "p99": 3.5426000000000046,
+        "max": 6.385
+      },
+      "controllerHostTimeMs": {
+        "samples": 236,
+        "p50": 13.0065670091426,
+        "p95": 20.51049124565907,
+        "p99": 25.760411993542224,
+        "max": 50.11156099499203
+      },
+      "bridgeRoundTripMs": {
+        "samples": 236,
+        "p50": 0.9024900064105168,
+        "p95": 1.2335752398939803,
+        "p99": 1.5206480573397134,
+        "max": 8.89250700129196
+      },
+      "completeIterationHostMs": {
+        "samples": 236,
+        "p50": 13.827815986587666,
+        "p95": 21.956121243420057,
+        "p99": 27.209009001671806,
+        "max": 51.06506799347699
+      },
+      "maxAdmittedDynamicsDefect": 9.984580523217379e-06,
+      "maxAdmittedConstraintViolation": 2.6645352591003757e-15,
+      "maxCostError": 2.2737367544323206e-13,
+      "maxAdmittedNlpResidual": 0.052501845261872404,
+      "admittedButNotNlpConvergedSteps": 56,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 3.4763970955827155,
+        "max_dynamics_defect": 8.881784197001252e-16,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 611.0124355314324,
+        "status": 0,
+        "native_ms": 2.7279999999999998,
+        "host_ms": 13.259529019705951,
+        "algorithm": "SQP",
+        "residuals": [
+          1.1791598808486015e-09,
+          8.881784197001252e-16,
+          0.0,
+          1.153751507446317e-09
+        ],
+        "iterations": 7,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": true,
+        "fallbackUsed": true,
+        "solverAlgorithmApplied": "SQP",
+        "primaryStatus": 0,
+        "primaryDefect": 0.00033395218198739585,
+        "primaryReason": "solver-status-or-plan-gate"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4684221809391163,
+        0.004618868714510497,
+        -0.01813920689581462,
+        0.07293970282182329
+      ],
+      "finalEstimate": [
+        0.4572869983730315,
+        -0.13498277869140277,
+        -0.010637368660309308,
+        0.1656032186767677
+      ],
+      "positionTrackingRmse_m": 0.3238456907414083,
+      "angleRms_rad": 0.04348406358897633,
+      "maxPosition_m": 0.4684221809391163,
+      "rmsForce_N": 1.98820844379945,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.3750945000010688,
+        "p95": 0.9337221500018128,
+        "p99": 1.3373283700005403,
+        "max": 1.5005899999996473
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8970199996838346,
+        "p95": 1.667804241878911,
+        "p99": 2.1319810493150717,
+        "max": 2.4588969827163965
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 0.8983539883047342,
+        "p95": 1.6693602476152583,
+        "p99": 2.1349958374048574,
+        "max": 2.4609929823782295
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4682982492959862,
+        0.004883666485947196,
+        -0.018132099190270538,
+        0.07286150150175673
+      ],
+      "finalEstimate": [
+        0.4571639178016467,
+        -0.1347083739714686,
+        -0.010630335549184782,
+        0.16551580771634475
+      ],
+      "positionTrackingRmse_m": 0.3238590960589426,
+      "angleRms_rad": 0.043455929146101795,
+      "maxPosition_m": 0.4682982492959862,
+      "rmsForce_N": 1.9882763378006607,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.5055000000000001,
+        "p95": 0.68405,
+        "p99": 0.7835899999999998,
+        "max": 1.564
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 5.81298150063958,
+        "p95": 6.617316302435937,
+        "p99": 7.041860072931739,
+        "max": 8.552573010092601
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.7725804898655042,
+        "p95": 0.9783175948541611,
+        "p99": 1.086146785528399,
+        "max": 1.1743760260287672
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 6.651112489635125,
+        "p95": 7.521621651540045,
+        "p99": 7.907229211123192,
+        "max": 9.323253994807601
+      },
+      "maxAdmittedDynamicsDefect": 4.0419056990259605e-14,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 4.263256414560601e-14,
+      "maxAdmittedNlpResidual": 9.973752312930628e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.062198451039065995,
+        "max_dynamics_defect": 1.1102230246251565e-16,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 1.3218413374175084,
+        "status": 0,
+        "native_ms": 0.496,
+        "host_ms": 5.898809002246708,
+        "algorithm": "SQP",
+        "residuals": [
+          3.041122909053229e-11,
+          1.1102230246251565e-16,
+          0.0,
+          1.019323797774118e-15
+        ],
+        "iterations": 3,
+        "cost_error": 2.220446049250313e-16,
+        "nonlinearOptimalityConverged": true
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "mixed",
+        "seed": 302,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 184,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4682983710424146,
+        0.004879413184931009,
+        -0.018131007226064456,
+        0.07286171666474518
+      ],
+      "finalEstimate": [
+        0.4571640505378963,
+        -0.13471215234753295,
+        -0.010629268149364442,
+        0.16551512354870165
+      ],
+      "positionTrackingRmse_m": 0.323854876786575,
+      "angleRms_rad": 0.043456258306938556,
+      "maxPosition_m": 0.4682983710424146,
+      "rmsForce_N": 1.9882786278479845,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.6845,
+        "p95": 0.9513499999999998,
+        "p99": 1.2557399999999996,
+        "max": 1.5650000000000002
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 11.112774998764507,
+        "p95": 13.414664343872568,
+        "p99": 15.747911371872755,
+        "max": 16.865470010088757
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8163820020854473,
+        "p95": 1.0129298534593545,
+        "p99": 1.3084132410585878,
+        "max": 1.6265760059468448
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 11.989979509962723,
+        "p95": 14.22902450867695,
+        "p99": 16.660702303925056,
+        "max": 18.067526980303228
+      },
+      "maxAdmittedDynamicsDefect": 9.949577984835756e-06,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 4.263256414560601e-14,
+      "maxAdmittedNlpResidual": 0.11015578808462578,
+      "admittedButNotNlpConvergedSteps": 56,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": 0.06222539220845508,
+        "max_dynamics_defect": 1.1102230246251565e-16,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 1.3218491594475994,
+        "status": 0,
+        "native_ms": 0.719,
+        "host_ms": 10.449053981574252,
+        "algorithm": "SQP",
+        "residuals": [
+          3.0397018235817086e-11,
+          1.1102230246251565e-16,
+          0.0,
+          1.0193244596964e-15
+        ],
+        "iterations": 3,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": true,
+        "fallbackUsed": true,
+        "solverAlgorithmApplied": "SQP",
+        "primaryStatus": 0,
+        "primaryDefect": 1.8847318200725105e-05,
+        "primaryReason": "solver-status-or-plan-gate"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "appliedSteps": 212,
+      "finalTruth": [
+        -2.337502326763016,
+        -1.2329391738545823,
+        0.16104062463262808,
+        0.3433034489386924
+      ],
+      "finalEstimate": [
+        -2.3448952190090675,
+        -1.1371535824837415,
+        0.16504050919084873,
+        0.17248048590214804
+      ],
+      "positionTrackingRmse_m": 1.2319708977704673,
+      "angleRms_rad": 0.06061251302634512,
+      "maxPosition_m": 2.337502326763016,
+      "rmsForce_N": 1.854281273123965,
+      "solverTimeMs": {
+        "samples": 212,
+        "p50": 0.3526995000011084,
+        "p95": 0.6754088500019858,
+        "p99": 1.1960705399996339,
+        "max": 1.4462370000001101
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 213,
+        "p50": 0.8516630041413009,
+        "p95": 1.3689786021132015,
+        "p99": 1.8664701213128856,
+        "max": 4.063694010255858
+      },
+      "completeIterationHostMs": {
+        "samples": 213,
+        "p50": 0.8528059988748282,
+        "p95": 1.3711364124901584,
+        "p99": 1.867889645509421,
+        "max": 4.06588101759553
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 0,
+      "outcome": "plan-rejected",
+      "reason": "solver-status-or-plan-gate",
+      "appliedSteps": 212,
+      "finalTruth": [
+        -2.342307032701616,
+        -1.2286070038400825,
+        0.16708671540826434,
+        0.3476085023264708
+      ],
+      "finalEstimate": [
+        -2.349430364504682,
+        -1.1142218965875021,
+        0.1707601356041179,
+        0.15120304339284363
+      ],
+      "positionTrackingRmse_m": 1.2325426608806551,
+      "angleRms_rad": 0.06106510538329903,
+      "maxPosition_m": 2.342307032701616,
+      "rmsForce_N": 1.8996034532539747,
+      "solverTimeMs": {
+        "samples": 213,
+        "p50": 0.504,
+        "p95": 2.0285999999999964,
+        "p99": 4.085039999999999,
+        "max": 4.575
+      },
+      "controllerHostTimeMs": {
+        "samples": 213,
+        "p50": 5.851263005752116,
+        "p95": 8.278096601134166,
+        "p99": 9.960167256649584,
+        "max": 10.357843013480306
+      },
+      "bridgeRoundTripMs": {
+        "samples": 212,
+        "p50": 0.7665220036869869,
+        "p95": 0.9619808988645673,
+        "p99": 1.2165959770209127,
+        "max": 1.2867710029240698
+      },
+      "completeIterationHostMs": {
+        "samples": 213,
+        "p50": 6.705745996441692,
+        "p95": 9.06381819513626,
+        "p99": 10.929461548803374,
+        "max": 11.271549999946728
+      },
+      "maxAdmittedDynamicsDefect": 8.996475439615459e-13,
+      "maxAdmittedConstraintViolation": 1.8207657603852567e-14,
+      "maxCostError": 2.2737367544323206e-13,
+      "maxAdmittedNlpResidual": 9.872920259113016e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": false,
+        "reason": "solver-status-or-plan-gate",
+        "action": null,
+        "max_dynamics_defect": 0.0,
+        "initial_error": 0.0,
+        "constraint_violation": 0.04374236882603988,
+        "computed_cost": 1015.6188223560355,
+        "status": 4,
+        "native_ms": 0.517,
+        "host_ms": 6.025508977472782,
+        "algorithm": "SQP",
+        "residuals": [
+          32.191175778245835,
+          0.0,
+          0.04374236882603988,
+          87.63672579709133
+        ],
+        "iterations": 1,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": false
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "original",
+      "fallbackCalls": 163,
+      "outcome": "plan-rejected",
+      "reason": "solver-status-or-plan-gate",
+      "appliedSteps": 212,
+      "finalTruth": [
+        -2.342285232098475,
+        -1.2287167403723833,
+        0.16707798097632673,
+        0.34774913294452336
+      ],
+      "finalEstimate": [
+        -2.349410857346454,
+        -1.114385042797845,
+        0.17075293798077007,
+        0.15139610210699672
+      ],
+      "positionTrackingRmse_m": 1.232536592805622,
+      "angleRms_rad": 0.061063300460226205,
+      "maxPosition_m": 2.342285232098475,
+      "rmsForce_N": 1.8994884917820336,
+      "solverTimeMs": {
+        "samples": 213,
+        "p50": 0.713,
+        "p95": 2.557199999999999,
+        "p99": 4.5625599999999995,
+        "max": 5.083
+      },
+      "controllerHostTimeMs": {
+        "samples": 213,
+        "p50": 11.310572997899726,
+        "p95": 15.19786680000834,
+        "p99": 18.12380892224609,
+        "max": 22.530704009113833
+      },
+      "bridgeRoundTripMs": {
+        "samples": 212,
+        "p50": 0.7768459909129888,
+        "p95": 1.0192798567004502,
+        "p99": 1.1918488805531515,
+        "max": 1.5086760104168206
+      },
+      "completeIterationHostMs": {
+        "samples": 213,
+        "p50": 12.050955003360286,
+        "p95": 16.180956008611243,
+        "p99": 19.130567174870514,
+        "max": 23.423591017490253
+      },
+      "maxAdmittedDynamicsDefect": 9.51243280065267e-06,
+      "maxAdmittedConstraintViolation": 1.865174681370263e-14,
+      "maxCostError": 2.2737367544323206e-13,
+      "maxAdmittedNlpResidual": 0.048955851924745275,
+      "admittedButNotNlpConvergedSteps": 50,
+      "lastPlan": {
+        "accepted": false,
+        "reason": "solver-status-or-plan-gate",
+        "action": null,
+        "max_dynamics_defect": 0.0,
+        "initial_error": 0.0,
+        "constraint_violation": 0.043737527468608484,
+        "computed_cost": 1015.6309240762761,
+        "status": 4,
+        "native_ms": 1.3319999999999999,
+        "host_ms": 12.023464019875973,
+        "algorithm": "SQP",
+        "residuals": [
+          32.18698971395456,
+          0.0,
+          0.043737527468608484,
+          87.62596428255114
+        ],
+        "iterations": 1,
+        "cost_error": 0.0,
+        "nonlinearOptimalityConverged": false,
+        "fallbackUsed": true,
+        "solverAlgorithmApplied": null,
+        "primaryStatus": 4,
+        "primaryDefect": 0.0,
+        "primaryReason": "solver-status-or-plan-gate"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "quadprog-linear",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.4263886178322949,
+        0.053070133746472334,
+        -0.024766565686454113,
+        0.013758929853233074
+      ],
+      "finalEstimate": [
+        0.4414697633008328,
+        0.09757266812644397,
+        -0.035964655056549076,
+        -0.12788276979863616
+      ],
+      "positionTrackingRmse_m": 0.3245753879934739,
+      "angleRms_rad": 0.051598896599045777,
+      "maxPosition_m": 0.4833410158734326,
+      "rmsForce_N": 2.0176919025169586,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.3739750000004278,
+        "p95": 0.9069166999996013,
+        "p99": 1.2351832399997509,
+        "max": 1.4397960000023886
+      },
+      "controllerHostTimeMs": null,
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.8490305044688284,
+        "p95": 1.4686964932479885,
+        "p99": 1.9497684133239073,
+        "max": 2.7005480078514665
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 0.8502500131726265,
+        "p95": 1.4704709406942118,
+        "p99": 1.9522166191018169,
+        "max": 2.702802012208849
+      },
+      "maxAdmittedDynamicsDefect": null,
+      "maxAdmittedConstraintViolation": null,
+      "maxCostError": null,
+      "maxAdmittedNlpResidual": null,
+      "admittedButNotNlpConvergedSteps": null,
+      "lastPlan": null,
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 0,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.425892417320874,
+        0.05385977581919931,
+        -0.02476417437822412,
+        0.013581522753438113
+      ],
+      "finalEstimate": [
+        0.44097487401260266,
+        0.09839076274208228,
+        -0.03596330987651513,
+        -0.12809247804238913
+      ],
+      "positionTrackingRmse_m": 0.32473880869783434,
+      "angleRms_rad": 0.051572698284965655,
+      "maxPosition_m": 0.48321535370074253,
+      "rmsForce_N": 2.0165818789103,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.509,
+        "p95": 0.7675499999999998,
+        "p99": 0.9262699999999999,
+        "max": 0.987
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 5.884454003535211,
+        "p95": 6.967161354259585,
+        "p99": 8.533139161881987,
+        "max": 9.872840979369357
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.7365475030383095,
+        "p95": 1.000298156577628,
+        "p99": 1.0866405375418253,
+        "max": 1.1642079916782677
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 6.6827029950218275,
+        "p95": 7.867148664081466,
+        "p99": 9.249166598310692,
+        "max": 10.82796000991948
+      },
+      "maxAdmittedDynamicsDefect": 2.731148640577885e-14,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 2.842170943040401e-14,
+      "maxAdmittedNlpResidual": 9.973171177790618e-08,
+      "admittedButNotNlpConvergedSteps": 0,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": -0.38369086227446686,
+        "max_dynamics_defect": 1.5248219353836134e-15,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 0.7722152585177452,
+        "status": 0,
+        "native_ms": 0.392,
+        "host_ms": 5.805879976833239,
+        "algorithm": "SQP",
+        "residuals": [
+          1.3662502795774856e-08,
+          1.5248219353836134e-15,
+          0.0,
+          1.0383690862274466e-15
+        ],
+        "iterations": 2,
+        "cost_error": 1.1102230246251565e-16,
+        "nonlinearOptimalityConverged": true
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    },
+    {
+      "case": {
+        "scenario": "sim2real",
+        "seed": 303,
+        "goal": 0.5
+      },
+      "algorithm": "SQP_RTI+SQP",
+      "terminalDesign": "dare",
+      "fallbackCalls": 180,
+      "outcome": "completed",
+      "reason": null,
+      "appliedSteps": 240,
+      "finalTruth": [
+        0.42589692014513797,
+        0.05385225734826202,
+        -0.02476408256268771,
+        0.01358445678970033
+      ],
+      "finalEstimate": [
+        0.44097936320607983,
+        0.09838321852661087,
+        -0.03596322036295505,
+        -0.12808971307228764
+      ],
+      "positionTrackingRmse_m": 0.32473844963052206,
+      "angleRms_rad": 0.05157247256976533,
+      "maxPosition_m": 0.4832105796019293,
+      "rmsForce_N": 2.0165818323992433,
+      "solverTimeMs": {
+        "samples": 240,
+        "p50": 0.6765,
+        "p95": 0.9314999999999999,
+        "p99": 1.1885599999999985,
+        "max": 1.3559999999999999
+      },
+      "controllerHostTimeMs": {
+        "samples": 240,
+        "p50": 10.877916007302701,
+        "p95": 12.575009909051005,
+        "p99": 14.483424761274344,
+        "max": 19.282367982668802
+      },
+      "bridgeRoundTripMs": {
+        "samples": 240,
+        "p50": 0.735278008505702,
+        "p95": 0.9070840940694324,
+        "p99": 1.0438198610790999,
+        "max": 1.3471049896907061
+      },
+      "completeIterationHostMs": {
+        "samples": 240,
+        "p50": 11.635950490017422,
+        "p95": 13.337598959333263,
+        "p99": 15.250256325816718,
+        "max": 20.025548990815878
+      },
+      "maxAdmittedDynamicsDefect": 9.661766207917644e-06,
+      "maxAdmittedConstraintViolation": 0.0,
+      "maxCostError": 2.842170943040401e-14,
+      "maxAdmittedNlpResidual": 0.05446983959232199,
+      "admittedButNotNlpConvergedSteps": 60,
+      "lastPlan": {
+        "accepted": true,
+        "reason": "admitted-nominal-plan",
+        "action": -0.3836898048437614,
+        "max_dynamics_defect": 9.043290916128238e-07,
+        "initial_error": 0.0,
+        "constraint_violation": 0.0,
+        "computed_cost": 0.77214667928191,
+        "status": 0,
+        "native_ms": 0.256,
+        "host_ms": 5.0479860219638795,
+        "algorithm": "SQP_RTI",
+        "residuals": [
+          0.00015110284256558693,
+          9.043290916128238e-07,
+          0.0,
+          9.350883149066994e-11
+        ],
+        "iterations": 1,
+        "cost_error": 1.1102230246251565e-16,
+        "nonlinearOptimalityConverged": false,
+        "fallbackUsed": false,
+        "solverAlgorithmApplied": "SQP_RTI"
+      },
+      "measurementCovarianceSource": "injected-noise-oracle"
+    }
+  ],
+  "checks": {
+    "modelAndDerivativeParity": true,
+    "nominalSQPCompleted": true,
+    "baselineMixedFailureReproduced": true,
+    "baselineSim2realRejectionReproduced": true,
+    "noExecutionError": true
+  },
+  "passed": true,
+  "boundaries": [
+    "Optional offline native research lane; deployed browser remains quadprog + actual MuJoCo WASM.",
+    "Matching formulation data does not make LTI and nonlinear OCPs identical; no global solver-speed or optimality ranking.",
+    "SQP_RTI status zero is not nonlinear convergence; admitted plans pass nonlinear rollout and defect checks.",
+    "Rejected RTI plans are re-solved by SQP at the same current estimate; no rejected action or zero-force guess is applied.",
+    "Host timing includes process/diagnostic overhead where labelled and is not hardware end-to-end or WCET.",
+    "Noise covariance remains disclosed simulated oracle. No hidden plant mass/gain/delay enters the controller.",
+    "Terminal design was proposed after baseline diagnosis. These development cases are not untouched held-out tests or a robust recovery certificate."
+  ],
+  "hardwareAdmission": "NOT_EVALUATED",
+  "browserSolverPromotion": "NOT_AUTHORIZED_BY_THIS_EXPERIMENT"
+}
