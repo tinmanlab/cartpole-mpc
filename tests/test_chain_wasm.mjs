@@ -1,5 +1,7 @@
 // Compare actual arbitrary-dimension WASM models, coordinate maps and linearization.
 import fs from 'node:fs';
+import {createRequire} from 'node:module';
+const L=createRequire(import.meta.url)('../src/engine.js');
 import assert from 'node:assert/strict';
 import {createChainBackend} from '../src/chain_backend.mjs';
 import {createMujocoBackend} from '../src/mujoco_backend.mjs';
@@ -18,7 +20,13 @@ for(const p of profiles){
   assert(geometryError<1e-10);
   assert.throws(()=>b.step([0,0],0),/dimension/);assert.throws(()=>b.step(x,NaN),/force/);
   const controls=Array.from({length:50},(_,k)=>.02*Math.sin(.2*k));let z=x.slice();const X=controls.map(u=>z=b.step(z,u,0));
-  rows.push({poles:p.poles,asset:p.asset,assetSha256:p.assetSha256,x0:x,controls,states:X,errorA,errorB,geometryError});
+  let qpProbe={accepted:false,reason:'design not admitted'};
+  if(p.designAvailable){
+   const xp=Array(p.nx).fill(0);xp[0]=-.1;xp[1]=.003; // world x=0, goal=.1, matching native fixture
+   try{const q=L.solveBoxLinearMpc(p.A,p.B,p.Q,p.R,p.P,xp,Array(p.horizon).fill(0),p.forceLimit,30,{positionLimit:p.railLimit,goal:.1});qpProbe={accepted:true,action:q.U[0],cost:q.J,kktResidual:q.kktResidual,primalResidual:q.primalResidual};}
+   catch(e){qpProbe={accepted:false,reason:String(e.message)};}
+  }
+  rows.push({poles:p.poles,asset:p.asset,assetSha256:p.assetSha256,x0:x,controls,states:X,errorA,errorB,geometryError,qpProbe});
   if(p.poles===1){const old=await createMujocoBackend();const spec={actuator:'ideal',mc:1,mp:.1,l:.5,gravity:9.8};const legacy=old.transition([x[0],x[2],x[1],x[3]],.2,spec);const next=b.step(x,.2);assert(Math.max(...next.map((v,i)=>Math.abs(v-legacy[[0,2,1,3][i]])))<1e-12);old.dispose();}
  }finally{b.dispose();}
 }

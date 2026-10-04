@@ -101,3 +101,7 @@ Investigate numerical scaling/pre-stabilized or sparse OCP formulations on the s
 - SciPy DARE: https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_discrete_are.html
 
 No humanoid multi-contact, identified hardware dynamics, global swing-up, universal-N robustness, or real-time hardware safety claim is made.
+
+### Exact matched-state QP comparison
+
+The final reference test also evaluates the browser quadprog and native OSQP on identical state/reference/cost/constraints, separately from the three closed-loop initial conditions. Both admit N=1..3, with maximum first-input discrepancy 4.20e-8 N and maximum relative cost discrepancy 2.55e-8. In the specific N=4 fixed-state probe quadprog admits a solution while OSQP reaches its iteration limit. For N=5/6 quadprog rejects and OSQP reaches its limit. A missing jointly admitted solution is reported as unavailable parity, not zero error or physical impossibility.

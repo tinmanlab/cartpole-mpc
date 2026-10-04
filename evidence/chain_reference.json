@@ -15,10 +15,22 @@
         "action": -0.17614039446976298,
         "status": "solved",
         "iterations": 825,
-        "hostMs": 3.908251994289458,
+        "hostMs": 4.160693992162123,
         "primalViolation": 8.457382303486146e-12,
         "normalizedStationarity": 1.103125722367109e-12,
         "cost": 1.4412797856794484
+      },
+      "matchingBrowserProbe": {
+        "accepted": true,
+        "action": -0.176140395674892,
+        "cost": 1.4412797899076777,
+        "kktResidual": 2.6645352591003757e-15,
+        "primalResidual": 0
+      },
+      "pairedQpParity": {
+        "firstActionError": 1.2051290243508817e-09,
+        "relativeCostError": 2.9336630987505418e-09,
+        "passed": true
       },
       "shortReplayRefinement": [
         {
@@ -49,10 +61,22 @@
         "action": 0.13099920691303457,
         "status": "solved",
         "iterations": 2800,
-        "hostMs": 21.09681800357066,
+        "hostMs": 28.473446000134572,
         "primalViolation": 3.9067912380530764e-11,
         "normalizedStationarity": 4.06431588031957e-12,
         "cost": 1.616947347320304
+      },
+      "matchingBrowserProbe": {
+        "accepted": true,
+        "action": 0.13099922169112008,
+        "cost": 1.6169473870867006,
+        "kktResidual": 4.547473508864641e-13,
+        "primalResidual": 0
+      },
+      "pairedQpParity": {
+        "firstActionError": 1.4778085505318117e-08,
+        "relativeCostError": 2.459350125776814e-08,
+        "passed": true
       },
       "shortReplayRefinement": [
         {
@@ -83,10 +107,22 @@
         "action": 0.042966775549558606,
         "status": "solved",
         "iterations": 11400,
-        "hostMs": 139.69439998618327,
+        "hostMs": 182.82403002376668,
         "primalViolation": 1.7590060050551405e-11,
         "normalizedStationarity": 1.264912682877935e-13,
         "cost": 1.6534945210511753
+      },
+      "matchingBrowserProbe": {
+        "accepted": true,
+        "action": 0.04296673359326226,
+        "cost": 1.6534945630973974,
+        "kktResidual": 1.4551915228366852e-10,
+        "primalResidual": 0
+      },
+      "pairedQpParity": {
+        "firstActionError": 4.195629634690112e-08,
+        "relativeCostError": 2.542870358764824e-08,
+        "passed": true
       },
       "shortReplayRefinement": [
         {
@@ -117,7 +153,18 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 352.90670199901797
+        "hostMs": 501.21343100909144
+      },
+      "matchingBrowserProbe": {
+        "accepted": true,
+        "action": -0.040009081373559144,
+        "cost": 1.6812120530049681,
+        "kktResidual": 1.1175870895385742e-08,
+        "primalResidual": 0
+      },
+      "pairedQpParity": {
+        "passed": null,
+        "scope": "Not both admitted; no numerical-equivalence claim"
       },
       "shortReplayRefinement": [
         {
@@ -148,7 +195,15 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 464.4205829827115
+        "hostMs": 651.2461889942642
+      },
+      "matchingBrowserProbe": {
+        "accepted": false,
+        "reason": "QP acceptance residual exceeded"
+      },
+      "pairedQpParity": {
+        "passed": null,
+        "scope": "Not both admitted; no numerical-equivalence claim"
       },
       "shortReplayRefinement": [
         {
@@ -179,7 +234,15 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 607.0452079875395
+        "hostMs": 815.3143080126029
+      },
+      "matchingBrowserProbe": {
+        "accepted": false,
+        "reason": "QP acceptance residual exceeded"
+      },
+      "pairedQpParity": {
+        "passed": null,
+        "scope": "Not both admitted; no numerical-equivalence claim"
       },
       "shortReplayRefinement": [
         {

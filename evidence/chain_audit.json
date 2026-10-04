@@ -66,13 +66,13 @@
     "src/chain_app.mjs": "97f4011a033c6eb5df49b0a71c72d1d21b087cf1d1dcb25f8c2779c57dd27b03",
     "chain.html": "56c1c9254a8919703ab47f21f10562f0e33ece29d86c335db96e7f28dfb72985",
     "tests/test_chain_model.py": "b0e97a3d3279e80ed4f7f00810ba6165aaeda52c0c93644bb8d3fc3c6131f472",
-    "tests/test_chain_wasm.mjs": "88f30450b86c3f7cf3cbb1ca8bf3db780910c6eb0164ffa091ea9503a4990dcb",
-    "tests/test_chain_reference.py": "288f25d4fadffc4a15bb88250251f7fdf89c01f7916166b4c85544b9b25606f5",
+    "tests/test_chain_wasm.mjs": "bff762da2bf0a87bf6e100fc674167c3a7845647c486f6c41fe6f0af2b62c275",
+    "tests/test_chain_reference.py": "783e618b48ef1801ab72de409365e04a032e12916a49890b1e6572a1ce6e12d0",
     "tests/test_chain_contracts.mjs": "ca2e53775cdd72c3449f6669d0b106a2a2d9f999cc092e9c855623d526c7b876",
     "tests/test_chain_browser.py": "fe0c3a5ba57dff9afb6a0d9d4a3e652418d2d299ab79f801609c9769bf098a87",
     "tests/fixtures/chain_validation.json": "4c60df15a0dc654df2af8b60b1057b13b6b294ec86f6696aecd78bee613bf28d",
     "assets/chains/profiles.json": "b4d6cdf2560eecc30613a15743b2c7ae4135649985687b0dff7954062e3f5237",
-    "docs/N_PENDULUM.md": "6bd8fdc870cdbedf2eae68d3d79fc1f086fbd5340061624fcea2da255d13f6b6",
+    "docs/N_PENDULUM.md": "760110858449920ed2658747e354f801f2d586014d5902504e2a797d256eeaa9",
     "package.json": "61705ea36196306cb7d0ff4eefca0cd57154eba3e78daddf96eb5689ff2ee67d",
     ".github/workflows/verify.yml": "37e0fd9f26bb7cef116f970ba402f11db8f5a9b462b74c743e694a751b0a62ee"
   },
@@ -292,5 +292,6 @@
     "chain_reference.json",
     "chain_local_diagnostic.json",
     "chain_browser.json"
-  ]
+  ],
+  "matchedQpReference": "chain_reference.json contains same-state browser/native comparisons; unadmitted pairs do not count as parity"
 }

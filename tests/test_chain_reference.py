@@ -27,6 +27,12 @@ for p,w in zip(profiles,wasm):
         assert max(abs(la.eigvals(A-B@K)))<1
         assert max(abs(la.eigvals((np.eye(p['nx'])-L@H)@A)))<1
         s=ChainQP(p,.1);x=np.zeros(p['nx']);x[1]=.003;r=s.solve(x);row['osqpFrozenProbe']={k:v for k,v in r.items() if k!='inputSequence'}
+        browser=w['qpProbe'];row['matchingBrowserProbe']=browser
+        if r['accepted'] and browser['accepted']:
+            action_error=abs(r['action']-browser['action']);cost_error=abs(r['cost']-browser['cost'])/max(1,abs(r['cost']))
+            assert action_error<.001 and cost_error<1e-4
+            row['pairedQpParity']={'firstActionError':action_error,'relativeCostError':cost_error,'passed':True}
+        else:row['pairedQpParity']={'passed':None,'scope':'Not both admitted; no numerical-equivalence claim'}
         assert s.solve([np.nan]*p['nx'])['action'] is None
         x[0]=2.5;assert s.solve(x)['action'] is None
     else:
