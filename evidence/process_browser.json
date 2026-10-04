@@ -1,0 +1,16 @@
+{
+  "schema": "cartpole-process-browser/v1",
+  "passed": true,
+  "actualWasm": true,
+  "noiseOracleForbidden": true,
+  "computedSelectionMatchesNode": true,
+  "trainValidationTestVisible": true,
+  "gridBoundaryCaveatVisible": true,
+  "negativeOutcomesPreserved": true,
+  "sharedCausalTraceReused": true,
+  "legacyModeRestored": true,
+  "failedRerunDoesNotShowStaleSelection": true,
+  "mainLoopUnchanged": true,
+  "pageErrors": [],
+  "deployed": false
+}

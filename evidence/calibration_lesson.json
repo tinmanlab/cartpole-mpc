@@ -3,7 +3,7 @@
   "manifestSha256": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
   "sourceSha256": {
     "tests/fixtures/calibration_lab.json": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
-    "src/calibration_lab.js": "36b2da5b69d1852c612a8fd18c7f4245e8d153bbd8c17e7adc75226100b6ef04",
+    "src/calibration_lab.js": "6292666d655dc6a995de433e31e5203b0c291a944223b8ae517274a0ff5a6221",
     "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
     "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
     "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
@@ -2267,6 +2267,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -2369,6 +2371,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -2471,6 +2475,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -2665,6 +2671,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -2767,6 +2775,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -2869,6 +2879,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3063,6 +3075,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3165,6 +3179,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3267,6 +3283,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3461,6 +3479,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3563,6 +3583,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3665,6 +3687,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3859,6 +3883,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -3961,6 +3987,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4063,6 +4091,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4257,6 +4287,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4359,6 +4391,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4461,6 +4495,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4655,6 +4691,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4757,6 +4795,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -4859,6 +4899,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -5053,6 +5095,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -5155,6 +5199,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,
@@ -5257,6 +5303,8 @@
             0.00002,
             0.004
           ],
+          "processScale": 1,
+          "processCovarianceSource": "fixed-assumption",
           "outcome": "completed",
           "reason": null,
           "appliedSteps": 600,

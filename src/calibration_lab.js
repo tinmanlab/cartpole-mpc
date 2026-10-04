@@ -33,15 +33,22 @@
   const R=arm.Rdiag?arm.Rdiag.slice():fit.Rdiag.map(v=>v*arm.calibrationScale);
   if(R.length!==2||!R.every(v=>Number.isFinite(v)&&v>0))throw Error('Positive measurement covariance required');return R;
  }
+ function effectiveProcessQ(m,arm){
+  const factor=arm.processScale??1;
+  if(!Number.isFinite(factor)||factor<=0||!Array.isArray(m.observer.Q)||m.observer.Q.length!==4||!m.observer.Q.every(v=>Number.isFinite(v)&&v>0))throw Error('Positive finite process scale and four-state Q required');
+  return m.observer.Q.map(v=>v*factor);
+ }
  function nis(last){if(!last?.S||!last.innovation)return null;const z=L.solveLinearSystem(last.S,last.innovation);return last.innovation.reduce((s,v,i)=>s+v*z[i],0);}
  function createRun(m,test,arm,fit){
   if(L.physicsInfo().backend!=='mujoco-wasm')throw Error('This lesson requires actual MuJoCo WASM');
   if(test.seed===m.calibration.seed)throw Error('Calibration and evaluation seeds must be disjoint');
-  const Rdiag=armCovariance(arm,fit),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);
+  if(m.controlDt!==L.DT)throw Error('Lesson and plant sample intervals differ');
+  const Qe=effectiveProcessQ(m,arm),Rdiag=armCovariance(arm,fit),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);
   // Scenario fixture supplies matched physical sensor amplitude. The calibration
   // estimator is never passed this setting; mean/variance is fitted from readings only.
   const noise=m.noiseInjectionForMatchedCases;plant.sensorStd=[noise.sigmaPosition_m,noise.sigmaAngle_rad];
-  plant.goal=test.goal;const controller=new L.LQRController(plant.spec,m.controller),observer=new L.EKFObserver(plant.spec,{Q:m.observer.Q,R:Rdiag});
+  plant.goal=test.goal;const controller=new L.LQRController(plant.spec,m.controller),observer=new L.EKFObserver(plant.spec,{Q:Qe,R:Rdiag});
+  if(controller.limit!==m.controller.forceLimit)throw Error('Declared force limit differs from actual controller');
   let measurement=plant.sensor();observer.reset(measurement);controller.reset();let estimate=observer.x.slice(),trace=[],outcome='running',reason=null;
   function step(){
    if(outcome!=='running')return false;
@@ -67,7 +74,7 @@
    const rms=a=>a.length?Math.sqrt(mean(a.map(v=>v*v))):null,N=trace.length,saturated=trace.filter(r=>r.saturated).length,last=trace.slice(-m.evaluation.goalWindowSteps);
    const taskPassed=outcome==='completed'&&last.length===m.evaluation.goalWindowSteps&&last.every(r=>Math.abs(r.nextTruth[0]-test.goal)<=m.evaluation.positionTolerance_m&&Math.abs(r.nextTruth[2])<=m.evaluation.angleTolerance_rad);
    return {caseId:test.id,group:test.group,scenario:test.scenario,seed:test.seed,armId:arm.id,label:arm.label,Rdiag,parameterSource:arm.Rdiag?'explicit-prior-assumption':'stationary-measurements',calibrationMultiplier:arm.calibrationScale??null,
-    K:controller.K.slice(),Qc:controller.Q,Rc:controller.R,Qe:m.observer.Q.slice(),outcome,reason,appliedSteps:N,requestedSteps:m.steps,taskPassed,
+    K:controller.K.slice(),Qc:controller.Q,Rc:controller.R,Qe:Qe.slice(),processScale:arm.processScale??1,processCovarianceSource:arm.processScale===undefined?'fixed-assumption':'declared-effective-scale',outcome,reason,appliedSteps:N,requestedSteps:m.steps,taskPassed,
     positionTrackingRmse_m:rms(trace.map(r=>r.truth[0]-r.goal)),estimationRmseByState:[0,1,2,3].map(i=>rms(trace.map(r=>r.estimationError[i]))),stateUnits:['m','m/s','rad','rad/s'],
     rmsForce_N:rms(trace.map(r=>r.command)),rmsRequestedForce_N:rms(trace.map(r=>r.requestedForce)),rmsEstimationForce_N:rms(trace.map(r=>r.requestedForce-r.oracleForce)),
     rmsCommandSlew_N:rms(trace.slice(1).map((r,i)=>r.command-trace[i].command)),saturatedSamples:saturated,saturationFraction:N?saturated/N:null,
@@ -80,7 +87,7 @@
  function replayObserver(m,recording,arms,fit){
   return arms.map(arm=>{
    const reference=recording.trace;if(!reference.length)throw Error('No replay data');
-   const p=new L.LabPlant({scenario:recording.scenario,seed:recording.seed});const o=new L.EKFObserver(p.spec,{Q:m.observer.Q,R:armCovariance(arm,fit)});o.reset(reference[0].measurement);
+   const p=new L.LabPlant({scenario:recording.scenario,seed:recording.seed});const o=new L.EKFObserver(p.spec,{Q:effectiveProcessQ(m,arm),R:armCovariance(arm,fit)});o.reset(reference[0].measurement);
    const sq=[0,0,0,0];let maxDifference=0;
    for(let i=0;i<reference.length;i++){
     if(i)o.step(reference[i].measurement,reference[i-1].command);
@@ -97,5 +104,86 @@
    baselineEstimatePositionMse:MSE(base,r=>r.estimationError[0]),candidateEstimatePositionMse:MSE(candidate,r=>r.estimationError[0]),
    scope:'Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success'};
  }
- return {estimateMeasurementNoise,collectStationary,armCovariance,createRun,replayObserver,comparePair};
+ // A scalar selection study on FIXED sensor/command recordings. No ground truth,
+ // tracking metric or test case can enter this approximate EKF likelihood selector.
+ function innovationScore(innovation,S){
+  if(!Array.isArray(innovation)||innovation.length!==2||!innovation.every(Number.isFinite)||!Array.isArray(S)||S.length!==2||!S.every(r=>Array.isArray(r)&&r.length===2&&r.every(Number.isFinite)))throw Error('Invalid two-channel innovation covariance');
+  if(S[0][0]<=0||Math.abs(S[0][1]-S[1][0])>1e-10*Math.max(1,...S.flat().map(Math.abs)))throw Error('Innovation covariance must be symmetric positive definite');
+  const pivot=S[1][1]-S[0][1]*S[0][1]/S[0][0];if(!(pivot>0))throw Error('Innovation covariance must be positive definite');
+  const z=L.solveLinearSystem(S,innovation),score=innovation.reduce((v,a,i)=>v+a*z[i],0),logdet=Math.log(S[0][0])+Math.log(pivot);
+  const nll=.5*(score+logdet+2*Math.log(2*Math.PI));if(!Number.isFinite(nll)||score<0)throw Error('Invalid likelihood value');
+  return {nll,nis:score,logdet};
+ }
+ function processRecord(run){
+  if(!run.trace?.length)throw Error('No dynamic recording');
+  return {id:run.caseId,seed:run.seed,controlDt:L.DT,
+   measurements:[run.trace[0].measurement.slice(),...run.trace.map(r=>r.nextMeasurement.slice())],
+   commands:run.trace.map(r=>r.command),information:'sensor readings and requested commands only; no truth or output score'};
+ }
+ function scoreProcessRecord(m,record,fit,processScale,burnIn=50){
+  const {measurements:y,commands:u}=record;
+  if(record.controlDt!==L.DT||!Array.isArray(y)||!Array.isArray(u)||y.length!==u.length+1||!u.every(Number.isFinite)||!y.every(v=>Array.isArray(v)&&v.length===2&&v.every(Number.isFinite)))throw Error('Invalid measurement/command record length or values');
+  if(!Number.isInteger(burnIn)||burnIn<0||burnIn>=u.length)throw Error('Invalid likelihood burn-in');
+  const Q=effectiveProcessQ(m,{processScale}),R=armCovariance({calibrationScale:1},fit),spec=new L.LabPlant().spec,o=new L.EKFObserver(spec,{Q,R});
+  o.reset(y[0]);const rows=[];
+  for(let k=0;k<u.length;k++){
+   o.step(y[k+1],u[k]); // y_(k+1) prefit innovation after the recorded u_k transition.
+   if(k>=burnIn)rows.push({k:k+1,innovation:o.last.innovation.slice(),S:clone(o.last.S),...innovationScore(o.last.innovation,o.last.S)});
+  }
+  return {recordId:record.id,samples:rows.length,meanNll:mean(rows.map(r=>r.nll)),meanNis:mean(rows.map(r=>r.nis)),meanLogdet:mean(rows.map(r=>r.logdet)),rows,
+   interpretation:'Same fixed data and m/rad units; approximate EKF predictive likelihood, not exact nonlinear posterior likelihood or a closed-loop score'};
+ }
+ async function selectProcessScale(m,options,training,validation,fit,onProgress=()=>{},yieldControl=()=>Promise.resolve()){
+  const sets=[training,validation];
+  if(sets.some(r=>!Array.isArray(r)||!r.length)||!Array.isArray(options.scales)||!options.scales.includes(1)||new Set(options.scales).size!==options.scales.length||!options.scales.every(v=>Number.isFinite(v)&&v>0)||!Number.isInteger(options.trainingShortlist)||options.trainingShortlist<1||options.trainingShortlist>options.scales.length)throw Error('Invalid process-selection study');
+  const all=[...training,...validation];if(new Set(all.map(r=>r.seed)).size!==all.length||new Set(all.map(r=>r.id)).size!==all.length||all.some(r=>r.seed===m.calibration.seed))throw Error('Calibration/training/validation records must be disjoint');
+  const evaluations=[];
+  const evaluate=async(scales,records,phase)=>{
+   const results=[];for(const scale of scales){let total=0,count=0,nis=0,ld=0;
+    for(const record of records){const r=scoreProcessRecord(m,record,fit,scale,options.burnInSteps);evaluations.push({phase,scale,...r});total+=r.meanNll*r.samples;nis+=r.meanNis*r.samples;ld+=r.meanLogdet*r.samples;count+=r.samples;await yieldControl();}
+    results.push({scale,meanNll:total/count,meanNis:nis/count,meanLogdet:ld/count,samples:count,recordIds:records.map(r=>r.id)});onProgress({stage:phase,scale,completed:results.length,total:scales.length});
+   }return results;
+  };
+  const rank=(a,b)=>(a.meanNll-b.meanNll)||((a.scale===1?-1:0)-(b.scale===1?-1:0))||(a.scale-b.scale);
+  const train=await evaluate(options.scales,training,'training');
+  const shortlist=train.slice().sort(rank).slice(0,options.trainingShortlist).map(v=>v.scale);
+  if(options.includeBaselineInValidation&&!shortlist.includes(1))shortlist.push(1);
+  const val=await evaluate(shortlist,validation,'validation'),winner=val.slice().sort(rank)[0];
+  const selected={scale:winner.scale,Qe:effectiveProcessQ(m,{processScale:winner.scale}),Rdiag:fit.Rdiag.slice(),training:train,validation:val,shortlist,
+   selectedBy:'validation mean prefit Gaussian NLL among training shortlist plus baseline',testUsedForSelection:false,
+   atGridBoundary:winner.scale===Math.min(...options.scales)||winner.scale===Math.max(...options.scales),evaluations};
+  function freeze(value){if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;}
+  return freeze(selected);
+ }
+ async function runProcessStudy(m,study,{onProgress=()=>{},yieldControl=()=>Promise.resolve()}={}){
+  if(study.steps!==m.steps)throw Error('Process study changes episode length');
+  const cases=[...study.training,...study.validation,...study.test];
+  if(new Set(cases.map(c=>c.seed)).size!==cases.length||new Set(cases.map(c=>c.id)).size!==cases.length||cases.some(c=>c.seed===m.calibration.seed))throw Error('All acquisition/train/validation/test seeds and IDs must be disjoint');
+  const capture=collectStationary(m),fit=estimateMeasurementNoise(capture.measurements,m.calibrationScreen);
+  if(!fit.usable)throw Error('Stationary measurement fit rejected');
+  const baselineArm={id:'q_baseline',label:'보정 R + 기존 Q_e',calibrationScale:1,processScale:1};
+  async function execute(test,arm){const run=createRun(m,test,arm,fit);let k=0;while(!run.done){run.step();if(++k%100===0)await yieldControl();}return run.result();}
+  async function acquire(tests,phase){const records=[];for(const test of tests){const r=await execute(test,baselineArm);if(r.outcome!=='completed')throw Error('Baseline acquisition did not complete: '+test.id+' '+r.outcome);records.push(processRecord(r));onProgress({stage:'acquisition-'+phase,completed:records.length,total:tests.length});}return records;}
+  const training=await acquire(study.training,'training'),validation=await acquire(study.validation,'validation');
+  const selection=await selectProcessScale(m,study,training,validation,fit,onProgress,yieldControl);
+  // This locked scalar is the only selection state reaching test evaluation.
+  const scale=selection.scale,selectedArm={id:'q_selected',label:'보정 R + 선택 Q_e ×'+scale,calibrationScale:1,processScale:scale};
+  onProgress({stage:'selection-locked',scale,testEvaluations:0});
+  const pairs=[];
+  for(const test of study.test){
+   const baseline=await execute(test,baselineArm),candidate=await execute(test,selectedArm);
+   if([baseline,candidate].some(r=>r.outcome==='execution-error'))throw Error('Process evaluation execution error: '+test.id);
+   pairs.push({id:test.id,group:test.group,baseline,candidate,paired:comparePair(baseline,candidate),sameDataReplay:replayObserver(m,baseline,[baselineArm,selectedArm],fit)});
+   onProgress({stage:'locked-test',completed:pairs.length,total:study.test.length});await yieldControl();
+  }
+  const groups=['primary','boundary'].map(group=>{
+   const pp=pairs.filter(p=>p.group===group),both=pp.filter(p=>p.paired.bothCompleted);
+   const arms=['baseline','candidate'].map(key=>{const rr=pp.map(p=>p[key]),bb=both.map(p=>p[key]);const rmse=field=>bb.length?Math.sqrt(bb.reduce((s,r)=>s+r[field]**2,0)/bb.length):null;
+    return {arm:key,completed:rr.filter(r=>r.outcome==='completed').length,taskPassed:rr.filter(r=>r.taskPassed).length,requested:rr.length,saturatedSamples:rr.reduce((s,r)=>s+r.saturatedSamples,0),executedSamples:rr.reduce((s,r)=>s+r.appliedSteps,0),bothCompletedTrackingRmse_m:rmse('positionTrackingRmse_m'),bothCompletedForceRms_N:rmse('rmsForce_N'),bothCompletedSlewRms_N:rmse('rmsCommandSlew_N')};});
+   return {group,pairs:pp.length,bothCompletedPairs:both.length,excludedPairs:pp.length-both.length,arms};
+  });
+  return {capture,fit,selection,trainingRecords:training,validationRecords:validation,pairs,groups,defaultsChanged:false,
+   scope:'Scalar effective Q scale selected using sensor/command likelihood. Q shape/P0/model fixed; not physical Q identification, global optimum, optimal controller design or hardware validation.'};
+ }
+ return {estimateMeasurementNoise,collectStationary,armCovariance,createRun,replayObserver,comparePair,effectiveProcessQ,innovationScore,processRecord,scoreProcessRecord,selectProcessScale,runProcessStudy};
 });

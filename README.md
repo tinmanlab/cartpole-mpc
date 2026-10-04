@@ -355,3 +355,7 @@ See [third-party notices](THIRD_PARTY_NOTICES.md).
 This is a teaching and research prototype, not a production robot controller.
 
 The CartPole versions preserve the **control/estimation structure** needed to understand the algorithms, but they do not reproduce humanoid multi-contact dynamics, hardware state estimation, actuator limits, safety behavior, or OCS2 solver equivalence.
+
+## Q_e selection and an independent control test
+
+The same calibration panel now adds **TRAIN → VALIDATION → locked TEST**. One effective Q_e multiplier is selected from fixed sensor/command recordings using normalized predictive likelihood; measured R, Q shape, P0, LQR and limits stay fixed. The recorded winner predicts better yet tracks worse, so it is not promoted. Stage scores, grid-boundary limits and every test outcome are visible, and the existing causal trace panel is reused. See [process-selection scope](docs/VALIDATION.md#process-covariance-selection-predictive-fit-is-not-a-control-objective). This is not identification of every noise parameter or a newly implemented covariance optimizer.

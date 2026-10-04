@@ -24,6 +24,7 @@ def build() -> str:
             read(SRC / "engine.js"),
             read(SRC / "calibration_lab.js"),
             "const CONTROL_LAB_CALIBRATION_MANIFEST = " + read(ROOT / "tests/fixtures/calibration_lab.json") + ";",
+            "const CONTROL_LAB_PROCESS_MANIFEST = " + read(ROOT / "tests/fixtures/process_selection.json") + ";",
         ]),
         "ACTOR": "const CONTROL_LAB_ACTOR = " + json.dumps(actor, separators=(",", ":")) + ";",
         "RESIDUAL": "const CONTROL_LAB_RESIDUAL = " + json.dumps(residual, separators=(",", ":")) + ";",

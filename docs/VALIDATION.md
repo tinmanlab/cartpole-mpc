@@ -160,3 +160,56 @@ Receipts: `evidence/calibration_lesson.json`, `calibration_reference.json`, `cal
 This closes the measured-R causal comparison, not the whole commissioning curriculum. Process covariance/initial-state calibration, bias and timing identification, controller/observer bandwidth co-design, and an interactive stability/region-of-attraction experiment remain separate tasks. Existing identification/tuning code and native solver work should be reused when those questions are tackled, not recreated. Actual legged contact, hardware control or all-N completion are not required for this slice's success.
 
 References: NIST repeated measurement/repeatability example https://www.itl.nist.gov/div898/handbook/mpc/section6/mpc6221.htm ; FilterPy's Q/R/K/S and predict/update definitions https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html . The external methods justify the measurement/filter definitions, not the performance numbers of this local simulation.
+
+## Process-covariance selection: predictive fit is not a control objective
+
+This extension reuses the previous measured-R lesson and its existing EKF/LQR, rather than adding a new filter, optimizer, simulator or hardware path. It answers the remaining question: after measurement repeatability R_e is measured, can an explicitly selected process-covariance setting be assumed to improve control? The answer in the recorded test is no.
+
+### Fixed scalar family and data separation
+
+`tests/fixtures/process_selection.json` was frozen before execution (SHA-256 `96607c7b583b9d1253900a72b0c48e84d0a7e0ed155723072206bbe2135df04a`). The candidate family is `Q_e(gamma)=gamma*Q_e0`, gamma in `[1e-4,1e-3,1e-2,1e-1,1,10]`. Matrix shape, initial P0, measured R_e, nominal nonlinear model, LQR gains/limits and the 20 ms sample interval are fixed. This is one scalar **effective model-error weighting**, not identification of the true physical process noise, all covariance entries, bias or delay.
+
+The separate stationary acquisition still uses 512 readings. Two new TRAIN and two new VALIDATION trajectories are collected by the baseline controller with measured R and unchanged Q. The selection records contain only ID/seed, sample interval, position/angle readings and requested commands; simulator truth and controller performance are omitted. For 600 transitions there are 601 aligned measurements, so each recorded u_k predicts y_(k+1). No next measurement is used to form the same interval's control command.
+
+Every candidate is scored on the same two training records. The best two training candidates plus the original gamma=1 are evaluated on the separate validation records. Minimum validation mean negative log likelihood selects once (ties prefer baseline, then smaller gamma). The selection object is immutable. Its scalar is locked before any of the eight new TEST conditions is executed. Test outcomes are displayed but never used to choose another candidate or extend the grid.
+
+The fixed evaluation contains four white-noise cases (including two scheduled-push cases), two colored-noise cases and two command-delay cases. Both measured-R baseline and selected-Q arms use the same physical conditions and seeds. After their controls differ, their trajectories/measurements differ; a separate same-data observer replay is also retained. Physical truth is available only to the evaluator, not the selector or controller input.
+
+### Predictive likelihood and normalization
+
+After a fixed 50-transition burn-in, each prefit innovation and its predicted covariance contribute
+
+    NLL_k = 0.5 * (innovation_k' S_k^-1 innovation_k + log(det S_k) + 2 log(2*pi)).
+
+The score includes log-determinant normalization. Minimizing NIS alone would reward freely enlarging covariance; this complete Gaussian score makes that trade-off explicit. The implementation uses the full 2x2 S, verifies positive definiteness and evaluates the existing EKF/matrix routines. An independent SciPy multivariate-normal log-density check covers every scored innovation. Values may be negative because this is a density in fixed m/rad coordinates, not a bounded probability. Scores cannot be compared across changed units/data/dimension without accounting for the transformation.
+
+For an EKF this is an approximate predictive-likelihood criterion, not the exact likelihood of a nonlinear posterior. Serial correlation, an incorrect model, unmodeled input delay and fixed P0/Q shape limit its interpretation. The first second is excluded only from the fitting score; full closed-loop outcomes include initialization and all executed steps. Neither a near-two mean NIS nor the minimum among six candidates certifies consistency or a global optimum.
+
+### Recorded outcome and non-promotion
+
+Training and validation selected gamma=1e-4, the lower edge of the frozen grid. This is reported as a grid-boundary selection, not an identified optimum; the search range was not expanded after observing the result. Validation mean NLL improved from about -3.45317 (baseline) to -3.57183 (selected).
+
+On the four separate white-noise test cases, all trials completed the 12 s envelope test. However, aggregate full-duration tracking RMSE worsened from approximately 0.12979 m to 0.18305 m. Final-window task successes decreased from 2/4 to 0/4, while force RMS decreased from about 1.904 N to 1.066 N. This is not a controller improvement despite the better predictive score and smoother command.
+
+For the four boundary cases, all runs also completed, but neither arm met the final-window task criteria. Tracking RMSE was approximately 0.34061 m versus 0.70618 m. The selected scale is therefore not promoted to the main experiment. No alternate scale was chosen using these test failures. These results are a counterexample to equating a sensor-only estimation objective with task-level controller design, not a theorem that small Q is always harmful or that covariance selection is useless.
+
+Future tuning using these outcomes must call this set development/regression evidence. A subsequent controller/observer co-design requires its own declared objective, feasible domain and separately reserved assessment, rather than relabelling this test as untouched indefinitely.
+
+### UI, fault handling and verification
+
+The existing calibration panel now exposes the stage scores, selected scale, grid-edge warning and every test outcome. Selecting a test record reuses the same sensor/estimate/force/clip/next-state trace panel; no second simulator or fabricated animation is introduced. Returning to the original three-R experiment remains supported. During computation controls prevent overlapping lesson runs, and failure clears stale selection/result tables before re-enabling controls. The main experiment is paused without changing its settings or state.
+
+Tests cover positive covariance/logdet behavior, optional Q scaling, rejection of invalid records, disjoint recording identifiers/seeds, a selector that cannot access a supplied test getter, no truth fields in fit records, initialization-P0 equality, immutable selection, rank reconstruction and actual browser execution. The frozen experiment uses 9,900 scored innovation rows and 9,600 held-out dynamic frames; each score and outcome arithmetic is independently rechecked. Performance improvement is not a test pass condition. The older R-only results are compared separately for regression.
+
+Reproduce with the existing native environment:
+
+    node tests/test_process_selection.mjs
+    node scripts/run_process_selection.mjs
+    python tests/test_process_reference.py
+    python tests/test_process_browser.py
+
+Committed receipts are `evidence/process_selection.json`, `process_reference.json`, `process_browser.json` and the implementation audit. Detailed transient records remain in ignored `test-results/process_selection_full.json`. The original frozen R-only manifest and N-link configurations are unchanged.
+
+Primary implementation references: FilterPy Kalman/EKF innovation-covariance and measurement-log-likelihood interfaces, https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/kalman_filter.html and https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/EKF.html . These support the statistical definitions, not the measured local control outcomes. Existing `src/commissioning.js` broader CEM tuning is still separate; this deliberately small grid is an interpretable selection baseline, not a claim to reproduce DiffTune, EM, Safe BO or a SOTA covariance optimizer.
+
+Remaining gaps are full Q/P0/model/bias/time calibration, closed-loop objective-aware design, and the interactive Lyapunov/recovery-region lesson. Completing this one selection/evaluation chain does not close the entire commissioning curriculum or certify hardware.

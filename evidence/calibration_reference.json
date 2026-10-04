@@ -20,6 +20,6 @@
   "sameDataReplayMatchedRecordedFilter": true,
   "scenarioOutcomesNotForcedToImprove": true,
   "referenceSourceSha256": "e854abf893e1940a8748eab3cc5e0f03849598e82523bc5ad90dcac0b7757dde",
-  "recordedEvidenceSha256": "f552d24948419f7813224fb5872dfacf7f32e64b7fb9209debb77d20a7667258",
+  "recordedEvidenceSha256": "2dad4bf1ef41aaad27f83b5072495bb06827d726d99e2cb0b2ac23f3119d2db7",
   "scope": "Independent sample covariance/NIS/force decomposition and summary arithmetic. Existing EKF/MuJoCo/controller numerical authorities are reused; this is not proof of optimal Q_e or hardware calibration."
 }
