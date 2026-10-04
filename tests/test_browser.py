@@ -22,6 +22,7 @@ async def main():
         await page.goto(URL,wait_until='networkidle')
         await page.wait_for_function('window.__labReady || window.__labLoadError',timeout=60000)
         assert await page.evaluate('window.__labLoadError || null') is None
+        assert await page.locator('#terminalCost').count()==1, 'Missing terminal-cost control'
         await page.evaluate('window.controlLab.pause()')
         # A fallback to the old equation port is now an explicit test failure.
         await page.evaluate("() => {Plant.integrate=()=>{throw Error('legacy JS plant was called')}; return true;}")
@@ -132,11 +133,43 @@ async def main():
         assert hard['timing']['postStateTime']>hard['timing']['sourceStateTime']
         assert hard['timing']['computeMs']>=hard['timing']['solveToApplyMs']>=0
         await native_page.screenshot(path=str(ROOT/'evidence/mujoco_wasm_browser.png'),full_page=True)
+        # Actual terminal selector must drive the public constructor, not a test-only matrix assignment.
+        await native_page.select_option('#terminalCost','original')
+        await native_page.evaluate('window.controlLab.pause()')
+        old=await native_page.evaluate('window.controlLab.step(1)')
+        assert old['terminalCost']['kind']=='original'
+        await native_page.select_option('#terminalCost','dare')
+        await native_page.evaluate('window.controlLab.pause()')
+        ric=await native_page.evaluate('window.controlLab.step(80)')
+        assert ric['fault'] is None and ric['terminalCost']['kind']=='dare'
+        assert ric['terminalCost']['source']=='nominal-discrete-riccati'
+        assert ric['terminalCost']['normalizedResidual']<=1e-9
+        assert abs(ric['terminalCost']['matrix'][0][1])>1
+        assert await native_page.evaluate("window.controlLab.getTrace().every(q=>q.terminalCost==='dare')")
+        await native_page.click('#reset')
+        assert await native_page.evaluate("window.controlLab.getState().terminalCost.kind")=='dare'
+        await native_page.select_option('#controller','lqr')
+        assert await native_page.locator('#terminalCost').is_disabled()
+        assert await native_page.evaluate('window.controlLab.getState().terminalCost') is None
+        await native_page.select_option('#controller','hard_mpc')
+        assert not await native_page.locator('#terminalCost').is_disabled()
+        assert await native_page.evaluate("window.controlLab.getState().terminalCost.kind")=='dare'
+        await native_page.evaluate('window.controlLab.pause()')
+        await native_page.screenshot(path=str(ROOT/'evidence/terminal_option_browser.png'),full_page=True)
+        await page.evaluate("window.__webmcpTools.cartpole_set_controller.execute({controller:'hard_mpc',terminalCost:'dare'})")
+        probe=json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'hard_mpc',observer:'ekf',scenario:'nominal',steps:60,pushForce:0})"))
+        assert probe['terminalCost']['kind']=='dare'
+        assert all(q['terminalCost']=='dare' for q in probe['trace'])
+        explicit=json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'hard_mpc',observer:'ekf',scenario:'nominal',terminalCost:'original',steps:60,pushForce:0})"))
+        assert explicit['terminalCost']['kind']=='original'
+        rejected=await page.evaluate("async()=>{try{await window.__webmcpTools.cartpole_set_controller.execute({controller:'pid',terminalCost:'dare'});return false;}catch(e){return /unsupported/i.test(e.message);}}")
+        assert rejected
         # Fault injection checks only the comparison UI boundary; all physics tests above are real.
-        await native_page.evaluate("() => {window.__savedEpisode=ControlLab.runEpisode;ControlLab.runEpisode=o=>{if(o.controller==='hard_mpc')throw Error('QP rejected: injected infeasible');return {failed:false,rmseState:0,meanSolveMs:0};};}")
+        await native_page.evaluate("() => {window.__comparedTerminal=[];window.__savedEpisode=ControlLab.runEpisode;ControlLab.runEpisode=o=>{window.__comparedTerminal.push({controller:o.controller,terminal:o.controllerOpts?.terminalCost??null});if(o.controller==='hard_mpc')throw Error('QP rejected: injected infeasible');return {failed:false,rmseState:0,meanSolveMs:0};};}")
         await native_page.click('#compare')
         await native_page.wait_for_function("document.querySelector('#matrix').textContent.includes('REJECT') && !document.querySelector('#compare').disabled",timeout=1500)
         assert await native_page.locator('#matrix tbody tr').count()==11
+        assert await native_page.evaluate("window.__comparedTerminal.every(q=>['linear_mpc','hard_mpc'].includes(q.controller)?q.terminal==='dare':q.terminal===null)")
         await native_page.evaluate("() => {ControlLab.runEpisode=window.__savedEpisode;delete window.__savedEpisode;}")
         # Invalid output must never advance the plant or silently apply zero.
         fault=await native_page.evaluate('''()=>{window.controlLab.pause();const t=window.controlLab.getState().t;
@@ -144,6 +177,19 @@ async def main():
             const state=window.controlLab.step(1);ControlLab.LinearMPCController.prototype.act=original;return {before:t,state};}''')
         assert fault['state']['t']==fault['before'] and fault['state']['fault']
         assert fault['state']['running'] is False
+        await native_page.click('#reset')
+        assert await native_page.evaluate('window.controlLab.getState().fault') is None
+        # A rejected constructor must not leave a new plant running with an old controller.
+        init_fault=await native_page.evaluate("""()=>{
+            window.controlLab.pause();const before=window.controlLab.getState().t;
+            const original=ControlLab.makeController;
+            ControlLab.makeController=()=>{throw Error('Riccati terminal computation did not converge')};
+            document.querySelector('#terminalCost').dispatchEvent(new Event('change'));
+            ControlLab.makeController=original;
+            const stopped=window.controlLab.step(2);return {before,stopped};
+        }""")
+        assert init_fault['stopped']['fault'] and not init_fault['stopped']['running']
+        assert init_fault['stopped']['t']==init_fault['before']
         await native_page.click('#reset')
         assert await native_page.evaluate('window.controlLab.getState().fault') is None
         # Missing binary must visibly fail closed; the legacy JS path is forbidden.
@@ -160,7 +206,7 @@ async def main():
             'wasmHttp200':True,'mjcfHttp200':True,'legacyIntegratorForbidden':True,'pageErrors':errors+native_errors,
             'webmcpNativeAvailable':await native_page.evaluate("!!((document.modelContext||navigator.modelContext)?.registerTool)"),
             'webmcpAdapterTest':'first page only uses an explicitly injected registration shim',
-            'normalUiWithoutShimPassed':True,'hardRailControllerPassed':True,'browserQpParityPassed':True,'invalidCommandStoppedBeforePlant':True,'missingWasmFailClosed':True,'comparisonRejectionIsolated':True,'timing':hard['timing'],'hardwareVerified':False}
+            'normalUiWithoutShimPassed':True,'hardRailControllerPassed':True,'browserQpParityPassed':True,'invalidCommandStoppedBeforePlant':True,'missingWasmFailClosed':True,'terminalOptionActualBrowserPassed':True,'terminalConstructorFailureStopped':True,'terminalProbeAndComparisonPassed':True,'comparisonRejectionIsolated':True,'timing':hard['timing'],'hardwareVerified':False}
         (ROOT/'evidence/browser_wasm.json').write_text(json.dumps(result,indent=2)+'\n')
         await browser.close()
         SERVER.shutdown()

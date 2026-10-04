@@ -10,6 +10,10 @@ The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `asset
 
 See [runtime, assets and failure contracts](docs/MUJOCO_WASM_RUNTIME.md) for exact versions, masses/inertias, model scope, upstream code reuse and verification commands.
 
+## Terminal cost: explicit comparison
+
+For **Linear MPC** or **Constrained MPC · hard rail**, the **Terminal cost** selector compares **Original · diagonal** with **Riccati · full matrix**. Original remains the default. Riccati retains the coupled tail-cost matrix, checks convergence and residuals, and applies the same choice to live traces, probes and comparison rows. Other controller families do not inherit this option. See [controller semantics](docs/CONTROLLERS.md#terminal-cost-selection) and [the frozen 40-condition validation](docs/VALIDATION.md#frozen-terminal-cost-validation). This adds no solver dependency and does not constitute a hardware safety guarantee.
+
 ## Start here
 
 The entire lab uses one control loop:

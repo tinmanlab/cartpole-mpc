@@ -140,3 +140,15 @@ The conceptual contrast is:
     PPO:      move the main optimization into training, then infer online
 
 Neither is presented as universally superior.
+
+## Terminal cost selection
+
+`LinearMPCController` and `hard_mpc` accept `{terminalCost: 'original' | 'dare'}`. Both the constructor and browser initially use `original`, preserving the previous diagonal penalty and existing experiment baselines. The browser's Terminal cost selector opts into `Riccati · full matrix`; changing it resets the experiment, and Reset retains that selection. Reload starts with Original. Other controller families disable the selector and reject explicitly supplied unsupported terminal options rather than silently applying them.
+
+The Riccati choice uses the actual nominal discrete A/B and the controller's Q/R. It reuses the existing DARE iteration once during construction, retaining all matrix cross terms. The matrix is checked for finite values, convergence, round-off-scale symmetry, strict positive definiteness without jitter, and a normalized infinity-norm Riccati residual no greater than 1e-9. This restricted mode requires positive-definite state cost and positive scalar input cost. A supplied `Qfdiag` conflicts with `terminalCost: 'dare'` and is rejected. Original still accepts its configured diagonal.
+
+Runtime `terminalCost` metadata distinguishes computed nominal Riccati from configured diagonal cost. The browser state also includes the actual terminal matrix; each trace row records its terminal kind. Comparison rows capture the terminal choice at the start of the comparison and label it. The existing `cartpole_set_controller` and `cartpole_run_probe` actions accept an optional terminalCost field; an omitted probe field follows the current selection only for the two supported families.
+
+A failed constructor leaves the previous complete state snapshot stopped, not a new plant running with an old controller. It requires a successful reset/reconfiguration. The startup path still fails visibly if there is no valid initial configuration.
+
+This is a local nominal tail-cost approximation, not a terminal invariant set, global nonlinear stability proof, robust recovery region or hardware certificate. Physics remains official MuJoCo WASM and the browser QP solver remains the pinned upstream quadprog. No acados runtime or new dependency is added by this option.

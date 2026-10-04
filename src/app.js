@@ -18,6 +18,13 @@
   let runtimeError=null,lastTick=null;
   let plant,controller,observer,running=true,lastTs=0,acc=0,trace=[],sumErr=0,nErr=0,lastEstimate=[0,0,0,0],lastMeasurement=[0,0],lastInnovation=null,lastForce=0,lastAppliedForce=0;
 
+  const supportsTerminal=name=>['linear_mpc','hard_mpc'].includes(name);
+  function terminalOptions(name,choice=$('terminalCost').value,explicit=false){
+    if(!['original','dare'].includes(choice))throw Error('Unknown terminal cost option');
+    if(!supportsTerminal(name)){if(explicit)throw Error('Unsupported terminal cost option for '+name);return {};}
+    return {terminalCost:choice};
+  }
+  function terminalPayload(){return controller?.terminalInfo?{...controller.terminalInfo,matrix:controller.Qf.map(row=>row.slice())}:null;}
   function spec(){return Object.assign({},P.DEFAULT_SPEC,{actuator:'ideal',force:10,friction:0});}
   function nav(){
     let last='';
@@ -53,16 +60,27 @@
     if(r.controller)$('controller').value=r.controller;if(r.observer)$('observer').value=r.observer;if(r.scenario)$('scenario').value=r.scenario;rebuild();
   }
   function rebuild(){
-    runtimeError=null;lastTick=null;acc=0;lastTs=0;
-    plant=new L.LabPlant({seed:31,scenario:$('scenario').value,spec:spec()});plant.goal=+$('goal').value;
-    controller=L.makeController($('controller').value,plant.spec,actor);
-    observer=L.makeObserver($('observer').value,plant.spec,{model:residualModel,R:plant.measurementVariance()});
-    const y=plant.sensor();observer.reset(y,plant.s);controller.reset();trace=[];sumErr=0;nErr=0;
-    lastEstimate=observer.outputX&&observer.outputX.slice?observer.outputX.slice():(observer.x&&observer.x.slice?observer.x.slice():plant.s.slice());
-    lastMeasurement=y;lastInnovation=null;lastForce=0;lastAppliedForce=0;running=true;
-    const modelGeometry=physics.geometry(plant.s,plant.spec,plant.params);
-    $('assetStatus').textContent='MJCF '+physics.assetSha256.slice(0,12)+' · true rod '+(2*modelGeometry.poleCom[2]).toFixed(3)+' m · mass '+modelGeometry.mass.map(v=>v.toFixed(3)).join(' / ')+' kg · ideal force actuator';
-    updatePipeline();renderAll();
+    try{
+      // Construct all pieces before publishing a new live loop. Failure retains the
+      // previous valid snapshot but stops it; never pair a new plant with an old controller.
+      const nextPlant=new L.LabPlant({seed:31,scenario:$('scenario').value,spec:spec()});nextPlant.goal=+$('goal').value;
+      $('terminalCost').disabled=!supportsTerminal($('controller').value);
+      const nextController=L.makeController($('controller').value,nextPlant.spec,actor,terminalOptions($('controller').value));
+      const nextObserver=L.makeObserver($('observer').value,nextPlant.spec,{model:residualModel,R:nextPlant.measurementVariance()});
+      const y=nextPlant.sensor();nextObserver.reset(y,nextPlant.s);nextController.reset();
+      const modelGeometry=physics.geometry(nextPlant.s,nextPlant.spec,nextPlant.params);
+      plant=nextPlant;controller=nextController;observer=nextObserver;
+      runtimeError=null;lastTick=null;acc=0;lastTs=0;trace=[];sumErr=0;nErr=0;
+      lastEstimate=observer.outputX&&observer.outputX.slice?observer.outputX.slice():(observer.x&&observer.x.slice?observer.x.slice():plant.s.slice());
+      lastMeasurement=y;lastInnovation=null;lastForce=0;lastAppliedForce=0;running=true;
+      $('assetStatus').textContent='MJCF '+physics.assetSha256.slice(0,12)+' · true rod '+(2*modelGeometry.poleCom[2]).toFixed(3)+' m · mass '+modelGeometry.mass.map(v=>v.toFixed(3)).join(' / ')+' kg · ideal force actuator';
+      $('terminalStatus').textContent=controller.terminalInfo?.kind==='dare'?'Riccati: 전체 결합항 유지 · 수렴 확인 · nominal residual '+controller.terminalInfo.normalizedResidual.toExponential(1)+' · 전역 안전 보장 아님':controller.terminalInfo?'Original: 설정된 대각 terminal penalty · 이전 비교 기준 유지':'Terminal 선택은 Linear MPC / hard-rail MPC에만 적용됩니다.';
+      updatePipeline();renderAll();return true;
+    }catch(error){
+      running=false;runtimeError=String(error.message);
+      if(!plant||!controller||!observer)throw error;
+      $('terminalStatus').textContent='설정 적용 실패 · 이전 상태에서 정지 · Reset 필요';renderAll();return false;
+    }
   }
   function stepOne(){
     if(runtimeError)return false;const wallStart=performance.now(),sourceTime=plant.steps*L.DT;
@@ -78,7 +96,7 @@
     sumErr+=e.reduce(function(ss,v){return ss+v*v;},0);nErr+=4;lastEstimate=xh.slice();lastMeasurement=y.slice();
     lastInnovation=observer.last?.innovation?.slice()??null;lastForce=u;lastAppliedForce=out.appliedCommand??u;
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
-    trace.push({t:plant.steps*L.DT,timing:lastTick,truth:out.state.slice(),estimate:xh.slice(),u:u,external:out.external,innovation:lastInnovation?.slice()??null,
+    trace.push({t:plant.steps*L.DT,terminalCost:controller.terminalInfo?.kind??null,timing:lastTick,truth:out.state.slice(),estimate:xh.slice(),u:u,external:out.external,innovation:lastInnovation?.slice()??null,
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
       measurementUsed:observer.last?.measurementUsed??plant.sensorMeta.fresh,sensorFresh:plant.sensorMeta.fresh,sensorFault:plant.sensorMeta.fault,observerCost:observer.last?.cost??null,observerIterations:observer.last?.iterations??0,observerWindow:observer.last?.window??0,
       reliability:observer.last&&observer.last.reliability?observer.last.reliability.slice():null,appliedCommand:out.appliedCommand??u,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0});
@@ -132,18 +150,18 @@
   function loop(ts){if(!lastTs)lastTs=ts;const dt=Math.min(.08,(ts-lastTs)/1000);lastTs=ts;if(running){acc+=dt;let n=0;while(running&&acc>=L.DT&&n<4){stepOne();acc-=L.DT;n++;}}renderAll();requestAnimationFrame(loop);}
   async function compare(){
     // Freeze this experiment's configuration; yield between cells so the UI remains responsive.
-    const sc=$('compareScenario').value,goal=+$('goal').value;
+    const sc=$('compareScenario').value,goal=+$('goal').value,terminalChoice=$('terminalCost').value;
     const cs=['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo'];
     const os=['truth','raw','kf','ekf','so2','residual','adaptive'];
     running=false;$('compare').disabled=true;
     $('matrix').innerHTML='<thead><tr><th>Controller</th>'+os.map(o=>'<th>'+observerLabels[o]+'</th>').join('')+'</tr></thead><tbody></tbody>';
     try{
       for(const c of cs){
-        const row=$('matrix').tBodies[0].insertRow();row.insertCell().textContent=controllerLabels[c];
+        const row=$('matrix').tBodies[0].insertRow();row.dataset.terminalCost=supportsTerminal(c)?terminalChoice:'not-applicable';row.insertCell().textContent=controllerLabels[c]+(supportsTerminal(c)?' · '+(terminalChoice==='dare'?'Riccati':'Original'):'');
         for(const o of os){
           const cell=row.insertCell();
           try{
-            const r=L.runEpisode({controller:c,observer:o,scenario:sc,seed:77,steps:240,goal,actor,residualModel,pushAt:96,pushForce:3});
+            const r=L.runEpisode({controller:c,observer:o,scenario:sc,seed:77,steps:240,goal,actor,residualModel,controllerOpts:terminalOptions(c,terminalChoice),pushAt:96,pushForce:3});
             cell.className=r.failed?'fail':'pass';
             cell.textContent=(r.failed?'FAIL':'✓')+' · '+r.rmseState.toFixed(2)+(r.meanSolveMs?' · '+r.meanSolveMs.toFixed(1)+' ms':'');
           }catch(error){
@@ -157,7 +175,7 @@
   }
   function statePayload(){
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
-    return {physics:L.physicsInfo(),fault:runtimeError,timing:lastTick,topic:topic,controller:$('controller').value,observer:$('observer').value,scenario:$('scenario').value,t:plant.steps*L.DT,goal:plant.goal,
+    return {physics:L.physicsInfo(),terminalCost:terminalPayload(),fault:runtimeError,timing:lastTick,topic:topic,controller:$('controller').value,observer:$('observer').value,scenario:$('scenario').value,t:plant.steps*L.DT,goal:plant.goal,
       truth:plant.s.slice(),estimate:lastEstimate.slice(),measurement:lastMeasurement.slice(),innovation:lastInnovation?.slice()??null,force:lastForce,appliedForce:lastAppliedForce,
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
       covarianceScope:Pout?'output-estimate':'base-filter-only-or-not-applicable',
@@ -171,18 +189,18 @@
     const reg=async function(tool){return mc.registerTool(tool,{signal:ac.signal});};
     try{
       await reg({name:'cartpole_get_state',description:'Read the detailed CartPole control-observer lab state and solver metrics.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:ro,execute:async function(){return JSON.stringify(statePayload());}});
-      await reg({name:'cartpole_set_controller',description:'Select a controller.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']}},required:['controller'],additionalProperties:false},annotations:rw,execute:async function(a){$('controller').value=a.controller;rebuild();return 'controller='+a.controller;}});
+      await reg({name:'cartpole_set_controller',description:'Select a controller.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']},terminalCost:{type:'string',enum:['original','dare']}},required:['controller'],additionalProperties:false},annotations:rw,execute:async function(a){terminalOptions(a.controller,a.terminalCost??$('terminalCost').value,a.terminalCost!==undefined);$('controller').value=a.controller;if(a.terminalCost!==undefined)$('terminalCost').value=a.terminalCost;if(!rebuild())throw Error(runtimeError);return 'controller='+a.controller;}});
       await reg({name:'cartpole_set_observer',description:'Select an observer.',inputSchema:{type:'object',properties:{observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']}},required:['observer'],additionalProperties:false},annotations:rw,execute:async function(a){$('observer').value=a.observer;rebuild();return 'observer='+a.observer;}});
       await reg({name:'cartpole_set_topic',description:'Open an educational topic without changing plant state.',inputSchema:{type:'object',properties:{topic:{type:'string',enum:ORDER}},required:['topic'],additionalProperties:false},annotations:rw,execute:async function(a){setTopic(a.topic);return 'topic='+a.topic;}});
       await reg({name:'cartpole_set_scenario',description:'Select scenario.',inputSchema:{type:'object',properties:{scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']}},required:['scenario'],additionalProperties:false},annotations:rw,execute:async function(a){$('scenario').value=a.scenario;rebuild();return 'scenario='+a.scenario;}});
       await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
       await reg({name:'cartpole_reset',description:'Reset experiment.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:rw,execute:async function(){rebuild();return 'reset';}});
       await reg({name:'cartpole_run_steps',description:'Advance live experiment.',inputSchema:{type:'object',properties:{steps:{type:'integer',minimum:1,maximum:500}},required:['steps'],additionalProperties:false},annotations:rw,execute:async function(a){for(let i=0;i<a.steps;i++)if(!stepOne())break;renderAll();return JSON.stringify(statePayload());}});
-      await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
+      await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']},terminalCost:{type:'string',enum:['original','dare']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,controllerOpts:terminalOptions(a.controller,a.terminalCost??$('terminalCost').value,a.terminalCost!==undefined),observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
       $('webmcpBadge').textContent='WebMCP tools registered';$('webmcpBadge').classList.add('ok');
     }catch(e){console.warn(e);$('webmcpBadge').textContent='WebMCP registration failed';$('webmcpBadge').classList.add('warn');}
   }
-  $('useTopic').addEventListener('click',useTopic);['controller','observer','scenario','goal'].forEach(function(id){$(id).addEventListener('change',rebuild);});$('play').addEventListener('click',function(){if(runtimeError)return;running=!running;renderMetrics();});$('step').addEventListener('click',function(){running=false;stepOne();renderAll();});$('reset').addEventListener('click',rebuild);$('pushL').addEventListener('click',function(){plant.applyPush(-3,10);});$('pushR').addEventListener('click',function(){plant.applyPush(3,10);});$('compare').addEventListener('click',compare);
+  $('useTopic').addEventListener('click',useTopic);['controller','observer','scenario','goal','terminalCost'].forEach(function(id){$(id).addEventListener('change',rebuild);});$('play').addEventListener('click',function(){if(runtimeError)return;running=!running;renderMetrics();});$('step').addEventListener('click',function(){running=false;stepOne();renderAll();});$('reset').addEventListener('click',rebuild);$('pushL').addEventListener('click',function(){plant.applyPush(-3,10);});$('pushR').addEventListener('click',function(){plant.applyPush(3,10);});$('compare').addEventListener('click',compare);
   window.addEventListener('hashchange',function(){const k=(location.hash||'#overview').slice(1);if(TOPICS[k]){topic=k;renderTopic();}});
-  $('controller').value='hard_mpc';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.__labReady=true;requestAnimationFrame(loop);
+  $('controller').value='hard_mpc';$('terminalCost').value='original';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.__labReady=true;requestAnimationFrame(loop);
 })().catch(error=>{console.error(error);document.getElementById('statusBadge').textContent='LOAD ERROR';document.getElementById('assetStatus').textContent=error.message;document.querySelectorAll('button,select').forEach(e=>e.disabled=true);window.__labLoadError=error.message;});

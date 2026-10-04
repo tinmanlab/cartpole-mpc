@@ -31,5 +31,7 @@ jobs:
         run: python tests/test_native_reference.py --require-browser-parity
       - name: Exact same MJCF, native versus WASM replay
         run: python tests/test_wasm_native.py
+      - name: Full Riccati parity and frozen terminal validation
+        run: python tests/test_terminal_reference.py && npm run validate:terminal
       - name: Real browser network, solver and failure paths
         run: npm run test:browser

@@ -54,7 +54,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551955473822673,
-      "p95SolveMs": 1.3555830000000242
+      "p95SolveMs": 1.9292470000000321
     },
     {
       "controller": "linear_mpc",
@@ -62,7 +62,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551352408945396,
-      "p95SolveMs": 0.9896840000001248
+      "p95SolveMs": 1.0383509999999205
     },
     {
       "controller": "linear_mpc",
@@ -70,7 +70,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.045513038718066744,
-      "p95SolveMs": 0.4781909999999243
+      "p95SolveMs": 0.5315290000000914
     },
     {
       "controller": "linear_mpc",
@@ -78,7 +78,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04534836268719901,
-      "p95SolveMs": 0.5746919999999136
+      "p95SolveMs": 0.6331460000001243
     },
     {
       "controller": "hard_mpc",
@@ -86,7 +86,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551955473822673,
-      "p95SolveMs": 1.7187659999999596
+      "p95SolveMs": 1.4616510000000744
     },
     {
       "controller": "hard_mpc",
@@ -94,7 +94,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551352408945396,
-      "p95SolveMs": 0.8908970000002228
+      "p95SolveMs": 0.6730320000001484
     },
     {
       "controller": "hard_mpc",
@@ -102,7 +102,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.045513038718066744,
-      "p95SolveMs": 1.2930150000001959
+      "p95SolveMs": 0.8136099999996986
     },
     {
       "controller": "hard_mpc",
@@ -110,7 +110,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04534836268719901,
-      "p95SolveMs": 0.9047489999998106
+      "p95SolveMs": 0.7632819999998901
     },
     {
       "controller": "full_nmpc",
@@ -118,7 +118,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551943492850234,
-      "p95SolveMs": 17.617443000000094
+      "p95SolveMs": 17.366845999999896
     },
     {
       "controller": "full_nmpc",
@@ -126,7 +126,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551351344774535,
-      "p95SolveMs": 16.15925799999968
+      "p95SolveMs": 15.703112999999576
     },
     {
       "controller": "full_nmpc",
@@ -134,7 +134,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04551305112078623,
-      "p95SolveMs": 19.937778000001344
+      "p95SolveMs": 17.16631100000086
     },
     {
       "controller": "full_nmpc",
@@ -142,7 +142,7 @@
       "failed": false,
       "steps": 220,
       "rmseState": 0.04534828918560796,
-      "p95SolveMs": 17.914310000000114
+      "p95SolveMs": 19.88207700000021
     }
   ],
   "replay": {

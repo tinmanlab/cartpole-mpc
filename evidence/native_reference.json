@@ -8,7 +8,7 @@
     "mujoco": "3.7.0"
   },
   "source_sha256": {
-    "src/engine.js": "38611647cbe7c348aca8b417a54ede7850c645819ab311fc0056ddbae4f41295",
+    "src/engine.js": "3ffe403e374350f4e2636724bbbed301469c7dd6c0c0f054769ef2edc824dbb8",
     "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
     "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
     "src/commissioning.js": "b9ce07db87b2e202827bc44448e518aa697719e37daea4f2ea2f7659403f5065",

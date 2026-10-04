@@ -1,0 +1,169 @@
+{
+  "schema": "cartpole-terminal-reference/v1",
+  "fixtureSha256": "80ba0278aee3f2ec1310ff8438291434e3165537b5a81c347a413cb42e18ce73",
+  "scipyVersion": "1.15.3",
+  "sourceSha256": {
+    "src/engine.js": "3ffe403e374350f4e2636724bbbed301469c7dd6c0c0f054769ef2edc824dbb8",
+    "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
+    "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "tests/test_terminal.mjs": "a5d4fb4c729bc8d07356f1d4db461cb6a214251183b119da076b17fc6239a1b3"
+  },
+  "cases": [
+    {
+      "id": 0,
+      "scipyP": [
+        [
+          163.67495216140645,
+          121.06070030360142,
+          372.67968348257523,
+          98.23226109658577
+        ],
+        [
+          121.06070030360142,
+          159.49079892432803,
+          507.04687498138867,
+          134.68097380982087
+        ],
+        [
+          372.67968348257523,
+          507.04687498138867,
+          3126.4531547080683,
+          598.6651524541685
+        ],
+        [
+          98.23226109658577,
+          134.68097380982087,
+          598.6651524541685,
+          157.15963180172605
+        ]
+      ],
+      "matrixMaxAbsoluteError": 1.4733814168721437e-09,
+      "normalizedDareResidual": 3.2511704257898056e-14,
+      "symmetryError": 0.0,
+      "minimumEigenvalue": 16.492107377119233,
+      "unconstrainedClosedLoopSpectralRadius": 0.9811542551900307,
+      "firstActionError": 2.9502968956762743e-09,
+      "relativeCostError": 1.3991298189892942e-09,
+      "nativeQpStatus": "solved",
+      "passed": true
+    },
+    {
+      "id": 1,
+      "scipyP": [
+        [
+          231.8651220919014,
+          156.88613158804114,
+          444.65019558527297,
+          117.31230392930614
+        ],
+        [
+          156.88613158804114,
+          196.46036544276885,
+          564.4014211631962,
+          150.1956302620305
+        ],
+        [
+          444.65019558527297,
+          564.4014211631962,
+          3118.755320903426,
+          525.7489836660745
+        ],
+        [
+          117.31230392930614,
+          150.1956302620305,
+          525.7489836660745,
+          140.8526073461344
+        ]
+      ],
+      "matrixMaxAbsoluteError": 1.9936123862862587e-09,
+      "normalizedDareResidual": 3.529691423140181e-14,
+      "symmetryError": 0.0,
+      "minimumEigenvalue": 13.539654167413625,
+      "unconstrainedClosedLoopSpectralRadius": 0.979383364971259,
+      "firstActionError": 5.812364811674797e-09,
+      "relativeCostError": 1.5672905632384045e-09,
+      "nativeQpStatus": "solved",
+      "passed": true
+    },
+    {
+      "id": 2,
+      "scipyP": [
+        [
+          95.7071838433886,
+          85.64157855389325,
+          298.0914694290384,
+          78.17314955130546
+        ],
+        [
+          85.64157855389325,
+          132.9954773456324,
+          488.6538523297544,
+          128.7607873051873
+        ],
+        [
+          298.0914694290384,
+          488.6538523297544,
+          3758.106518416168,
+          828.6752753579017
+        ],
+        [
+          78.17314955130546,
+          128.7607873051873,
+          828.6752753579017,
+          212.5811690234098
+        ]
+      ],
+      "matrixMaxAbsoluteError": 3.4906406654044986e-09,
+      "normalizedDareResidual": 3.1203690086567476e-14,
+      "symmetryError": 0.0,
+      "minimumEigenvalue": 17.50480364556957,
+      "unconstrainedClosedLoopSpectralRadius": 0.9849468941966548,
+      "firstActionError": 2.1680581774319307e-09,
+      "relativeCostError": 1.8922566846033787e-09,
+      "nativeQpStatus": "solved",
+      "passed": true
+    },
+    {
+      "id": 3,
+      "scipyP": [
+        [
+          169.13441522328276,
+          130.09090791234644,
+          428.24889568407457,
+          118.60224802381694
+        ],
+        [
+          130.09090791234644,
+          175.63519763936182,
+          600.3106997567843,
+          167.64860974196148
+        ],
+        [
+          428.24889568407457,
+          600.3106997567843,
+          3841.5417110261415,
+          819.3496948844491
+        ],
+        [
+          118.60224802381694,
+          167.64860974196148,
+          819.3496948844491,
+          224.33103506022024
+        ]
+      ],
+      "matrixMaxAbsoluteError": 3.3583091862965375e-09,
+      "normalizedDareResidual": 2.664854815001249e-14,
+      "symmetryError": 0.0,
+      "minimumEigenvalue": 19.65741606296376,
+      "unconstrainedClosedLoopSpectralRadius": 0.9815609557901266,
+      "firstActionError": 3.0384814664330406e-09,
+      "relativeCostError": 1.3408386041599542e-09,
+      "nativeQpStatus": "solved",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Numerical DARE/QP parity; unconstrained linear spectral radius is not a constrained nonlinear stability certificate"
+}

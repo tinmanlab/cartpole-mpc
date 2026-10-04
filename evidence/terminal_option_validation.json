@@ -1,0 +1,169 @@
+{
+  "schema": "cartpole-terminal-option-validation/v1",
+  "baseCommit": "9b5a0b0b13b315799b75ee966a00ea7a7b2324d5",
+  "implementation": "Opt-in production constructor and browser Terminal cost selector; no test-only Qf assignment",
+  "sourceSha256": {
+    "src/engine.js": "3ffe403e374350f4e2636724bbbed301469c7dd6c0c0f054769ef2edc824dbb8",
+    "src/app.js": "cbce67d24a258804a5a8ac2affc2a3d996af7a8837169a30ea2239bb6c711fa0",
+    "src/shell.html": "8c0a64eb2d150ac2651b35f0c604715d569d714b7a868f71423f7581ebdcfa86",
+    "src/topics.js": "66d54617bb2d1fd0ad15ea7ec491751cdc2f423909a322bfa90e9ec72b48dbf3",
+    "index.html": "2e3a3caae5d581974b3c3afcf0a7b1f15ba6d5af0906f1de52f3e85d70f50ab9",
+    "tests/test_terminal.mjs": "a5d4fb4c729bc8d07356f1d4db461cb6a214251183b119da076b17fc6239a1b3",
+    "tests/test_terminal_reference.py": "428b18aea72f54edc555aaabb46efba298230384e2ac4a2d63498c1efeec86c7",
+    "tests/test_browser.py": "f557c1afb53c5b2a64ed41d105fe766dbcb89858b1c918eeedd16ed9199b2468",
+    "scripts/validate_terminal.mjs": "0f01292c262940f01beb29c53a278310c1eaa7169318cc7a2868ada7249cd5d1",
+    "tests/fixtures/terminal_validation.json": "23594cd723f706ddc881bc84717b5d28cc17370508502a11debcd7662b847742",
+    ".github/workflows/verify.yml": "c994d12bc2f16723bc8950c72ea90e65ec55db64e3c443b91cc7357217579219"
+  },
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_terminal_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:terminal",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:browser",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "pythonEnvironment": "Existing optional native reference environment, no dependency changes",
+  "physics": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "stepCalls": 3013600,
+    "cachedModels": 7,
+    "integrator": "Euler",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "summary": {
+    "primary": {
+      "pairs": 24,
+      "original": {
+        "completed": 10,
+        "envelope-failure": 6,
+        "solver-rejected": 7,
+        "numerical-plan-rejected": 1,
+        "execution-error": 0
+      },
+      "dare": {
+        "completed": 24,
+        "envelope-failure": 0,
+        "solver-rejected": 0,
+        "numerical-plan-rejected": 0,
+        "execution-error": 0
+      },
+      "candidateOnlyFailureIds": [],
+      "resolvedBaselineFailureIds": [
+        "primary-sensor-1103",
+        "primary-sensor-1117",
+        "primary-model-1103",
+        "primary-model-1109",
+        "primary-model-1117",
+        "primary-model-1123",
+        "primary-mixed-1103",
+        "primary-mixed-1109",
+        "primary-mixed-1117",
+        "primary-mixed-1123",
+        "primary-sim2real-1103",
+        "primary-sim2real-1109",
+        "primary-sim2real-1117",
+        "primary-sim2real-1123"
+      ],
+      "bothCompletedPairs": 10,
+      "excludedFromFullDurationComparison": 14,
+      "bothCompletedTrackingMseRatio": 0.062265829304730826
+    },
+    "boundary": {
+      "pairs": 16,
+      "original": {
+        "completed": 0,
+        "envelope-failure": 5,
+        "solver-rejected": 10,
+        "numerical-plan-rejected": 1,
+        "execution-error": 0
+      },
+      "dare": {
+        "completed": 16,
+        "envelope-failure": 0,
+        "solver-rejected": 0,
+        "numerical-plan-rejected": 0,
+        "execution-error": 0
+      },
+      "candidateOnlyFailureIds": [],
+      "resolvedBaselineFailureIds": [
+        "boundary-colored-2203",
+        "boundary-colored-2213",
+        "boundary-dropout-2203",
+        "boundary-dropout-2213",
+        "boundary-stuck-2203",
+        "boundary-stuck-2213",
+        "boundary-jitter-2203",
+        "boundary-jitter-2213",
+        "boundary-torque_speed-2203",
+        "boundary-torque_speed-2213",
+        "boundary-thermal-2203",
+        "boundary-thermal-2213",
+        "boundary-glitch-2203",
+        "boundary-glitch-2213",
+        "boundary-nonlinear-2203",
+        "boundary-nonlinear-2213"
+      ],
+      "bothCompletedPairs": 0,
+      "excludedFromFullDurationComparison": 16,
+      "bothCompletedTrackingMseRatio": null
+    }
+  },
+  "bothCompletedPrimaryAggregateRmse_m": {
+    "original": 1.5049421853052503,
+    "dare": 0.3755300581718206
+  },
+  "numericalReference": {
+    "cases": 4,
+    "maxMatrixAbsoluteError": 3.4906406654044986e-09,
+    "maxFirstActionError": 5.812364811674797e-09,
+    "passed": true
+  },
+  "browser": {
+    "terminalOptionActualBrowserPassed": true,
+    "terminalProbeAndComparisonPassed": true,
+    "terminalConstructorFailureStopped": true,
+    "pageErrors": [],
+    "normalUiWithoutShimPassed": true,
+    "webmcpNativeAvailable": false
+  },
+  "defaultChanged": false,
+  "hardwareAdmission": "NOT_EVALUATED",
+  "independentApproval": false,
+  "publication": "This receipt validates local implementation, not merge/deployment state",
+  "history": "Initial browser test reproduced missing selector, then construction-failure handling defect. Final combined suite passed after both fixes. Frozen scenarios and solver acceptance thresholds unchanged."
+}

@@ -17,7 +17,7 @@
     "primalResidual": 0,
     "stateConstrained": false,
     "converged": true,
-    "solveMs": 1,
+    "solveMs": 0.4000000059604645,
     "iterations": 1,
     "horizon": 30,
     "cost": 0.481777268141887
@@ -33,12 +33,15 @@
   "browserQpParityPassed": true,
   "invalidCommandStoppedBeforePlant": true,
   "missingWasmFailClosed": true,
+  "terminalOptionActualBrowserPassed": true,
+  "terminalConstructorFailureStopped": true,
+  "terminalProbeAndComparisonPassed": true,
   "comparisonRejectionIsolated": true,
   "timing": {
     "sourceStateTime": 1.18,
     "postStateTime": 1.2,
-    "solveToApplyMs": 0.5999999940395355,
-    "computeMs": 0.7000000178813934,
+    "solveToApplyMs": 0.800000011920929,
+    "computeMs": 1.0999999940395355,
     "deadlineMs": 20,
     "missedComputeDeadline": false,
     "scope": "synchronous simulated loop; not hardware timing"
