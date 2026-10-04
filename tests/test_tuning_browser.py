@@ -25,11 +25,16 @@ try:
     after=page.evaluate('window.controlLab.getState()')
     for key in ['controller','observer','t','truth','estimate','terminalCost']:assert before[key]==after[key],key
     page.locator('#tuningDetails').screenshot(path=str(ROOT/'evidence/sequential_tuning_browser.png'))
-    # A missing receipt must clear stale table and fail visibly.
+    # A completed rejection/partial comparison must not become fake 0/12 successes.
+    for mode in ['completed-no-admissible','completed-partial-admissibility']:
+        page.route('**/evidence/sequential_tuning.json',lambda route,mode=mode:route.fulfill(content_type='application/json',body=json.dumps({'experimentValid':True,'mode':mode,'campaigns':[]})))
+        page.click('#loadTuningComparison');page.wait_for_function('document.querySelector("#tuningComparisonStatus").dataset.state==="error"')
+        assert page.locator('#tuningComparison tbody tr').count()==0
+        page.unroute('**/evidence/sequential_tuning.json')
     page.route('**/evidence/sequential_tuning.json',lambda route:route.fulfill(status=404,body='not found'))
     page.click('#loadTuningComparison');page.wait_for_function('document.querySelector("#tuningComparisonStatus").dataset.state==="error"')
     assert page.locator('#tuningComparison tbody tr').count()==0
     assert not errors,errors
-    out={'schema':'cartpole-sequential-tuning-browser/v1','passed':True,'offlineReceiptLabel':True,'equalAndExtraBudgetLabels':True,'mainRuntimeUnchanged':True,'missingReceiptClearsStaleResult':True,'pageErrors':errors,'publicDeployment':False}
+    out={'schema':'cartpole-sequential-tuning-browser/v1','passed':True,'offlineReceiptLabel':True,'equalAndExtraBudgetLabels':True,'mainRuntimeUnchanged':True,'missingReceiptClearsStaleResult':True,'noResultNotRenderedAsZeroSuccess':True,'pageErrors':errors,'publicDeployment':False}
     (ROOT/'evidence/sequential_tuning_browser.json').write_text(json.dumps(out,indent=2)+'\n');b.close();print(json.dumps(out))
 finally:server.shutdown()

@@ -46,7 +46,15 @@ def _sha(path):
 
 
 def complete_no_result(out, report_path, report):
-    """Mark only a fully written, valid no-admissible result as safely reusable."""
+    """Keep incomplete comparisons out of legacy success tables; mark safe retries."""
+    campaigns=report.get('campaigns',[])
+    if campaigns and any(c['selection']['configuration'] is None for c in campaigns):
+        # Legacy tables accept only mode=frozen-full and would otherwise coerce
+        # null success counts to zero. The typed JSON remains the result owner.
+        report['executionMode']=report['mode']
+        report['mode']='completed-no-admissible' if all(c['selection']['configuration'] is None for c in campaigns) else 'completed-partial-admissibility'
+        report['comparisonAvailable']=False
+        report_path.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     if not _valid_no_result(report):
         return
     lock_path=out/'recommendations-locked.json'
