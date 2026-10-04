@@ -11,6 +11,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -23,6 +25,11 @@ jobs:
       - run: npm ci
       - run: pip install -r requirements-native.txt playwright==1.61.0
       - run: python -m playwright install --with-deps chromium
+      - name: No-admissible finalization and retry regression
+        run: |
+          python -m venv test-results/venv-finalization
+          test-results/venv-finalization/bin/pip install -r requirements-tuning.txt
+          test-results/venv-finalization/bin/python tests/test_tuning_finalization.py
       - name: Source, assets and regression contracts
         run: npm run check
       - name: Actual official MuJoCo WASM and canonical MJCF
@@ -35,7 +42,6 @@ jobs:
         run: python tests/test_terminal_reference.py && npm run validate:terminal
       - name: Real browser network, solver and failure paths
         run: npm run test:browser
-
       - name: N-chain model, native reference, frozen failure screen and browser
         run: |
           python tests/test_chain_model.py
@@ -50,7 +56,6 @@ jobs:
           node scripts/validate_chain.mjs --prestabilized --ekf
           node scripts/probe_chain_local.mjs
           npm run test:chain-browser
-
       - name: Sensor calibration causal lesson and same-data replay
         run: |
           npm run validate:calibration
@@ -59,13 +64,11 @@ jobs:
           npm run validate:process
           python tests/test_process_reference.py
           python tests/test_process_browser.py
-
       - name: Common task design, independent ranking and actual application
         run: |
           npm run validate:design
           python tests/test_design_reference.py
           python tests/test_design_browser.py
-
       - name: Recorded sequential-tuner evidence and offline-results UI
         run: |
           python tests/test_tuning_receipt.py
