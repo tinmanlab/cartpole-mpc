@@ -1,0 +1,28 @@
+<mujoco model="cartpole-control-observer-uniform-rod">
+  <!-- Local explicit asset matching the lab's uniform-rod equations, not a Gymnasium/dm_control asset.
+       SI units. qpos=[x,theta], qvel=[v,omega], theta=0 is upright, +theta tips toward +x.
+       l=0.5 is COM distance; full rod length=1.0; COM Iyy=mp*l*l/3.
+       A constrained slider, not rolling wheels. Rail is a control/failure boundary, not a hidden collision.
+       All displayed geometry is non-colliding. Inertia is explicit, never inferred from decorative shapes. -->
+  <compiler angle="radian" inertiafromgeom="false"/>
+  <option timestep="0.005" gravity="0 0 -9.8" integrator="Euler"/>
+  <default><joint damping="0" armature="0" frictionloss="0"/><geom contype="0" conaffinity="0"/></default>
+  <worldbody>
+    <geom name="rail" type="box" pos="0 0 0.04" size="2.4 0.12 0.02" rgba="0.55 0.6 0.65 1"/>
+    <body name="cart" pos="0 0 0.12">
+      <joint name="cart_slide" type="slide" axis="1 0 0" limited="false"/>
+      <inertial pos="0 0 0" mass="1" diaginertia="0.01 0.01 0.01"/>
+      <geom name="cart_visual" type="box" size="0.15 0.1 0.06" rgba="0.18 0.46 0.75 1"/>
+      <body name="pole" pos="0 0 0.06">
+        <joint name="pole_hinge" type="hinge" axis="0 1 0" limited="false"/>
+        <inertial pos="0 0 0.5" mass="0.1" diaginertia="0.008333333333333333 0.008333333333333333 0.00000001"/>
+        <geom name="pole_visual" type="capsule" fromto="0 0 0 0 0 1" size="0.015" rgba="0.18 0.46 0.75 1"/>
+        <site name="pivot" pos="0 0 0" size="0.02"/>
+        <site name="pole_tip" pos="0 0 1" size="0.02"/>
+      </body>
+    </body>
+  </worldbody>
+  <!-- Force limits are explicit in the command/solver contract. Keeping this motor unclipped
+       avoids accidentally differentiating a second hidden saturation in the nominal model. -->
+  <actuator><motor name="cart_force" joint="cart_slide" gear="1" ctrllimited="false"/></actuator>
+</mujoco>

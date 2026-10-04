@@ -15,13 +15,13 @@ const CONTROL_LAB_TOPICS = {
   "<div class='section'><h3>MPC로 가는 다리</h3><p>LQR의 quadratic cost와 Riccati recursion은 MPC/NMPC의 local quadratic subproblem에서도 다시 나온다.</p></div>"
  ].join("")},
  linear_mpc:{group:"Controller",title:"Linear MPC — LQR에 horizon과 입력 제약을 추가",lead:"upright 주변의 discrete A,B로 N-step 미래를 예측하고, |u|<=u_max box constraint 안에서 control sequence를 매 tick 다시 최적화한다.",chips:["finite horizon","receding horizon","box-constrained input"],runtime:{controller:"linear_mpc"},body:[
-  "<div class='section'><h3>현재 실제 구현</h3><p>N=30. 같은 shared plant의 upright discrete Jacobian A,B를 사용하고, warm-start한 control sequence를 projected gradient + backtracking으로 box constraint 안에서 직접 최적화한다. 첫 control만 적용한 뒤 다음 tick에 다시 푼다.</p></div>",
-  "<div class='section'><h3>문제</h3><div class='math'>min sum(k=0..N-1) [x_k^T Q x_k + R u_k^2] + x_N^T Q_f x_N\\ns.t. x_(k+1)=A x_k+B u_k\\n     |u_k| <= u_max\\n\\nproject -> backtracking -> apply u_0 -> warm start</div></div>",
+  "<div class='section'><h3>현재 실제 구현</h3><p>N=30. 공식 MuJoCo WASM plant의 upright discrete Jacobian A,B를 사용하고, 입력 제약을 포함한 QP를 검증된 quadprog Goldfarb–Idnani solver로 푼다. 유한성·제약 위반·KKT 잔차를 검사한 뒤 첫 control만 적용하고 다음 tick에 다시 푼다. 이 solver는 이전 해를 warm start로 사용하지 않는다.</p></div>",
+  "<div class='section'><h3>문제</h3><div class='math'>min sum(k=0..N-1) [x_k^T Q x_k + R u_k^2] + x_N^T Q_f x_N\\ns.t. x_(k+1)=A x_k+B u_k\\n     |u_k| <= u_max\\n\\nassemble QP -> quadprog -> check residuals -> apply u_0 -> repeat</div></div>",
   "<div class='section'><h3>한계</h3><p>horizon 전체가 하나의 upright 선형모델이다. 실제 nonlinear plant가 멀어지면 model error가 커진다.</p></div>"
  ].join("")},
  state_mpc:{group:"Controller",title:"State-constrained MPC — input bound만으로는 부족하다",lead:"MPC의 장점은 미래를 보는 것뿐 아니라 state/path constraint를 문제 안에 넣는 데 있다. 현재 browser mode는 cart position에 soft penalty를 넣어 input-only MPC와 차이를 보여준다.",chips:["state constraint","soft penalty","feasibility"],runtime:{controller:"state_mpc"},body:[
   "<div class='section'><h3>입력 제약과 상태 제약은 다르다</h3><div class='math'>input: |u_k| <= u_max\nstate: |p_k| <= p_max\npath: g(x_k,u_k) <= 0</div><p>pole을 세우는 동안 cart가 트랙 끝으로 달아나는 해는 input constraint만으로는 합법일 수 있다.</p></div>",
-  "<div class='section'><h3>현재 구현</h3><p>Linear MPC와 같은 horizon/model을 쓰되 |p|가 soft boundary를 넘으면 quadratic penalty를 추가한다. 이것은 hard constrained QP가 아니며 feasibility guarantee를 주장하지 않는다.</p></div>",
+  "<div class='section'><h3>현재 구현</h3><p>state_mpc는 |p|가 soft boundary를 넘으면 quadratic penalty를 추가하는 비교용 구현이다. 반면 controller 선택의 Constrained MPC · hard rail은 |p_k|<=2.4 m를 quadprog의 선형 제약에 직접 넣는다. 후자는 예측 상태의 제약을 검사하지만, 잡음·모델 오차가 있는 실제 상태의 안전이나 recursive feasibility까지 보장하지 않는다.</p></div>",
   "<div class='section'><h3>Humanoid로 확장</h3><p>joint/velocity/torque limits, torque-speed envelope, friction cone, unilateral contact, CoP/support, collision, swing clearance는 가능한 한 명시적 constraint로 모델링한다. penalty weight로 전부 숨기면 failure mode를 해석하기 어렵다.</p></div>"
  ].join("")},
  ltv_mpc:{group:"Controller",title:"LTV MPC / SQP-RTI — 매 tick 현재 trajectory 주변을 다시 선형화",lead:"고정 upright A,B를 계속 쓰는 Linear MPC와 nonlinear OCP를 여러 번 반복해 푸는 NMPC 사이의 핵심 연결고리다. 현재 warm-start trajectory에서 A_k,B_k를 다시 만들고 한 번의 local quadratic update만 수행한다.",chips:["successive linearization","time-varying A_k,B_k","real-time iteration"],runtime:{controller:"ltv_mpc"},body:[

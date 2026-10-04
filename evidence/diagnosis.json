@@ -1,16 +1,16 @@
 {
   "schema": "cartpole-diagnosis/v1",
   "sourceSchema": "cartpole-commissioning-evidence/v1",
-  "sourceGeneratedAt": "2026-10-04T01:00:35.444Z",
+  "sourceGeneratedAt": "2026-10-04T02:17:21.699Z",
   "findings": [
     {
       "id": "D01_MODEL_ID",
       "severity": "high",
       "status": "PASS",
       "evidence": {
-        "heldoutNominal": 0.00005379310103578318,
-        "heldoutIdentified": 8.085694042467685e-9,
-        "ratio": 0.0001503109857356816,
+        "heldoutNominal": 0.00005395236555967369,
+        "heldoutIdentified": 8.144075295007815e-9,
+        "ratio": 0.00015094936450933016,
         "identifiability": {
           "parameterOrder": [
             "mc",
@@ -19,38 +19,38 @@
             "friction"
           ],
           "sensitivityNorms": [
-            0.5021945125388313,
-            0.19327876058958374,
-            0.9977851021488098,
-            0.12551417515172852
+            0.5016847181446927,
+            0.19302109273012227,
+            0.9969595802760778,
+            0.12673079007699362
           ],
           "correlation": [
             [
+              0.9999999999999998,
+              0.6159312215896189,
+              0.5657830071407051,
+              0.5442743167982648
+            ],
+            [
+              0.6159312215896189,
+              1.0000000000000002,
+              0.14524258681253105,
+              0.24463482968740044
+            ],
+            [
+              0.5657830071407051,
+              0.14524258681253105,
               1,
-              0.6161736718284396,
-              0.5656931101934998,
-              0.5301413784390707
+              0.4086255735618639
             ],
             [
-              0.6161736718284396,
-              1,
-              0.14559634986015926,
-              0.2356890744202075
-            ],
-            [
-              0.5656931101934998,
-              0.14559634986015926,
-              0.9999999999999999,
-              0.4015645415875453
-            ],
-            [
-              0.5301413784390707,
-              0.2356890744202075,
-              0.4015645415875453,
-              1.0000000000000002
+              0.5442743167982648,
+              0.24463482968740044,
+              0.4086255735618639,
+              1
             ]
           ],
-          "maxAbsOffDiagonalCorrelation": 0.6161736718284396,
+          "maxAbsOffDiagonalCorrelation": 0.6159312215896189,
           "warning": null
         }
       },
@@ -83,16 +83,16 @@
       "status": "PASS",
       "evidence": {
         "train": {
-          "baseline": 0.08891772160006794,
-          "calibrated": 0.07275030685304475
+          "baseline": 0.08891459129204707,
+          "calibrated": 0.07275366259155544
         },
         "validation": {
-          "baseline": 0.071915524401301,
-          "calibrated": 0.051378164554325666
+          "baseline": 0.07191171069961652,
+          "calibrated": 0.05138032162957243
         },
         "test": {
-          "baseline": 0.0731564741050977,
-          "calibrated": 0.05196923660698259
+          "baseline": 0.07311547440574111,
+          "calibrated": 0.05196752076873659
         }
       },
       "interpretation": "estimator calibration improves held-out validation and test",
@@ -104,16 +104,16 @@
       "status": "REJECT",
       "evidence": {
         "train": {
-          "baseline": 0.8868891632693037,
-          "tuned": 0.7114596883724934
+          "baseline": 0.8862145766185134,
+          "tuned": 0.7078313420922461
         },
         "validation": {
-          "baseline": 0.7172536459669311,
-          "tuned": 0.736419862896348
+          "baseline": 0.7175337924666713,
+          "tuned": 0.7482751750167762
         },
         "test": {
-          "baseline": 0.6676952769464644,
-          "tuned": 0.7073860090814227
+          "baseline": 0.6678140247727318,
+          "tuned": 0.7124266997960251
         }
       },
       "interpretation": "training improvement does not generalize to held-out closed-loop conditions",
@@ -125,16 +125,16 @@
       "status": "REJECT",
       "evidence": {
         "train": {
-          "baseline": 0.50160883468717,
-          "candidate": 0.4015556602515205
+          "baseline": 0.5016510521271139,
+          "candidate": 0.40156798241020497
         },
         "validation": {
-          "baseline": 0.6731652229402006,
-          "candidate": 0.5266411433982687
+          "baseline": 0.6734304226259219,
+          "candidate": 0.5267205184274665
         },
         "test": {
-          "baseline": 0.752373331616337,
-          "candidate": 0.9456855679972673
+          "baseline": 0.7526690773195387,
+          "candidate": 0.9444025623086433
         }
       },
       "interpretation": "joint candidate overfits or degrades held-out closed-loop conditions",
@@ -179,16 +179,16 @@
         },
         "scores": {
           "train": {
-            "baseline": 1.5449506257060983,
-            "tuned": 0.9835013766956929
+            "baseline": 1.5439611756354301,
+            "tuned": 0.8247021784118388
           },
           "validation": {
-            "baseline": 1.7769200598719868,
-            "tuned": 1.1852410038723624
+            "baseline": 1.7756528919132093,
+            "tuned": 1.0121693582259537
           },
           "test": {
-            "baseline": 1.5799794580806092,
-            "tuned": 1.3552398697011117
+            "baseline": 1.5790232725506672,
+            "tuned": 1.2480612936430129
           }
         }
       },
@@ -205,141 +205,141 @@
             "controller": "lqr",
             "thetaDeg": 2.864788975654116,
             "failures": 0,
-            "maxPosition": 0.09632639077389832,
-            "rmsControl": 0.2770750730763402
+            "maxPosition": 0.09632639077389575,
+            "rmsControl": 0.277075073076345
           },
           {
             "controller": "lqr",
             "thetaDeg": 8.594366926962348,
             "failures": 0,
-            "maxPosition": 0.29226551325712186,
-            "rmsControl": 0.8373993354636832
+            "maxPosition": 0.2922655132571154,
+            "rmsControl": 0.837399335463698
           },
           {
             "controller": "lqr",
             "thetaDeg": 17.188733853924695,
             "failures": 0,
-            "maxPosition": 0.6442750368762015,
-            "rmsControl": 1.6491776954189536
+            "maxPosition": 0.6442750368761895,
+            "rmsControl": 1.6491776954189763
           },
           {
             "controller": "lqr",
             "thetaDeg": 25.783100780887047,
             "failures": 0,
-            "maxPosition": 1.2235359557386323,
-            "rmsControl": 2.540523253743153
+            "maxPosition": 1.2235359557386154,
+            "rmsControl": 2.5405232537431917
           },
           {
             "controller": "linear_mpc",
             "thetaDeg": 2.864788975654116,
             "failures": 0,
-            "maxPosition": 0.6018525592375804,
-            "rmsControl": 0.18842501321176364
+            "maxPosition": 0.5978960279307759,
+            "rmsControl": 0.18862904879401202
           },
           {
             "controller": "linear_mpc",
             "thetaDeg": 8.594366926962348,
             "failures": 0,
-            "maxPosition": 1.816414499052344,
-            "rmsControl": 0.5686462309511793
+            "maxPosition": 1.811045366055166,
+            "rmsControl": 0.5690978869578852
           },
           {
             "controller": "linear_mpc",
             "thetaDeg": 17.188733853924695,
             "failures": 3,
-            "maxPosition": 2.411188438449495,
-            "rmsControl": 1.5977830613416792
+            "maxPosition": 2.4085496804034245,
+            "rmsControl": 1.5987176699321937
           },
           {
             "controller": "linear_mpc",
             "thetaDeg": 25.783100780887047,
             "failures": 3,
-            "maxPosition": 2.41233478282204,
-            "rmsControl": 3.2232407328869823
+            "maxPosition": 2.411935730747476,
+            "rmsControl": 3.223481124612791
           },
           {
             "controller": "state_mpc",
             "thetaDeg": 2.864788975654116,
             "failures": 0,
-            "maxPosition": 0.5988617544679773,
+            "maxPosition": 0.5988617544679762,
             "rmsControl": 0.18851238144658589
           },
           {
             "controller": "state_mpc",
             "thetaDeg": 8.594366926962348,
             "failures": 0,
-            "maxPosition": 1.7217963255534385,
-            "rmsControl": 0.5814495489796848
+            "maxPosition": 1.7217963255534332,
+            "rmsControl": 0.5814495489796843
           },
           {
             "controller": "state_mpc",
             "thetaDeg": 17.188733853924695,
             "failures": 3,
-            "maxPosition": 2.4146891406607196,
-            "rmsControl": 1.5767575534009943
+            "maxPosition": 2.414689140660713,
+            "rmsControl": 1.5767575534009939
           },
           {
             "controller": "state_mpc",
             "thetaDeg": 25.783100780887047,
             "failures": 3,
-            "maxPosition": 2.40184934728423,
-            "rmsControl": 3.150111885157562
+            "maxPosition": 2.4018493472842293,
+            "rmsControl": 3.1501118851575645
           },
           {
             "controller": "ltv_mpc",
             "thetaDeg": 2.864788975654116,
             "failures": 0,
-            "maxPosition": 0.4311067255321898,
-            "rmsControl": 0.1991271120465142
+            "maxPosition": 0.43110672553955326,
+            "rmsControl": 0.19912711204611114
           },
           {
             "controller": "ltv_mpc",
             "thetaDeg": 8.594366926962348,
             "failures": 0,
-            "maxPosition": 1.3068344997117132,
-            "rmsControl": 0.6012151316087995
+            "maxPosition": 1.3068344998532873,
+            "rmsControl": 0.601215131608879
           },
           {
             "controller": "ltv_mpc",
             "thetaDeg": 17.188733853924695,
             "failures": 3,
-            "maxPosition": 2.4063490673274694,
-            "rmsControl": 1.453572539685197
+            "maxPosition": 2.4063490669666776,
+            "rmsControl": 1.4535725397459125
           },
           {
             "controller": "ltv_mpc",
             "thetaDeg": 25.783100780887047,
             "failures": 3,
-            "maxPosition": 2.4231916382772942,
-            "rmsControl": 3.2030030829500116
+            "maxPosition": 2.42319163824971,
+            "rmsControl": 3.2030030829736504
           },
           {
             "controller": "full_nmpc",
             "thetaDeg": 2.864788975654116,
             "failures": 0,
-            "maxPosition": 0.3655030693459113,
-            "rmsControl": 0.2037644837081147
+            "maxPosition": 0.3655030693260179,
+            "rmsControl": 0.2037644837086271
           },
           {
             "controller": "full_nmpc",
             "thetaDeg": 8.594366926962348,
             "failures": 0,
-            "maxPosition": 1.1090714970472653,
-            "rmsControl": 0.6146407807326754
+            "maxPosition": 1.1090714972695628,
+            "rmsControl": 0.6146407807281665
           },
           {
             "controller": "full_nmpc",
             "thetaDeg": 17.188733853924695,
             "failures": 0,
-            "maxPosition": 2.333066550247045,
-            "rmsControl": 1.2362029771317387
+            "maxPosition": 2.3330665506339465,
+            "rmsControl": 1.2362029771400596
           },
           {
             "controller": "full_nmpc",
             "thetaDeg": 25.783100780887047,
             "failures": 3,
-            "maxPosition": 2.41668550896816,
-            "rmsControl": 3.1894931740302526
+            "maxPosition": 2.416685508990979,
+            "rmsControl": 3.1894931739469414
           }
         ]
       },
@@ -358,12 +358,12 @@
             "thetaDeg": 20.05352282957881,
             "failures": 3,
             "rmseState": 0,
-            "maxPosition": 2.404199567831534,
-            "rmsControl": 1.8979624250505582,
-            "rmsCommandMismatch": 1.183881636852404e-18,
-            "meanSolveMs": 1.7408554086760144,
-            "p95SolveMs": 2.4954943333383803,
-            "deadlineMissRate": 0
+            "maxPosition": 2.404199567933954,
+            "rmsControl": 1.8979624250187965,
+            "rmsCommandMismatch": 1.2840999274274604e-18,
+            "meanSolveMs": 13.707731735159548,
+            "p95SolveMs": 17.48022700000244,
+            "deadlineMissRate": 0.0228310502283105
           },
           {
             "controller": "supervised_nmpc",
@@ -371,12 +371,12 @@
             "thetaDeg": 20.05352282957881,
             "failures": 0,
             "rmseState": 0,
-            "maxPosition": 2.134739327525851,
-            "rmsControl": 2.135803154939171,
-            "rmsCommandMismatch": 8.108349405344795e-17,
-            "meanSolveMs": 1.567218725555641,
-            "p95SolveMs": 2.306231000004724,
-            "deadlineMissRate": 0
+            "maxPosition": 2.134739327618175,
+            "rmsControl": 2.1358031550341,
+            "rmsCommandMismatch": 1.1749838645657714e-16,
+            "meanSolveMs": 14.120238610000492,
+            "p95SolveMs": 18.845911333318025,
+            "deadlineMissRate": 0.044444444444444446
           },
           {
             "controller": "full_nmpc",
@@ -384,12 +384,12 @@
             "thetaDeg": 25.783100780887047,
             "failures": 3,
             "rmseState": 0,
-            "maxPosition": 2.41668550896816,
-            "rmsControl": 3.1894931740302526,
+            "maxPosition": 2.416685508990979,
+            "rmsControl": 3.1894931739469414,
             "rmsCommandMismatch": 3.808212772546752e-19,
-            "meanSolveMs": 1.552263975903288,
-            "p95SolveMs": 2.065157333330717,
-            "deadlineMissRate": 0
+            "meanSolveMs": 14.187039413655844,
+            "p95SolveMs": 18.572558666637633,
+            "deadlineMissRate": 0.04819277108433736
           },
           {
             "controller": "supervised_nmpc",
@@ -397,12 +397,12 @@
             "thetaDeg": 25.783100780887047,
             "failures": 0,
             "rmseState": 0,
-            "maxPosition": 2.135651516231737,
-            "rmsControl": 2.7357703041555985,
-            "rmsCommandMismatch": 8.503690445301721e-17,
-            "meanSolveMs": 1.6246898611111424,
-            "p95SolveMs": 2.249771333338382,
-            "deadlineMissRate": 0
+            "maxPosition": 2.1356515160248644,
+            "rmsControl": 2.735770303861796,
+            "rmsCommandMismatch": 9.678784144396874e-17,
+            "meanSolveMs": 16.27793108222146,
+            "p95SolveMs": 23.94006100000115,
+            "deadlineMissRate": 0.1711111111111111
           },
           {
             "controller": "full_nmpc",
@@ -410,12 +410,12 @@
             "thetaDeg": 28.64788975654116,
             "failures": 3,
             "rmseState": 0,
-            "maxPosition": 2.4176367322508225,
-            "rmsControl": 3.953808240302589,
-            "rmsCommandMismatch": 0,
-            "meanSolveMs": 1.540658154230494,
-            "p95SolveMs": 2.1950123333372176,
-            "deadlineMissRate": 0
+            "maxPosition": 2.417636732418616,
+            "rmsControl": 3.9538082402352486,
+            "rmsCommandMismatch": 1.2715812190315495e-18,
+            "meanSolveMs": 14.520865199006677,
+            "p95SolveMs": 19.326321000000462,
+            "deadlineMissRate": 0.04975124378109452
           },
           {
             "controller": "supervised_nmpc",
@@ -423,12 +423,12 @@
             "thetaDeg": 28.64788975654116,
             "failures": 0,
             "rmseState": 0,
-            "maxPosition": 2.131400866204479,
-            "rmsControl": 2.9825036616985146,
-            "rmsCommandMismatch": 8.108323213455614e-17,
-            "meanSolveMs": 1.5195944322218162,
-            "p95SolveMs": 2.185573000004903,
-            "deadlineMissRate": 0
+            "maxPosition": 2.1314008662080743,
+            "rmsControl": 2.9825036615682854,
+            "rmsCommandMismatch": 1.0571921085491461e-16,
+            "meanSolveMs": 14.8137995188898,
+            "p95SolveMs": 20.03095133334864,
+            "deadlineMissRate": 0.0588888888888889
           }
         ]
       },
@@ -445,49 +445,49 @@
             "controller": "linear_mpc",
             "scenario": "model",
             "failures": 0,
-            "rmseState": 0.06400201729722563,
-            "maxPosition": 1.2683590632465502,
-            "rmsControl": 1.0393985447155183,
-            "rmsCommandMismatch": 4.136394060587227e-17,
-            "meanSolveMs": 3.4787949272728205,
-            "p95SolveMs": 4.8832019999972545,
+            "rmseState": 0.06400304330633891,
+            "maxPosition": 1.2671235057668973,
+            "rmsControl": 1.040589304823463,
+            "rmsCommandMismatch": 3.3824110071731966e-17,
+            "meanSolveMs": 0.27424419242421266,
+            "p95SolveMs": 0.6279133333397718,
             "deadlineMissRate": 0
           },
           {
             "controller": "scenario_mpc",
             "scenario": "model",
             "failures": 1,
-            "rmseState": 0.0655396206863008,
-            "maxPosition": 1.9838547799242303,
-            "rmsControl": 1.2858342740934185,
-            "rmsCommandMismatch": 3.586607758426901e-17,
-            "meanSolveMs": 21.121158965367588,
-            "p95SolveMs": 39.53926700000496,
-            "deadlineMissRate": 0.38246753246753246
+            "rmseState": 0.06553883883660458,
+            "maxPosition": 1.9828532096417952,
+            "rmsControl": 1.2927330350866235,
+            "rmsCommandMismatch": 4.22222247591713e-17,
+            "meanSolveMs": 24.170561911254108,
+            "p95SolveMs": 47.376560333340116,
+            "deadlineMissRate": 0.6186868686868686
           },
           {
             "controller": "linear_mpc",
             "scenario": "sim2real",
             "failures": 1,
-            "rmseState": 0.10066528708408502,
-            "maxPosition": 1.6629145976091442,
-            "rmsControl": 1.5558735742612624,
-            "rmsCommandMismatch": 0.865608891782203,
-            "meanSolveMs": 3.4893963445624188,
-            "p95SolveMs": 4.731081666677103,
+            "rmseState": 0.10065387855565051,
+            "maxPosition": 1.6614305836724739,
+            "rmsControl": 1.5568680814566387,
+            "rmsCommandMismatch": 0.8684070186799885,
+            "meanSolveMs": 0.3181778683374153,
+            "p95SolveMs": 0.7382506666472182,
             "deadlineMissRate": 0
           },
           {
             "controller": "scenario_mpc",
             "scenario": "sim2real",
             "failures": 2,
-            "rmseState": 0.1069678243991331,
-            "maxPosition": 2.0159368619701987,
-            "rmsControl": 1.8702620417177265,
-            "rmsCommandMismatch": 1.2199401284245124,
-            "meanSolveMs": 20.93395422922831,
-            "p95SolveMs": 40.59421233334191,
-            "deadlineMissRate": 0.35922659430122117
+            "rmseState": 0.10700092689302387,
+            "maxPosition": 2.0063738454326336,
+            "rmsControl": 1.856761237845923,
+            "rmsCommandMismatch": 1.186619071640395,
+            "meanSolveMs": 24.76197474628849,
+            "p95SolveMs": 46.25305466666274,
+            "deadlineMissRate": 0.6727272727272728
           }
         ]
       },
@@ -504,51 +504,51 @@
         "ranked": [
           {
             "scenario": "sim2real",
-            "deltaRmse": 0.06432376633257611,
-            "deltaMaxPosition": 0.11653902486111553,
-            "deltaCommandMismatch": 1.3622964650495761,
+            "deltaRmse": 0.06422149514787845,
+            "deltaMaxPosition": 0.11655263066448093,
+            "deltaCommandMismatch": 1.3612503707088015,
             "failures": 0
           },
           {
             "scenario": "sensor",
-            "deltaRmse": 0.04971556543408531,
-            "deltaMaxPosition": 0.09645598710893719,
-            "deltaCommandMismatch": 3.1023127904427275e-17,
+            "deltaRmse": 0.04971556543411102,
+            "deltaMaxPosition": 0.09645598710895906,
+            "deltaCommandMismatch": 2.5413238682096732e-17,
             "failures": 0
           },
           {
             "scenario": "glitch",
-            "deltaRmse": 0.15866641216723998,
-            "deltaMaxPosition": 0.09219453719399404,
-            "deltaCommandMismatch": 5.8977948615968106e-18,
+            "deltaRmse": 0.1586664121668468,
+            "deltaMaxPosition": 0.09219453718841744,
+            "deltaCommandMismatch": 5.022399772383682e-18,
             "failures": 0
           },
           {
             "scenario": "model",
-            "deltaRmse": 0.007899638897986373,
-            "deltaMaxPosition": 0.05523755788572182,
-            "deltaCommandMismatch": 5.133395900890822e-18,
+            "deltaRmse": 0.007906280727002918,
+            "deltaMaxPosition": 0.055354511298208925,
+            "deltaCommandMismatch": 1.9648908495972468e-17,
             "failures": 0
           },
           {
             "scenario": "actuator",
-            "deltaRmse": 0.011122170922310631,
-            "deltaMaxPosition": 0.03176273118013867,
-            "deltaCommandMismatch": 0.5662544899502394,
+            "deltaRmse": 0.01112217092228767,
+            "deltaMaxPosition": 0.03176273118083495,
+            "deltaCommandMismatch": 0.566254489950297,
             "failures": 0
           },
           {
             "scenario": "bias",
-            "deltaRmse": 0.00046087654294194036,
-            "deltaMaxPosition": 0.021432298968159874,
-            "deltaCommandMismatch": -4.580799533700981e-18,
+            "deltaRmse": 0.00046087654295921127,
+            "deltaMaxPosition": 0.02143229896762691,
+            "deltaCommandMismatch": 9.391135059903418e-20,
             "failures": 0
           },
           {
             "scenario": "latency",
-            "deltaRmse": 0.017732728589273508,
-            "deltaMaxPosition": -0.0031041055639768333,
-            "deltaCommandMismatch": 1.1407205908121836,
+            "deltaRmse": 0.01773272858934532,
+            "deltaMaxPosition": -0.003104105564540438,
+            "deltaCommandMismatch": 1.14072059081287,
             "failures": 0
           }
         ]
@@ -566,51 +566,51 @@
         "ranked": [
           {
             "scenario": "sim2real",
-            "deltaRmse": 0.04323961873141506,
-            "deltaMaxPosition": 0.6293950473407144,
-            "deltaCommandMismatch": 0.8725891576338402,
+            "deltaRmse": 0.04324256385703955,
+            "deltaMaxPosition": 0.6281974811353742,
+            "deltaCommandMismatch": 0.8723352719048117,
             "failures": 1
           },
           {
             "scenario": "sensor",
-            "deltaRmse": 0.04970949291564518,
-            "deltaMaxPosition": 0.4995644047928882,
-            "deltaCommandMismatch": 3.698394484147422e-17,
+            "deltaRmse": 0.04970949291533944,
+            "deltaMaxPosition": 0.4995644048865989,
+            "deltaCommandMismatch": 1.7120358435183934e-17,
             "failures": 0
           },
           {
             "scenario": "model",
-            "deltaRmse": 0.006718046796121285,
-            "deltaMaxPosition": 0.29326532531610483,
-            "deltaCommandMismatch": 8.834019662016967e-18,
+            "deltaRmse": 0.006720543742436656,
+            "deltaMaxPosition": 0.2937875223007792,
+            "deltaCommandMismatch": -1.076748445876375e-18,
             "failures": 0
           },
           {
             "scenario": "actuator",
-            "deltaRmse": 0.0089207075102333,
-            "deltaMaxPosition": 0.15052866813655408,
-            "deltaCommandMismatch": 0.4005665559749618,
+            "deltaRmse": 0.008920707509847955,
+            "deltaMaxPosition": 0.15052866817935973,
+            "deltaCommandMismatch": 0.40056655594916496,
             "failures": 0
           },
           {
             "scenario": "bias",
-            "deltaRmse": 0.0004600542638371896,
-            "deltaMaxPosition": 0.12583946344243324,
-            "deltaCommandMismatch": 5.0255310836295884e-18,
+            "deltaRmse": 0.0004600542635228716,
+            "deltaMaxPosition": 0.12583946350214836,
+            "deltaCommandMismatch": -1.3578133210579163e-18,
             "failures": 0
           },
           {
             "scenario": "latency",
-            "deltaRmse": 0.012301101876062814,
-            "deltaMaxPosition": 0.011812730850884412,
-            "deltaCommandMismatch": 0.7871610845913152,
+            "deltaRmse": 0.012301101875764907,
+            "deltaMaxPosition": 0.011812730925564563,
+            "deltaCommandMismatch": 0.7871610845889909,
             "failures": 0
           },
           {
             "scenario": "glitch",
-            "deltaRmse": 0.15866782783985872,
-            "deltaMaxPosition": -0.6343874201709965,
-            "deltaCommandMismatch": 9.046795757819122e-18,
+            "deltaRmse": 0.15866782783803385,
+            "deltaMaxPosition": -0.6343874201569113,
+            "deltaCommandMismatch": 7.221078180573322e-18,
             "failures": 0
           }
         ]
@@ -623,7 +623,7 @@
       "severity": "high",
       "status": "INFO",
       "evidence": {
-        "coloredLag1": 0.6704661675573519,
+        "coloredLag1": 0.6704661675558015,
         "dropoutStaleSamples": 351,
         "stuckFaultSamples": 315
       },
@@ -635,10 +635,10 @@
       "severity": "high",
       "status": "INFO",
       "evidence": {
-        "jitterCommandMismatch": 0.42027349124562163,
-        "torqueSpeedMinForce": 7.7542614797519605,
-        "thermalMinForce": 9.59382796705023,
-        "thermalState": 0.07384946053632205
+        "jitterCommandMismatch": 0.42027349124788993,
+        "torqueSpeedMinForce": 7.75426147974577,
+        "thermalMinForce": 9.593827967051078,
+        "thermalState": 0.07384946053616752
       },
       "interpretation": "transport jitter and state/history-dependent actuator authority are distinguishable from nominal control-cost tuning",
       "next": "Replace educational limits with measured torque-speed/current/voltage/thermal envelopes and synchronized command-vs-applied telemetry."
@@ -652,29 +652,29 @@
           {
             "substeps": 1,
             "dt": 0.02,
-            "rmseVs16": 0.038501723660804225,
-            "maxAbsErrorVs16": 0.10973009768259523
+            "rmseVs16": 0.03850172366080204,
+            "maxAbsErrorVs16": 0.10973009768258679
           },
           {
             "substeps": 2,
             "dt": 0.01,
-            "rmseVs16": 0.01808807928483295,
-            "maxAbsErrorVs16": 0.051175199356719325
+            "rmseVs16": 0.018088079284831724,
+            "maxAbsErrorVs16": 0.051175199356713996
           },
           {
             "substeps": 4,
             "dt": 0.005,
-            "rmseVs16": 0.007779681382395038,
-            "maxAbsErrorVs16": 0.021924659900517618
+            "rmseVs16": 0.007779681382395562,
+            "maxAbsErrorVs16": 0.021924659900511845
           },
           {
             "substeps": 8,
             "dt": 0.0025,
-            "rmseVs16": 0.002597982165011537,
-            "maxAbsErrorVs16": 0.00730690223172159
+            "rmseVs16": 0.002597982165012346,
+            "maxAbsErrorVs16": 0.007306902231718482
           }
         ],
-        "coarseToFineErrorRatio": 14.819856802455474
+        "coarseToFineErrorRatio": 14.819856802450019
       },
       "interpretation": "trajectory changes materially with integration refinement",
       "next": "Validate timestep/integrator convergence before retuning controller or estimator parameters."
@@ -686,11 +686,11 @@
       "evidence": {
         "linear": {
           "failures": 1,
-          "maxPosition": 2.2504430208105646
+          "maxPosition": 2.2484268033465478
         },
         "stateAware": {
           "failures": 0,
-          "maxPosition": 1.992208688617892
+          "maxPosition": 1.9929614385378167
         }
       },
       "interpretation": "compares an input-bounded MPC with a soft state-bound analogue; improvement indicates objective/constraint formulation matters independently of solver sophistication",
@@ -701,8 +701,8 @@
       "severity": "medium",
       "status": "INFO",
       "evidence": {
-        "latencyCommandMismatch": 0.8228081794200861,
-        "actuatorCommandMismatch": 0.41077108452046013
+        "latencyCommandMismatch": 0.8233445867978242,
+        "actuatorCommandMismatch": 0.4110719518072846
       },
       "interpretation": "nonzero command-to-applied mismatch separates transport/actuator failure from pure controller-state tracking error",
       "next": "On hardware log commanded and applied torque/current with synchronized timestamps."
@@ -710,13 +710,13 @@
     {
       "id": "D08_REALTIME",
       "severity": "high",
-      "status": "MEASURED_ONLY",
+      "status": "INVESTIGATE",
       "evidence": {
-        "meanSolverDeadlineMissRate": 0,
+        "meanSolverDeadlineMissRate": 0.007852564102564104,
         "measurementScope": "solver-call-only",
         "endToEndRealtimeVerified": false
       },
-      "interpretation": "no observed solver-call deadline miss; end-to-end real-time admission is not established",
+      "interpretation": "observed solver-call deadline violations require investigation",
       "next": "Measure sensor acquisition-to-actuator application age, stale-plan rejection, scheduler/concurrency and fallback behavior on the target processor; solver timing alone is insufficient."
     },
     {
@@ -729,41 +729,41 @@
             "controller": "lqr",
             "observer": "ekf",
             "failures": 0,
-            "rmseState": 0.07883495524784519,
-            "maxPosition": 0.32047341397321555,
-            "rmsCommandMismatch": 0.8703741887011239
+            "rmseState": 0.0788456407946884,
+            "maxPosition": 0.3206432613950631,
+            "rmsCommandMismatch": 0.870354490801143
           },
           {
             "controller": "linear_mpc",
             "observer": "ekf",
             "failures": 2,
-            "rmseState": 0.07889341768102892,
-            "maxPosition": 2.352511320221547,
-            "rmsCommandMismatch": 0.5405159158421268
+            "rmseState": 0.07889245582970032,
+            "maxPosition": 2.3505328232143707,
+            "rmsCommandMismatch": 0.54288792558938
           },
           {
             "controller": "state_mpc",
             "observer": "ekf",
             "failures": 1,
-            "rmseState": 0.07804707795490747,
-            "maxPosition": 2.166374522852067,
-            "rmsCommandMismatch": 0.6185000086676608
+            "rmseState": 0.07806559446288462,
+            "maxPosition": 2.1672505892743152,
+            "rmsCommandMismatch": 0.6185487290219637
           },
           {
             "controller": "ltv_mpc",
             "observer": "ekf",
             "failures": 1,
-            "rmseState": 0.07624319328044939,
-            "maxPosition": 2.0160012385992054,
-            "rmsCommandMismatch": 0.6104305210407287
+            "rmseState": 0.07624813302836873,
+            "maxPosition": 2.017329881788553,
+            "rmsCommandMismatch": 0.6104183741243102
           },
           {
             "controller": "full_nmpc",
             "observer": "ekf",
             "failures": 0,
-            "rmseState": 0.07582502974728611,
-            "maxPosition": 1.7989086437137238,
-            "rmsCommandMismatch": 0.6263119557910027
+            "rmseState": 0.07582893705092192,
+            "maxPosition": 1.7999696668061247,
+            "rmsCommandMismatch": 0.6262986716355045
           }
         ]
       },

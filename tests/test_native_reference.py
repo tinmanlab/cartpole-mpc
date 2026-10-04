@@ -15,6 +15,7 @@ import numpy as np
 from scipy import linalg, sparse, stats
 import osqp
 import mujoco
+from osqp_condensed_reference import solve_active_rail
 
 ROOT = Path(__file__).resolve().parents[1]
 # Fixed BEFORE measurement; never tune these tolerances to pass a receipt.
@@ -38,7 +39,8 @@ for(const p of [{mc:1,mp:.1,l:.5},{mc:1.25,mp:.08,l:.575},{mc:.8,mp:.14,l:.42}])
   dynamics.push({spec,x,u,acc:[r.drive.acc,r.drive.alpha]});}}
 const controls=Array.from({length:40},(_,k)=>.5*Math.sin(.17*k)),x0=[0,0,.03,0];
 const replay=[1,4,16,64].map(n=>{let x=x0.slice();return {n,X:controls.map(u=>{x=L.nonlinearStepSubsteps(x,u,s,null,n);return x;})};});
-console.log(JSON.stringify({spec:s,A:m.A,B:m.B,K:l.K,cases,dynamics,controls,x0,replay}));
+const h=new L.LinearMPCController(s,{positionLimit:.35});h.act([.3,.1,.08,-.05],0);const hard={U:h.lastControls,J:h.lastCost};
+console.log(JSON.stringify({spec:s,A:m.A,B:m.B,K:l.K,cases,hard,dynamics,controls,x0,replay}));
 """
     result = subprocess.run(['node', '-e', code], cwd=ROOT, capture_output=True,
                             text=True, check=True, timeout=30)
@@ -73,7 +75,7 @@ def solve_qp(c: dict, rail: float | None = None) -> dict:
     solver = osqp.OSQP()
     solver.setup(P=H, q=np.zeros(nx+N), A=G, l=lower, u=upper,
                  verbose=False, eps_abs=1e-9, eps_rel=1e-9,
-                 max_iter=20000, polishing=True)
+                 max_iter=200000, polishing=True, adaptive_rho_interval=25, adaptive_rho_tolerance=2, scaling=50)
     res = solver.solve(raise_error=False)
     out = dict(status=res.info.status, accepted=False, action=None,
                primal_residual=float(res.info.prim_res), dual_residual=float(res.info.dual_res))
@@ -117,6 +119,11 @@ def audit() -> dict:
         parity = ref['accepted'] and gap <= TOL['relative_cost_gap'] and action_gap <= TOL['first_action_gap']
         qp.append(dict(x0=c['x'],js_cost=c['J'],js_action=c['U'][0],js_converged=c['converged'],
                        native=ref,relative_cost_gap=gap,first_action_gap=action_gap,parity_pass=bool(parity)))
+    active_rail = solve_active_rail(f['cases'][0], rail=.35)
+    assert active_rail['accepted'], 'Native active-rail reference failed'
+    active_action_gap=abs(active_rail['action']-f['hard']['U'][0])
+    active_cost_gap=abs(active_rail['J']-f['hard']['J'])/max(1.,abs(active_rail['J']))
+    active_pass=active_action_gap<TOL['first_action_gap'] and active_cost_gap<TOL['relative_cost_gap']
     feasible = solve_qp(f['cases'][0], rail=2.4)
     infeasible = solve_qp({**f['cases'][0],'x':[2.5,0,0,0]}, rail=2.4)
     invalid = solve_qp({**f['cases'][0],'x':[float('nan'),0,0,0]}, rail=2.4)
@@ -137,15 +144,15 @@ def audit() -> dict:
         e=np.asarray(replay['X'])-ref; e[:,2]=(e[:,2]+np.pi)%(2*np.pi)-np.pi
         refinement.append(dict(substeps=replay['n'],rmse=float(np.sqrt(np.mean(e*e))),max_abs=float(np.max(np.abs(e)))))
     decreasing=all(b['rmse']<a['rmse'] for a,b in zip(refinement,refinement[1:]))
-    core = dare_error<TOL['dare'] and max(errors)<TOL['acceleration'] and decreasing and feasible['accepted'] and infeasible['status']=='primal infeasible' and infeasible['action'] is None and invalid['action'] is None and all(r['native']['accepted'] for r in qp)
-    paths=['src/engine.js','src/plant.js','src/commissioning.js','tests/test_native_reference.py']
+    core = dare_error<TOL['dare'] and max(errors)<TOL['acceleration'] and decreasing and feasible['accepted'] and infeasible['status']=='primal infeasible' and infeasible['action'] is None and invalid['action'] is None and all(r['native']['accepted'] for r in qp) and active_pass
+    paths=['src/engine.js','src/plant.js','src/qp.js','src/commissioning.js','src/mujoco_backend.mjs','assets/cartpole.xml','vendor/manifest.json','tests/test_native_reference.py','tests/osqp_condensed_reference.py']
     return dict(schema='cartpole-native-reference/v1',scope='offline numerical reference; not hardware commissioning',
       versions={k:importlib.metadata.version(k) for k in ['numpy','scipy','osqp','mujoco']},
       source_sha256={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in paths},
       fixture_sha256=hashlib.sha256(json.dumps(f,sort_keys=True).encode()).hexdigest(),tolerances=TOL,
       references={'osqp':'https://osqp.org/docs/examples/mpc.html','dare':'https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.solve_discrete_are.html','mujoco':'https://mujoco.readthedocs.io/en/stable/computation/index.html'},
       dare_max_abs_error=dare_error,chi_square_pointwise95={str(n):stats.chi2.ppf([.025,.975],n).tolist() for n in [2,4]},
-      qp_cases=qp,hard_rail_feasible=feasible,hard_rail_infeasible=infeasible,invalid_state_rejected=invalid,
+      qp_cases=qp,active_rail_parity=dict(limit=.35,action_gap=active_action_gap,relative_cost_gap=active_cost_gap,passed=bool(active_pass)),hard_rail_feasible=feasible,hard_rail_infeasible=infeasible,invalid_state_rejected=invalid,
       dynamics=dict(cases=len(errors),max_acceleration_error=max(errors),refinement=refinement,refinement_pass=decreasing),
       native_reference_pass=bool(core),browser_qp_parity_pass=all(r['parity_pass'] for r in qp),
       hardware_admission='NOT_EVALUATED')

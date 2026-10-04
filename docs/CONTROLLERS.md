@@ -7,7 +7,7 @@ This page distinguishes controller families by what mathematical structure they 
 All controller modes command the same nonlinear CartPole plant.
 
 - control period: 20 ms (50 Hz)
-- plant integration: four 5 ms semi-implicit steps per control period
+- plant integration: four 5 ms official MuJoCo WASM Euler steps per control period
 - input: horizontal force, clipped to the configured actuator limit
 - local failure boundary: cart track and a deliberately wider pole-angle envelope than the original PPO training task
 
@@ -45,15 +45,9 @@ Purpose: add a finite horizon and an explicit input box constraint.
               x_(k+1) = A x_k + B u_k
               |u_k| <= u_max
 
-The current controller uses:
-- N = 30,
-- a warm-started control sequence,
-- an analytic adjoint gradient of the linear-quadratic horizon cost,
-- projection onto the input box,
-- backtracking line search,
-- first-control-only receding-horizon application.
+The current controller uses N=30 and the pinned upstream `quadprog@1.6.1` Goldfarb–Idnani solver. The local adapter constructs the finite-horizon QP and checks finite values, primal feasibility, dual sign, complementarity and stationarity before applying the first control. The solver does not use the previous control sequence as a warm start; retaining a shifted sequence in the controller is not evidence of solver warm starting.
 
-This is a real box-constrained linear MPC optimization. It is intentionally small and dependency-free; it is not presented as a production QP solver.
+The `hard_mpc` variant adds world-coordinate rail bounds at every predicted stage. The `state_mpc` comparison remains a soft-penalty method. Their constraint semantics are different, and neither constitutes a robust safety guarantee for the true mismatched plant. Independent OSQP comparisons cover the unchanged four input-box cases and an active-rail case. See `MUJOCO_WASM_RUNTIME.md` for runtime and evidence boundaries.
 
 
 ## Scenario-risk MPC

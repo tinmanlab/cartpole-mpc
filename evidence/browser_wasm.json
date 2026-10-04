@@ -1,0 +1,47 @@
+{
+  "schema": "cartpole-browser-wasm/v1",
+  "physics": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "stepCalls": 2240,
+    "cachedModels": 1,
+    "integrator": "Euler",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "solver": {
+    "implementation": "quadprog-goldfarb-idnani",
+    "kktResidual": 4.440892098500626e-15,
+    "primalResidual": 0,
+    "stateConstrained": false,
+    "converged": true,
+    "solveMs": 1,
+    "iterations": 1,
+    "horizon": 30,
+    "cost": 0.481777268141887
+  },
+  "wasmHttp200": true,
+  "mjcfHttp200": true,
+  "legacyIntegratorForbidden": true,
+  "pageErrors": [],
+  "webmcpNativeAvailable": false,
+  "webmcpAdapterTest": "first page only uses an explicitly injected registration shim",
+  "normalUiWithoutShimPassed": true,
+  "hardRailControllerPassed": true,
+  "browserQpParityPassed": true,
+  "invalidCommandStoppedBeforePlant": true,
+  "missingWasmFailClosed": true,
+  "comparisonRejectionIsolated": true,
+  "timing": {
+    "sourceStateTime": 1.18,
+    "postStateTime": 1.2,
+    "solveToApplyMs": 0.5999999940395355,
+    "computeMs": 0.7000000178813934,
+    "deadlineMs": 20,
+    "missedComputeDeadline": false,
+    "scope": "synchronous simulated loop; not hardware timing"
+  },
+  "hardwareVerified": false
+}

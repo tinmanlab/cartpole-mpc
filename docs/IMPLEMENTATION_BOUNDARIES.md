@@ -6,7 +6,9 @@ This file prevents educational analogues from silently becoming capability claim
 |---|---|---|
 | PID | actual live cascaded CartPole feedback | humanoid low-level controller |
 | LQR | actual DARE/Riccati state feedback | constrained optimal controller |
-| Linear MPC | actual N=30 input-box-constrained receding-horizon optimization | production sparse QP MPC |
+| Linear MPC | actual N=30 input-box QP using upstream quadprog, checked against OSQP | OSQP running in the browser / universal robot MPC |
+| Constrained MPC | explicit input and nominal-prediction world-position constraints with KKT checks | robust true-plant invariant-set or hardware safety guarantee |
+| Browser plant | official MuJoCo WASM + canonical uniform-rod MJCF | arbitrary humanoid contact dynamics / calibrated hardware asset |
 | Scenario-risk MPC | actual finite 3-model ensemble objective with mean + worst-model risk term | tube/min-max/chance MPC guarantee |
 | State-aware Linear MPC | actual soft cart-position penalty in horizon | hard state-constrained MPC / feasibility guarantee |
 | LTV MPC / RTI bridge | actual one-update successive-linearization controller | acados/OCS2 SQP-RTI |
@@ -86,3 +88,5 @@ CartPole success does not establish:
 | Robust MPC beyond finite scenarios | taxonomy/coverage page | executable tube/min-max/chance MPC guarantee |
 
 The tuning algorithms are examples of the commissioning contract, not the recommended solver for every robot.
+
+Runtime engine, asset identity, exact model conventions and executable acceptance tests are owned by [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md).

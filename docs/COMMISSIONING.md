@@ -1,5 +1,6 @@
 # Commissioning: from a correct algorithm to a transferable robot stack
 
+Runtime/asset execution authority: [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md). Browser and commissioning use the official WASM engine; legacy equation tests are explicitly differential references.
 This repository separates algorithm correctness from commissioning.
 
 A controller or estimator can be mathematically correct and still fail on hardware because the model is wrong, covariance is miscalibrated, constraints are missing, latency or actuator dynamics are ignored, or parameters were tuned on one condition and do not generalize.

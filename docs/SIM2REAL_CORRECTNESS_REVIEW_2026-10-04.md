@@ -1,5 +1,7 @@
 # Sim2real correctness review — 2026-10-04
 
+> Historical first audit at `fc7a8e7`: its defects and numerical failures are retained as original evidence. The follow-up [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md) replaces the browser physics and QP optimizer and closes the strict parity gap; use its current receipts for runtime status.
+
 ## Decision
 
 Keep CartPole as a **control/estimation commissioning lab**, not a catalogue of increasingly sophisticated acronyms. Promote a component only when its model, information, numerical, timing, and failure contracts are explicit and tested. Reuse native libraries as numerical authorities; retain browser implementations as inspectable teaching approximations where appropriate.

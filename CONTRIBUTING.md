@@ -19,10 +19,12 @@ Rules:
 - preserve the shared live simulation and graph contract across topic pages,
 - add a new abstraction only when an existing path cannot express the required experiment.
 
-Regenerate the checked-in standalone page after source edits:
+Regenerate the checked-in page after source edits:
 
     python3 scripts/build.py
 
 README demo media can be regenerated with:
 
     python3 scripts/record_demo.py
+
+The page requires HTTP plus the canonical `assets/cartpole.xml`, `src/mujoco_backend.mjs`, and pinned `vendor/` runtime files. It is not a standalone HTML physics demo. Before publishing, also run `npm run test:wasm`, `npm run test:native:parity`, `npm run test:wasm-native`, and `npm run test:browser`.
