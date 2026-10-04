@@ -1,0 +1,28 @@
+{
+  "schema": "cartpole-measurement-calibration-lesson/v1",
+  "purpose": "Single-pole causal lesson, not robot deployment or a new tuning framework",
+  "calibration": {"seed": 6201, "samples": 512, "fixtureState": [0.18, 0, 0.03, 0], "scenario": "sensor", "stationaryAssumption": true},
+  "controller": {"id": "lqr", "Qdiag": [2, 0.5, 55, 3], "R": 0.12, "forceLimit": 10},
+  "observer": {"id": "ekf", "Q": [0.00002, 0.002, 0.00002, 0.004]},
+  "arms": [
+    {"id": "nominal_assumption", "label": "작게 가정한 R_e", "Rdiag": [0.000064, 0.000016]},
+    {"id": "measured", "label": "별도 정지 측정으로 추정한 R_e", "calibrationScale": 1},
+    {"id": "inflated", "label": "보정값보다 100배 큰 R_e", "calibrationScale": 100}
+  ],
+  "controlDt": 0.02,
+  "steps": 600,
+  "cases": [
+    {"id": "white-6301", "group": "primary", "seed": 6301, "scenario": "sensor", "initialState": [0, 0, 0.06, 0], "goal": 0.35, "push": null},
+    {"id": "white-6307", "group": "primary", "seed": 6307, "scenario": "sensor", "initialState": [0.1, 0, -0.06, 0], "goal": -0.35, "push": null},
+    {"id": "white-6311", "group": "primary", "seed": 6311, "scenario": "sensor", "initialState": [0, 0, 0.1, 0], "goal": 0.5, "push": {"step": 250, "force": 1, "duration": 10}},
+    {"id": "white-6323", "group": "primary", "seed": 6323, "scenario": "sensor", "initialState": [0, 0, -0.1, 0], "goal": -0.5, "push": {"step": 250, "force": -1, "duration": 10}},
+    {"id": "colored-6401", "group": "boundary", "seed": 6401, "scenario": "colored", "initialState": [0, 0, 0.06, 0], "goal": 0.35, "push": null},
+    {"id": "colored-6407", "group": "boundary", "seed": 6407, "scenario": "colored", "initialState": [0.1, 0, -0.06, 0], "goal": -0.35, "push": null},
+    {"id": "delay-6411", "group": "boundary", "seed": 6411, "scenario": "latency", "initialState": [0, 0, 0.06, 0], "goal": 0.35, "push": null},
+    {"id": "delay-6421", "group": "boundary", "seed": 6421, "scenario": "latency", "initialState": [0.1, 0, -0.06, 0], "goal": -0.35, "push": null}
+  ],
+  "noiseInjectionForMatchedCases": {"sigmaPosition_m": 0.06, "sigmaAngle_rad": 0.025, "scope": "Test-fixture authority only. Not read by the R estimator; held constant across arms and boundary mechanisms."},
+  "calibrationScreen": {"minimumSamples": 32, "maximumAbsLagOne": 0.2, "maximumAbsChannelCorrelation": 0.2},
+  "evaluation": {"goalWindowSteps": 100, "positionTolerance_m": 0.1, "angleTolerance_rad": 0.1, "scope": "No pass threshold forces a performance improvement; fail/rejection and equal-prefix/full-duration metrics remain separate."},
+  "notes": ["Written before this lesson's paired runs; no optimization against this case set.", "Stationary sample covariance estimates repeatability around an unknown constant, not absolute bias, Q_e, time delay or dynamic calibration.", "Physical plant, controller gain, Q_e, initial conditions, samples and limits are unchanged across arms; only assumed R_e differs.", "Same random seed is not identical measured data after controllers produce different trajectories. A separate same-data observer replay is included.", "NIS is diagnostic under these nonlinear/model/noise assumptions, not a chi-square certification. Hardware and general-N claims are excluded."]
+}

@@ -1,0 +1,211 @@
+{
+  "schema": "cartpole-causal-calibration-audit/v1",
+  "baseCommit": "2db383e8df01bafeb0a1296e07e3afb280887b25",
+  "scope": "Finish one single-pole educational causal experiment on the shared page, not all commissioning or a move to legged hardware.",
+  "sourceSha256": {
+    "src/calibration_lab.js": "36b2da5b69d1852c612a8fd18c7f4245e8d153bbd8c17e7adc75226100b6ef04",
+    "src/calibration_view.js": "7d4f45b290890dbf489de95fbb3dde89b90e888088387087b69e2a521ddcae47",
+    "src/app.js": "85d3511a38aeb5c68b0c230857764ea89f4770e5a77d57ec2026221538538d05",
+    "src/shell.html": "73bdb77239336df04309e1e4e325bfb74681dc6fd84701cb0d7d60a26e0547b3",
+    "src/styles.css": "f14c7da0d175999d48d506e5e7530be139a6102865fdce19905dbe2ff9f9375a",
+    "scripts/build.py": "09c905e4f984d7a99f776035e446716f7b204f7021fc76ad6bad8c9bc677f2d7",
+    "scripts/run_calibration_lesson.mjs": "07eb1bf26269d5e7539a0e9fb8345bbe0306cfa4d1f15fa616aa5bd9880377a2",
+    "tests/test_calibration_lab.mjs": "3a91ee128093454cd011bc98fcb0f1d1382e3109d29f0e15c082b642729d994f",
+    "tests/test_calibration_reference.py": "e854abf893e1940a8748eab3cc5e0f03849598e82523bc5ad90dcac0b7757dde",
+    "tests/test_calibration_browser.py": "b54eb9e000f195451d4f3ffffd1e695ba42906fcc3d74a8f057bf8d14a51c326",
+    "tests/fixtures/calibration_lab.json": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
+    "index.html": "1bcbf10ac5673383bfcafbabdb2cebabf994301bcb07b056e0d23034fca6617e",
+    "README.md": "733c510b6ac7f9a542e8797064d09bdc13f2c3b22f9de9a9b1f0c5c12512360f",
+    "docs/VALIDATION.md": "e3879e9ac24a4d4df64af4a7f31dca16e655538e43699949a5af53355bea761f",
+    "package.json": "2ff00af5a13c492f5ec3d541092139997edf15ce9d6521a227694d1283707905",
+    ".github/workflows/verify.yml": "c199c9e306bc727026368b024f466802723da253233921161c5013ec7ebf580f"
+  },
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_terminal_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:terminal",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:browser",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:calibration",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "lastUiGate": "Fresh current-session checks: source/build/assets, actual WASM, native QP, same-asset replay, frozen terminal80, calibration24, independent NumPy reference and both actual-browser suites returned exit0. Source hashes and recorded outcomes checked again after the run.",
+  "reused": [
+    "official MuJoCo WASM and canonical MJCF",
+    "existing LabPlant sensor/fault/actuator behavior",
+    "existing LQRController and EKFObserver",
+    "existing matrix solver and build/workflow"
+  ],
+  "new": [
+    "small sensor-readings-only stationary covariance function",
+    "matched-R experiment runner and same-record observer replay",
+    "shared-page causal trace panel; no new simulator/filter/optimizer"
+  ],
+  "fixtureHash": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
+  "calibrationSamples": 512,
+  "dynamicTrials": 24,
+  "framesCheckedIndependently": 14400,
+  "groups": [
+    {
+      "group": "primary",
+      "caseCount": 4,
+      "allArmsCompletedCases": 4,
+      "excludedFromEqualDurationAggregate": 0,
+      "arms": [
+        {
+          "id": "nominal_assumption",
+          "completed": 4,
+          "taskPassed": 3,
+          "requested": 4,
+          "totalSaturatedSamples": 79,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.13888037217681817,
+          "allArmsCompletedForceRms_N": 4.566041000860648,
+          "allArmsCompletedSlewRms_N": 5.679401242612818
+        },
+        {
+          "id": "measured",
+          "completed": 4,
+          "taskPassed": 3,
+          "requested": 4,
+          "totalSaturatedSamples": 2,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.13259080655463404,
+          "allArmsCompletedForceRms_N": 1.9688838606566272,
+          "allArmsCompletedSlewRms_N": 1.6669506490905446
+        },
+        {
+          "id": "inflated",
+          "completed": 4,
+          "taskPassed": 2,
+          "requested": 4,
+          "totalSaturatedSamples": 0,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.15220761199589922,
+          "allArmsCompletedForceRms_N": 0.8727455230087502,
+          "allArmsCompletedSlewRms_N": 0.5025240281641706
+        }
+      ]
+    },
+    {
+      "group": "boundary",
+      "caseCount": 4,
+      "allArmsCompletedCases": 4,
+      "excludedFromEqualDurationAggregate": 0,
+      "arms": [
+        {
+          "id": "nominal_assumption",
+          "completed": 4,
+          "taskPassed": 2,
+          "requested": 4,
+          "totalSaturatedSamples": 46,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.16372192072357633,
+          "allArmsCompletedForceRms_N": 3.733697113530464,
+          "allArmsCompletedSlewRms_N": 3.903258087065747
+        },
+        {
+          "id": "measured",
+          "completed": 4,
+          "taskPassed": 1,
+          "requested": 4,
+          "totalSaturatedSamples": 2,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.17002493052100537,
+          "allArmsCompletedForceRms_N": 2.1018020656764618,
+          "allArmsCompletedSlewRms_N": 1.1688051948525373
+        },
+        {
+          "id": "inflated",
+          "completed": 4,
+          "taskPassed": 1,
+          "requested": 4,
+          "totalSaturatedSamples": 0,
+          "executedSamples": 2400,
+          "allArmsCompletedTrackingRmse_m": 0.23428175120840725,
+          "allArmsCompletedForceRms_N": 1.3594736526192988,
+          "allArmsCompletedSlewRms_N": 0.3761008174236208
+        }
+      ]
+    }
+  ],
+  "reference": {
+    "covarianceError": 8.673617379884035e-19,
+    "forceIdentityError_N": 3.552713678800501e-15,
+    "nisError": 1.1368683772161603e-13
+  },
+  "browser": {
+    "schema": "cartpole-calibration-browser/v1",
+    "passed": true,
+    "actualWasm": true,
+    "noiseOracleForbidden": true,
+    "legacyMainStateAndSettingsUnchanged": true,
+    "sameSourceNumericalMatch": true,
+    "saturationCausalFrameVerified": true,
+    "sourceScopeUnitsReplayVerified": true,
+    "pageErrors": [],
+    "deployed": false
+  },
+  "legacyTerminal80NumericalOutcomesAndStatesUnchanged": true,
+  "coreControllerObserverPhysicsFilesUnchanged": true,
+  "sameDataReplayMatchesRecording": true,
+  "defaultPromotion": false,
+  "calibrationGuarantee": "Only stationary repeatability R_e under declared assumptions; no bias/Q_e/model/time-delay calibration or optimal-filter claim.",
+  "notCompleted": [
+    "process covariance and controller-bandwidth co-tuning",
+    "dynamic sensor/actuator identification",
+    "interactive Lyapunov/terminal-region experiment",
+    "native NMHE/contact-estimation reproduction",
+    "independent approval/merge/deployment/hardware admission"
+  ],
+  "evidence": [
+    "calibration_lesson.json",
+    "calibration_reference.json",
+    "calibration_browser.json",
+    "calibration_lesson_browser.png"
+  ],
+  "branch": "feat/calibration-causal-lesson",
+  "integration": "Focused child of feat/n-pendulum-verification at the exact base commit; original PR7 source remains untouched.",
+  "measurementFitScope": "Estimated stationary repeatability R_e from simulated clamped measurements; does not identify unknown bias, process Q_e, actuator dynamics or delay."
+}

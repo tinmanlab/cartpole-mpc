@@ -22,11 +22,13 @@ def build() -> str:
             read(ROOT / "vendor/quadprog/quadprog.js"),
             read(SRC / "qp.js"),
             read(SRC / "engine.js"),
+            read(SRC / "calibration_lab.js"),
+            "const CONTROL_LAB_CALIBRATION_MANIFEST = " + read(ROOT / "tests/fixtures/calibration_lab.json") + ";",
         ]),
         "ACTOR": "const CONTROL_LAB_ACTOR = " + json.dumps(actor, separators=(",", ":")) + ";",
         "RESIDUAL": "const CONTROL_LAB_RESIDUAL = " + json.dumps(residual, separators=(",", ":")) + ";",
         "TOPICS": read(SRC / "topics.js"),
-        "APP": read(SRC / "app.js"),
+        "APP": read(SRC / "calibration_view.js") + "\n" + read(SRC / "app.js"),
     }
     for key, value in parts.items():
         token = "/* " + key + " */"

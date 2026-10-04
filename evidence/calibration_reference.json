@@ -1,0 +1,25 @@
+{
+  "schema": "cartpole-calibration-reference/v1",
+  "passed": true,
+  "measurementRows": 512,
+  "covarianceMaxAbsoluteError": 8.673617379884035e-19,
+  "checkedDynamicFrames": 14400,
+  "maximumForceIdentityError_N": 3.552713678800501e-15,
+  "maximumNisDifference": 1.1368683772161603e-13,
+  "varianceConfidenceIntervals95": {
+    "position_m2": [
+      0.003177868599278347,
+      0.004062025368690489
+    ],
+    "angle_rad2": [
+      0.000503649248111045,
+      0.000643776153366926
+    ]
+  },
+  "intervalAssumption": "Independent Gaussian errors, stationary unknown constant mean; interval is not valid for arbitrary correlated/nonstationary data.",
+  "sameDataReplayMatchedRecordedFilter": true,
+  "scenarioOutcomesNotForcedToImprove": true,
+  "referenceSourceSha256": "e854abf893e1940a8748eab3cc5e0f03849598e82523bc5ad90dcac0b7757dde",
+  "recordedEvidenceSha256": "f552d24948419f7813224fb5872dfacf7f32e64b7fb9209debb77d20a7667258",
+  "scope": "Independent sample covariance/NIS/force decomposition and summary arithmetic. Existing EKF/MuJoCo/controller numerical authorities are reused; this is not proof of optimal Q_e or hardware calibration."
+}
