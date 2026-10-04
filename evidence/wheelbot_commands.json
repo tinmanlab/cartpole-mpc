@@ -1,0 +1,63 @@
+{
+  "schema": "wheelbot-command-receipt/v1",
+  "commands": [
+    {
+      "command": "python3 scripts/build_wheelbot_model.py",
+      "exitCode": 0
+    },
+    {
+      "command": "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python scripts/design_wheelbot_profile.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wheelbot",
+      "exitCode": 0,
+      "trials": 12,
+      "completed": 9,
+      "taskPassed": 3
+    },
+    {
+      "command": "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python tests/test_wheelbot_reference.py",
+      "exitCode": 0,
+      "replaySteps": 160
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0,
+      "phase": "earlier in same session; retrieved actual process completion; unchanged CartPole physics",
+      "accelerationCases": 36,
+      "nominalControllerObserverRows": 16
+    },
+    {
+      "command": "node --check src/wheelbot_app.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "python3 -m py_compile tests/test_wheelbot_browser.py scripts/build_wheelbot_model.py scripts/design_wheelbot_profile.py tests/test_wheelbot_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "python3 tests/test_wheelbot_browser.py",
+      "exitCode": 1,
+      "status": "BLOCKED",
+      "reason": "PermissionError: [Errno 1] Operation not permitted creating HTTP server socket; not retried"
+    }
+  ],
+  "notRun": [
+    "HTTP browser application assertions and screenshot (blocked)",
+    "full historical native/browser suites",
+    "native MIMO MPC probes",
+    "integration timestep refinement",
+    "closed-loop mass-mismatch multi-seed campaign"
+  ],
+  "historicalEvidence": "Only generated evidence/mujoco_wasm.json timing changes were inspected and restored from exact base; old receipts otherwise unchanged.",
+  "noCommitPushPublish": true
+}

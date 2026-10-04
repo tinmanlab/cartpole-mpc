@@ -1,0 +1,194 @@
+{
+  "schema": "wheelbot-transfer-audit/v1",
+  "baseCommit": "a3f0f643f4db43054bfb7c33b083d7ce0724152f",
+  "sourceSha256": {
+    "assets/wheelbot/wheelbot.xml": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+    "assets/wheelbot/profile.json": "d54d98ec5b18d89bdf4043a408ea49d7636edcb9c29301b88f446cda9a968e77",
+    "assets/wheelbot/source/upkie.urdf": "d15965215067276203599a850e5c7ebb319ed6815506f0a2721dae78abac2483",
+    "assets/wheelbot/source/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "assets/wheelbot/source/provenance.json": "a492509a85378a15afc6ad9ec11a83fdaaca6e8149e17f85f0a4613ee0c06708",
+    "scripts/build_wheelbot_model.py": "68299e4150dbc2ca641dd667411ebf048d051a169ec3f28b443ccc3e7b89d8b9",
+    "scripts/design_wheelbot_profile.py": "a5dd571a5ccef77facbdd7e6cdd005c67eb1bdddddc1c54801111ce33fa8b534",
+    "src/wheelbot_backend.mjs": "ab52ac4941d780a9d9ba43359c1c4a217cf12511f2aae4c0785109eebb07c631",
+    "src/wheelbot_control.mjs": "780f88afb3093ff030161c582bc08684ddff7e10f3ae4a5fb0734f859641d02c",
+    "src/wheelbot_app.mjs": "2d2b51ad847a1258811c7560e196ed3e808f28a07ae0848628bbeda5e3688deb",
+    "wheelbot.html": "c05db2170c8c81aa962f7f39cd90a5620158caa879aad5601c58a9fad3bbbefe",
+    "tests/test_wheelbot_wasm.mjs": "d2ddb471e2e0762bdc6c69bc41cc6f5fc87f68dedf1d8f95e0af8a16b7ce2928",
+    "tests/test_wheelbot_reference.py": "ef2bebb0b841a1bda5d13b2300c63bbd87e628cc4002c66b95be627fa21c45e2",
+    "tests/test_wheelbot_browser.py": "023c4a87d8cee1593e8fdc44665f43faf235d053ad11a3a751ace0dc7f5ad727",
+    "tests/fixtures/wheelbot_cases.json": "151c669cfd79f9cf4f2d4c8fd3994e1eeb28839552e6679c88f16795608c05cf",
+    "docs/WHEELBOT_2D.md": "109a3a4b3bc424b18cb32fed2c17d2ad895121bc14dd562ba629d352b8bc6639",
+    "src/shell.html": "35f1ef72efcc9a1107692daf3b909aeaeefcc14d57e2e67ddb055d3885ac2c65",
+    "index.html": "0030f6be6639d6ab0fe8819c5451b36e9170342aef1117ab2c3b4064975ef813",
+    "package.json": "c8beddca1fc3900908d0c937026956fa7b048ec914d98d584279961ecd2f5913",
+    ".github/workflows/verify.yml": "b9c66c9daf832616043b1e2bd22ea99d33004a1975c435579468be760bcb8df0"
+  },
+  "scope": "Sketch topology + selected pinned Upkie source dimensions/masses, simplified single-side planar model. Same official MuJoCo WASM; no hardware, original Upkie digital twin or 3D balance claim.",
+  "model": {
+    "fullState": 12,
+    "localControlState": 11,
+    "unactuatedCoordinates": [
+      "x",
+      "z",
+      "pitch"
+    ],
+    "actuatedJoints": [
+      "hip",
+      "knee",
+      "wheel"
+    ],
+    "actuatorUnits": "N m",
+    "omittedCoordinate": "wheel absolute phase only, tested axial symmetry; speed retained",
+    "planarAssumption": "out-of-plane translation/rotation absent",
+    "collisionScope": "wheel and floor only; torso/link/self impacts outside model",
+    "totalPrimitiveMassKg": 1.1991500000000002
+  },
+  "source": {
+    "repository": "upkie/upkie_description",
+    "commit": "94735fbe6137276a41de0ff4cc04d2e533fa9e33",
+    "urdfSha256": "d15965215067276203599a850e5c7ebb319ed6815506f0a2721dae78abac2483",
+    "license": "Apache-2.0 source; no CC-BY tire mesh used",
+    "reuse": "selected source topology/dimensions/masses/limits; recomputed primitive rod inertias, motor assemblies and second leg omitted, not an unchanged import"
+  },
+  "trim": {
+    "qref": [
+      0.0,
+      0.5442793664645657,
+      0.0032332250198885233,
+      0.15,
+      -0.3,
+      0.0
+    ],
+    "urefNm": [
+      0.003964735272906112,
+      0.3887816656632832,
+      1.1764113924208331e-15
+    ],
+    "accelerationInfinityNorm": 3.6075475238023734e-11,
+    "scope": "native nonlinear static equilibrium from least_squares; no hidden support or gravity compensation outside motor feedforward"
+  },
+  "algorithms": {
+    "lqr": "executed, fresh 11x3 Riccati gain for this model",
+    "kf": "executed stationary linear observer with noisy external x,z,pitch,hip,knee measurements",
+    "mpc": "NOT_YET_SUPPORTED; legacy transcription silently uses only B[:,0], wheelbot adapter rejects request",
+    "ekfUkfMhePpo": "NOT_IMPLEMENTED for this plant; existing CartPole modes unchanged"
+  },
+  "taskScope": {
+    "seconds": 3.0,
+    "seeds": [
+      1,
+      17,
+      43
+    ],
+    "tailSeconds": 0.5,
+    "positionToleranceM": 0.015,
+    "pitchToleranceRad": 0.025,
+    "velocityTruthFedToController": false,
+    "sensorCalibration": "declared teaching noise, not measured hardware calibration"
+  },
+  "results": [
+    {
+      "case": "local_balance",
+      "requested": 3,
+      "completed": 3,
+      "taskPassed": 3
+    },
+    {
+      "case": "position",
+      "requested": 3,
+      "completed": 3,
+      "taskPassed": 0
+    },
+    {
+      "case": "push",
+      "requested": 3,
+      "completed": 3,
+      "taskPassed": 0
+    },
+    {
+      "case": "boundary_push",
+      "requested": 3,
+      "completed": 0,
+      "taskPassed": 0
+    }
+  ],
+  "totalSteps": 3015,
+  "nativeReference": {
+    "schema": "wheelbot-native-reference/v1",
+    "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+    "trimQaccInf": 3.6075475238023734e-11,
+    "riccatiResidual": 8.323973330244235e-14,
+    "closedLoopRadius": 0.9985908990630061,
+    "phaseInvarianceError": 4.0033620313099486e-16,
+    "nativeNonlinearDerivativeErrorA": 7.402704500236723e-05,
+    "nativeNonlinearDerivativeErrorB": 7.538374280358084e-08,
+    "nativeWasmDerivativeError": 1.6139622971422796e-10,
+    "replaySteps": 160,
+    "replayMaxError": 7.146638836275088e-11,
+    "contactSteps": 96,
+    "airborneSteps": 64,
+    "observerMeanError": 2.220446049250313e-16,
+    "controllerError": 3.469446951953614e-18,
+    "motorAccelerationEffects": [
+      36.94299738353098,
+      46.201957122086505,
+      201.1883334688439
+    ],
+    "mismatchProbe": {
+      "torsoMassScale": 1.2,
+      "feedforwardOnlySteps": 50,
+      "maxFullStateDeviation": 21.487589318716914,
+      "scope": "open-loop trim sensitivity, not closed-loop robustness"
+    },
+    "passed": true
+  },
+  "physicalOutcomesUnchangedByReview": true,
+  "freshIndependentCommands": [
+    {
+      "command": "npm run test:wheelbot",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "localBrowser": {
+    "status": "BLOCKED",
+    "reason": "delegated sandbox denied HTTP socket creation; no repeat or permission expansion",
+    "screenshot": null
+  },
+  "ci": "Existing GitHub verification includes actual browser assertions and screenshot upload; exact-head result is a separate future gate at receipt creation.",
+  "reviewFixes": [
+    "Per-component physical-unit estimation/measurement errors replace mixed-unit RMSE.",
+    "Native tests independently reconstruct all success, failure, applied-step, contact-loss and saturation counts.",
+    "All 11 estimated states and slip units displayed, ground ticks use world coordinates despite following camera."
+  ],
+  "notClaimed": [
+    "Optimal gains or retuned cases",
+    "Local boundary/push recovery success",
+    "MIMO MPC in browser",
+    "Sensor-only wheel-odometry localization",
+    "Closed-loop robustness under mass/actuator uncertainty",
+    "Hardware/contact safety or arbitrary 3D legged transfer"
+  ],
+  "defaultChanged": false,
+  "published": false,
+  "independentExternalApproval": false
+}

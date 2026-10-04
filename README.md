@@ -367,3 +367,5 @@ The CartPole versions preserve the **control/estimation structure** needed to un
 ## Q_e selection and an independent control test
 
 The same calibration panel now adds **TRAIN → VALIDATION → locked TEST**. One effective Q_e multiplier is selected from fixed sensor/command recordings using normalized predictive likelihood; measured R, Q shape, P0, LQR and limits stay fixed. The recorded winner predicts better yet tracks worse, so it is not promoted. Stage scores, grid-boundary limits and every test outcome are visible, and the existing causal trace panel is reused. See [process-selection scope](docs/VALIDATION.md#process-covariance-selection-predictive-fit-is-not-a-control-objective). This is not identification of every noise parameter or a newly implemented covariance optimizer.
+
+The bounded [planar wheel-leg experiment](wheelbot.html) adds a single-side, three-motor contact asset on the same MuJoCo WASM. See [model lineage, sensor assumptions and unsupported MPC boundary](docs/WHEELBOT_2D.md). It preserves the original CartPole default.

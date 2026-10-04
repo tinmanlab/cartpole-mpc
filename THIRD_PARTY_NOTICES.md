@@ -56,3 +56,7 @@ The pre-stabilized N-chain path changes the QP transcription via standard LQR fe
 ## Optional sequential tuning
 
 The optional offline lane imports SMAC3 2.4.1, ConfigSpace 1.2.1, scikit-learn 1.7.2 and SciPy. SMAC owns the random-forest/EI search, Sobol initial design and standard Intensifier/racing. The local contribution is the bounded configuration mapping, existing task-evaluator connection, explicit failure-order encoding, comparison protocol and verification. Upstream packages and their license notices remain in the isolated optional environment; no Python optimizer or model binary is bundled into the browser. This is neither a new optimizer implementation nor upstream endorsement. See `docs/SEQUENTIAL_TUNING.md` and `requirements-tuning.txt`.
+
+## Wheelbot source lineage
+
+`assets/wheelbot/source/upkie.urdf` and `LICENSE` copy official `upkie/upkie_description` at commit `94735fbe6137276a41de0ff4cc04d2e533fa9e33` under Apache-2.0. Source: https://github.com/upkie/upkie_description/tree/94735fbe6137276a41de0ff4cc04d2e533fa9e33 . The generated primitive-only sagittal model is a modified, simplified single-side derivative. No upstream meshes (including the separately CC BY 4.0 wheel tire) are included or loaded. See `docs/WHEELBOT_2D.md` and generated provenance for exact parameter lineage.

@@ -75,3 +75,21 @@ jobs:
         run: |
           python tests/test_tuning_receipt.py
           python tests/test_tuning_browser.py
+
+      - name: Bounded planar wheelbot numerical and browser checks
+        run: |
+          npm run test:wheelbot
+          python tests/test_wheelbot_reference.py
+          python tests/test_wheelbot_browser.py
+      - name: Preserve wheelbot browser verification
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wheelbot-browser-verification
+          path: |
+            evidence/wheelbot_browser.png
+            evidence/wheelbot_browser.json
+            evidence/wheelbot_validation.json
+            evidence/wheelbot_native_reference.json
+          if-no-files-found: error
+          retention-days: 7

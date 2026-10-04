@@ -1,0 +1,29 @@
+{
+  "schema": "wheelbot-native-reference/v1",
+  "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "trimQaccInf": 3.6075475238023734e-11,
+  "riccatiResidual": 8.323973330244235e-14,
+  "closedLoopRadius": 0.9985908990630061,
+  "phaseInvarianceError": 4.0033620313099486e-16,
+  "nativeNonlinearDerivativeErrorA": 7.402704500236723e-05,
+  "nativeNonlinearDerivativeErrorB": 7.538374280358084e-08,
+  "nativeWasmDerivativeError": 1.6139622971422796e-10,
+  "replaySteps": 160,
+  "replayMaxError": 7.146638836275088e-11,
+  "contactSteps": 96,
+  "airborneSteps": 64,
+  "observerMeanError": 2.220446049250313e-16,
+  "controllerError": 3.469446951953614e-18,
+  "motorAccelerationEffects": [
+    36.94299738353098,
+    46.201957122086505,
+    201.1883334688439
+  ],
+  "mismatchProbe": {
+    "torsoMassScale": 1.2,
+    "feedforwardOnlySteps": 50,
+    "maxFullStateDeviation": 21.487589318716914,
+    "scope": "open-loop trim sensitivity, not closed-loop robustness"
+  },
+  "passed": true
+}

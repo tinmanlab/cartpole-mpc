@@ -1,0 +1,15 @@
+{
+  "schema": "wheelbot-fixed-cases/v1",
+  "steps": 300,
+  "seeds": [1, 17, 43],
+  "tailSteps": 50,
+  "positionTolerance": 0.015,
+  "pitchTolerance": 0.025,
+  "failure": {"positionMagnitude": 1, "pitchError": 0.6, "minimumZ": 0.12},
+  "cases": [
+    {"name":"local_balance","pitchOffset":0.005,"goal":0},
+    {"name":"position","pitchOffset":0,"goal":0.03},
+    {"name":"push","pitchOffset":0,"goal":0,"push":{"start":100,"end":110,"force":3}},
+    {"name":"boundary_push","pitchOffset":0,"goal":0,"push":{"start":100,"end":120,"force":40}}
+  ]
+}
