@@ -33,12 +33,21 @@
   const fit=C.estimateMeasurementNoise(measurements,m.calibrationScreen);if(!fit.usable)throw Error('Stationary R measurement screen rejected');
   return {measurements,fit,scope:'simulated clamped repeatability; fitter receives only readings, not true variance or bias'};
  }
- function design(m,pair,candidate,fit){
-  checkPair(m,pair);const c=checkCandidate(m,candidate);if(!fit?.usable)throw Error('R calibration rejected');
+ function searchCandidate(pair,c,domain){
+  if(!domain.controllers?.includes(pair.controller)||!domain.observers?.includes(pair.observer))throw Error('Unsupported search pair');
+  for(const [name,bounds] of [['effortMultiplier',domain.effortBounds],['processMultiplier',domain.processBounds]]){
+   if(!Array.isArray(bounds)||bounds.length!==2||!bounds.every(Number.isFinite)||bounds[0]<=0||bounds[1]<bounds[0]||!Number.isFinite(c[name])||c[name]<bounds[0]||c[name]>bounds[1])throw Error('Candidate outside declared search domain');
+  }
+  if(pair.controller==='hard_mpc'){if(!Number.isInteger(c.horizon)||!domain.mpcHorizons.includes(c.horizon))throw Error('Unsupported search horizon');}
+  else if(c.horizon!==undefined)throw Error('MPC horizon is inactive for LQR');
+  return {...c,baseline:c.effortMultiplier===domain.baselineEffort&&c.processMultiplier===domain.baselineProcess&&(pair.controller==='lqr'||c.horizon===domain.baselineHorizon)};
+ }
+ function design(m,pair,candidate,fit,searchDomain=null){
+  checkPair(m,pair);const c=searchDomain?searchCandidate(pair,candidate,searchDomain):checkCandidate(m,candidate);if(!fit?.usable)throw Error('R calibration rejected');
   const spec=new L.LabPlant().spec,Qc=m.theoryDesign.stateScales.map(v=>1/v**2),Rc=c.effortMultiplier/m.theoryDesign.forceScale_N**2,Qe=m.theoryDesign.QeBase.map(v=>c.processMultiplier*v),Re=fit.Rdiag.slice();
   const {A,B}=L.linearModel(spec),terminal=L.riccatiTerminal(A,B,L.diag(Qc),Rc);
   const BtP=L.mul(L.T(B),terminal.P),den=Rc+L.mul(BtP,B)[0][0],K=L.mul(BtP,A)[0].map(v=>v/den);
-  return {pairId:pair.id,controller:pair.controller,observer:pair.observer,candidate:c,Qc,Rc,Qe,Re,P0:m.theoryDesign.P0diag.slice(),A,B,Pf:terminal.P,K,terminalInfo:terminal.info,horizon:m.theoryDesign.horizon,
+  return {pairId:pair.id,controller:pair.controller,observer:pair.observer,candidate:c,Qc,Rc,Qe,Re,P0:m.theoryDesign.P0diag.slice(),A,B,Pf:terminal.P,K,terminalInfo:terminal.info,horizon:searchDomain&&pair.controller==='hard_mpc'?c.horizon:m.theoryDesign.horizon,
    information:{Qc:'declared inverse-squared state scales',Rc:'declared effort multiplier / forceScale^2',Qe:'effective task-tuned scale, not calibrated physical process noise',Re:'stationary measured repeatability',Pf:'nominal full discrete Riccati tail cost; no terminal-set guarantee'}};
  }
  function buildControllers(m,pair,d,spec){
@@ -56,9 +65,9 @@
   return {...parts,total:Object.values(parts).reduce((a,b)=>a+b,0)};
  }
  function distribution(a){if(!a.length)return null;const s=a.slice().sort((a,b)=>a-b),at=q=>s[Math.max(0,Math.ceil(s.length*q)-1)];return {samples:s.length,p50:at(.5),p95:at(.95),max:s.at(-1)};}
- function createRun(m,test,pair,candidate,fit,{record=false}={}){
+ function createRun(m,test,pair,candidate,fit,{record=false,searchDomain=null}={}){
   if(L.physicsInfo().backend!=='mujoco-wasm')throw Error('Actual MuJoCo WASM required');
-  const started=clock(),d=design(m,pair,candidate,fit),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);plant.goal=test.goal;
+  const started=clock(),d=design(m,pair,candidate,fit,searchDomain),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);plant.goal=test.goal;
   plant.sensorStd=[m.sensorFixture.sigmaPosition_m,m.sensorFixture.sigmaAngle_rad];
   const {controller,observer}=buildControllers(m,pair,d,plant.spec);let y=plant.sensor();observer.reset(y);observer.P=L.diag(d.P0);controller.reset();let xhat=observer.x.slice(),previousU=0,outcome='running',reason=null;
   const trace=[],series=[],times={solve:[],observer:[],step:[]},termSum={position:0,angle:0,force:0,deltaForce:0},constructionMs=clock()-started;

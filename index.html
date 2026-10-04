@@ -72,6 +72,13 @@
 <label>명시적으로 재실행할 primary 조건<select id="designApplyCase" disabled></select></label><button id="designApply" disabled>승인된 설정을 공통 실험에 적용</button>
 <p class="footer-note">TEST는 고정 추천을 거부할 수 있지만 다른 조합을 새로 고르지 않습니다. 승인도 명시된 primary 시뮬레이션 과제에만 해당하며 boundary·하드웨어·실시간 WCET로 확대하지 않습니다. 적용하면 해당 초기 상태로 돌아가 일시정지합니다. 일반 설정 변경·Reset은 연구 설정을 해제합니다. 이전 공분산 선택 실험과 달리 여기서는 실제 폐루프 목적을 사용하며, 유효 Q_e 탐색값을 물리적 잡음 식별값이라고 부르지 않습니다.</p>
 <p><a href="evidence/design_study.json">전체 설계·선택·시험 근거</a> · <a href="docs/VALIDATION.md#task-aware-four-pair-design-study">과제와 주장 범위</a></p></section>
+<section class="card design-lesson"><details id="tuningDetails"><summary>순차 탐색 SMAC3 · 동일 예산 효과 검증</summary>
+<p>이는 Python에서 실제 MuJoCo 평가기를 호출한 <b>오프라인 실행 결과</b>입니다. 브라우저에서 SMAC을 실행하거나 기존 controller의 solver를 교체하는 기능이 아닙니다. 같은 108회 탐색 예산, 같은 12회 초기 기준 평가, 동일한 12초 rollout과 실패 판정을 사용합니다.</p>
+<p>grid_budget, random_full, 무작위 후보+표준 racing, SMAC의 모델 기반 후보+같은 racing을 5개 optimizer seed로 비교합니다. MPC에만 horizon 20/30/40이 있고 LQR에는 해당 변수가 없습니다. grid_exhaustive는 별도로 216회를 사용한 유한 grid 참조이며 전역 최적값이 아닙니다.</p>
+<button id="loadTuningComparison">기록된 비교 결과 읽기</button><p id="tuningComparisonStatus" role="status" data-state="idle">아직 결과를 읽지 않았습니다.</p>
+<div class="table-wrap"><table id="tuningComparison" class="matrix"><thead><tr><th>방법</th><th>반복</th><th>탐색 호출/반복</th><th>완전 평가 후보 평균</th><th>선택/배분 시간 평균</th><th>전체 탐색 시간 평균</th><th>반복당 주 시험 목표 충족 / 12</th><th>grid 대비 시험 점수 변화 · 조건부 95% 구간</th></tr></thead><tbody></tbody></table></div>
+<p class="footer-note">음의 점수 변화는 낮은 task cost를 뜻하지만 목표 실패와 분리해 읽어야 합니다. 부분 평가 후보는 최종 추천에 사용할 수 없습니다. 600개 연속 프레임을 독립 통계 표본으로 세지 않습니다. 동일한 설정이 반복 선택되면 [0,0] 구간은 기록이 같다는 뜻이지 일반적인 동등성 증명이 아닙니다. 구간은 같은 시험표에서 optimizer seed 5개의 차이를 재표본화한 pilot 결과이며 일반적인 우월성·하드웨어 안전을 보장하지 않습니다. 새 기본값을 자동 채택하지 않습니다.</p>
+<p><a href="docs/SEQUENTIAL_TUNING.md">실험계획·비용·통계 해석</a> · <a href="evidence/sequential_tuning.json">전체 원본 결과</a> · <a href="evidence/sequential_tuning_reference.json">독립 재계산</a></p></details></section>
 <section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push · DONE은 구간 완료일 뿐 목표 추종·안전 보장 아님 · 추종/추정 오차를 별도 표기</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias</option><option value="actuator">Actuator lag/gain</option><option value="latency">Command latency</option><option value="sim2real">Sim2real stack</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
 <p class="footer-note">CartPole에는 발·contact wrench·floating base가 없습니다. 논문 소개, 축약 비유, 실제 구현을 각 페이지에서 구분하며 그래프는 현재 선택된 runtime의 값만 보여줍니다.</p>
 </main><script>/* BAM upstream parameters: Apache-2.0; see vendor/bam/NOTICE.md. */
@@ -1747,12 +1754,21 @@ if(typeof module!=='undefined')module.exports=ControlLab;
   const fit=C.estimateMeasurementNoise(measurements,m.calibrationScreen);if(!fit.usable)throw Error('Stationary R measurement screen rejected');
   return {measurements,fit,scope:'simulated clamped repeatability; fitter receives only readings, not true variance or bias'};
  }
- function design(m,pair,candidate,fit){
-  checkPair(m,pair);const c=checkCandidate(m,candidate);if(!fit?.usable)throw Error('R calibration rejected');
+ function searchCandidate(pair,c,domain){
+  if(!domain.controllers?.includes(pair.controller)||!domain.observers?.includes(pair.observer))throw Error('Unsupported search pair');
+  for(const [name,bounds] of [['effortMultiplier',domain.effortBounds],['processMultiplier',domain.processBounds]]){
+   if(!Array.isArray(bounds)||bounds.length!==2||!bounds.every(Number.isFinite)||bounds[0]<=0||bounds[1]<bounds[0]||!Number.isFinite(c[name])||c[name]<bounds[0]||c[name]>bounds[1])throw Error('Candidate outside declared search domain');
+  }
+  if(pair.controller==='hard_mpc'){if(!Number.isInteger(c.horizon)||!domain.mpcHorizons.includes(c.horizon))throw Error('Unsupported search horizon');}
+  else if(c.horizon!==undefined)throw Error('MPC horizon is inactive for LQR');
+  return {...c,baseline:c.effortMultiplier===domain.baselineEffort&&c.processMultiplier===domain.baselineProcess&&(pair.controller==='lqr'||c.horizon===domain.baselineHorizon)};
+ }
+ function design(m,pair,candidate,fit,searchDomain=null){
+  checkPair(m,pair);const c=searchDomain?searchCandidate(pair,candidate,searchDomain):checkCandidate(m,candidate);if(!fit?.usable)throw Error('R calibration rejected');
   const spec=new L.LabPlant().spec,Qc=m.theoryDesign.stateScales.map(v=>1/v**2),Rc=c.effortMultiplier/m.theoryDesign.forceScale_N**2,Qe=m.theoryDesign.QeBase.map(v=>c.processMultiplier*v),Re=fit.Rdiag.slice();
   const {A,B}=L.linearModel(spec),terminal=L.riccatiTerminal(A,B,L.diag(Qc),Rc);
   const BtP=L.mul(L.T(B),terminal.P),den=Rc+L.mul(BtP,B)[0][0],K=L.mul(BtP,A)[0].map(v=>v/den);
-  return {pairId:pair.id,controller:pair.controller,observer:pair.observer,candidate:c,Qc,Rc,Qe,Re,P0:m.theoryDesign.P0diag.slice(),A,B,Pf:terminal.P,K,terminalInfo:terminal.info,horizon:m.theoryDesign.horizon,
+  return {pairId:pair.id,controller:pair.controller,observer:pair.observer,candidate:c,Qc,Rc,Qe,Re,P0:m.theoryDesign.P0diag.slice(),A,B,Pf:terminal.P,K,terminalInfo:terminal.info,horizon:searchDomain&&pair.controller==='hard_mpc'?c.horizon:m.theoryDesign.horizon,
    information:{Qc:'declared inverse-squared state scales',Rc:'declared effort multiplier / forceScale^2',Qe:'effective task-tuned scale, not calibrated physical process noise',Re:'stationary measured repeatability',Pf:'nominal full discrete Riccati tail cost; no terminal-set guarantee'}};
  }
  function buildControllers(m,pair,d,spec){
@@ -1770,9 +1786,9 @@ if(typeof module!=='undefined')module.exports=ControlLab;
   return {...parts,total:Object.values(parts).reduce((a,b)=>a+b,0)};
  }
  function distribution(a){if(!a.length)return null;const s=a.slice().sort((a,b)=>a-b),at=q=>s[Math.max(0,Math.ceil(s.length*q)-1)];return {samples:s.length,p50:at(.5),p95:at(.95),max:s.at(-1)};}
- function createRun(m,test,pair,candidate,fit,{record=false}={}){
+ function createRun(m,test,pair,candidate,fit,{record=false,searchDomain=null}={}){
   if(L.physicsInfo().backend!=='mujoco-wasm')throw Error('Actual MuJoCo WASM required');
-  const started=clock(),d=design(m,pair,candidate,fit),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);plant.goal=test.goal;
+  const started=clock(),d=design(m,pair,candidate,fit,searchDomain),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);plant.goal=test.goal;
   plant.sensorStd=[m.sensorFixture.sigmaPosition_m,m.sensorFixture.sigmaAngle_rad];
   const {controller,observer}=buildControllers(m,pair,d,plant.spec);let y=plant.sensor();observer.reset(y);observer.P=L.diag(d.P0);controller.reset();let xhat=observer.x.slice(),previousU=0,outcome='running',reason=null;
   const trace=[],series=[],times={solve:[],observer:[],step:[]},termSum={position:0,angle:0,force:0,deltaForce:0},constructionMs=clock()-started;
@@ -2850,6 +2866,21 @@ const DesignLessonView={mount({manifest:m,pause,apply}){
   apply(recipe);$('designStatus').textContent='수동 적용: '+recipe.pair.id+' / '+recipe.candidate.id+' / '+test.id+' · 공통 시뮬레이션을 지정 초기 상태로 되돌리고 일시정지했습니다. 일반 설정 변경·Reset은 이 과제 설정을 해제합니다.';
   $('world').scrollIntoView({behavior:'smooth',block:'center'});return recipe;
  }
+ async function loadTuningComparison(){
+  const status=$('tuningComparisonStatus');status.dataset.state='loading';status.textContent='오프라인 근거를 읽는 중';$('tuningComparison').tBodies[0].replaceChildren();$('loadTuningComparison').disabled=true;
+  try{
+   const response=await fetch('evidence/sequential_tuning.json',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);
+   const report=await response.json();if(!report.experimentValid||report.mode!=='frozen-full')throw Error('완료된 고정 비교가 아닙니다');
+   const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN,fmt=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):'—';
+   const rows=['grid_budget','random_full','random_racing','smac_racing','grid_exhaustive'].map(method=>{
+    const rr=report.campaigns.filter(c=>c.method===method),effect=report.pairedStatistics.find(c=>c.method===method),ci=effect?.conditionalPairedBootstrap95;
+    return [method,rr.length,fmt(mean(rr.map(r=>r.actualSearchRollouts)),0),fmt(mean(rr.map(r=>r.fullyEvaluatedConfigurations)),1),fmt(mean(rr.map(r=>r.tunerSeconds)))+' s',fmt(mean(rr.map(r=>r.searchWallSeconds)))+' s',fmt(mean(rr.map(r=>r.primaryTaskSuccesses)),1)+' / 12',effect?fmt(effect.meanRelativeTaskDifference*100)+'%'+(ci?' ['+fmt(ci[0]*100)+', '+fmt(ci[1]*100)+']':' · 구간 미확정'):method==='grid_exhaustive'?'추가 예산 유한 참조':'동일 예산 기준'];
+   });cells('tuningComparison',rows);
+   status.dataset.state='loaded';status.textContent='SMAC '+report.versions.smac+' / ConfigSpace '+report.versions.ConfigSpace+' · 실제 총 평가 '+report.actualEvaluations+'회 · validation/test 추가 비용은 원본 기록에 별도 표기 · 기본값 변경 없음';
+  }catch(e){$('tuningComparison').tBodies[0].replaceChildren();status.dataset.state='error';status.textContent='결과 표시 중단: '+e.message;}
+  finally{$('loadTuningComparison').disabled=false;}
+ }
+ $('loadTuningComparison').onclick=loadTuningComparison;
  $('designRun').onclick=()=>run().catch(()=>{});$('designPair').onchange=candidateTable;$('designApply').onclick=()=>{try{applySelected();}catch(e){$('designVerdict').textContent=String(e.message);}};
  $('openDesign').onclick=()=>$('designLesson').scrollIntoView({behavior:'smooth',block:'start'});
  $('designApply').disabled=true;$('designApplyCase').disabled=true;

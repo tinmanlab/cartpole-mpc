@@ -1,0 +1,10 @@
+{
+  "schema": "cartpole-sequential-tuning-browser/v1",
+  "passed": true,
+  "offlineReceiptLabel": true,
+  "equalAndExtraBudgetLabels": true,
+  "mainRuntimeUnchanged": true,
+  "missingReceiptClearsStaleResult": true,
+  "pageErrors": [],
+  "publicDeployment": false
+}

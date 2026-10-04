@@ -1,0 +1,23 @@
+{
+  "schema":"cartpole-sequential-tuning-protocol/v1",
+  "baseCommit":"c2ee97a0f08b4933e8c49738b422de7caddd48a1",
+  "taskManifest":"tests/fixtures/design_study.json",
+  "taskManifestSha256":"1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445",
+  "scope":"Same 600-step physical task, Re calibration, Qc shape, Qe shape, P0 and acceptance gates. Optional offline tuner, not a browser solver or hardware controller.",
+  "domain":{"controllers":["lqr","hard_mpc"],"observers":["kf","ekf"],"effortBounds":[0.5,2],"processBounds":[0.1,10],"logScale":true,"mpcHorizons":[20,30,40],"baselineEffort":1,"baselineProcess":1,"baselineHorizon":30},
+  "grid":{"effort":[0.5,1,2],"process":[0.1,1,10],"mpcHorizons":[20,30,40],"configurations":72,"exhaustiveRollouts":216},
+  "optimizerSeeds":[17011,17021,17027,17033,17041],
+  "methods":["grid_budget","random_full","random_racing","smac_racing"],
+  "searchRolloutBudget":108,
+  "checkpoints":[12,36,72,108],
+  "commonInitialization":"All four existing pair baselines at effort=1, process=1, MPC horizon=30 evaluated on all three training instances; 12 evaluations count against every method's budget. No other historical outcomes are loaded.",
+  "smac":{"version":"2.4.1","configspaceVersion":"1.2.1","maxConfigCalls":3,"retrainAfter":8,"initialSobolConfigurations":4,"acquisitionChallengers":512,"randomProbability":0.5,"workers":1},
+  "loss":{"taskScoreUpperBound":512,"hardFailureWeight":16,"taskFailureWeight":4,"formula":"16*hardFailure + 4*taskFailure + completedTaskScore/512. Each completed score is checked <=512, never clipped. Over the same 3 instances the mean preserves hard-count, task-count, task-score ordering. Partial racing comparisons are not complete-set certificates."},
+  "finalSelection":{"fullyEvaluatedTrainingShortlist":2,"alwaysIncludeBaselinePair":"lqr-kf","validation":"Reevaluate shortlist plus baseline on all three fixed validation instances; choose minimum task score among fully successful candidates, with the original 1% simplicity policy. No test-driven reselection.","partialConfigurationsIneligible":true},
+  "freshTestSeedRows":[[18101,18103,18107],[18211,18217,18223],[18301,18307,18311],[18401,18413,18427],[18503,18517,18521],[18607,18617,18637]],
+  "testConstruction":"Keep six previous test scenario/initial/goal/push templates in their original order; replace each seed with the three seeds in the matching row. Four primary templates x3=12, two boundary templates x3=6. All optimization and validation locks complete before any fresh test evaluation.",
+  "statistics":{"independentOptimizerRepeats":5,"pairedBootstrapResamples":10000,"confidenceLevel":0.95,"practicalRelativeMargin":0.01,"bootstrapSeed":19001,"unit":"optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."},
+  "successClaim":"Do not infer benefit from early rediscovery of the shared baseline. Report equally budgeted score/feasibility, certified incumbent curves, objective calls, actual model steps, tuner overhead and total measured wall cost. Report worse/unchanged outcomes and do not automatically promote any result.",
+  "execution":"Every evaluation uses actual existing MuJoCo WASM and the same task runner. No cross-method cache. Grid216 is an additional finite reference, not a continuous-domain global optimum. Known training/validation templates are development data; new seeds alone do not validate a new physical domain.",
+  "excluded":["no shortened rollouts or sample-period changes as fidelity","no custom racing algorithm","no hidden constraint relaxation or unverified command","no truth into controller/observer","no sensor/model/hardware deployment","no default replacement or automatic adoption"]
+}

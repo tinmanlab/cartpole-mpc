@@ -1,0 +1,8 @@
+# Optional offline tuner lane. Not imported by the browser or default npm checks.
+# Tested in an isolated Python 3.10 environment; no change to the native reference environment.
+smac==2.4.1
+ConfigSpace==1.2.1
+scikit-learn==1.7.2
+numpy==2.2.6
+scipy==1.15.3
+# Secondary dependency versions are recorded with the benchmark environment receipt.

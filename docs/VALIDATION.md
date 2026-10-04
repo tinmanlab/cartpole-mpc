@@ -277,3 +277,7 @@ The remaining scope is deliberate: other weights/horizons, full covariance/param
 Primary method references: MathWorks LQR documentation on inverse-squared design scales/Bryson initialization, https://www.mathworks.com/help/control/ref/lti.lqr.html ; official OSQP constrained MPC example, https://osqp.org/docs/examples/mpc.html ; MIT LQR assumptions and value function, https://underactuated.mit.edu/lqr.html . These justify method definitions, not the repository's measured outcomes.
 
 Application additionally checks the locked task/design settings, measured covariance and evaluated case identities. Changing those fields cannot reuse a previous admission. Selection itself rejects overlapping training/validation IDs or seeds, and never reads a test getter. This is evidence-bound simulation application, not a security boundary for arbitrary JavaScript or physical hardware.
+
+## Sequential-tuner comparison
+
+The optional SMAC3 experiment reuses this task evaluator with an explicitly bounded search-domain adapter. The original nine-point interface and defaults remain strict. See [the single protocol/result owner](SEQUENTIAL_TUNING.md) for conditional variables, equal call budgets, real SMAC intensification, fresh-test locks, independent raw-trajectory reconstruction and the limits of five-seed pilot statistics. Default CI checks the committed receipt/source and read-only evidence UI; it does not claim to rerun the full offline optimizer benchmark. The optional native contracts and full reproduction commands are separate.

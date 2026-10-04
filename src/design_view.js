@@ -46,6 +46,21 @@ const DesignLessonView={mount({manifest:m,pause,apply}){
   apply(recipe);$('designStatus').textContent='수동 적용: '+recipe.pair.id+' / '+recipe.candidate.id+' / '+test.id+' · 공통 시뮬레이션을 지정 초기 상태로 되돌리고 일시정지했습니다. 일반 설정 변경·Reset은 이 과제 설정을 해제합니다.';
   $('world').scrollIntoView({behavior:'smooth',block:'center'});return recipe;
  }
+ async function loadTuningComparison(){
+  const status=$('tuningComparisonStatus');status.dataset.state='loading';status.textContent='오프라인 근거를 읽는 중';$('tuningComparison').tBodies[0].replaceChildren();$('loadTuningComparison').disabled=true;
+  try{
+   const response=await fetch('evidence/sequential_tuning.json',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);
+   const report=await response.json();if(!report.experimentValid||report.mode!=='frozen-full')throw Error('완료된 고정 비교가 아닙니다');
+   const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN,fmt=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):'—';
+   const rows=['grid_budget','random_full','random_racing','smac_racing','grid_exhaustive'].map(method=>{
+    const rr=report.campaigns.filter(c=>c.method===method),effect=report.pairedStatistics.find(c=>c.method===method),ci=effect?.conditionalPairedBootstrap95;
+    return [method,rr.length,fmt(mean(rr.map(r=>r.actualSearchRollouts)),0),fmt(mean(rr.map(r=>r.fullyEvaluatedConfigurations)),1),fmt(mean(rr.map(r=>r.tunerSeconds)))+' s',fmt(mean(rr.map(r=>r.searchWallSeconds)))+' s',fmt(mean(rr.map(r=>r.primaryTaskSuccesses)),1)+' / 12',effect?fmt(effect.meanRelativeTaskDifference*100)+'%'+(ci?' ['+fmt(ci[0]*100)+', '+fmt(ci[1]*100)+']':' · 구간 미확정'):method==='grid_exhaustive'?'추가 예산 유한 참조':'동일 예산 기준'];
+   });cells('tuningComparison',rows);
+   status.dataset.state='loaded';status.textContent='SMAC '+report.versions.smac+' / ConfigSpace '+report.versions.ConfigSpace+' · 실제 총 평가 '+report.actualEvaluations+'회 · validation/test 추가 비용은 원본 기록에 별도 표기 · 기본값 변경 없음';
+  }catch(e){$('tuningComparison').tBodies[0].replaceChildren();status.dataset.state='error';status.textContent='결과 표시 중단: '+e.message;}
+  finally{$('loadTuningComparison').disabled=false;}
+ }
+ $('loadTuningComparison').onclick=loadTuningComparison;
  $('designRun').onclick=()=>run().catch(()=>{});$('designPair').onchange=candidateTable;$('designApply').onclick=()=>{try{applySelected();}catch(e){$('designVerdict').textContent=String(e.message);}};
  $('openDesign').onclick=()=>$('designLesson').scrollIntoView({behavior:'smooth',block:'start'});
  $('designApply').disabled=true;$('designApplyCase').disabled=true;
