@@ -1,0 +1,6 @@
+# Optional, tested independent numerical-reference lane (Python 3.10 on WSL).
+# These are tested pins, not claims of the newest releases.
+numpy==2.2.6
+scipy==1.15.3
+osqp==1.0.4
+mujoco==3.7.0

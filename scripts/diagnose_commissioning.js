@@ -9,7 +9,7 @@ function finding(id,severity,status,evidence,interpretation,next){
 }
 function diagnose(e){
   const out=[];
-  const sid=e.systemIdentification,aid=e.actuatorIdentification,ec=e.estimatorCalibration,ct=e.controllerTuning,mt=e.mpcTuning,rp=e.robustMpcProbe,mh=e.modelHierarchy||[],stress=e.stress||[],abl=e.singleFactorAblation||[];
+  const sid=e.systemIdentification,aid=e.actuatorIdentification,ec=e.estimatorCalibration,ct=e.controllerTuning,cot=e.controlEstimationCoTuning,mt=e.mpcTuning,sf=e.safetySupervisor,rp=e.robustMpcProbe,mh=e.modelHierarchy||[],stress=e.stress||[],abl=e.singleFactorAblation||[],adv=e.advancedFailures,disc=e.discretization;
   if(sid){
     const r=ratio(sid.heldout.identifiedLoss,sid.heldout.nominalLoss);
     out.push(finding('D01_MODEL_ID','high',r!==null&&r<.1?'PASS':'INVESTIGATE',
@@ -34,6 +34,11 @@ function diagnose(e){
       ct.scores,ct.accepted?'controller tuning improves held-out validation and test':'training improvement does not generalize to held-out closed-loop conditions',
       ct.accepted?'Admit only inside tested uncertainty envelope.':'Reject candidate; preserve baseline and inspect objective, uncertainty split, constraints and model mismatch.'));
   }
+  if(cot){
+    out.push(finding('D04A_CONTROL_ESTIMATION_COTUNING','high',cot.accepted?'PASS':'REJECT',
+      cot.scores,cot.accepted?'joint low-dimensional controller-estimator candidate improves held-out validation and test':'joint candidate overfits or degrades held-out closed-loop conditions',
+      cot.accepted?'Admit only as a low-dimensional black-box bridge; robot scale should use differentiable/bilevel co-design when tractable.':'Reject candidate; preserve staged baseline and inspect model, estimator consistency, constraints and objective coupling.'));
+  }
   if(mt){
     out.push(finding('D04B_MPC_TUNING','high',mt.accepted?'PASS':'REJECT',
       {baseline:mt.baseline,tuned:mt.tuned,scores:mt.scores},
@@ -45,6 +50,11 @@ function diagnose(e){
       {rows:mh.map(r=>({controller:r.controller,thetaDeg:r.thetaDeg,failures:r.failures,maxPosition:r.maxPosition,rmsControl:r.rmsControl}))},
       'initial-angle sweep measures the validity envelope of fixed-linear, successive-linearization, state-aware and nonlinear formulations under the same truth-state plant',
       'Use the sweep to choose the next model class; do not infer a universal controller ranking from one CartPole envelope.'));
+  }
+  if(sf){
+    out.push(finding('D04E_SAFETY_SUPERVISOR','high',sf.accepted?'PASS':'INVESTIGATE',
+      {rows:sf.rows},sf.accepted?'runtime backup supervisor reduces the fixed large-angle track-boundary failure without changing the primary NMPC':'backup supervisor does not improve the fixed safety probe',
+      'This is only a runtime monitor/backup bridge; robot deployment still needs native safety constraints, verified backup/interlock and formal analysis when required.'));
   }
   if(rp){
     out.push(finding('D04D_ROBUST_MPC_FORMULATION','high',rp.accepted?'PASS':'REJECT',
@@ -66,6 +76,25 @@ function diagnose(e){
       'single-factor ranking localizes which realism axis most changes this pipeline before combined randomization',
       'Start debugging with the highest-ranked single factor, not the combined sim2real scenario.'));
   }
+  if(adv){
+    const colored=adv.sensorRows.filter(r=>r.scenario==='colored'),drop=adv.sensorRows.filter(r=>r.scenario==='dropout'),stuck=adv.sensorRows.filter(r=>r.scenario==='stuck'),
+      jitter=adv.actuatorRows.filter(r=>r.scenario==='jitter'),ts=adv.actuatorRows.filter(r=>r.scenario==='torque_speed'),thermal=adv.actuatorRows.filter(r=>r.scenario==='thermal');
+    out.push(finding('D05B_SENSOR_FAULTS','high','INFO',
+      {coloredLag1:mean(colored.map(r=>r.innovationLag1)),dropoutStaleSamples:drop.reduce((a,r)=>a+r.staleSamples,0),stuckFaultSamples:stuck.reduce((a,r)=>a+r.faultSamples,0)},
+      'colored noise, stale packets and stuck measurements produce signatures that fixed white-Gaussian R tuning does not explain',
+      'On robot scale add timestamp/freshness telemetry, innovation whiteness tests and fault isolation before changing controller gains.'));
+    out.push(finding('D05C_ACTUATOR_ENVELOPE','high','INFO',
+      {jitterCommandMismatch:mean(jitter.map(r=>r.rmsCommandMismatch)),torqueSpeedMinForce:Math.min(...ts.map(r=>r.minForceLimit)),thermalMinForce:Math.min(...thermal.map(r=>r.minForceLimit)),thermalState:Math.max(...thermal.map(r=>r.maxThermalState))},
+      'transport jitter and state/history-dependent actuator authority are distinguishable from nominal control-cost tuning',
+      'Replace educational limits with measured torque-speed/current/voltage/thermal envelopes and synchronized command-vs-applied telemetry.'));
+  }
+  if(disc){
+    const coarse=disc.rows[0],fine=disc.rows.at(-1),ratio=coarse&&fine&&fine.rmseVs16>0?coarse.rmseVs16/fine.rmseVs16:null;
+    out.push(finding('D05D_DISCRETIZATION','medium',ratio!==null&&ratio>2?'INVESTIGATE':'PASS',
+      {rows:disc.rows,coarseToFineErrorRatio:ratio},
+      ratio!==null&&ratio>2?'trajectory changes materially with integration refinement':'this fixed refinement probe shows limited integration sensitivity',
+      ratio!==null&&ratio>2?'Validate timestep/integrator convergence before retuning controller or estimator parameters.':'Keep the refinement check when model or control rate changes.'));
+  }
   const lin=findRow(stress,'linear_mpc','ekf','mixed'),bounded=findRow(stress,'state_mpc','ekf','mixed');
   if(lin&&bounded){
     out.push(finding('D06_STATE_CONSTRAINT_SIGNAL','medium',
@@ -80,10 +109,10 @@ function diagnose(e){
     'nonzero command-to-applied mismatch separates transport/actuator failure from pure controller-state tracking error',
     'On hardware log commanded and applied torque/current with synchronized timestamps.'));
   const misses=stress.reduce((s,r)=>s+r.deadlineMissRate,0);
-  out.push(finding('D08_REALTIME','high',misses===0?'PASS':'INVESTIGATE',
-    {meanDeadlineMissRate:stress.length?misses/stress.length:0},
-    misses===0?'no deadline miss in this host-specific CartPole evidence':'solver/runtime deadline violations exist',
-    'Do not generalize host timing; on Figure record p50/p95/p99, scheduler, concurrency and solver residuals.'));
+  out.push(finding('D08_REALTIME','high',stress.length?(misses===0?'MEASURED_ONLY':'INVESTIGATE'):'UNAVAILABLE',
+    {meanSolverDeadlineMissRate:stress.length?misses/stress.length:null,measurementScope:'solver-call-only',endToEndRealtimeVerified:false},
+    misses===0?'no observed solver-call deadline miss; end-to-end real-time admission is not established':'observed solver-call deadline violations require investigation',
+    'Measure sensor acquisition-to-actuator application age, stale-plan rejection, scheduler/concurrency and fallback behavior on the target processor; solver timing alone is insufficient.'));
   const combined=stress.filter(r=>r.scenario==='sim2real');
   out.push(finding('D09_COMBINED_SIM2REAL','high',combined.some(r=>r.failures>0)?'BOUNDARY_FOUND':'PASS',
     {rows:combined.map(r=>({controller:r.controller,observer:r.observer,failures:r.failures,rmseState:r.rmseState,maxPosition:r.maxPosition,rmsCommandMismatch:r.rmsCommandMismatch}))},

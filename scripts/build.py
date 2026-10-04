@@ -19,6 +19,8 @@ def build() -> str:
         "CORE": "\n".join([
             read(SRC / "bam_params.js"),
             read(SRC / "plant.js"),
+            read(ROOT / "vendor/quadprog/quadprog.js"),
+            read(SRC / "qp.js"),
             read(SRC / "engine.js"),
         ]),
         "ACTOR": "const CONTROL_LAB_ACTOR = " + json.dumps(actor, separators=(",", ":")) + ";",

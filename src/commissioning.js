@@ -128,11 +128,12 @@ function estimatorConsistency(r){
       try{const z=Lab.solveLinearSystem(q.P,e);nees.push(e.reduce((ss,v,i)=>ss+v*z[i],0));}catch(_){}
     }
   }
-  const nisMean=mean(nis)||2,neesMean=mean(nees)||4;
+  const nisMean=nis.length?mean(nis):null,neesMean=nees.length?mean(nees):null;
+  const available=nis.length>0&&nees.length>0;
   const nisBounds95=[0.0506356,7.3777589],neesBounds95=[0.4844186,11.1432868];
   const coverage=(a,b)=>a.length?a.filter(v=>v>=b[0]&&v<=b[1]).length/a.length:null;
-  return {nisMean,neesMean,nisSamples:nis.length,neesSamples:nees.length,nisCoverage95:coverage(nis,nisBounds95),neesCoverage95:coverage(nees,neesBounds95),
-    penalty:Math.abs(Math.log(Math.max(1e-9,nisMean/2)))+Math.abs(Math.log(Math.max(1e-9,neesMean/4)))};
+  return {available,status:available?'available':'unavailable',nisMean,neesMean,nisSamples:nis.length,neesSamples:nees.length,nisCoverage95:coverage(nis,nisBounds95),neesCoverage95:coverage(nees,neesBounds95),
+    penalty:available?Math.abs(Math.log(Math.max(1e-9,nisMean/2)))+Math.abs(Math.log(Math.max(1e-9,neesMean/4))):null};
 }
 function controllerEval(params,split){
   const Qdiag=params.slice(0,4).map(v=>10**v),R=10**params[4],scores=[];
@@ -157,7 +158,7 @@ function estimatorEval(params,split){
   for(const s of split.scenarios)for(const seed of split.seeds){
     const r=Lab.runEpisode({controller:'lqr',observer:'ekf',observerOpts:{Q,RScale},scenario:s,seed,steps:240,pushAt:999,pushForce:0});
     const consistency=estimatorConsistency(r);
-    scores.push((r.failed?20:0)+r.rmseState+.012*consistency.penalty);
+    scores.push((r.failed?20:0)+r.rmseState+.012*(consistency.penalty??Infinity));
   }
   return riskAggregate(scores);
 }
@@ -169,6 +170,34 @@ function calibrateEstimator(){
   const scores={train:{baseline:estimatorEval(baseline,train),calibrated:estimatorEval(result.best.x,train)},
     validation:{baseline:estimatorEval(baseline,validation),calibrated:estimatorEval(result.best.x,validation)},test:{baseline:estimatorEval(baseline,test),calibrated:estimatorEval(result.best.x,test)}};
   return {baseline:decode(baseline),calibrated:decode(result.best.x),accepted:scores.validation.calibrated<scores.validation.baseline&&scores.test.calibrated<scores.test.baseline,scores,history:result.history};
+}
+
+
+function coDesignEval(params,split){
+  const posScale=10**params[0],angleScale=10**params[1],Rc=.12*10**params[2],Qscale=10**params[3],Rscale=10**params[4],
+    Qc=[2*posScale,.5*posScale,55*angleScale,3*angleScale],Qe=BASE_Q.map(q=>q*Qscale),scores=[];
+  for(const scenario of split.scenarios)for(const seed of split.seeds){
+    const r=Lab.runEpisode({controller:'lqr',controllerOpts:{Qdiag:Qc,R:Rc},observer:'ekf',observerOpts:{Q:Qe,RScale:Rscale},
+      scenario,seed,steps:230,pushAt:90,pushForce:scenario==='sensor'?0:3});
+    scores.push(episodeScore(r)+.012*(estimatorConsistency(r).penalty??Infinity));
+  }
+  return riskAggregate(scores);
+}
+function coTuneControlEstimation(){
+  const train={scenarios:['nominal','model','sensor','actuator'],seeds:[61,62,63]},
+    validation={scenarios:['mixed','latency'],seeds:[161,162,163]},
+    test={scenarios:['sim2real'],seeds:[1601,1602,1603,1604]};
+  const baseline=[0,0,0,0,0],result=cemOptimize({bounds:[[-.5,.7],[-.5,.7],[-.8,.8],[-1,1],[-1,1]],
+    objective:x=>coDesignEval(x,train),seed:67,iterations:5,population:14,initial:baseline});
+  const decode=x=>({controller:{Qdiag:[2*10**x[0],.5*10**x[0],55*10**x[1],3*10**x[1]],R:.12*10**x[2]},
+    estimator:{Q:BASE_Q.map(q=>q*10**x[3]),RScale:10**x[4]}});
+  const scores={train:{baseline:coDesignEval(baseline,train),candidate:coDesignEval(result.best.x,train)},
+    validation:{baseline:coDesignEval(baseline,validation),candidate:coDesignEval(result.best.x,validation)},
+    test:{baseline:coDesignEval(baseline,test),candidate:coDesignEval(result.best.x,test)}};
+  return {baseline:decode(baseline),candidate:decode(result.best.x),
+    accepted:scores.validation.candidate<scores.validation.baseline&&scores.test.candidate<scores.test.baseline,
+    scores,history:result.history,
+    boundary:'low-dimensional black-box co-tuning bridge; replace with differentiable/bilevel co-design at robot scale when tractable'};
 }
 
 function decodeMpcCandidate(c){
@@ -208,6 +237,20 @@ function tuneMpcStructure(){
     scores,candidates:candidates.map(x=>({params:decodeMpcCandidate(x.candidate),trainScore:x.score}))};
 }
 
+
+function safetySupervisorProbe(){
+  const angles=[.35,.45,.5],seeds=[721,722,723],rows=[];
+  for(const theta0 of angles)for(const controller of ['full_nmpc','supervised_nmpc']){
+    const rs=seeds.map(seed=>Lab.runEpisode({controller,observer:'truth',scenario:'nominal',seed,steps:300,pushAt:999,pushForce:0,initialState:[0,0,theta0,0]}));
+    rows.push({controller,theta0,thetaDeg:theta0*180/Math.PI,...summarizeRuns(rs)});
+  }
+  const better=angles.every(theta=>{
+    const a=rows.find(r=>r.controller==='full_nmpc'&&r.theta0===theta),b=rows.find(r=>r.controller==='supervised_nmpc'&&r.theta0===theta);
+    return b.failures<=a.failures&&b.maxPosition<=a.maxPosition;
+  });
+  return {accepted:better,rows,boundary:'runtime backup bridge only; no CBF/reachability/invariant-set safety guarantee'};
+}
+
 function robustMpcProbe(){
   const scenarios=['model','sim2real'],seeds=[701,702,703],rows=[];
   for(const scenario of scenarios)for(const controller of ['linear_mpc','scenario_mpc']){
@@ -240,7 +283,7 @@ function summarizeRuns(rs){
     p95SolveMs:mean(rs.map(r=>r.p95SolveMs)),deadlineMissRate:mean(rs.map(r=>r.deadlineMissRate))};
 }
 function stressReport(){
-  const controllers=['lqr','linear_mpc','state_mpc','ltv_mpc','full_nmpc'],observers=['ekf','mhe'],
+  const controllers=['lqr','linear_mpc','state_mpc','ltv_mpc','full_nmpc'],observers=['ekf'],
     scenarios=['nominal','model','sensor','bias','actuator','latency','mixed','sim2real'],rows=[];
   for(const controller of controllers)for(const observer of observers)for(const scenario of scenarios){
     const rs=[301,302,303].map(seed=>Lab.runEpisode({controller,observer,scenario,seed,steps:260,pushAt:100,pushForce:scenario==='nominal'?2:3}));
@@ -261,4 +304,55 @@ function ablationReport(){
   }
   return out;
 }
-module.exports={cemOptimize,generateSysIdData,sysIdLoss,sysIdRolloutLoss,sysIdSensitivity,identifyPlant,generateActuatorIdData,actuatorIdLoss,identifyActuator,tuneController,tuneMpcStructure,robustMpcProbe,modelHierarchySweep,calibrateEstimator,stressReport,ablationReport,estimatorConsistency};
+
+function lag1(values){
+  const valid=values.filter(Number.isFinite);if(valid.length<3)return 0;const m=mean(valid);let num=0,den=0;
+  for(let i=1;i<values.length;i++)if(Number.isFinite(values[i])&&Number.isFinite(values[i-1]))num+=(values[i]-m)*(values[i-1]-m);
+  for(const v of valid)den+=(v-m)*(v-m);
+  return den>1e-15?num/den:0;
+}
+function advancedFailureReport(){
+  const sensorRows=[],actuatorRows=[];
+  for(const scenario of ['colored','dropout','stuck'])for(const observer of ['ekf','ukf','mhe']){
+    const rs=[801,802,803].map(seed=>Lab.runEpisode({controller:'lqr',observer,scenario,seed,steps:300,pushAt:120,pushForce:3}));
+    const innovations=rs.flatMap(r=>[...r.trace.map(q=>q.innovation?.[0]??null),null]);
+    sensorRows.push({scenario,observer,...summarizeRuns(rs),innovationLag1:lag1(innovations),
+      staleSamples:rs.reduce((ss,r)=>ss+r.trace.filter(q=>q.sensorFresh===false).length,0),
+      faultSamples:rs.reduce((ss,r)=>ss+r.trace.filter(q=>q.sensorFault).length,0)});
+  }
+  for(const scenario of ['jitter','torque_speed','thermal'])for(const controller of ['lqr','full_nmpc']){
+    const steps=scenario==='thermal'?700:300;
+    const rs=[811,812,813].map(seed=>Lab.runEpisode({controller,observer:'ekf',scenario,seed,steps,pushAt:120,pushForce:3}));
+    actuatorRows.push({scenario,controller,...summarizeRuns(rs),
+      minForceLimit:Math.min(...rs.flatMap(r=>r.trace.map(q=>q.forceLimit??10))),
+      maxThermalState:Math.max(...rs.flatMap(r=>r.trace.map(q=>q.thermalState??0)))});
+  }
+  return {sensorRows,actuatorRows,interpretation:{
+    colored:'innovation autocorrelation reveals a wrong white-noise assumption even when RMSE remains moderate',
+    dropout:'stale packet metadata must be diagnosed separately from Gaussian measurement noise',
+    stuck:'a plausible-but-frozen sensor value is a fault-isolation problem, not just an R tuning problem',
+    jitter:'command-vs-applied mismatch exposes transport timing variation',
+    torque_speed:'available input authority is state-dependent and belongs in the actuator/input constraint model',
+    thermal:'available input authority becomes history-dependent and requires an actuator thermal state or derating model'}};
+}
+function discretizationProbe(){
+  const plant=new Lab.LabPlant({seed:901,scenario:'nominal'}),spec=plant.spec,controls=Array.from({length:140},(_,k)=>4*Math.sin(.07*k)+1.5*Math.sin(.19*k)),
+    levels=[1,2,4,8,16],trajectories={};
+  for(const n of levels){
+    let x=[0,0,.18,0],traj=[];
+    for(const u of controls){x=Lab.nonlinearStepSubsteps(x,u,spec,null,n);traj.push(x.slice());}
+    trajectories[n]=traj;
+  }
+  const ref=trajectories[16],rows=levels.slice(0,-1).map(n=>{
+    let se=0,max=0,count=0;
+    for(let k=0;k<ref.length;k++)for(let i=0;i<4;i++){
+      let e=trajectories[n][k][i]-ref[k][i];if(i===2)e=Lab.wrap(e);se+=e*e;max=Math.max(max,Math.abs(e));count++;
+    }
+    return {substeps:n,dt:Lab.DT/n,rmseVs16:Math.sqrt(se/count),maxAbsErrorVs16:max};
+  });
+  return {referenceSubsteps:16,rows,warning:rows[0].rmseVs16>rows.at(-1).rmseVs16?
+    'coarse integration materially changes the trajectory; validate integration before retuning control':
+    'no monotonic refinement signal in this probe; inspect excitation/model before drawing conclusions'};
+}
+
+module.exports={cemOptimize,generateSysIdData,sysIdLoss,sysIdRolloutLoss,sysIdSensitivity,identifyPlant,generateActuatorIdData,actuatorIdLoss,identifyActuator,tuneController,coTuneControlEstimation,tuneMpcStructure,safetySupervisorProbe,robustMpcProbe,modelHierarchySweep,calibrateEstimator,stressReport,ablationReport,advancedFailureReport,discretizationProbe,estimatorConsistency};

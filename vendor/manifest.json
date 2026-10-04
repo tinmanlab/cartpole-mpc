@@ -1,0 +1,54 @@
+{
+  "schema": "cartpole-runtime-assets/v1",
+  "packages": {
+    "@mujoco/mujoco": "3.7.0",
+    "quadprog": "1.6.1"
+  },
+  "origins": {
+    "@mujoco/mujoco": "https://github.com/google-deepmind/mujoco/tree/3.7.0/wasm",
+    "quadprog": "https://github.com/albertosantini/quadprog"
+  },
+  "files": {
+    "vendor/mujoco/mujoco.js": {
+      "sha256": "2f173521a2d415a416126892a16a8b557b62bb9390386a3ad0ae7f09da25336e",
+      "bytes": 297816
+    },
+    "vendor/mujoco/mujoco.wasm": {
+      "sha256": "328208582acb65aad91c1ca2edfdc81d5b991a2db1bc9f2cbfeacfe9bc2d9a8a",
+      "bytes": 8698150
+    },
+    "vendor/mujoco/README.md": {
+      "sha256": "8aac6a48315d961e9f5d06b1df254f6033ce541e4e8b7ba8d376859d6ad6b570",
+      "bytes": 20260
+    },
+    "vendor/mujoco/package.json": {
+      "sha256": "0627d06da252303089be3d7bbec0b92d1f5c97b47eefd60d285db54c326541d0",
+      "bytes": 36
+    },
+    "vendor/mujoco/LICENSE": {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    },
+    "vendor/quadprog/LICENSE": {
+      "sha256": "39dcf1fc87f45be4006233471661ee4c3df7b3e3ceded9e1bbff8aed1fe7a869",
+      "bytes": 1136
+    },
+    "vendor/quadprog/README.md": {
+      "sha256": "13586a7d05e74acfb0118b91ee217f60b485e5e1f2647650b64bff1eff8dfd1c",
+      "bytes": 5263
+    },
+    "vendor/quadprog/quadprog.js": {
+      "sha256": "c5ff5f7a241628b0563e9a2d5c2b143dba9e7d0a3e4b9510d0b9d38f117894f9",
+      "bytes": 16979
+    }
+  },
+  "quadprog_sources": {
+    "index.js": "0563a8272d6a461d7f64cecb2328895ebae3fa09ce73afa4b7a0a6039e00c523",
+    "lib/dpofa.js": "4216f3321ca024e245cd7b06fd018efd3f583da81802e5048f35585754c2a2b2",
+    "lib/dpori.js": "c0b5ac7e66305d2024aa8df0ed7553857d81aacbe620396d8da807ba05bf4824",
+    "lib/dposl.js": "2a61e3c4a8978bdfa2b50766e507a06b1c786a054e7d58e570a966bd317793cc",
+    "lib/qpgen2.js": "474492a74e6f9eea1087ab4fbf22ae04dcea6aab9a3b24cf7d4dba52e93228e2",
+    "lib/quadprog.js": "e52f10f12619a65da12331aaaf63e253649af21e87103e6b4b13a482cf1daddc",
+    "lib/vsmall.js": "d28008040d195d0069cb93026be690866e863bc4d6fcbb3dd50c63651fa6d2c4"
+  }
+}

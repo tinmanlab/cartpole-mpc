@@ -5,5 +5,7 @@ playwright-report/
 test-results/
 *.webm
 .DS_Store
+.venv-native/
+.pytest_cache/
 
 !media/cartpole-mpc-demo.webm

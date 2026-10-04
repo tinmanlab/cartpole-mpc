@@ -1,5 +1,6 @@
 # Validation
 
+Runtime/asset execution authority: [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md). Browser and commissioning use the official WASM engine; legacy equation tests are explicitly differential references.
 ## Reproduce
 
     npm ci

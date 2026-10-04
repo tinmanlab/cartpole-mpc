@@ -247,3 +247,23 @@ Use randomization to test robustness after:
 - single-factor failures are understood.
 
 Otherwise a successful policy/controller can hide a wrong model, and a failed one does not tell you why.
+
+## Advanced fault signatures
+
+Do not collapse the following into one generic reality-gap bucket:
+
+| Signature | CartPole probe | Robot-scale interpretation |
+|---|---|---|
+| innovation autocorrelation | AR(1) colored sensor noise | white-noise assumption is wrong; model correlation or augment the noise state |
+| stale/frozen packets | dropout hold-last | timestamp/freshness/transport fault, not Gaussian R tuning |
+| plausible but stuck measurement | stuck sensor | fault detection/isolation and degraded sensing |
+| command/applied mismatch with irregular timing | jitter | transport/scheduler distribution and delay compensation |
+| speed-dependent force authority | torque-speed envelope | motor voltage/current/back-EMF envelope belongs in constraints/model |
+| slowly declining authority | thermal derating | thermal/current/power state and long-duration acceptance |
+| trajectory changes with integrator refinement | discretization probe | numerical model error; validate timestep/integrator before retuning gains |
+
+The educational scenarios expose these mechanisms separately. A real robot should replace each with synchronized measured telemetry rather than reusing the CartPole constants.
+
+## Runtime safety/degraded mode
+
+The executable NMPC supervisor monitors its predicted CartPole trajectory and switches to a local LQR backup when position/angle margins are exceeded. This demonstrates architectural separation between performance control and a backup layer. It is not a CBF, reachability proof, viability kernel, terminal invariant set, or hardware safety guarantee. Figure should use native constraints, verified fallback behavior and hardware interlocks appropriate to the platform.

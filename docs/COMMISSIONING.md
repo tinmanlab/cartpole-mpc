@@ -1,5 +1,6 @@
 # Commissioning: from a correct algorithm to a transferable robot stack
 
+Runtime/asset execution authority: [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md). Browser and commissioning use the official WASM engine; legacy equation tests are explicitly differential references.
 This repository separates algorithm correctness from commissioning.
 
 A controller or estimator can be mathematically correct and still fail on hardware because the model is wrong, covariance is miscalibrated, constraints are missing, latency or actuator dynamics are ignored, or parameters were tuned on one condition and do not generalize.
@@ -248,3 +249,18 @@ For humanoids this maps to joint limits, torque-speed limits, contact/friction c
 ## Robustification admission
 
 The commissioning lane also compares the nominal Linear MPC with the executable finite-model Scenario-risk MPC on paired model-mismatch and combined sim2real seeds. The candidate is accepted only if failure count and maximum cart excursion do not worsen in either held-out condition. This is intentionally strict: adding uncertain models to an objective is not a robustness guarantee.
+## Advanced failure injection
+
+The commissioning harness now separates several failures that are often incorrectly collapsed into generic noise or reality gap:
+
+- AR(1) colored sensor noise, with innovation lag-1 correlation recorded,
+- packet dropout represented as hold-last plus stale/freshness metadata,
+- stuck sensor values, distinct from packet loss,
+- stochastic command-hold jitter,
+- state-dependent torque/force authority through a torque-speed envelope,
+- history-dependent thermal derating,
+- integration/discretization refinement from 1 to 16 plant substeps.
+
+These are simplified CartPole mechanisms. The transferable contract is the diagnostic separation: a sensor model, transport model, actuator envelope, thermal state and numerical integration error should not be hidden inside controller gain tuning.
+
+The commissioning harness also includes a low-dimensional controller-estimator co-tuning bridge. It is accepted only if the joint candidate improves both held-out validation and test. This is intentionally not called ContEst or DiffTune; those methods should replace the small black-box bridge when their assumptions and native solver sensitivities are appropriate.

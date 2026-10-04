@@ -1,5 +1,6 @@
 # Architecture
 
+Runtime/asset execution authority: [MuJoCo WASM runtime](MUJOCO_WASM_RUNTIME.md). Browser and commissioning use the official WASM engine; legacy equation tests are explicitly differential references.
 The lab keeps one plant and changes the control or estimation block around it.
 
     plant truth x

@@ -4,15 +4,11 @@
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
-<p align="center">
-  <a href="https://tinmanlab.github.io/cartpole-mpc/">
-    <img src="media/cartpole-mpc-demo.gif" alt="CartPole MPC live controller and observer demo" width="100%">
-  </a>
-</p>
+![MuJoCo WASM control/observer lab](evidence/mujoco_wasm_browser.png)
 
-[High-resolution WebM recording](media/cartpole-mpc-demo.webm)
+The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `assets/cartpole.xml`. The default is **hard-rail constrained MPC + EKF**. Canvas displays a 2D projection of the compiled MJCF geometry; it is not a separate physics engine. The screenshot is a real browser run. Older GIF/WebM files under `media/` are historical recordings of the earlier JavaScript physics implementation, not evidence of this runtime.
 
-The loop above is a real browser run of the integrated lab: **full nonlinear NMPC + EKF**, under combined sensor noise/model mismatch with pushes, goal changes, live estimation, solver timing, and horizon visualization. Learned/robust estimator variants are taught separately so the front-page demo does not imply that a heuristic bridge is the default estimator.
+See [runtime, assets and failure contracts](docs/MUJOCO_WASM_RUNTIME.md) for exact versions, masses/inertias, model scope, upstream code reuse and verification commands.
 
 ## Start here
 
@@ -77,7 +73,8 @@ Then learned information can enter at different points:
 |---|---|
 | PID | live cascaded feedback controller |
 | LQR | Riccati state-feedback controller |
-| Linear MPC | N=30 box-constrained receding-horizon optimization |
+| Linear MPC | N=30 input-box QP solved by pinned upstream quadprog |
+| Constrained MPC | same QP plus explicit world-position rail constraints; invalid/infeasible plans rejected |
 | Scenario-risk MPC | N=30 shared-input finite-model ensemble objective; mean + worst-case risk term |
 | Centroidal-style MPC | N=32 reduced horizontal CoM planner + downstream full-state stabilizer |
 | LTV MPC / RTI bridge | one warm-started successive-linearization update per tick |
@@ -85,6 +82,7 @@ Then learned information can enter at different points:
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
 | EKF | nonlinear prediction + numerical Jacobian covariance propagation |
+| UKF | sigma-point nonlinear Gaussian propagation with circular angle handling |
 | SO(2) error bridge | wrapped angle innovation; not the full Hartley humanoid InEKF |
 | Nonlinear shooting MHE | recent-window nonlinear single-shooting estimate with EKF arrival prior; not full constrained NMHE |
 | Learned residual | locally trained residual MLP behind the geometry-aware EKF |
@@ -167,7 +165,7 @@ Useful lessons:
 
 ### Run locally
 
-No runtime dependency or build step is required for the checked-in page.
+The checked-in site includes its pinned WASM and QP runtimes. Serve the **whole repository through HTTP**; opening only `index.html` as a local file is unsupported. No CDN or Python control server is required by the public browser runtime.
 
     git clone https://github.com/tinmanlab/cartpole-mpc.git
     cd cartpole-mpc
@@ -216,9 +214,15 @@ More detail:
 - [Theory failure map](docs/THEORY_FAILURE_MAP.md)
 - [Reference / native-authority map](docs/REFERENCE_MAP.md)
 
+## Correctness and native references
+
+Read [the 2026-10-04 sim2real correctness review](docs/SIM2REAL_CORRECTNESS_REVIEW_2026-10-04.md) before interpreting commissioning results as robot readiness. It records reproduced observer/freshness/covariance/supervisor defects, corrections, essential deployment gaps, and a native numerical-reference lane using **SciPy, OSQP and MuJoCo**.
+
+The original review documented a 3/4 strict first-action parity failure in the handwritten browser QP optimizer. That optimizer has now been replaced by pinned upstream quadprog. **All four unchanged OSQP parity cases pass**, together with an active hard-rail comparison. WASM/native replay uses the exact same MJCF. Read the current receipts linked in [MuJoCo WASM runtime](docs/MUJOCO_WASM_RUNTIME.md); the earlier review and `native_reference_before.json` are historical evidence. Hardware admission remains **NOT_EVALUATED**.
+
 ## Fixed evidence
 
-The repo ships deterministic evidence under evidence/.
+The repo ships fixed-seed numerical evidence under `evidence/`. Timing values are host-dependent; they are not deterministic or hard-real-time guarantees.
 
 Representative fixed checks from the audited implementation:
 
@@ -231,7 +235,10 @@ Representative fixed checks from the audited implementation:
 - the targeted LQR-fixed estimator nonlinear bench gives about 0.0080 KF RMSE versus 0.00323 EKF RMSE across five fixed seeds,
 - the SO(2) regression demonstrates that +179 deg and -179 deg differ by 2 deg, not 358 deg,
 - scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
-- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims.
+- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims,
+- colored noise, dropout, stuck-sensor, command jitter, torque-speed and thermal-derating probes are separate failure classes rather than one generic "reality gap",
+- integration refinement is checked explicitly before interpreting tuning failures,
+- low-dimensional controller-estimator co-tuning is admitted only through held-out validation/test and is not mislabeled as ContEst/DiffTune.
 
 Run:
 
@@ -241,7 +248,7 @@ For the slower offline commissioning experiment:
 
     npm run commission
 
-This writes evidence/commissioning.json and evidence/diagnosis.json. The diagnosis layer maps measured failure signatures back to model, estimator, constraint, actuator, timing, or tuning hypotheses; it is a deterministic triage aid, not an autonomous proof of root cause.
+This executes actual MuJoCo WASM and writes `evidence/commissioning.json` and `evidence/diagnosis.json`, including engine/asset/source identity. Identification and sensor-noise knowledge are still explicitly simulated, not a real measured-data calibration.  The diagnosis layer maps measured failure signatures back to model, estimator, constraint, actuator, timing, or tuning hypotheses; it is a deterministic triage aid, not an autonomous proof of root cause.
 
 
 ## Read comparison results correctly
@@ -265,9 +272,7 @@ The repo now includes a slow offline commissioning lane in addition to the brows
     → held-out validation/test gate
     → combined sim2real stress
 
-The current deterministic receipt deliberately contains both outcomes:
-- estimator calibration is **accepted** because held-out validation and test improve,
-- the controller tuning candidate is **rejected** because its training score improves while validation/test degrade.
+The receipt records both accepted and rejected candidates according to the actual held-out scores. These decisions are recomputed rather than forcing a named method to win. Inspect `evidence/commissioning.json` for the current numerical outcomes and its exact source/model provenance.
 
 This is intentional. A tuner result is not a controller until it passes held-out admission.
 

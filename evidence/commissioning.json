@@ -1,11 +1,41 @@
 {
   "schema": "cartpole-commissioning-evidence/v1",
-  "generatedAt": "2026-10-03T15:15:45.313Z",
+  "generatedAt": "2026-10-04T02:17:21.699Z",
+  "sourceSha256": {
+    "src/engine.js": "38611647cbe7c348aca8b417a54ede7850c645819ab311fc0056ddbae4f41295",
+    "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
+    "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
+    "src/commissioning.js": "b9ce07db87b2e202827bc44448e518aa697719e37daea4f2ea2f7659403f5065",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "vendor/manifest.json": "ba88973e82e116f8c710bca021f13f8a971342a21d0d57c03d640b268df57587",
+    "package-lock.json": "696fd0938011163acc6560f911d08bdc7d3542c1f5bfe56efcc61f9b891279c1",
+    "scripts/run_commissioning.js": "5a5b0069685b5de1f8e79975a43bc253c4a787e67894d5eb6577ec054d953222"
+  },
+  "physics": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "stepCalls": 85005968,
+    "cachedModels": 15,
+    "integrator": "Euler",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "informationBoundary": {
+    "systemIdentification": "simulation-truth-state",
+    "actuatorIdentification": "simulation-realized-force",
+    "measurementCovariance": "injected-noise-oracle",
+    "hardwareVerified": false
+  },
   "notes": [
+    "Actual official MuJoCo WASM engine and canonical MJCF; no silent JS physics fallback.",
     "CartPole-only commissioning evidence; do not promote to humanoid/hardware capability.",
-    "Controller tuner candidates are accepted only if both held-out validation and held-out test improve.",
+    "Controller tuner candidates are accepted only if both held-out validation and held-out test improve; do not repeatedly optimize against this fixed test set.",
     "Estimator calibration objective includes RMSE plus NIS/NEES consistency penalties.",
-    "Single-factor ablations precede the combined sim2real stress so failure causes remain attributable."
+    "Single-factor ablations precede combined stress. This is simulated commissioning, not measured-data hardware calibration.",
+    "Reported solver-call times are host measurements, not hard-real-time or sensor-to-hardware-actuator guarantees."
   ],
   "systemIdentification": {
     "trueParams": {
@@ -20,12 +50,12 @@
       "l": 0.5725751833524175,
       "friction": 0.13707840245309066
     },
-    "trainLoss": 8.07223347423436e-9,
+    "trainLoss": 8.143377003022061e-9,
     "heldout": {
-      "nominalLoss": 0.00005379310103578318,
-      "identifiedLoss": 8.085694042467685e-9,
-      "nominalRolloutLoss": 0.01210527103046812,
-      "identifiedRolloutLoss": 0.0000010151280217980703
+      "nominalLoss": 0.00005395236555967369,
+      "identifiedLoss": 8.144075295007815e-9,
+      "nominalRolloutLoss": 0.012144357166271135,
+      "identifiedRolloutLoss": 0.0000010280718619243699
     },
     "identifiability": {
       "parameterOrder": [
@@ -35,45 +65,45 @@
         "friction"
       ],
       "sensitivityNorms": [
-        0.5021945125388313,
-        0.19327876058958374,
-        0.9977851021488098,
-        0.12551417515172852
+        0.5016847181446927,
+        0.19302109273012227,
+        0.9969595802760778,
+        0.12673079007699362
       ],
       "correlation": [
         [
+          0.9999999999999998,
+          0.6159312215896189,
+          0.5657830071407051,
+          0.5442743167982648
+        ],
+        [
+          0.6159312215896189,
+          1.0000000000000002,
+          0.14524258681253105,
+          0.24463482968740044
+        ],
+        [
+          0.5657830071407051,
+          0.14524258681253105,
           1,
-          0.6161736718284396,
-          0.5656931101934998,
-          0.5301413784390707
+          0.4086255735618639
         ],
         [
-          0.6161736718284396,
-          1,
-          0.14559634986015926,
-          0.2356890744202075
-        ],
-        [
-          0.5656931101934998,
-          0.14559634986015926,
-          0.9999999999999999,
-          0.4015645415875453
-        ],
-        [
-          0.5301413784390707,
-          0.2356890744202075,
-          0.4015645415875453,
-          1.0000000000000002
+          0.5442743167982648,
+          0.24463482968740044,
+          0.4086255735618639,
+          1
         ]
       ],
-      "maxAbsOffDiagonalCorrelation": 0.6161736718284396,
+      "maxAbsOffDiagonalCorrelation": 0.6159312215896189,
       "warning": null
     },
     "history": [
       {
         "iteration": 0,
-        "best": 0.000001722060456918768,
-        "eliteMean": 0.000017010573825314716,
+        "best": 0.0000017297761951975233,
+        "eliteMean": 0.000017032014567909388,
         "mu": [
           1.1092419488730396,
           0.11431817477693001,
@@ -89,8 +119,8 @@
       },
       {
         "iteration": 1,
-        "best": 5.85094081341207e-8,
-        "eliteMean": 0.0000029451899757470614,
+        "best": 5.8788785181843255e-8,
+        "eliteMean": 0.0000029379003060072454,
         "mu": [
           1.20333371934227,
           0.10550431036463669,
@@ -106,8 +136,8 @@
       },
       {
         "iteration": 2,
-        "best": 5.85094081341207e-8,
-        "eliteMean": 9.725625336154414e-7,
+        "best": 5.8788785181843255e-8,
+        "eliteMean": 9.748271477021396e-7,
         "mu": [
           1.2064783164371258,
           0.10577092439812663,
@@ -123,8 +153,8 @@
       },
       {
         "iteration": 3,
-        "best": 5.85094081341207e-8,
-        "eliteMean": 2.79093232992778e-7,
+        "best": 5.8788785181843255e-8,
+        "eliteMean": 2.796506381855001e-7,
         "mu": [
           1.2285510801644122,
           0.1281030102518844,
@@ -140,8 +170,8 @@
       },
       {
         "iteration": 4,
-        "best": 5.85094081341207e-8,
-        "eliteMean": 1.650713377238968e-7,
+        "best": 5.8788785181843255e-8,
+        "eliteMean": 1.6577367352876888e-7,
         "mu": [
           1.2304242332828432,
           0.11444361343315283,
@@ -157,8 +187,8 @@
       },
       {
         "iteration": 5,
-        "best": 4.488892034955492e-8,
-        "eliteMean": 7.487639124562155e-8,
+        "best": 4.581917956661038e-8,
+        "eliteMean": 7.535909469129111e-8,
         "mu": [
           1.2386223288063134,
           0.10095143680109403,
@@ -174,8 +204,8 @@
       },
       {
         "iteration": 6,
-        "best": 8.07223347423436e-9,
-        "eliteMean": 3.2223183603737046e-8,
+        "best": 8.143377003022061e-9,
+        "eliteMean": 3.2289503440200366e-8,
         "mu": [
           1.2466917745509736,
           0.08467421508213019,
@@ -310,23 +340,23 @@
     "accepted": true,
     "scores": {
       "train": {
-        "baseline": 0.0889177215690434,
-        "calibrated": 0.07275030684004641
+        "baseline": 0.08891459129204707,
+        "calibrated": 0.07275366259155544
       },
       "validation": {
-        "baseline": 0.07191552430171955,
-        "calibrated": 0.051378164500877316
+        "baseline": 0.07191171069961652,
+        "calibrated": 0.05138032162957243
       },
       "test": {
-        "baseline": 0.0731564738484521,
-        "calibrated": 0.05196923657934929
+        "baseline": 0.07311547440574111,
+        "calibrated": 0.05196752076873659
       }
     },
     "history": [
       {
         "iteration": 0,
-        "best": 0.08726715385867259,
-        "eliteMean": 0.08867081669579871,
+        "best": 0.08727251569906506,
+        "eliteMean": 0.08866948242887641,
         "mu": [
           0.12521362000241645,
           -0.6093853770845641,
@@ -344,8 +374,8 @@
       },
       {
         "iteration": 1,
-        "best": 0.07826664051150374,
-        "eliteMean": 0.07908932122944791,
+        "best": 0.07827370582153666,
+        "eliteMean": 0.07909237720796185,
         "mu": [
           0.11747851689303428,
           -1.1055837458189817,
@@ -363,8 +393,8 @@
       },
       {
         "iteration": 2,
-        "best": 0.07755040508569752,
-        "eliteMean": 0.07809303183279306,
+        "best": 0.0775540115342737,
+        "eliteMean": 0.07809738569064148,
         "mu": [
           0.0874959658338467,
           -1.0782089396735974,
@@ -382,8 +412,8 @@
       },
       {
         "iteration": 3,
-        "best": 0.0736060689391892,
-        "eliteMean": 0.07537013188052084,
+        "best": 0.07361322418914888,
+        "eliteMean": 0.07537616751562307,
         "mu": [
           0.10983493716945003,
           -1.1739626758276542,
@@ -401,8 +431,8 @@
       },
       {
         "iteration": 4,
-        "best": 0.07319914496648047,
-        "eliteMean": 0.07365779868192193,
+        "best": 0.07320354138270095,
+        "eliteMean": 0.07366405588293477,
         "mu": [
           0.005191727572048788,
           -1.2431142645501694,
@@ -420,8 +450,8 @@
       },
       {
         "iteration": 5,
-        "best": 0.07296900906122905,
-        "eliteMean": 0.07325806817661619,
+        "best": 0.07297426302997664,
+        "eliteMean": 0.07326373566171429,
         "mu": [
           0.06834893470779754,
           -1.2549918141272793,
@@ -439,8 +469,8 @@
       },
       {
         "iteration": 6,
-        "best": 0.07275030684004641,
-        "eliteMean": 0.07310019890376328,
+        "best": 0.07275366259155544,
+        "eliteMean": 0.07310494463279711,
         "mu": [
           -0.05669869400225798,
           -1.3095643373689216,
@@ -470,33 +500,33 @@
     },
     "tuned": {
       "Qdiag": [
-        2.0304043726777867,
-        0.1116171909331286,
-        18.196960309592402,
-        13.219741118342423
+        2.3316999285905897,
+        0.10614283177331817,
+        15.153616323215664,
+        15.848931924611133
       ],
-      "R": 0.03162277660168379
+      "R": 0.03808197956211661
     },
     "accepted": false,
     "scores": {
       "train": {
-        "baseline": 0.8868891615540477,
-        "tuned": 0.7114596866609884
+        "baseline": 0.8862145766185134,
+        "tuned": 0.7078313420922461
       },
       "validation": {
-        "baseline": 0.7172536481032018,
-        "tuned": 0.7364198693883339
+        "baseline": 0.7175337924666713,
+        "tuned": 0.7482751750167762
       },
       "test": {
-        "baseline": 0.6676952786339873,
-        "tuned": 0.7073860123130975
+        "baseline": 0.6678140247727318,
+        "tuned": 0.7124266997960251
       }
     },
     "history": [
       {
         "iteration": 0,
-        "best": 0.7986709018200414,
-        "eliteMean": 0.8330285871311294,
+        "best": 0.7978980924241175,
+        "eliteMean": 0.8326827874122014,
         "mu": [
           0.3960549795135776,
           -0.22063383016217686,
@@ -514,8 +544,8 @@
       },
       {
         "iteration": 1,
-        "best": 0.7400097823113161,
-        "eliteMean": 0.7694946452841955,
+        "best": 0.7394997658631308,
+        "eliteMean": 0.7690873122496408,
         "mu": [
           0.30823881601885506,
           -0.2718276907905098,
@@ -525,7 +555,7 @@
         ],
         "sd": [
           0.2468503375973418,
-          0.47571989216851857,
+          0.4757198921685185,
           0.27290143192737537,
           0.10191956256304233,
           0.29000553189274925
@@ -533,11 +563,11 @@
       },
       {
         "iteration": 2,
-        "best": 0.7114596866609884,
-        "eliteMean": 0.7293075769306089,
+        "best": 0.7110402991049906,
+        "eliteMean": 0.7288638179137805,
         "mu": [
           0.2577135354812601,
-          -0.6547982141790598,
+          -0.6547982141790596,
           1.2900698169459226,
           1.1585978824479701,
           -1.214583398759121
@@ -552,81 +582,236 @@
       },
       {
         "iteration": 3,
-        "best": 0.7114596866609884,
-        "eliteMean": 0.721826415008253,
+        "best": 0.7110402991049906,
+        "eliteMean": 0.7213974954943676,
         "mu": [
-          0.27801840163887737,
-          -0.9310587642410544,
-          1.1753446984770592,
-          1.1689932400903407,
-          -1.2593117923671786
+          0.32151460348250316,
+          -0.8448664994513834,
+          1.1446555387306598,
+          1.1613379243740771,
+          -1.2851910959833148
         ],
         "sd": [
-          0.07161083452042251,
-          0.23180721899870255,
-          0.1448483986969798,
-          0.026960900548311763,
-          0.05165642737712652
+          0.06128042610801512,
+          0.355512315889926,
+          0.10238056274777531,
+          0.03146430822385694,
+          0.08138418779548962
         ]
       },
       {
         "iteration": 4,
-        "best": 0.7114596866609884,
-        "eliteMean": 0.7181856535030509,
+        "best": 0.7110402991049906,
+        "eliteMean": 0.7147886698242012,
         "mu": [
-          0.30194312493030323,
-          -0.7605659504219424,
-          1.1191844217520786,
-          1.1781876746976032,
-          -1.2851597524790228
+          0.30936445637983806,
+          -0.7218735412796706,
+          1.1041558525585238,
+          1.1713614850649272,
+          -1.3455324997619198
         ],
         "sd": [
-          0.04779404518244918,
-          0.1969427055824861,
-          0.09109197944726101,
-          0.02770451955170113,
-          0.03763138091406407
+          0.04876787934744903,
+          0.22369677015145242,
+          0.07222694798071427,
+          0.03217744941761031,
+          0.04913824434055823
         ]
       },
       {
         "iteration": 5,
-        "best": 0.7114596866609884,
-        "eliteMean": 0.7147382054396914,
+        "best": 0.7093057972135699,
+        "eliteMean": 0.7107277252273132,
         "mu": [
-          0.3539172673403206,
-          -0.8849742205439609,
-          1.075564655443253,
-          1.1881049904633205,
-          -1.299585729093674
+          0.3485154460364771,
+          -0.834692251555723,
+          1.1013121683504858,
+          1.1794223261420191,
+          -1.3859601445081497
         ],
         "sd": [
-          0.021972492435489634,
-          0.10993410405045428,
-          0.08048821394158516,
+          0.029369625399770012,
+          0.1576684562415907,
+          0.07140014052350242,
           0.0225,
-          0.03121513167939091
+          0.03396337912005677
         ]
       },
       {
         "iteration": 6,
-        "best": 0.7114596866609884,
-        "eliteMean": 0.7132100995868018,
+        "best": 0.7078313420922461,
+        "eliteMean": 0.7086981464466378,
         "mu": [
-          0.3539804857723231,
-          -0.9062024215145861,
-          1.0614683681217012,
-          1.1889316154053824,
-          -1.321828480289265
+          0.34676373107622976,
+          -0.8930280932539549,
+          1.0653117989632264,
+          1.1841817158676124,
+          -1.4059866827103118
         ],
         "sd": [
           0.0195,
-          0.1196731584356468,
-          0.06076391318218192,
+          0.14235532090735206,
+          0.06592848525305288,
           0.0225,
           0.027
         ]
       }
     ]
+  },
+  "controlEstimationCoTuning": {
+    "baseline": {
+      "controller": {
+        "Qdiag": [
+          2,
+          0.5,
+          55,
+          3
+        ],
+        "R": 0.12
+      },
+      "estimator": {
+        "Q": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "RScale": 1
+      }
+    },
+    "candidate": {
+      "controller": {
+        "Qdiag": [
+          8.485276806386949,
+          2.1213192015967373,
+          141.50478227597546,
+          7.7184426695986605
+        ],
+        "R": 0.04054019206212475
+      },
+      "estimator": {
+        "Q": [
+          0.00001970547115274926,
+          0.001970547115274926,
+          0.00001970547115274926,
+          0.003941094230549852
+        ],
+        "RScale": 0.5697391637432642
+      }
+    },
+    "accepted": false,
+    "scores": {
+      "train": {
+        "baseline": 0.5016510521271139,
+        "candidate": 0.40156798241020497
+      },
+      "validation": {
+        "baseline": 0.6734304226259219,
+        "candidate": 0.5267205184274665
+      },
+      "test": {
+        "baseline": 0.7526690773195387,
+        "candidate": 0.9444025623086433
+      }
+    },
+    "history": [
+      {
+        "iteration": 0,
+        "best": 0.43535905907659556,
+        "eliteMean": 0.47880177919493294,
+        "mu": [
+          0.17221363759303063,
+          -0.11217968068003356,
+          -0.4180008734740625,
+          0.27236756636134507,
+          0.13001013182153714
+        ],
+        "sd": [
+          0.3545357832785583,
+          0.2910739057772272,
+          0.2757364564216512,
+          0.2138964437446917,
+          0.5752866026121835
+        ]
+      },
+      {
+        "iteration": 1,
+        "best": 0.40156798241020497,
+        "eliteMean": 0.4240008106506118,
+        "mu": [
+          0.24082586603240513,
+          0.18146650667798891,
+          -0.38610706313378196,
+          0.33121011110195164,
+          -0.2680958378530819
+        ],
+        "sd": [
+          0.24751427732861897,
+          0.1828697665569846,
+          0.10077826207907409,
+          0.20289437315379036,
+          0.3363782115780541
+        ]
+      },
+      {
+        "iteration": 2,
+        "best": 0.40156798241020497,
+        "eliteMean": 0.412939861034436,
+        "mu": [
+          0.272322719021855,
+          0.317025910134867,
+          -0.37460080368875615,
+          0.16066685528818814,
+          -0.2851671322569107
+        ],
+        "sd": [
+          0.23703440471094256,
+          0.07047811173562347,
+          0.0650596558843681,
+          0.15062549765549665,
+          0.24000682306843485
+        ]
+      },
+      {
+        "iteration": 3,
+        "best": 0.40156798241020497,
+        "eliteMean": 0.4093190439155652,
+        "mu": [
+          0.2414733878092346,
+          0.3914018901013907,
+          -0.3259305758866893,
+          0.12659678207681663,
+          -0.23153263873605692
+        ],
+        "sd": [
+          0.06241759423160549,
+          0.018,
+          0.024,
+          0.08113107404517528,
+          0.13212682376261453
+        ]
+      },
+      {
+        "iteration": 4,
+        "best": 0.40156798241020497,
+        "eliteMean": 0.40542695061193057,
+        "mu": [
+          0.2958004532964603,
+          0.3943425546189841,
+          -0.33675912160224447,
+          0.15948477543884731,
+          -0.254936091198499
+        ],
+        "sd": [
+          0.04675622288463967,
+          0.018,
+          0.025943530171389274,
+          0.03514431198757154,
+          0.047537806887336505
+        ]
+      }
+    ],
+    "boundary": "low-dimensional black-box co-tuning bridge; replace with differentiable/bilevel co-design at robot scale when tractable"
   },
   "mpcTuning": {
     "baseline": {
@@ -664,16 +849,16 @@
     "accepted": true,
     "scores": {
       "train": {
-        "baseline": 1.5449506257060983,
-        "tuned": 0.9835013766956929
+        "baseline": 1.5439611756354301,
+        "tuned": 0.8247021784118388
       },
       "validation": {
-        "baseline": 1.7769200598719868,
-        "tuned": 1.1852410038723624
+        "baseline": 1.7756528919132093,
+        "tuned": 1.0121693582259537
       },
       "test": {
-        "baseline": 1.5799794580806092,
-        "tuned": 1.3552398697011117
+        "baseline": 1.5790232725506672,
+        "tuned": 1.2480612936430129
       }
     },
     "candidates": [
@@ -694,7 +879,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 0.9835013766956929
+        "trainScore": 0.8247021784118388
       },
       {
         "params": {
@@ -713,7 +898,7 @@
             8.4
           ]
         },
-        "trainScore": 1.0787430232672937
+        "trainScore": 0.8524348892738998
       },
       {
         "params": {
@@ -732,7 +917,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 1.1291265748396941
+        "trainScore": 1.020000988106933
       },
       {
         "params": {
@@ -751,64 +936,7 @@
             8.4
           ]
         },
-        "trainScore": 1.1916060916278524
-      },
-      {
-        "params": {
-          "N": 30,
-          "R": 0.084,
-          "Qdiag": [
-            2,
-            0.45,
-            81.6,
-            4.2
-          ],
-          "Qfdiag": [
-            8,
-            1.5,
-            132,
-            8.4
-          ]
-        },
-        "trainScore": 1.281958154704461
-      },
-      {
-        "params": {
-          "N": 45,
-          "R": 0.23800000000000002,
-          "Qdiag": [
-            2,
-            0.45,
-            54.400000000000006,
-            2.8000000000000003
-          ],
-          "Qfdiag": [
-            8,
-            1.5,
-            88,
-            5.6000000000000005
-          ]
-        },
-        "trainScore": 1.3472367840301838
-      },
-      {
-        "params": {
-          "N": 30,
-          "R": 0.084,
-          "Qdiag": [
-            2,
-            0.45,
-            54.400000000000006,
-            2.8000000000000003
-          ],
-          "Qfdiag": [
-            8,
-            1.5,
-            88,
-            5.6000000000000005
-          ]
-        },
-        "trainScore": 1.3482061672744798
+        "trainScore": 1.0274008003541284
       },
       {
         "params": {
@@ -827,7 +955,64 @@
             8.4
           ]
         },
-        "trainScore": 1.3663425772655717
+        "trainScore": 1.261996168369808
+      },
+      {
+        "params": {
+          "N": 30,
+          "R": 0.084,
+          "Qdiag": [
+            2,
+            0.45,
+            81.6,
+            4.2
+          ],
+          "Qfdiag": [
+            8,
+            1.5,
+            132,
+            8.4
+          ]
+        },
+        "trainScore": 1.2708066713182116
+      },
+      {
+        "params": {
+          "N": 45,
+          "R": 0.23800000000000002,
+          "Qdiag": [
+            2,
+            0.45,
+            54.400000000000006,
+            2.8000000000000003
+          ],
+          "Qfdiag": [
+            8,
+            1.5,
+            88,
+            5.6000000000000005
+          ]
+        },
+        "trainScore": 1.2827031654756262
+      },
+      {
+        "params": {
+          "N": 30,
+          "R": 0.084,
+          "Qdiag": [
+            2,
+            0.45,
+            54.400000000000006,
+            2.8000000000000003
+          ],
+          "Qfdiag": [
+            8,
+            1.5,
+            88,
+            5.6000000000000005
+          ]
+        },
+        "trainScore": 1.3441175915466212
       },
       {
         "params": {
@@ -846,7 +1031,7 @@
             8.4
           ]
         },
-        "trainScore": 1.4958882385070478
+        "trainScore": 1.4931136076492149
       },
       {
         "params": {
@@ -865,7 +1050,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 1.6118591844264163
+        "trainScore": 1.6114882118966236
       },
       {
         "params": {
@@ -884,7 +1069,7 @@
             8.4
           ]
         },
-        "trainScore": 1.7830717788870944
+        "trainScore": 1.7832851171376476
       },
       {
         "params": {
@@ -903,7 +1088,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 1.9588087754775192
+        "trainScore": 1.959388235388638
       },
       {
         "params": {
@@ -922,7 +1107,7 @@
             8.4
           ]
         },
-        "trainScore": 2.2485435246878986
+        "trainScore": 2.249378660430682
       },
       {
         "params": {
@@ -941,7 +1126,7 @@
             8.4
           ]
         },
-        "trainScore": 2.743176113662373
+        "trainScore": 2.7446281014265494
       },
       {
         "params": {
@@ -960,7 +1145,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 2.846572848904674
+        "trainScore": 2.8477534618098317
       },
       {
         "params": {
@@ -979,7 +1164,7 @@
             8.4
           ]
         },
-        "trainScore": 26.657099491997762
+        "trainScore": 26.6587704857839
       },
       {
         "params": {
@@ -998,7 +1183,7 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 26.69538267991601
+        "trainScore": 26.696951176789636
       },
       {
         "params": {
@@ -1017,9 +1202,93 @@
             5.6000000000000005
           ]
         },
-        "trainScore": 27.00420108885925
+        "trainScore": 27.00617549187813
       }
     ]
+  },
+  "safetySupervisor": {
+    "accepted": true,
+    "rows": [
+      {
+        "controller": "full_nmpc",
+        "theta0": 0.35,
+        "thetaDeg": 20.05352282957881,
+        "failures": 3,
+        "rmseState": 0,
+        "maxPosition": 2.404199567933954,
+        "rmsControl": 1.8979624250187965,
+        "rmsCommandMismatch": 1.2840999274274604e-18,
+        "meanSolveMs": 13.707731735159548,
+        "p95SolveMs": 17.48022700000244,
+        "deadlineMissRate": 0.0228310502283105
+      },
+      {
+        "controller": "supervised_nmpc",
+        "theta0": 0.35,
+        "thetaDeg": 20.05352282957881,
+        "failures": 0,
+        "rmseState": 0,
+        "maxPosition": 2.134739327618175,
+        "rmsControl": 2.1358031550341,
+        "rmsCommandMismatch": 1.1749838645657714e-16,
+        "meanSolveMs": 14.120238610000492,
+        "p95SolveMs": 18.845911333318025,
+        "deadlineMissRate": 0.044444444444444446
+      },
+      {
+        "controller": "full_nmpc",
+        "theta0": 0.45,
+        "thetaDeg": 25.783100780887047,
+        "failures": 3,
+        "rmseState": 0,
+        "maxPosition": 2.416685508990979,
+        "rmsControl": 3.1894931739469414,
+        "rmsCommandMismatch": 3.808212772546752e-19,
+        "meanSolveMs": 14.187039413655844,
+        "p95SolveMs": 18.572558666637633,
+        "deadlineMissRate": 0.04819277108433736
+      },
+      {
+        "controller": "supervised_nmpc",
+        "theta0": 0.45,
+        "thetaDeg": 25.783100780887047,
+        "failures": 0,
+        "rmseState": 0,
+        "maxPosition": 2.1356515160248644,
+        "rmsControl": 2.735770303861796,
+        "rmsCommandMismatch": 9.678784144396874e-17,
+        "meanSolveMs": 16.27793108222146,
+        "p95SolveMs": 23.94006100000115,
+        "deadlineMissRate": 0.1711111111111111
+      },
+      {
+        "controller": "full_nmpc",
+        "theta0": 0.5,
+        "thetaDeg": 28.64788975654116,
+        "failures": 3,
+        "rmseState": 0,
+        "maxPosition": 2.417636732418616,
+        "rmsControl": 3.9538082402352486,
+        "rmsCommandMismatch": 1.2715812190315495e-18,
+        "meanSolveMs": 14.520865199006677,
+        "p95SolveMs": 19.326321000000462,
+        "deadlineMissRate": 0.04975124378109452
+      },
+      {
+        "controller": "supervised_nmpc",
+        "theta0": 0.5,
+        "thetaDeg": 28.64788975654116,
+        "failures": 0,
+        "rmseState": 0,
+        "maxPosition": 2.1314008662080743,
+        "rmsControl": 2.9825036615682854,
+        "rmsCommandMismatch": 1.0571921085491461e-16,
+        "meanSolveMs": 14.8137995188898,
+        "p95SolveMs": 20.03095133334864,
+        "deadlineMissRate": 0.0588888888888889
+      }
+    ],
+    "boundary": "runtime backup bridge only; no CBF/reachability/invariant-set safety guarantee"
   },
   "robustMpcProbe": {
     "accepted": false,
@@ -1028,49 +1297,49 @@
         "controller": "linear_mpc",
         "scenario": "model",
         "failures": 0,
-        "rmseState": 0.06400201729722563,
-        "maxPosition": 1.2683590632465502,
-        "rmsControl": 1.0393985447155183,
-        "rmsCommandMismatch": 4.136394060587227e-17,
-        "meanSolveMs": 3.254746637878865,
-        "p95SolveMs": 4.005051333340816,
+        "rmseState": 0.06400304330633891,
+        "maxPosition": 1.2671235057668973,
+        "rmsControl": 1.040589304823463,
+        "rmsCommandMismatch": 3.3824110071731966e-17,
+        "meanSolveMs": 0.27424419242421266,
+        "p95SolveMs": 0.6279133333397718,
         "deadlineMissRate": 0
       },
       {
         "controller": "scenario_mpc",
         "scenario": "model",
         "failures": 1,
-        "rmseState": 0.0655396206863008,
-        "maxPosition": 1.9838547799242303,
-        "rmsControl": 1.2858342740934185,
-        "rmsCommandMismatch": 3.586607758426901e-17,
-        "meanSolveMs": 21.3348228163062,
-        "p95SolveMs": 42.87855666666292,
-        "deadlineMissRate": 0.36832611832611833
+        "rmseState": 0.06553883883660458,
+        "maxPosition": 1.9828532096417952,
+        "rmsControl": 1.2927330350866235,
+        "rmsCommandMismatch": 4.22222247591713e-17,
+        "meanSolveMs": 24.170561911254108,
+        "p95SolveMs": 47.376560333340116,
+        "deadlineMissRate": 0.6186868686868686
       },
       {
         "controller": "linear_mpc",
         "scenario": "sim2real",
         "failures": 1,
-        "rmseState": 0.10066528708408502,
-        "maxPosition": 1.6629145976091442,
-        "rmsControl": 1.5558735742612624,
-        "rmsCommandMismatch": 0.865608891782203,
-        "meanSolveMs": 6.7431821298350725,
-        "p95SolveMs": 8.04529900000974,
+        "rmseState": 0.10065387855565051,
+        "maxPosition": 1.6614305836724739,
+        "rmsControl": 1.5568680814566387,
+        "rmsCommandMismatch": 0.8684070186799885,
+        "meanSolveMs": 0.3181778683374153,
+        "p95SolveMs": 0.7382506666472182,
         "deadlineMissRate": 0
       },
       {
         "controller": "scenario_mpc",
         "scenario": "sim2real",
         "failures": 2,
-        "rmseState": 0.1069678243991331,
-        "maxPosition": 2.0159368619701987,
-        "rmsControl": 1.8702620417177265,
-        "rmsCommandMismatch": 1.2199401284245124,
-        "meanSolveMs": 21.119075156589602,
-        "p95SolveMs": 39.115002333332086,
-        "deadlineMissRate": 0.3643129051711142
+        "rmseState": 0.10700092689302387,
+        "maxPosition": 2.0063738454326336,
+        "rmsControl": 1.856761237845923,
+        "rmsCommandMismatch": 1.186619071640395,
+        "meanSolveMs": 24.76197474628849,
+        "p95SolveMs": 46.25305466666274,
+        "deadlineMissRate": 0.6727272727272728
       }
     ],
     "interpretation": "finite-model risk formulation does not improve the paired stress probe; uncertainty-set/objective/constraint/runtime design remains inadequate"
@@ -1082,8 +1351,8 @@
       "thetaDeg": 2.864788975654116,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.09632639116112153,
-      "rmsControl": 0.27707507231386513,
+      "maxPosition": 0.09632639077389575,
+      "rmsControl": 0.277075073076345,
       "rmsCommandMismatch": 0,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
@@ -1095,8 +1364,8 @@
       "thetaDeg": 8.594366926962348,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.2922655144268549,
-      "rmsControl": 0.8373993331496236,
+      "maxPosition": 0.2922655132571154,
+      "rmsControl": 0.837399335463698,
       "rmsCommandMismatch": 0,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
@@ -1108,8 +1377,8 @@
       "thetaDeg": 17.188733853924695,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.64427503889115,
-      "rmsControl": 1.6491776918495173,
+      "maxPosition": 0.6442750368761895,
+      "rmsControl": 1.6491776954189763,
       "rmsCommandMismatch": 0,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
@@ -1121,8 +1390,8 @@
       "thetaDeg": 25.783100780887047,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 1.223535958657109,
-      "rmsControl": 2.540523247661395,
+      "maxPosition": 1.2235359557386154,
+      "rmsControl": 2.5405232537431917,
       "rmsCommandMismatch": 0,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
@@ -1134,11 +1403,11 @@
       "thetaDeg": 2.864788975654116,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.6018525592375804,
-      "rmsControl": 0.18842501321176364,
-      "rmsCommandMismatch": 5.37914914821131e-20,
-      "meanSolveMs": 4.943858426922927,
-      "p95SolveMs": 6.485208333324408,
+      "maxPosition": 0.5978960279307759,
+      "rmsControl": 0.18862904879401202,
+      "rmsCommandMismatch": 0,
+      "meanSolveMs": 0.2976643064110809,
+      "p95SolveMs": 0.6742926666823527,
       "deadlineMissRate": 0
     },
     {
@@ -1147,12 +1416,12 @@
       "thetaDeg": 8.594366926962348,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 1.816414499052344,
-      "rmsControl": 0.5686462309511793,
-      "rmsCommandMismatch": 5.37914914821131e-20,
-      "meanSolveMs": 7.3604042307680055,
-      "p95SolveMs": 10.268777999988137,
-      "deadlineMissRate": 0.0038461538461538464
+      "maxPosition": 1.811045366055166,
+      "rmsControl": 0.5690978869578852,
+      "rmsCommandMismatch": 1.075829829642262e-19,
+      "meanSolveMs": 0.28688152820455476,
+      "p95SolveMs": 0.6586806666649258,
+      "deadlineMissRate": 0
     },
     {
       "controller": "linear_mpc",
@@ -1160,11 +1429,11 @@
       "thetaDeg": 17.188733853924695,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.411188438449495,
-      "rmsControl": 1.5977830613416792,
+      "maxPosition": 2.4085496804034245,
+      "rmsControl": 1.5987176699321937,
       "rmsCommandMismatch": 1.4875131087175868e-19,
-      "meanSolveMs": 6.776977750000643,
-      "p95SolveMs": 8.516273666658284,
+      "meanSolveMs": 0.3464523308832534,
+      "p95SolveMs": 0.8034240000027543,
       "deadlineMissRate": 0
     },
     {
@@ -1173,11 +1442,11 @@
       "thetaDeg": 25.783100780887047,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.41233478282204,
-      "rmsControl": 3.2232407328869823,
+      "maxPosition": 2.411935730747476,
+      "rmsControl": 3.223481124612791,
       "rmsCommandMismatch": 1.1331166295920987e-18,
-      "meanSolveMs": 7.181372995555479,
-      "p95SolveMs": 8.98618800000016,
+      "meanSolveMs": 0.33001192444547384,
+      "p95SolveMs": 0.8233043333360305,
       "deadlineMissRate": 0
     },
     {
@@ -1186,11 +1455,11 @@
       "thetaDeg": 2.864788975654116,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.5988617544679773,
+      "maxPosition": 0.5988617544679762,
       "rmsControl": 0.18851238144658589,
-      "rmsCommandMismatch": 7.607265679428116e-20,
-      "meanSolveMs": 7.843652707691757,
-      "p95SolveMs": 9.25231133333485,
+      "rmsCommandMismatch": 2.689574574105655e-20,
+      "meanSolveMs": 9.406877367948077,
+      "p95SolveMs": 12.348965999980768,
       "deadlineMissRate": 0
     },
     {
@@ -1199,11 +1468,11 @@
       "thetaDeg": 8.594366926962348,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 1.7217963255534385,
-      "rmsControl": 0.5814495489796848,
-      "rmsCommandMismatch": 1.636004344181267e-19,
-      "meanSolveMs": 7.850684728205521,
-      "p95SolveMs": 9.918242666656928,
+      "maxPosition": 1.7217963255534332,
+      "rmsControl": 0.5814495489796843,
+      "rmsCommandMismatch": 1.613744744463393e-19,
+      "meanSolveMs": 9.048085243590043,
+      "p95SolveMs": 11.407633333331129,
       "deadlineMissRate": 0
     },
     {
@@ -1212,11 +1481,11 @@
       "thetaDeg": 17.188733853924695,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.4146891406607196,
-      "rmsControl": 1.5767575534009943,
-      "rmsCommandMismatch": 9.984661213310379e-19,
-      "meanSolveMs": 7.780782523517916,
-      "p95SolveMs": 9.555208333341094,
+      "maxPosition": 2.414689140660713,
+      "rmsControl": 1.5767575534009939,
+      "rmsCommandMismatch": 8.593428132594275e-19,
+      "meanSolveMs": 9.936061997954345,
+      "p95SolveMs": 13.66388066665968,
       "deadlineMissRate": 0
     },
     {
@@ -1225,11 +1494,11 @@
       "thetaDeg": 25.783100780887047,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.40184934728423,
-      "rmsControl": 3.150111885157562,
-      "rmsCommandMismatch": 1.416395786990123e-18,
-      "meanSolveMs": 7.673313986111377,
-      "p95SolveMs": 9.041259000000233,
+      "maxPosition": 2.4018493472842293,
+      "rmsControl": 3.1501118851575645,
+      "rmsCommandMismatch": 3.5409894674753077e-19,
+      "meanSolveMs": 8.968104027776564,
+      "p95SolveMs": 11.902271333344592,
       "deadlineMissRate": 0
     },
     {
@@ -1238,11 +1507,11 @@
       "thetaDeg": 2.864788975654116,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.4311067255321898,
-      "rmsControl": 0.1991271120465142,
-      "rmsCommandMismatch": 1.075829829642262e-19,
-      "meanSolveMs": 0.7702594551282415,
-      "p95SolveMs": 1.1441339999922395,
+      "maxPosition": 0.43110672553955326,
+      "rmsControl": 0.19912711204611114,
+      "rmsCommandMismatch": 0,
+      "meanSolveMs": 6.0596382807705185,
+      "p95SolveMs": 8.433556000003591,
       "deadlineMissRate": 0
     },
     {
@@ -1251,11 +1520,11 @@
       "thetaDeg": 8.594366926962348,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 1.3068344997117132,
-      "rmsControl": 0.6012151316087995,
+      "maxPosition": 1.3068344998532873,
+      "rmsControl": 0.601215131608879,
       "rmsCommandMismatch": 0,
-      "meanSolveMs": 0.6735510564102114,
-      "p95SolveMs": 0.9463029999945624,
+      "meanSolveMs": 6.048530233332227,
+      "p95SolveMs": 8.90535666665528,
       "deadlineMissRate": 0
     },
     {
@@ -1264,11 +1533,11 @@
       "thetaDeg": 17.188733853924695,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.4063490673274694,
-      "rmsControl": 1.453572539685197,
+      "maxPosition": 2.4063490669666776,
+      "rmsControl": 1.4535725397459125,
       "rmsCommandMismatch": 0,
-      "meanSolveMs": 0.6518698740739234,
-      "p95SolveMs": 0.9134110000062113,
+      "meanSolveMs": 6.210974683333835,
+      "p95SolveMs": 8.931885666660188,
       "deadlineMissRate": 0
     },
     {
@@ -1277,11 +1546,11 @@
       "thetaDeg": 25.783100780887047,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.4231916382772942,
-      "rmsControl": 3.2030030829500116,
+      "maxPosition": 2.42319163824971,
+      "rmsControl": 3.2030030829736504,
       "rmsCommandMismatch": 0,
-      "meanSolveMs": 0.6329703791670909,
-      "p95SolveMs": 0.8073316666608056,
+      "meanSolveMs": 5.895534666664268,
+      "p95SolveMs": 7.748739000002388,
       "deadlineMissRate": 0
     },
     {
@@ -1290,12 +1559,12 @@
       "thetaDeg": 2.864788975654116,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 0.3655030693459113,
-      "rmsControl": 0.2037644837081147,
-      "rmsCommandMismatch": 1.108940005701325e-19,
-      "meanSolveMs": 1.5993529371790014,
-      "p95SolveMs": 1.9484229999943636,
-      "deadlineMissRate": 0
+      "maxPosition": 0.3655030693260179,
+      "rmsControl": 0.2037644837086271,
+      "rmsCommandMismatch": 5.37914914821131e-20,
+      "meanSolveMs": 14.864318830769014,
+      "p95SolveMs": 20.628189666681767,
+      "deadlineMissRate": 0.08076923076923077
     },
     {
       "controller": "full_nmpc",
@@ -1303,12 +1572,12 @@
       "thetaDeg": 8.594366926962348,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 1.1090714970472653,
-      "rmsControl": 0.6146407807326754,
+      "maxPosition": 1.1090714972695628,
+      "rmsControl": 0.6146407807281665,
       "rmsCommandMismatch": 4.303319318569048e-19,
-      "meanSolveMs": 1.5800676730775216,
-      "p95SolveMs": 2.0254286666652965,
-      "deadlineMissRate": 0
+      "meanSolveMs": 15.558681716666653,
+      "p95SolveMs": 20.50629966665292,
+      "deadlineMissRate": 0.12051282051282051
     },
     {
       "controller": "full_nmpc",
@@ -1316,12 +1585,12 @@
       "thetaDeg": 17.188733853924695,
       "failures": 0,
       "rmseState": 0,
-      "maxPosition": 2.333066550247045,
-      "rmsControl": 1.2362029771317387,
+      "maxPosition": 2.3330665506339465,
+      "rmsControl": 1.2362029771400596,
       "rmsCommandMismatch": 1.075829829642262e-19,
-      "meanSolveMs": 1.6695566089752576,
-      "p95SolveMs": 2.210108333325479,
-      "deadlineMissRate": 0
+      "meanSolveMs": 13.551422488461144,
+      "p95SolveMs": 15.29981100000441,
+      "deadlineMissRate": 0.002564102564102564
     },
     {
       "controller": "full_nmpc",
@@ -1329,12 +1598,12 @@
       "thetaDeg": 25.783100780887047,
       "failures": 3,
       "rmseState": 0,
-      "maxPosition": 2.41668550896816,
-      "rmsControl": 3.1894931740302526,
+      "maxPosition": 2.416685508990979,
+      "rmsControl": 3.1894931739469414,
       "rmsCommandMismatch": 3.808212772546752e-19,
-      "meanSolveMs": 1.5790760321277295,
-      "p95SolveMs": 2.023043000003478,
-      "deadlineMissRate": 0
+      "meanSolveMs": 15.680943979919576,
+      "p95SolveMs": 21.729473000004266,
+      "deadlineMissRate": 0.12851405622489961
     }
   ],
   "singleFactorAblation": [
@@ -1345,10 +1614,10 @@
         {
           "scenario": "nominal",
           "failures": 0,
-          "rmseState": 0.049491160927097856,
-          "maxPosition": 0.17750920222025984,
-          "rmsControl": 1.1575512732146813,
-          "rmsCommandMismatch": 4.305797464052705e-17,
+          "rmseState": 0.04949116092710971,
+          "maxPosition": 0.17750920069567314,
+          "rmsControl": 1.1575512760896256,
+          "rmsCommandMismatch": 4.436968048721797e-17,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
@@ -1359,100 +1628,100 @@
         {
           "scenario": "model",
           "failures": 0,
-          "rmseState": 0.057390799813637004,
-          "maxPosition": 0.2327467604063898,
-          "rmsControl": 1.3201306628112977,
-          "rmsCommandMismatch": 5.084218534787683e-17,
+          "rmseState": 0.057397441654112626,
+          "maxPosition": 0.23286371199388206,
+          "rmsControl": 1.3202685943774377,
+          "rmsCommandMismatch": 6.401858898319044e-17,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.007899638886539148,
-          "deltaMaxPosition": 0.055237558186129965,
-          "deltaCommandMismatch": 7.784210707349782e-18
+          "deltaRmse": 0.007906280727002918,
+          "deltaMaxPosition": 0.055354511298208925,
+          "deltaCommandMismatch": 1.9648908495972468e-17
         },
         {
           "scenario": "sensor",
           "failures": 0,
-          "rmseState": 0.09920672636136989,
-          "maxPosition": 0.2739651899458756,
-          "rmsControl": 2.23960784047071,
-          "rmsCommandMismatch": 7.990290648267737e-17,
+          "rmseState": 0.09920672636122073,
+          "maxPosition": 0.2739651878046322,
+          "rmsControl": 2.239607848443687,
+          "rmsCommandMismatch": 6.97829191693147e-17,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.04971556543427203,
-          "deltaMaxPosition": 0.09645598772561575,
-          "deltaCommandMismatch": 3.684493184215032e-17
+          "deltaRmse": 0.04971556543411102,
+          "deltaMaxPosition": 0.09645598710895906,
+          "deltaCommandMismatch": 2.5413238682096732e-17
         },
         {
           "scenario": "bias",
           "failures": 0,
-          "rmseState": 0.04995203747005933,
-          "maxPosition": 0.19894150126357138,
-          "rmsControl": 1.1590477313184397,
-          "rmsCommandMismatch": 4.379201044613092e-17,
+          "rmseState": 0.04995203747006892,
+          "maxPosition": 0.19894149966330005,
+          "rmsControl": 1.1590477341835765,
+          "rmsCommandMismatch": 4.4463591837817004e-17,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.00046087654296147335,
-          "deltaMaxPosition": 0.021432299043311537,
-          "deltaCommandMismatch": 7.340358056038701e-19
+          "deltaRmse": 0.00046087654295921127,
+          "deltaMaxPosition": 0.02143229896762691,
+          "deltaCommandMismatch": 9.391135059903418e-20
         },
         {
           "scenario": "actuator",
           "failures": 0,
-          "rmseState": 0.060613331820348185,
-          "maxPosition": 0.2092719334796128,
-          "rmsControl": 1.4117500138104606,
-          "rmsCommandMismatch": 0.5662544875022001,
+          "rmseState": 0.06061333184939738,
+          "maxPosition": 0.20927193187650808,
+          "rmsControl": 1.411750016912118,
+          "rmsCommandMismatch": 0.566254489950297,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.011122170893250329,
-          "deltaMaxPosition": 0.031762731259352944,
-          "deltaCommandMismatch": 0.5662544875022001
+          "deltaRmse": 0.01112217092228767,
+          "deltaMaxPosition": 0.03176273118083495,
+          "deltaCommandMismatch": 0.566254489950297
         },
         {
           "scenario": "latency",
           "failures": 0,
-          "rmseState": 0.06722388943172425,
-          "maxPosition": 0.17440509655430286,
-          "rmsControl": 1.497452870714922,
-          "rmsCommandMismatch": 1.1407205855197058,
+          "rmseState": 0.06722388951645503,
+          "maxPosition": 0.1744050951311327,
+          "rmsControl": 1.497452875034819,
+          "rmsCommandMismatch": 1.14072059081287,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.017732728504626392,
-          "deltaMaxPosition": -0.00310410566595698,
-          "deltaCommandMismatch": 1.1407205855197058
+          "deltaRmse": 0.01773272858934532,
+          "deltaMaxPosition": -0.003104105564540438,
+          "deltaCommandMismatch": 1.14072059081287
         },
         {
           "scenario": "glitch",
           "failures": 0,
-          "rmseState": 0.2081575730963535,
-          "maxPosition": 0.26970373606564263,
-          "rmsControl": 2.374635497712366,
-          "rmsCommandMismatch": 5.557320986006132e-17,
+          "rmseState": 0.2081575730939565,
+          "maxPosition": 0.2697037378840906,
+          "rmsControl": 2.3746355168573827,
+          "rmsCommandMismatch": 4.939208025960165e-17,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.15866641216925564,
-          "deltaMaxPosition": 0.09219453384538279,
-          "deltaCommandMismatch": 1.2515235219534276e-17
+          "deltaRmse": 0.1586664121668468,
+          "deltaMaxPosition": 0.09219453718841744,
+          "deltaCommandMismatch": 5.022399772383682e-18
         },
         {
           "scenario": "sim2real",
           "failures": 0,
-          "rmseState": 0.11381492675017775,
-          "maxPosition": 0.29404822694191257,
-          "rmsControl": 2.4730992408815418,
-          "rmsCommandMismatch": 1.362296456365916,
+          "rmseState": 0.11371265607498815,
+          "maxPosition": 0.29406183136015407,
+          "rmsControl": 2.470906982658308,
+          "rmsCommandMismatch": 1.3612503707088015,
           "meanSolveMs": 0,
           "p95SolveMs": 0,
           "deadlineMissRate": 0,
-          "deltaRmse": 0.06432376582307989,
-          "deltaMaxPosition": 0.11653902472165273,
-          "deltaCommandMismatch": 1.362296456365916
+          "deltaRmse": 0.06422149514787845,
+          "deltaMaxPosition": 0.11655263066448093,
+          "deltaCommandMismatch": 1.3612503707088015
         }
       ]
     },
@@ -1463,13 +1732,13 @@
         {
           "scenario": "nominal",
           "failures": 0,
-          "rmseState": 0.04948975077332436,
-          "maxPosition": 0.8264408765874782,
-          "rmsControl": 0.9483043561531636,
-          "rmsCommandMismatch": 3.368021217155937e-17,
-          "meanSolveMs": 1.5286798938462294,
-          "p95SolveMs": 1.9493038000015077,
-          "deadlineMissRate": 0,
+          "rmseState": 0.04948975077346418,
+          "maxPosition": 0.8264408765517631,
+          "rmsControl": 0.9483043561558666,
+          "rmsCommandMismatch": 3.722321222223632e-17,
+          "meanSolveMs": 14.046249373076893,
+          "p95SolveMs": 18.475556600000072,
+          "deadlineMissRate": 0.04153846153846154,
           "deltaRmse": 0,
           "deltaMaxPosition": 0,
           "deltaCommandMismatch": 0
@@ -1477,114 +1746,377 @@
         {
           "scenario": "model",
           "failures": 0,
-          "rmseState": 0.05620779756944565,
-          "maxPosition": 1.119706201903583,
-          "rmsControl": 1.0302276945969426,
-          "rmsCommandMismatch": 4.2514231833576336e-17,
-          "meanSolveMs": 1.5279392338459954,
-          "p95SolveMs": 1.937105800001882,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.006718046796121285,
-          "deltaMaxPosition": 0.29326532531610483,
-          "deltaCommandMismatch": 8.834019662016967e-18
+          "rmseState": 0.05621029451590084,
+          "maxPosition": 1.1202283988525423,
+          "rmsControl": 1.0303126095089905,
+          "rmsCommandMismatch": 3.614646377635994e-17,
+          "meanSolveMs": 14.157779198461572,
+          "p95SolveMs": 19.24348420000024,
+          "deadlineMissRate": 0.04692307692307693,
+          "deltaRmse": 0.006720543742436656,
+          "deltaMaxPosition": 0.2937875223007792,
+          "deltaCommandMismatch": -1.076748445876375e-18
         },
         {
           "scenario": "sensor",
           "failures": 0,
-          "rmseState": 0.09919924368896954,
-          "maxPosition": 1.3260052813803664,
-          "rmsControl": 1.6653395311432697,
-          "rmsCommandMismatch": 7.066415701303359e-17,
-          "meanSolveMs": 1.5599837261538443,
-          "p95SolveMs": 2.0308827999979258,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.04970949291564518,
-          "deltaMaxPosition": 0.4995644047928882,
-          "deltaCommandMismatch": 3.698394484147422e-17
+          "rmseState": 0.09919924368880362,
+          "maxPosition": 1.326005281438362,
+          "rmsControl": 1.665339531113015,
+          "rmsCommandMismatch": 5.434357065742025e-17,
+          "meanSolveMs": 13.779468526153684,
+          "p95SolveMs": 18.249150199998986,
+          "deadlineMissRate": 0.025384615384615384,
+          "deltaRmse": 0.04970949291533944,
+          "deltaMaxPosition": 0.4995644048865989,
+          "deltaCommandMismatch": 1.7120358435183934e-17
         },
         {
           "scenario": "bias",
           "failures": 0,
-          "rmseState": 0.04994980503716155,
-          "maxPosition": 0.9522803400299115,
-          "rmsControl": 0.9528136546390471,
-          "rmsCommandMismatch": 3.870574325518896e-17,
-          "meanSolveMs": 1.4950170907687368,
-          "p95SolveMs": 1.9468422000005376,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.0004600542638371896,
-          "deltaMaxPosition": 0.12583946344243324,
-          "deltaCommandMismatch": 5.0255310836295884e-18
+          "rmseState": 0.04994980503698705,
+          "maxPosition": 0.9522803400539115,
+          "rmsControl": 0.9528136546082321,
+          "rmsCommandMismatch": 3.58653989011784e-17,
+          "meanSolveMs": 16.783960254615383,
+          "p95SolveMs": 23.493084999998974,
+          "deadlineMissRate": 0.23076923076923078,
+          "deltaRmse": 0.0004600542635228716,
+          "deltaMaxPosition": 0.12583946350214836,
+          "deltaCommandMismatch": -1.3578133210579163e-18
         },
         {
           "scenario": "actuator",
           "failures": 0,
-          "rmseState": 0.05841045828355766,
-          "maxPosition": 0.9769695447240323,
-          "rmsControl": 1.157684198178075,
-          "rmsCommandMismatch": 0.4005665559749619,
-          "meanSolveMs": 1.6139482084612695,
-          "p95SolveMs": 2.1033133999910207,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.0089207075102333,
-          "deltaMaxPosition": 0.15052866813655408,
-          "deltaCommandMismatch": 0.4005665559749618
+          "rmseState": 0.058410458283312136,
+          "maxPosition": 0.9769695447311229,
+          "rmsControl": 1.1576841981589194,
+          "rmsCommandMismatch": 0.400566555949165,
+          "meanSolveMs": 17.645050872307923,
+          "p95SolveMs": 24.026647800006323,
+          "deadlineMissRate": 0.2953846153846154,
+          "deltaRmse": 0.008920707509847955,
+          "deltaMaxPosition": 0.15052866817935973,
+          "deltaCommandMismatch": 0.40056655594916496
         },
         {
           "scenario": "latency",
           "failures": 0,
-          "rmseState": 0.061790852649387176,
-          "maxPosition": 0.8382536074383626,
-          "rmsControl": 1.1840532129137684,
-          "rmsCommandMismatch": 0.7871610845913152,
-          "meanSolveMs": 1.6381490215388026,
-          "p95SolveMs": 2.0679103999980724,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.012301101876062814,
-          "deltaMaxPosition": 0.011812730850884412,
-          "deltaCommandMismatch": 0.7871610845913152
+          "rmseState": 0.06179085264922909,
+          "maxPosition": 0.8382536074773277,
+          "rmsControl": 1.184053212907455,
+          "rmsCommandMismatch": 0.7871610845889909,
+          "meanSolveMs": 16.29263940923092,
+          "p95SolveMs": 22.384923999998136,
+          "deadlineMissRate": 0.22538461538461538,
+          "deltaRmse": 0.012301101875764907,
+          "deltaMaxPosition": 0.011812730925564563,
+          "deltaCommandMismatch": 0.7871610845889909
         },
         {
           "scenario": "glitch",
           "failures": 0,
-          "rmseState": 0.20815757861318307,
-          "maxPosition": 0.1920534564164817,
-          "rmsControl": 0.7502665217463462,
-          "rmsCommandMismatch": 4.272700792937849e-17,
-          "meanSolveMs": 1.7169054969226665,
-          "p95SolveMs": 2.3705614000093194,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.15866782783985872,
-          "deltaMaxPosition": -0.6343874201709965,
-          "deltaCommandMismatch": 9.046795757819122e-18
+          "rmseState": 0.20815757861149803,
+          "maxPosition": 0.19205345639485177,
+          "rmsControl": 0.7502665217783002,
+          "rmsCommandMismatch": 4.444429040280964e-17,
+          "meanSolveMs": 13.77410715153836,
+          "p95SolveMs": 18.678925799997522,
+          "deadlineMissRate": 0.038461538461538464,
+          "deltaRmse": 0.15866782783803385,
+          "deltaMaxPosition": -0.6343874201569113,
+          "deltaCommandMismatch": 7.221078180573322e-18
         },
         {
           "scenario": "sim2real",
           "failures": 1,
-          "rmseState": 0.09272936950473942,
-          "maxPosition": 1.4558359239281926,
-          "rmsControl": 1.6030125167622522,
-          "rmsCommandMismatch": 0.8725891576338402,
-          "meanSolveMs": 1.5101786513682485,
-          "p95SolveMs": 1.92039920000243,
-          "deadlineMissRate": 0,
-          "deltaRmse": 0.04323961873141506,
-          "deltaMaxPosition": 0.6293950473407144,
-          "deltaCommandMismatch": 0.8725891576338402
+          "rmseState": 0.09273231463050373,
+          "maxPosition": 1.4546383576871373,
+          "rmsControl": 1.6031131966656471,
+          "rmsCommandMismatch": 0.8723352719048117,
+          "meanSolveMs": 14.811419913870381,
+          "p95SolveMs": 21.352516999997896,
+          "deadlineMissRate": 0.07750229849831444,
+          "deltaRmse": 0.04324256385703955,
+          "deltaMaxPosition": 0.6281974811353742,
+          "deltaCommandMismatch": 0.8723352719048117
         }
       ]
     }
   ],
+  "advancedFailures": {
+    "sensorRows": [
+      {
+        "scenario": "colored",
+        "observer": "ekf",
+        "failures": 0,
+        "rmseState": 0.06323769177337536,
+        "maxPosition": 0.2443155150919121,
+        "rmsControl": 1.2889525079763018,
+        "rmsCommandMismatch": 1.0420842635339934e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": 0.6513368912433665,
+        "staleSamples": 0,
+        "faultSamples": 0
+      },
+      {
+        "scenario": "colored",
+        "observer": "ukf",
+        "failures": 0,
+        "rmseState": 0.06323787753864533,
+        "maxPosition": 0.24430924620030614,
+        "rmsControl": 1.2889678617976064,
+        "rmsCommandMismatch": 1.0428194900623723e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": 0.6513370589008861,
+        "staleSamples": 0,
+        "faultSamples": 0
+      },
+      {
+        "scenario": "colored",
+        "observer": "mhe",
+        "failures": 0,
+        "rmseState": 0.0663634545995681,
+        "maxPosition": 0.26934632028305944,
+        "rmsControl": 1.3483530055496875,
+        "rmsCommandMismatch": 5.027397948896896e-18,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": 0.7087245525231519,
+        "staleSamples": 0,
+        "faultSamples": 0
+      },
+      {
+        "scenario": "dropout",
+        "observer": "ekf",
+        "failures": 0,
+        "rmseState": 0.047586194971596336,
+        "maxPosition": 0.19103476600933353,
+        "rmsControl": 1.1120204081173501,
+        "rmsCommandMismatch": 3.882663658356263e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": -0.22420781988923613,
+        "staleSamples": 117,
+        "faultSamples": 117
+      },
+      {
+        "scenario": "dropout",
+        "observer": "ukf",
+        "failures": 0,
+        "rmseState": 0.04759011376974942,
+        "maxPosition": 0.19105471911260075,
+        "rmsControl": 1.1120636712653014,
+        "rmsCommandMismatch": 4.3820837892620004e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": -0.2242078760429459,
+        "staleSamples": 117,
+        "faultSamples": 117
+      },
+      {
+        "scenario": "dropout",
+        "observer": "mhe",
+        "failures": 0,
+        "rmseState": 0.048495213399483726,
+        "maxPosition": 0.2234675436152981,
+        "rmsControl": 1.0957909153545322,
+        "rmsCommandMismatch": 2.2421044740517538e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": -0.0410651729846984,
+        "staleSamples": 117,
+        "faultSamples": 117
+      },
+      {
+        "scenario": "stuck",
+        "observer": "ekf",
+        "failures": 0,
+        "rmseState": 0.0926354871989935,
+        "maxPosition": 0.8058275441554842,
+        "rmsControl": 2.1437825812750124,
+        "rmsCommandMismatch": 4.093694486970255e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": -0.05201590946177233,
+        "staleSamples": 0,
+        "faultSamples": 105
+      },
+      {
+        "scenario": "stuck",
+        "observer": "ukf",
+        "failures": 0,
+        "rmseState": 0.0926335514083812,
+        "maxPosition": 0.8058167131800906,
+        "rmsControl": 2.1437716144850048,
+        "rmsCommandMismatch": 4.318276928591239e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": -0.05203444799862711,
+        "staleSamples": 0,
+        "faultSamples": 105
+      },
+      {
+        "scenario": "stuck",
+        "observer": "mhe",
+        "failures": 0,
+        "rmseState": 0.08565646188041677,
+        "maxPosition": 0.6229814369353527,
+        "rmsControl": 1.824596103931386,
+        "rmsCommandMismatch": 1.5685087926719946e-17,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "innovationLag1": 0.15006834721119616,
+        "staleSamples": 0,
+        "faultSamples": 105
+      }
+    ],
+    "actuatorRows": [
+      {
+        "scenario": "jitter",
+        "controller": "lqr",
+        "failures": 0,
+        "rmseState": 0.05235126892602077,
+        "maxPosition": 0.18014510123010297,
+        "rmsControl": 1.2523466068445812,
+        "rmsCommandMismatch": 0.4932484605411274,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "minForceLimit": 10,
+        "maxThermalState": 0
+      },
+      {
+        "scenario": "jitter",
+        "controller": "full_nmpc",
+        "failures": 0,
+        "rmseState": 0.05126937897235274,
+        "maxPosition": 0.9294546658526405,
+        "rmsControl": 0.9969953974655442,
+        "rmsCommandMismatch": 0.34729852195465244,
+        "meanSolveMs": 13.695212587777803,
+        "p95SolveMs": 17.46820266667055,
+        "deadlineMissRate": 0.024444444444444446,
+        "minForceLimit": 10,
+        "maxThermalState": 0
+      },
+      {
+        "scenario": "torque_speed",
+        "controller": "lqr",
+        "failures": 0,
+        "rmseState": 0.04811969200858698,
+        "maxPosition": 0.17021098327518736,
+        "rmsControl": 1.162647631456397,
+        "rmsCommandMismatch": 0.0028747554682882616,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "minForceLimit": 7.98195520437835,
+        "maxThermalState": 0
+      },
+      {
+        "scenario": "torque_speed",
+        "controller": "full_nmpc",
+        "failures": 0,
+        "rmseState": 0.04812050439578213,
+        "maxPosition": 0.873746248241984,
+        "rmsControl": 0.9253440719675039,
+        "rmsCommandMismatch": 3.2691020198170077e-17,
+        "meanSolveMs": 13.048345820000039,
+        "p95SolveMs": 14.385740000017298,
+        "deadlineMissRate": 0,
+        "minForceLimit": 7.75426147974577,
+        "maxThermalState": 0
+      },
+      {
+        "scenario": "thermal",
+        "controller": "lqr",
+        "failures": 0,
+        "rmseState": 0.03666221444432092,
+        "maxPosition": 0.17020616492323004,
+        "rmsControl": 0.9229083238579182,
+        "rmsCommandMismatch": 0.0014122983886555853,
+        "meanSolveMs": 0,
+        "p95SolveMs": 0,
+        "deadlineMissRate": 0,
+        "minForceLimit": 9.593827967051078,
+        "maxThermalState": 0.07384946053616752
+      },
+      {
+        "scenario": "thermal",
+        "controller": "full_nmpc",
+        "failures": 0,
+        "rmseState": 0.0366625818048568,
+        "maxPosition": 0.983340883110125,
+        "rmsControl": 0.7035882855801265,
+        "rmsCommandMismatch": 3.342003535834761e-17,
+        "meanSolveMs": 15.397326589047763,
+        "p95SolveMs": 22.246822333331995,
+        "deadlineMissRate": 0.10761904761904763,
+        "minForceLimit": 9.747808547176726,
+        "maxThermalState": 0.04585299142241343
+      }
+    ],
+    "interpretation": {
+      "colored": "innovation autocorrelation reveals a wrong white-noise assumption even when RMSE remains moderate",
+      "dropout": "stale packet metadata must be diagnosed separately from Gaussian measurement noise",
+      "stuck": "a plausible-but-frozen sensor value is a fault-isolation problem, not just an R tuning problem",
+      "jitter": "command-vs-applied mismatch exposes transport timing variation",
+      "torque_speed": "available input authority is state-dependent and belongs in the actuator/input constraint model",
+      "thermal": "available input authority becomes history-dependent and requires an actuator thermal state or derating model"
+    }
+  },
+  "discretization": {
+    "referenceSubsteps": 16,
+    "rows": [
+      {
+        "substeps": 1,
+        "dt": 0.02,
+        "rmseVs16": 0.03850172366080204,
+        "maxAbsErrorVs16": 0.10973009768258679
+      },
+      {
+        "substeps": 2,
+        "dt": 0.01,
+        "rmseVs16": 0.018088079284831724,
+        "maxAbsErrorVs16": 0.051175199356713996
+      },
+      {
+        "substeps": 4,
+        "dt": 0.005,
+        "rmseVs16": 0.007779681382395562,
+        "maxAbsErrorVs16": 0.021924659900511845
+      },
+      {
+        "substeps": 8,
+        "dt": 0.0025,
+        "rmseVs16": 0.002597982165012346,
+        "maxAbsErrorVs16": 0.007306902231718482
+      }
+    ],
+    "warning": "coarse integration materially changes the trajectory; validate integration before retuning control"
+  },
   "stress": [
     {
       "controller": "lqr",
       "observer": "ekf",
       "scenario": "nominal",
       "failures": 0,
-      "rmseState": 0.03763907422502653,
-      "maxPosition": 0.12081938437689439,
-      "rmsControl": 0.9821093230701833,
-      "rmsCommandMismatch": 4.386889146220268e-17,
+      "rmseState": 0.03763907422500824,
+      "maxPosition": 0.12081938337152803,
+      "rmsControl": 0.9821093264865638,
+      "rmsCommandMismatch": 4.7631723832156524e-17,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1594,10 +2126,10 @@
       "observer": "ekf",
       "scenario": "model",
       "failures": 0,
-      "rmseState": 0.054137385905849426,
-      "maxPosition": 0.23996705221667516,
-      "rmsControl": 1.337264824510459,
-      "rmsCommandMismatch": 5.424786433676498e-17,
+      "rmseState": 0.05414516396721029,
+      "maxPosition": 0.24008000353344183,
+      "rmsControl": 1.3374293696806179,
+      "rmsCommandMismatch": 4.770814589514047e-17,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1607,10 +2139,10 @@
       "observer": "ekf",
       "scenario": "sensor",
       "failures": 0,
-      "rmseState": 0.09065880140589673,
-      "maxPosition": 0.29410226763272646,
-      "rmsControl": 2.2132780350244787,
-      "rmsCommandMismatch": 6.558131841689413e-17,
+      "rmseState": 0.09065880140577613,
+      "maxPosition": 0.2941022652093949,
+      "rmsControl": 2.2132780432252797,
+      "rmsCommandMismatch": 8.071666584861015e-17,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1620,10 +2152,10 @@
       "observer": "ekf",
       "scenario": "bias",
       "failures": 0,
-      "rmseState": 0.04743642024496236,
-      "maxPosition": 0.20248540584372088,
-      "rmsControl": 1.1644397054975875,
-      "rmsCommandMismatch": 4.175815531549449e-17,
+      "rmseState": 0.04743642024502226,
+      "maxPosition": 0.20248540418622776,
+      "rmsControl": 1.164439708485627,
+      "rmsCommandMismatch": 4.2042676687108124e-17,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1633,10 +2165,10 @@
       "observer": "ekf",
       "scenario": "actuator",
       "failures": 0,
-      "rmseState": 0.05827655522176006,
-      "maxPosition": 0.21052764942215904,
-      "rmsControl": 1.4187502464550583,
-      "rmsCommandMismatch": 0.5707194698359905,
+      "rmseState": 0.0582765552517856,
+      "maxPosition": 0.21052764776412788,
+      "rmsControl": 1.41875024978344,
+      "rmsCommandMismatch": 0.5707194723280965,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1646,10 +2178,10 @@
       "observer": "ekf",
       "scenario": "latency",
       "failures": 0,
-      "rmseState": 0.06476327032927415,
-      "maxPosition": 0.17747307503360235,
-      "rmsControl": 1.523675330300028,
-      "rmsCommandMismatch": 1.1780295997258659,
+      "rmseState": 0.06476327041867817,
+      "maxPosition": 0.17747307351374364,
+      "rmsControl": 1.5236753351854244,
+      "rmsCommandMismatch": 1.178029605308085,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1659,10 +2191,10 @@
       "observer": "ekf",
       "scenario": "mixed",
       "failures": 0,
-      "rmseState": 0.08222074134602021,
-      "maxPosition": 0.3063183055889877,
-      "rmsControl": 1.919111638985479,
-      "rmsCommandMismatch": 6.006540870513105e-17,
+      "rmseState": 0.0822363665960754,
+      "maxPosition": 0.30643306639573586,
+      "rmsControl": 1.9192197685830579,
+      "rmsCommandMismatch": 6.165068226860638e-17,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1672,114 +2204,10 @@
       "observer": "ekf",
       "scenario": "sim2real",
       "failures": 0,
-      "rmseState": 0.07883495520988466,
-      "maxPosition": 0.3204734164963207,
-      "rmsControl": 1.8938037183253407,
-      "rmsCommandMismatch": 0.8703741854756278,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.03599713840782225,
-      "maxPosition": 0.14097387028816818,
-      "rmsControl": 0.8757147837536593,
-      "rmsCommandMismatch": 1.765086339649692e-17,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.05221878057651288,
-      "maxPosition": 0.27637963600685156,
-      "rmsControl": 1.258106150643928,
-      "rmsCommandMismatch": 2.250600399776123e-17,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.0930753852992519,
-      "maxPosition": 0.2978508334096208,
-      "rmsControl": 2.171457825945424,
-      "rmsCommandMismatch": 5.4842366445028905e-17,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.04696769871285408,
-      "maxPosition": 0.2336179994213482,
-      "rmsControl": 1.1165371580934567,
-      "rmsCommandMismatch": 2.430235234183507e-17,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05863111639658699,
-      "maxPosition": 0.2515230844736381,
-      "rmsControl": 1.4559699434030497,
-      "rmsCommandMismatch": 0.43442369061818575,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.06897746585359499,
-      "maxPosition": 0.20807378186389558,
-      "rmsControl": 1.6667409956809809,
-      "rmsCommandMismatch": 0.8615739594854351,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "mixed",
-      "failures": 0,
-      "rmseState": 0.08329685598597814,
-      "maxPosition": 0.312279020273271,
-      "rmsControl": 1.8535939755418838,
-      "rmsCommandMismatch": 4.5056068506816774e-17,
-      "meanSolveMs": 0,
-      "p95SolveMs": 0,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "lqr",
-      "observer": "mhe",
-      "scenario": "sim2real",
-      "failures": 0,
-      "rmseState": 0.07856143191620568,
-      "maxPosition": 0.34050374535190286,
-      "rmsControl": 1.8463446842744935,
-      "rmsCommandMismatch": 0.7216925200072356,
+      "rmseState": 0.0788456407946884,
+      "maxPosition": 0.3206432613950631,
+      "rmsControl": 1.8939395970956012,
+      "rmsCommandMismatch": 0.870354490801143,
       "meanSolveMs": 0,
       "p95SolveMs": 0,
       "deadlineMissRate": 0
@@ -1789,415 +2217,207 @@
       "observer": "ekf",
       "scenario": "nominal",
       "failures": 0,
-      "rmseState": 0.037638192689518506,
-      "maxPosition": 0.5873302589371568,
-      "rmsControl": 0.6898158852997668,
-      "rmsCommandMismatch": 2.9248997415189166e-17,
-      "meanSolveMs": 6.490444500000591,
-      "p95SolveMs": 7.906797666665322,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.05278716546730553,
-      "maxPosition": 1.4431571937000076,
-      "rmsControl": 0.977915200218415,
-      "rmsCommandMismatch": 3.404920788993075e-17,
-      "meanSolveMs": 7.048115139743179,
-      "p95SolveMs": 9.297915999991043,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.09064544520416462,
-      "maxPosition": 2.039229989000178,
-      "rmsControl": 1.4781045821446408,
-      "rmsCommandMismatch": 5.1720196045749787e-17,
-      "meanSolveMs": 6.940948844871794,
-      "p95SolveMs": 8.738751666659178,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.04743212102049645,
-      "maxPosition": 1.1669356646456397,
-      "rmsControl": 0.9095300640071254,
-      "rmsCommandMismatch": 3.0727952347309126e-17,
-      "meanSolveMs": 6.753679014102314,
-      "p95SolveMs": 8.724983999990704,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05553549971729754,
-      "maxPosition": 1.241871289634397,
-      "rmsControl": 1.1128789254596734,
-      "rmsCommandMismatch": 0.3491806025043904,
-      "meanSolveMs": 7.546429882051972,
-      "p95SolveMs": 9.85104533334379,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.05797360395212953,
-      "maxPosition": 1.0298919691621444,
-      "rmsControl": 1.1181332314503418,
-      "rmsCommandMismatch": 0.6858752404229737,
-      "meanSolveMs": 6.779702211538358,
-      "p95SolveMs": 8.38982300000498,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "mixed",
-      "failures": 1,
-      "rmseState": 0.08162057272974445,
-      "maxPosition": 2.2504430208105646,
-      "rmsControl": 1.3386914758250994,
-      "rmsCommandMismatch": 5.227058820785584e-17,
-      "meanSolveMs": 7.010556363067887,
-      "p95SolveMs": 9.101825666681785,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "ekf",
-      "scenario": "sim2real",
-      "failures": 2,
-      "rmseState": 0.07889341768102892,
-      "maxPosition": 2.352511320221547,
-      "rmsControl": 1.408044615079069,
-      "rmsCommandMismatch": 0.5405159158421268,
-      "meanSolveMs": 7.077208063305542,
-      "p95SolveMs": 8.677373000013176,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.0359963273903537,
-      "maxPosition": 0.6534739117772761,
-      "rmsControl": 0.6498718221821355,
-      "rmsCommandMismatch": 1.652591463614296e-17,
-      "meanSolveMs": 6.217169576922494,
-      "p95SolveMs": 8.63319733333386,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.05066249798474529,
-      "maxPosition": 1.5783731207496334,
-      "rmsControl": 0.9459452016077113,
-      "rmsCommandMismatch": 1.8896895966701465e-17,
-      "meanSolveMs": 6.418762471795437,
-      "p95SolveMs": 8.215612333345538,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.09306202598066073,
-      "maxPosition": 2.125168896332398,
-      "rmsControl": 1.4625012732964542,
-      "rmsCommandMismatch": 4.01057795880674e-17,
-      "meanSolveMs": 6.935866112820953,
-      "p95SolveMs": 9.160980666677156,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.046963207819726405,
-      "maxPosition": 1.2691833679838929,
-      "rmsControl": 0.9116062267163616,
-      "rmsCommandMismatch": 1.285218566057161e-17,
-      "meanSolveMs": 6.122672451282658,
-      "p95SolveMs": 8.076781333327139,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05492942263996581,
-      "maxPosition": 1.3755465024446176,
-      "rmsControl": 1.153774891102681,
-      "rmsCommandMismatch": 0.27532855078290674,
-      "meanSolveMs": 6.118706615383883,
-      "p95SolveMs": 8.025099666692162,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.05927790804800001,
-      "maxPosition": 1.1415199687512048,
-      "rmsControl": 1.1987471228607964,
-      "rmsCommandMismatch": 0.4903101076207816,
-      "meanSolveMs": 6.150411003846183,
-      "p95SolveMs": 8.192359666689299,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "mixed",
-      "failures": 2,
-      "rmseState": 0.08353172186068615,
-      "maxPosition": 2.3185513385554866,
-      "rmsControl": 1.315429112372869,
-      "rmsCommandMismatch": 4.659601010997656e-17,
-      "meanSolveMs": 6.73896702332652,
-      "p95SolveMs": 8.114062666679578,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "linear_mpc",
-      "observer": "mhe",
-      "scenario": "sim2real",
-      "failures": 2,
-      "rmseState": 0.07894931355966438,
-      "maxPosition": 2.402434252015922,
-      "rmsControl": 1.403544090642657,
-      "rmsCommandMismatch": 0.4557129456275521,
-      "meanSolveMs": 6.889888925512295,
-      "p95SolveMs": 8.42961366668654,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.037638192483431504,
-      "maxPosition": 0.5872956228090978,
-      "rmsControl": 0.6897980771769007,
-      "rmsCommandMismatch": 3.013497526554239e-17,
-      "meanSolveMs": 7.782085421795954,
-      "p95SolveMs": 9.596124333329499,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.05290625600792476,
-      "maxPosition": 1.4544808883563103,
-      "rmsControl": 0.9983621370657175,
-      "rmsCommandMismatch": 3.5471257766711236e-17,
-      "meanSolveMs": 7.843077675640384,
-      "p95SolveMs": 9.769223333355816,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.09064633581582839,
-      "maxPosition": 1.8450586485128186,
-      "rmsControl": 1.59683805033991,
-      "rmsCommandMismatch": 6.179376599412831e-17,
-      "meanSolveMs": 7.840443283333428,
-      "p95SolveMs": 9.229380999982823,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.04743212286135379,
-      "maxPosition": 1.1677597484913924,
-      "rmsControl": 0.9117026150561309,
-      "rmsCommandMismatch": 2.8474703351963486e-17,
-      "meanSolveMs": 7.820974483333366,
-      "p95SolveMs": 9.235450666669445,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05553523062428924,
-      "maxPosition": 1.2421032382379023,
-      "rmsControl": 1.112992999836259,
-      "rmsCommandMismatch": 0.3494360044516589,
-      "meanSolveMs": 7.588935476924793,
-      "p95SolveMs": 8.53298133330342,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.05797311070195068,
-      "maxPosition": 1.0299051076499925,
-      "rmsControl": 1.1181363415285908,
-      "rmsCommandMismatch": 0.6859096620116402,
-      "meanSolveMs": 7.694651480769449,
-      "p95SolveMs": 9.142787333325638,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "ekf",
-      "scenario": "mixed",
-      "failures": 0,
-      "rmseState": 0.08102665706608375,
-      "maxPosition": 1.992208688617892,
-      "rmsControl": 1.4827380726032715,
-      "rmsCommandMismatch": 4.550031007955445e-17,
-      "meanSolveMs": 7.952033899999775,
-      "p95SolveMs": 10.036976000003051,
+      "rmseState": 0.037638195191159456,
+      "maxPosition": 0.5865538760564055,
+      "rmsControl": 0.6909352726649463,
+      "rmsCommandMismatch": 3.264383267636406e-17,
+      "meanSolveMs": 0.7366049051287029,
+      "p95SolveMs": 1.401875333346349,
       "deadlineMissRate": 0.001282051282051282
     },
     {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "model",
+      "failures": 0,
+      "rmseState": 0.05278944760725901,
+      "maxPosition": 1.4418887272206942,
+      "rmsControl": 0.9791020335126933,
+      "rmsCommandMismatch": 3.05599675564134e-17,
+      "meanSolveMs": 0.3630345525643161,
+      "p95SolveMs": 0.8187130000151228,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "sensor",
+      "failures": 0,
+      "rmseState": 0.09064548444342929,
+      "maxPosition": 2.036196447401742,
+      "rmsControl": 1.479911065003292,
+      "rmsCommandMismatch": 4.993064846047822e-17,
+      "meanSolveMs": 0.35881121666610943,
+      "p95SolveMs": 0.8960746666610552,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "bias",
+      "failures": 0,
+      "rmseState": 0.04743213553188661,
+      "maxPosition": 1.1655033741248872,
+      "rmsControl": 0.9102601334397851,
+      "rmsCommandMismatch": 2.7406114012729353e-17,
+      "meanSolveMs": 0.3869632743591165,
+      "p95SolveMs": 0.8433243333323238,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "actuator",
+      "failures": 0,
+      "rmseState": 0.055535633621783376,
+      "maxPosition": 1.2402896122548626,
+      "rmsControl": 1.1133431386965407,
+      "rmsCommandMismatch": 0.35068493893359337,
+      "meanSolveMs": 0.4326709410260754,
+      "p95SolveMs": 1.0058799999921273,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "latency",
+      "failures": 0,
+      "rmseState": 0.05797507852263075,
+      "maxPosition": 1.028507482396888,
+      "rmsControl": 1.1184719767974718,
+      "rmsCommandMismatch": 0.6885572773244156,
+      "meanSolveMs": 0.35088432948675924,
+      "p95SolveMs": 0.866646333335666,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "mixed",
+      "failures": 1,
+      "rmseState": 0.08162184803644999,
+      "maxPosition": 2.2484268033465478,
+      "rmsControl": 1.3403515456702355,
+      "rmsCommandMismatch": 4.9648488891993667e-17,
+      "meanSolveMs": 0.36448598201944815,
+      "p95SolveMs": 0.8985183333279565,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "linear_mpc",
+      "observer": "ekf",
+      "scenario": "sim2real",
+      "failures": 2,
+      "rmseState": 0.07889245582970032,
+      "maxPosition": 2.3505328232143707,
+      "rmsControl": 1.409215750061705,
+      "rmsCommandMismatch": 0.54288792558938,
+      "meanSolveMs": 0.3263500603603093,
+      "p95SolveMs": 0.8501836666546296,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "nominal",
+      "failures": 0,
+      "rmseState": 0.037638192483466865,
+      "maxPosition": 0.5872956228089729,
+      "rmsControl": 0.6897980771773145,
+      "rmsCommandMismatch": 2.939822085594494e-17,
+      "meanSolveMs": 5.081329193590053,
+      "p95SolveMs": 6.946173999992122,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "model",
+      "failures": 0,
+      "rmseState": 0.05291166429940312,
+      "maxPosition": 1.4553849204410987,
+      "rmsControl": 0.9987332375279543,
+      "rmsCommandMismatch": 3.5521340160021336e-17,
+      "meanSolveMs": 5.3673405910261165,
+      "p95SolveMs": 7.419210666664488,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "sensor",
+      "failures": 0,
+      "rmseState": 0.09064633581606334,
+      "maxPosition": 1.8450586485017457,
+      "rmsControl": 1.5968380503464743,
+      "rmsCommandMismatch": 4.9896115866775585e-17,
+      "meanSolveMs": 5.347988598718188,
+      "p95SolveMs": 7.358147000001433,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "bias",
+      "failures": 0,
+      "rmseState": 0.04743212286153342,
+      "maxPosition": 1.167759748500103,
+      "rmsControl": 0.9117026150562643,
+      "rmsCommandMismatch": 2.939083954684145e-17,
+      "meanSolveMs": 6.12225865512767,
+      "p95SolveMs": 8.284320333332289,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "actuator",
+      "failures": 0,
+      "rmseState": 0.05553523062436422,
+      "maxPosition": 1.2421032382416826,
+      "rmsControl": 1.112992999831244,
+      "rmsCommandMismatch": 0.3494360044499331,
+      "meanSolveMs": 6.6942259294863335,
+      "p95SolveMs": 9.18523133333656,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "latency",
+      "failures": 0,
+      "rmseState": 0.057973110701904536,
+      "maxPosition": 1.029905107641203,
+      "rmsControl": 1.11813634152777,
+      "rmsCommandMismatch": 0.6859096620107911,
+      "meanSolveMs": 7.600235662821498,
+      "p95SolveMs": 11.736662666682,
+      "deadlineMissRate": 0
+    },
+    {
+      "controller": "state_mpc",
+      "observer": "ekf",
+      "scenario": "mixed",
+      "failures": 0,
+      "rmseState": 0.08104204157466223,
+      "maxPosition": 1.9929614385378167,
+      "rmsControl": 1.483386939103612,
+      "rmsCommandMismatch": 5.385794366093903e-17,
+      "meanSolveMs": 6.599341873076554,
+      "p95SolveMs": 9.541445999988355,
+      "deadlineMissRate": 0
+    },
+    {
       "controller": "state_mpc",
       "observer": "ekf",
       "scenario": "sim2real",
       "failures": 1,
-      "rmseState": 0.07804707795490747,
-      "maxPosition": 2.166374522852067,
-      "rmsControl": 1.5854433850218295,
-      "rmsCommandMismatch": 0.6185000086676608,
-      "meanSolveMs": 8.137242204123138,
-      "p95SolveMs": 10.80539966665674,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.035996325767106714,
-      "maxPosition": 0.6533334317470293,
-      "rmsControl": 0.6499519722653159,
-      "rmsCommandMismatch": 1.5766371045080294e-17,
-      "meanSolveMs": 8.004356862821107,
-      "p95SolveMs": 9.855615333324144,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.050826279588823194,
-      "maxPosition": 1.568765732503051,
-      "rmsControl": 0.9882962638745557,
-      "rmsCommandMismatch": 1.6350004024751113e-17,
-      "meanSolveMs": 7.803618684614701,
-      "p95SolveMs": 9.538293000000218,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.0930629110718445,
-      "maxPosition": 1.8829720751970391,
-      "rmsControl": 1.5858229332442992,
-      "rmsCommandMismatch": 4.607133024274669e-17,
-      "meanSolveMs": 8.364825005126812,
-      "p95SolveMs": 10.547217333340086,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.04696321247025775,
-      "maxPosition": 1.2723291155776895,
-      "rmsControl": 0.91215756020565,
-      "rmsCommandMismatch": 1.557209800163171e-17,
-      "meanSolveMs": 8.159432779487002,
-      "p95SolveMs": 10.174628666679686,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05494280997907866,
-      "maxPosition": 1.3791673631684993,
-      "rmsControl": 1.1551192071627832,
-      "rmsCommandMismatch": 0.2767827536487982,
-      "meanSolveMs": 8.238721464102555,
-      "p95SolveMs": 11.440356666687876,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.05927642211754236,
-      "maxPosition": 1.1412910395218316,
-      "rmsControl": 1.1986538543913998,
-      "rmsCommandMismatch": 0.49040693095481963,
-      "meanSolveMs": 8.26826253845998,
-      "p95SolveMs": 10.904691999972178,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "mixed",
-      "failures": 0,
-      "rmseState": 0.0826923237349194,
-      "maxPosition": 2.0497666904156033,
-      "rmsControl": 1.4740864532314022,
-      "rmsCommandMismatch": 4.86098358782541e-17,
-      "meanSolveMs": 9.100330764102864,
-      "p95SolveMs": 12.878463333336791,
-      "deadlineMissRate": 0.005128205128205128
-    },
-    {
-      "controller": "state_mpc",
-      "observer": "mhe",
-      "scenario": "sim2real",
-      "failures": 1,
-      "rmseState": 0.07787825350321208,
-      "maxPosition": 2.1989619191996947,
-      "rmsControl": 1.584713697726816,
-      "rmsCommandMismatch": 0.5136612187467119,
-      "meanSolveMs": 9.361865188971473,
-      "p95SolveMs": 12.916481666693775,
+      "rmseState": 0.07806559446288462,
+      "maxPosition": 2.1672505892743152,
+      "rmsControl": 1.586309865183126,
+      "rmsCommandMismatch": 0.6185487290219637,
+      "meanSolveMs": 6.3346285282734405,
+      "p95SolveMs": 8.890390333331501,
       "deadlineMissRate": 0
     },
     {
@@ -2205,12 +2425,12 @@
       "observer": "ekf",
       "scenario": "nominal",
       "failures": 0,
-      "rmseState": 0.037638292581393916,
-      "maxPosition": 0.4709619405203404,
-      "rmsControl": 0.7286477782483463,
-      "rmsCommandMismatch": 3.09299591785675e-17,
-      "meanSolveMs": 0.7380436333344104,
-      "p95SolveMs": 1.093261999990015,
+      "rmseState": 0.037638292581354156,
+      "maxPosition": 0.4709619405213443,
+      "rmsControl": 0.7286477782476473,
+      "rmsCommandMismatch": 2.8359909485518505e-17,
+      "meanSolveMs": 7.102796006410603,
+      "p95SolveMs": 11.22259166665996,
       "deadlineMissRate": 0
     },
     {
@@ -2218,12 +2438,12 @@
       "observer": "ekf",
       "scenario": "model",
       "failures": 0,
-      "rmseState": 0.05278171146793754,
-      "maxPosition": 1.1104582140491908,
-      "rmsControl": 1.0096556411409023,
-      "rmsCommandMismatch": 3.425197867167612e-17,
-      "meanSolveMs": 0.6896938038444391,
-      "p95SolveMs": 0.9992346666598072,
+      "rmseState": 0.05278525107536414,
+      "maxPosition": 1.1110818030156828,
+      "rmsControl": 1.00975919781198,
+      "rmsCommandMismatch": 3.603101794344297e-17,
+      "meanSolveMs": 6.203230746153097,
+      "p95SolveMs": 8.91525066665296,
       "deadlineMissRate": 0
     },
     {
@@ -2231,12 +2451,12 @@
       "observer": "ekf",
       "scenario": "sensor",
       "failures": 0,
-      "rmseState": 0.09064883680556103,
-      "maxPosition": 1.598308224648698,
-      "rmsControl": 1.579368818935264,
-      "rmsCommandMismatch": 5.274362809315636e-17,
-      "meanSolveMs": 0.7193215538451346,
-      "p95SolveMs": 1.0628889999934472,
+      "rmseState": 0.0906488368051221,
+      "maxPosition": 1.5983082246100402,
+      "rmsControl": 1.5793688189695547,
+      "rmsCommandMismatch": 5.2581092128500066e-17,
+      "meanSolveMs": 5.767350141025367,
+      "p95SolveMs": 8.06223466664475,
       "deadlineMissRate": 0
     },
     {
@@ -2244,12 +2464,12 @@
       "observer": "ekf",
       "scenario": "bias",
       "failures": 0,
-      "rmseState": 0.04743281427862023,
-      "maxPosition": 0.9333481241148638,
-      "rmsControl": 0.9360828598163929,
-      "rmsCommandMismatch": 3.094073341158061e-17,
-      "meanSolveMs": 0.670829485896124,
-      "p95SolveMs": 0.9391306666851355,
+      "rmseState": 0.04743281427861726,
+      "maxPosition": 0.9333481240978901,
+      "rmsControl": 0.9360828598066151,
+      "rmsCommandMismatch": 2.4812780510108472e-17,
+      "meanSolveMs": 5.703191242307852,
+      "p95SolveMs": 7.5470056666915,
       "deadlineMissRate": 0
     },
     {
@@ -2257,12 +2477,12 @@
       "observer": "ekf",
       "scenario": "actuator",
       "failures": 0,
-      "rmseState": 0.05590450352994484,
-      "maxPosition": 0.9576183129100254,
-      "rmsControl": 1.1377624688977512,
-      "rmsCommandMismatch": 0.3868901163528982,
-      "meanSolveMs": 0.769839771795206,
-      "p95SolveMs": 1.1766756666669,
+      "rmseState": 0.055904503530090445,
+      "maxPosition": 0.9576183129116446,
+      "rmsControl": 1.1377624688905004,
+      "rmsCommandMismatch": 0.38689011635022585,
+      "meanSolveMs": 5.650086656409445,
+      "p95SolveMs": 7.312994666669208,
       "deadlineMissRate": 0
     },
     {
@@ -2270,12 +2490,12 @@
       "observer": "ekf",
       "scenario": "latency",
       "failures": 0,
-      "rmseState": 0.05879436442013556,
-      "maxPosition": 0.8070881460466235,
-      "rmsControl": 1.1578804644059701,
-      "rmsCommandMismatch": 0.7702095838108943,
-      "meanSolveMs": 0.697508969231813,
-      "p95SolveMs": 1.0628056666464545,
+      "rmseState": 0.05879436441996836,
+      "maxPosition": 0.8070881460565366,
+      "rmsControl": 1.1578804644072094,
+      "rmsCommandMismatch": 0.7702095838120963,
+      "meanSolveMs": 5.754295991026074,
+      "p95SolveMs": 7.92418099999971,
       "deadlineMissRate": 0
     },
     {
@@ -2283,12 +2503,12 @@
       "observer": "ekf",
       "scenario": "mixed",
       "failures": 0,
-      "rmseState": 0.08034756936320282,
-      "maxPosition": 1.7956174573153163,
-      "rmsControl": 1.3958930849965092,
-      "rmsCommandMismatch": 4.5418704319327016e-17,
-      "meanSolveMs": 0.7004026833326908,
-      "p95SolveMs": 0.9842976666404866,
+      "rmseState": 0.0803546685214088,
+      "maxPosition": 1.7966174843377993,
+      "rmsControl": 1.395963583955779,
+      "rmsCommandMismatch": 5.135351664167199e-17,
+      "meanSolveMs": 5.542560234615649,
+      "p95SolveMs": 6.678293666685931,
       "deadlineMissRate": 0
     },
     {
@@ -2296,116 +2516,12 @@
       "observer": "ekf",
       "scenario": "sim2real",
       "failures": 1,
-      "rmseState": 0.07624319328044939,
-      "maxPosition": 2.0160012385992054,
-      "rmsControl": 1.4188889904760167,
-      "rmsCommandMismatch": 0.6104305210407287,
-      "meanSolveMs": 0.8285515842301386,
-      "p95SolveMs": 1.342201666654243,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.03599639066247483,
-      "maxPosition": 0.5266173449091732,
-      "rmsControl": 0.6713437714173246,
-      "rmsCommandMismatch": 1.5869620635887288e-17,
-      "meanSolveMs": 0.735177747436011,
-      "p95SolveMs": 1.1093046666743855,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.05062272376411469,
-      "maxPosition": 1.2176383390866146,
-      "rmsControl": 0.9593542794562163,
-      "rmsCommandMismatch": 1.6452908613982043e-17,
-      "meanSolveMs": 0.7400369833326504,
-      "p95SolveMs": 1.0658213333420765,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.09306516658013742,
-      "maxPosition": 1.6655601465941754,
-      "rmsControl": 1.5562525750425247,
-      "rmsCommandMismatch": 4.655883913967576e-17,
-      "meanSolveMs": 0.6585030230772623,
-      "p95SolveMs": 0.9115530000029443,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.046963888206487094,
-      "maxPosition": 1.0196089691101908,
-      "rmsControl": 0.9251000937998725,
-      "rmsCommandMismatch": 1.4346684816058477e-17,
-      "meanSolveMs": 0.7510937756419224,
-      "p95SolveMs": 1.1225366666719008,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.05545890809865803,
-      "maxPosition": 1.0660006511092346,
-      "rmsControl": 1.171586664266466,
-      "rmsCommandMismatch": 0.2980466104108425,
-      "meanSolveMs": 0.7714242320530899,
-      "p95SolveMs": 1.236673666688148,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.06055401560944371,
-      "maxPosition": 0.8998318781356495,
-      "rmsControl": 1.2407072888803308,
-      "rmsCommandMismatch": 0.5459353466835963,
-      "meanSolveMs": 0.8354441769226328,
-      "p95SolveMs": 1.37543599998268,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "mixed",
-      "failures": 0,
-      "rmseState": 0.08167316808703982,
-      "maxPosition": 1.8743834754079913,
-      "rmsControl": 1.3561033847270003,
-      "rmsCommandMismatch": 4.4882232004217906e-17,
-      "meanSolveMs": 0.78048768461561,
-      "p95SolveMs": 1.2084696666764405,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "ltv_mpc",
-      "observer": "mhe",
-      "scenario": "sim2real",
-      "failures": 1,
-      "rmseState": 0.07606743136734724,
-      "maxPosition": 2.067192990469238,
-      "rmsControl": 1.3939364282772615,
-      "rmsCommandMismatch": 0.5077560233339377,
-      "meanSolveMs": 0.8467537001574481,
-      "p95SolveMs": 1.4054783333364564,
+      "rmseState": 0.07624813302836873,
+      "maxPosition": 2.017329881788553,
+      "rmsControl": 1.4189885703446325,
+      "rmsCommandMismatch": 0.6104183741243102,
+      "meanSolveMs": 5.587328586244147,
+      "p95SolveMs": 7.372804999991786,
       "deadlineMissRate": 0
     },
     {
@@ -2413,208 +2529,122 @@
       "observer": "ekf",
       "scenario": "nominal",
       "failures": 0,
-      "rmseState": 0.037638320220861034,
-      "maxPosition": 0.4301677320893768,
-      "rmsControl": 0.7412982787368999,
-      "rmsCommandMismatch": 3.610085901029694e-17,
-      "meanSolveMs": 1.6973777448708482,
-      "p95SolveMs": 2.4808586666476913,
-      "deadlineMissRate": 0
+      "rmseState": 0.037638320220810394,
+      "maxPosition": 0.430167732087224,
+      "rmsControl": 0.7412982787375938,
+      "rmsCommandMismatch": 3.5466973099214426e-17,
+      "meanSolveMs": 13.219673057691978,
+      "p95SolveMs": 14.98027033333589,
+      "deadlineMissRate": 0.007692307692307693
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "model",
       "failures": 0,
-      "rmseState": 0.05281704794874901,
-      "maxPosition": 0.9927308046433186,
-      "rmsControl": 1.0226921798621145,
-      "rmsCommandMismatch": 3.7777437495776716e-17,
-      "meanSolveMs": 1.723922012819019,
-      "p95SolveMs": 2.312587666674517,
-      "deadlineMissRate": 0
+      "rmseState": 0.0528205574720124,
+      "maxPosition": 0.9932387788792214,
+      "rmsControl": 1.0227894392397723,
+      "rmsCommandMismatch": 4.2725601728542663e-17,
+      "meanSolveMs": 13.188530970513538,
+      "p95SolveMs": 15.010411333331527,
+      "deadlineMissRate": 0.011538461538461539
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "sensor",
       "failures": 0,
-      "rmseState": 0.09064996036335497,
-      "maxPosition": 1.4289195977892095,
-      "rmsControl": 1.6099144313893712,
-      "rmsCommandMismatch": 7.41192050533048e-17,
-      "meanSolveMs": 1.5211947525643226,
-      "p95SolveMs": 2.051492666670432,
-      "deadlineMissRate": 0
+      "rmseState": 0.09064996036371249,
+      "maxPosition": 1.4289195978382851,
+      "rmsControl": 1.6099144313409581,
+      "rmsCommandMismatch": 5.1700902207001004e-17,
+      "meanSolveMs": 13.772969271794471,
+      "p95SolveMs": 17.400740666664205,
+      "deadlineMissRate": 0.01794871794871795
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "bias",
       "failures": 0,
-      "rmseState": 0.04743302321828432,
-      "maxPosition": 0.8494165646439399,
-      "rmsControl": 0.9463006266852633,
-      "rmsCommandMismatch": 3.3339535507552694e-17,
-      "meanSolveMs": 1.60501252051319,
-      "p95SolveMs": 2.1432906666886993,
-      "deadlineMissRate": 0
+      "rmseState": 0.04743302321832923,
+      "maxPosition": 0.8494165646504971,
+      "rmsControl": 0.9463006266902473,
+      "rmsCommandMismatch": 3.383697951693794e-17,
+      "meanSolveMs": 14.24972050641029,
+      "p95SolveMs": 19.32522233334991,
+      "deadlineMissRate": 0.043589743589743594
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "actuator",
       "failures": 0,
-      "rmseState": 0.056040431156582304,
-      "maxPosition": 0.8585534974615885,
-      "rmsControl": 1.1499947651533118,
-      "rmsCommandMismatch": 0.39762922696562736,
-      "meanSolveMs": 1.5887401641035328,
-      "p95SolveMs": 2.16751033331578,
-      "deadlineMissRate": 0
+      "rmseState": 0.05604043115646786,
+      "maxPosition": 0.8585534974516101,
+      "rmsControl": 1.1499947651658313,
+      "rmsCommandMismatch": 0.3976292269745743,
+      "meanSolveMs": 13.876071294873,
+      "p95SolveMs": 19.34702766665335,
+      "deadlineMissRate": 0.043589743589743594
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "latency",
       "failures": 0,
-      "rmseState": 0.059100635323072276,
-      "maxPosition": 0.728731614102118,
-      "rmsControl": 1.1755936741900952,
-      "rmsCommandMismatch": 0.7940168055449935,
-      "meanSolveMs": 1.6213977641020811,
-      "p95SolveMs": 2.2215669999908036,
-      "deadlineMissRate": 0
+      "rmseState": 0.05910063532306414,
+      "maxPosition": 0.7287316140746157,
+      "rmsControl": 1.1755936741891793,
+      "rmsCommandMismatch": 0.7940168055337328,
+      "meanSolveMs": 13.76157605000018,
+      "p95SolveMs": 17.667740666676156,
+      "deadlineMissRate": 0.021794871794871797
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "mixed",
       "failures": 0,
-      "rmseState": 0.08027398745965321,
-      "maxPosition": 1.581129979142168,
-      "rmsControl": 1.420505103920387,
-      "rmsCommandMismatch": 4.9373974105810344e-17,
-      "meanSolveMs": 1.8121451153840795,
-      "p95SolveMs": 2.6805453333460414,
-      "deadlineMissRate": 0
+      "rmseState": 0.0802808109110589,
+      "maxPosition": 1.5819149993356572,
+      "rmsControl": 1.4205658774060412,
+      "rmsCommandMismatch": 5.4309265003665194e-17,
+      "meanSolveMs": 15.780548828206241,
+      "p95SolveMs": 22.67356766665277,
+      "deadlineMissRate": 0.12179487179487179
     },
     {
       "controller": "full_nmpc",
       "observer": "ekf",
       "scenario": "sim2real",
       "failures": 0,
-      "rmseState": 0.07582502974728611,
-      "maxPosition": 1.7989086437137238,
-      "rmsControl": 1.4319501881441619,
-      "rmsCommandMismatch": 0.6263119557910027,
-      "meanSolveMs": 1.939784565384019,
-      "p95SolveMs": 2.7774083333594413,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "nominal",
-      "failures": 0,
-      "rmseState": 0.03599640838656638,
-      "maxPosition": 0.4816168788729849,
-      "rmsControl": 0.6800513280610033,
-      "rmsCommandMismatch": 1.1902127590850367e-17,
-      "meanSolveMs": 1.7994002679483039,
-      "p95SolveMs": 2.582883333302258,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "model",
-      "failures": 0,
-      "rmseState": 0.050652929305103477,
-      "maxPosition": 1.0894004343054697,
-      "rmsControl": 0.968477619395746,
-      "rmsCommandMismatch": 3.2375347239171106e-17,
-      "meanSolveMs": 1.9802328410260646,
-      "p95SolveMs": 3.003317666686295,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "sensor",
-      "failures": 0,
-      "rmseState": 0.09306622061615859,
-      "maxPosition": 1.489036058054548,
-      "rmsControl": 1.5850521787716276,
-      "rmsCommandMismatch": 5.370211391281788e-17,
-      "meanSolveMs": 1.7886992217960935,
-      "p95SolveMs": 2.56679033334755,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "bias",
-      "failures": 0,
-      "rmseState": 0.04696409808459895,
-      "maxPosition": 0.9294816262869735,
-      "rmsControl": 0.9324578660487718,
-      "rmsCommandMismatch": 1.6747653942370078e-17,
-      "meanSolveMs": 1.8158812320526263,
-      "p95SolveMs": 2.620230999988659,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "actuator",
-      "failures": 0,
-      "rmseState": 0.055642995368675084,
-      "maxPosition": 0.9574861183501918,
-      "rmsControl": 1.1831264490090685,
-      "rmsCommandMismatch": 0.3054161513155133,
-      "meanSolveMs": 1.7926240269241716,
-      "p95SolveMs": 2.482502333334802,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "latency",
-      "failures": 0,
-      "rmseState": 0.06101093254360996,
-      "maxPosition": 0.8142967721940505,
-      "rmsControl": 1.261202849903275,
-      "rmsCommandMismatch": 0.5633775729929159,
-      "meanSolveMs": 1.8012618717938984,
-      "p95SolveMs": 2.5317640000139363,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "mixed",
-      "failures": 0,
-      "rmseState": 0.0815520950136925,
-      "maxPosition": 1.6488541464407351,
-      "rmsControl": 1.3779929591949445,
-      "rmsCommandMismatch": 4.1859407717485974e-17,
-      "meanSolveMs": 1.7034424358967675,
-      "p95SolveMs": 2.358017333317548,
-      "deadlineMissRate": 0
-    },
-    {
-      "controller": "full_nmpc",
-      "observer": "mhe",
-      "scenario": "sim2real",
-      "failures": 0,
-      "rmseState": 0.07530736873902677,
-      "maxPosition": 1.880239640081345,
-      "rmsControl": 1.397898987328536,
-      "rmsCommandMismatch": 0.519386309641925,
-      "meanSolveMs": 1.6625909499982254,
-      "p95SolveMs": 2.371961666678544,
-      "deadlineMissRate": 0
+      "rmseState": 0.07582893705092192,
+      "maxPosition": 1.7999696668061247,
+      "rmsControl": 1.4320303085373813,
+      "rmsCommandMismatch": 0.6262986716355045,
+      "meanSolveMs": 14.685238176923193,
+      "p95SolveMs": 19.301517000014428,
+      "deadlineMissRate": 0.04487179487179488
     }
-  ]
+  ],
+  "completedAt": "2026-10-04T02:24:08.232Z",
+  "sourcesStable": true,
+  "sectionComputeMs": {
+    "systemIdentification": 1212.7788990000001,
+    "actuatorIdentification": 26.030171999999993,
+    "estimatorCalibration": 107503.42522500001,
+    "controllerTuning": 179491.286067,
+    "controlEstimationCoTuning": 48180.71373800002,
+    "mpcTuning": 12820.090452999983,
+    "safetySupervisor": 53483.93705000001,
+    "robustMpcProbe": 31656.06367100001,
+    "modelHierarchy": 75842.717329,
+    "singleFactorAblation": 162824.63052600002,
+    "advancedFailures": 67873.11325200001,
+    "discretization": 59.051092999987304,
+    "stress": 175762.226119
+  },
+  "checkpointBoundary": "Sections may resume only at identical source hashes; timing remains host-specific, not exclusive WCET."
 }

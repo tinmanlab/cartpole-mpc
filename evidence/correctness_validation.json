@@ -1,0 +1,58 @@
+{
+  "schema": "cartpole-correctness-validation/v2",
+  "date": "2026-10-04",
+  "scope": "Official MuJoCo WASM simulation and independent numerical validation; not hardware admission",
+  "runtime": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "commands": [
+    {"command": "npm run build", "exitCode": 0},
+    {"command": "npm run check", "exitCode": 0},
+    {"command": "npm run test:wasm", "exitCode": 0},
+    {"command": "npm run test:native:parity", "exitCode": 0},
+    {"command": "npm run test:wasm-native", "exitCode": 0},
+    {"command": "npm run test:browser", "exitCode": 0},
+    {"command": "git diff --check", "exitCode": 0},
+    {"command": "npm run commission", "exitCode": 0}
+  ],
+  "results": {
+    "nominalClosedLoopCases": 16,
+    "nominalAllPassed": true,
+    "dynamicsCases": 36,
+    "geometryMaxError": 2.220446049250313e-16,
+    "nativeReplaySteps": 80,
+    "nativeReplayMaxStateError": 2.220446049250313e-15,
+    "parameterizedNativeReplays": 3,
+    "stepsPerParameterizedReplay": 40,
+    "qpStrictParityPassed": true,
+    "qpCases": 4,
+    "qpMaxFirstActionError": 1.0563772079308364e-12,
+    "unchangedFirstActionTolerance": 0.001,
+    "activeRailParityPassed": true,
+    "defaultHardControllerStress": {"completed": 14, "envelope-failure": 1, "solver-rejected": 1},
+    "commissioningSections": 13,
+    "commissioningStressRows": 40,
+    "commissioningSourcesMatch": true,
+    "comparisonRejectionIsolated": true,
+    "noSilentPhysicsFallback": true,
+    "nativeWebMCPAvailableInTestBrowser": false
+  },
+  "boundaries": {
+    "hardwareAdmission": "NOT_EVALUATED",
+    "productionReadiness": "NOT_ESTABLISHED",
+    "realTimeDiagnosis": "INVESTIGATE",
+    "timingScope": "Host-specific synchronous simulation measurements, not exclusive WCET or physical sensor-to-actuator timing",
+    "observerCalibrationData": "Disclosed simulated truth/noise; no real sensor-only calibration dataset",
+    "nonlinearSolver": "Educational iLQR/MHE; acados/OCS2 not reproduced",
+    "browserWebMCP": "Adapter tests use an explicit shim; normal UI and physics separately tested without it",
+    "rendering": "Canvas 2D projection of compiled MuJoCo geometry, not native OpenGL rendering"
+  },
+  "provenance": "Exact numerical source hashes and asset identity are recorded in native_reference.json and commissioning.json. Completed commissioning sections were resumed only with matching source hashes; final hashes were independently checked against the current files.",
+  "receipts": ["native_reference.json", "mujoco_wasm.json", "wasm_native_parity.json", "browser_wasm.json", "commissioning.json", "diagnosis.json"],
+  "historicalEvidence": "Earlier failed QP parity remains in native_reference_before.json and Git history. The former handwritten box-QP optimizer was replaced by pinned upstream quadprog; acceptance tolerances were not relaxed."
+}

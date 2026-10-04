@@ -1,0 +1,42 @@
+{
+  "schema": "cartpole-wasm-native-parity/v1",
+  "mujocoVersion": "3.7.0",
+  "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+  "controlSteps": 80,
+  "maxAbsoluteStateError": 2.220446049250313e-15,
+  "tolerance": 1e-10,
+  "passed": true,
+  "hardwareVerified": false,
+  "parameterizedReplay": [
+    {
+      "parameters": {
+        "mc": 1,
+        "mp": 0.1,
+        "l": 0.5,
+        "friction": 0
+      },
+      "steps": 40,
+      "maxAbsoluteStateError": 4.996003610813204e-16
+    },
+    {
+      "parameters": {
+        "mc": 1.25,
+        "mp": 0.08,
+        "l": 0.575,
+        "friction": 0.15
+      },
+      "steps": 40,
+      "maxAbsoluteStateError": 4.2327252813834093e-16
+    },
+    {
+      "parameters": {
+        "mc": 0.8,
+        "mp": 0.14,
+        "l": 0.42,
+        "friction": 0.04
+      },
+      "steps": 40,
+      "maxAbsoluteStateError": 2.220446049250313e-16
+    }
+  ]
+}
