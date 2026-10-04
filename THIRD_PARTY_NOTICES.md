@@ -46,3 +46,7 @@ The frozen PPO actor artifact is reused from the related CartPole training proje
 - The local MPC transcription and residual checks are not claimed to be upstream code. OSQP is used separately as an independent numerical reference.
 
 `vendor/manifest.json`, `package-lock.json` and `scripts/vendor_runtime.py --check` provide exact artifact/source identity. No upstream endorsement or hardware safety certification is implied.
+
+## Serial N-pendulum model construction
+
+The N-link generator follows the nested-body construction pattern in google-deepmind/dm_control, `dm_control/suite/cartpole.py::_make_model`, inspected at commit `87e046bfeab1d6c1ffb40f9ee2a7459a38778c74` (The dm_control Authors, Apache-2.0). Our generator extends this repository's explicit-inertia uniform-rod MJCF instead of importing the dm_control model/reward/policy. Existing Apache-2.0 license text is retained in `licenses/Apache-2.0.txt`. No upstream benchmark performance or endorsement is claimed. MuJoCo supplies dynamics; SciPy supplies DARE/Kalman design; quadprog and OSQP supply the actual QP solves.

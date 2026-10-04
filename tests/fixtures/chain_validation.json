@@ -1,0 +1,22 @@
+{
+  "schema": "cartpole-chain-frozen-cases/v1",
+  "definition": "serial unactuated N hinges on one horizontally actuated cart; N is not the MPC horizon",
+  "poles": [1,2,3,4,5,6,7,8],
+  "controllers": ["mpc","lqr"],
+  "observers": ["oracle","steady_kf"],
+  "steps": 600,
+  "controlDt": 0.02,
+  "horizon": 30,
+  "forceLimit": 10,
+  "railLimit": 2.4,
+  "encoderSigma": 0.0002,
+  "finalPositionTolerance": 0.1,
+  "finalAngleTolerance": 0.02,
+  "finalWindowSteps": 100,
+  "cases": [
+    {"name":"gentle","seed":4103,"cart":0,"goal":0.1,"absoluteAngle":0.003,"push":null},
+    {"name":"tracking_push","seed":4111,"cart":0.1,"goal":-0.2,"absoluteAngle":0.02,"push":{"step":200,"duration":10,"force":0.25}},
+    {"name":"boundary","seed":4127,"cart":0,"goal":0.5,"absoluteAngle":0.12,"push":{"step":200,"duration":10,"force":1}}
+  ],
+  "notes": ["Angles alternate amplitude and minus half-amplitude, expressed in absolute world angle then converted to relative hinges.","No parameter or tolerance tuning after this manifest is run.","Same 1 m full length and 0.1 kg per pole: total height/mass grow with N.","DARE numeric rejection is not a theorem of physical impossibility.","Fixed local linear controller and stationary KF, not generalized EKF/NMPC or swing-up."]
+}

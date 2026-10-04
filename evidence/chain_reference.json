@@ -1,0 +1,256 @@
+{
+  "schema": "cartpole-chain-reference/v1",
+  "rows": [
+    {
+      "poles": 1,
+      "nativeReplayMaxError": 1.6653345369377348e-16,
+      "controlPBHMinimum": 0.006640634405490873,
+      "allEncoderObservationPBHMinimum": 0.01999999870432938,
+      "oldTwoSensorObservationPBHMinimum": 0.01999999870432938,
+      "designAvailable": true,
+      "dareCondition": 204.864299788572,
+      "dareNormalizedResidual": 9.412500995327522e-16,
+      "osqpFrozenProbe": {
+        "accepted": true,
+        "action": -0.17614039446976298,
+        "status": "solved",
+        "iterations": 825,
+        "hostMs": 3.908251994289458,
+        "primalViolation": 8.457382303486146e-12,
+        "normalizedStationarity": 1.103125722367109e-12,
+        "cost": 1.4412797856794484
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 4.2318424399300896e-05
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 1.056615581876674e-05
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 2.6429409183128623e-06
+        }
+      ]
+    },
+    {
+      "poles": 2,
+      "nativeReplayMaxError": 8.881784197001252e-16,
+      "controlPBHMinimum": 0.003987054534981463,
+      "allEncoderObservationPBHMinimum": 0.01999998396843587,
+      "oldTwoSensorObservationPBHMinimum": 0.005249670940458231,
+      "designAvailable": true,
+      "dareCondition": 8713.734836955153,
+      "dareNormalizedResidual": 3.7451260342723834e-14,
+      "osqpFrozenProbe": {
+        "accepted": true,
+        "action": 0.13099920691303457,
+        "status": "solved",
+        "iterations": 2800,
+        "hostMs": 21.09681800357066,
+        "primalViolation": 3.9067912380530764e-11,
+        "normalizedStationarity": 4.06431588031957e-12,
+        "cost": 1.616947347320304
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.00022806472342173044
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 5.395932779831632e-05
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 1.3468948633541658e-05
+        }
+      ]
+    },
+    {
+      "poles": 3,
+      "nativeReplayMaxError": 3.552713678800501e-15,
+      "controlPBHMinimum": 0.0027264006794860953,
+      "allEncoderObservationPBHMinimum": 0.019999933839025083,
+      "oldTwoSensorObservationPBHMinimum": 0.0033602749738154245,
+      "designAvailable": true,
+      "dareCondition": 142805.28099642787,
+      "dareNormalizedResidual": 7.947053701585123e-13,
+      "osqpFrozenProbe": {
+        "accepted": true,
+        "action": 0.042966775549558606,
+        "status": "solved",
+        "iterations": 11400,
+        "hostMs": 139.69439998618327,
+        "primalViolation": 1.7590060050551405e-11,
+        "normalizedStationarity": 1.264912682877935e-13,
+        "cost": 1.6534945210511753
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.0007670428545155877
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.0001506877223323612
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 3.7141142411730346e-05
+        }
+      ]
+    },
+    {
+      "poles": 4,
+      "nativeReplayMaxError": 6.306066779870889e-14,
+      "controlPBHMinimum": 0.002022341769463018,
+      "allEncoderObservationPBHMinimum": 0.01999983892955792,
+      "oldTwoSensorObservationPBHMinimum": 0.002760596197356998,
+      "designAvailable": true,
+      "dareCondition": 2110129.188485217,
+      "dareNormalizedResidual": 3.09375826607609e-12,
+      "osqpFrozenProbe": {
+        "accepted": false,
+        "action": null,
+        "status": "maximum iterations reached",
+        "iterations": 20000,
+        "hostMs": 352.90670199901797
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.0021454523166452846
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.0003238921754709757
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 7.86041811390715e-05
+        }
+      ]
+    },
+    {
+      "poles": 5,
+      "nativeReplayMaxError": 4.0190073491430667e-14,
+      "controlPBHMinimum": 0.001581752107258393,
+      "allEncoderObservationPBHMinimum": 0.01999971963691259,
+      "oldTwoSensorObservationPBHMinimum": 0.002312314686785604,
+      "designAvailable": true,
+      "dareCondition": 38949016.66460441,
+      "dareNormalizedResidual": 7.307088561411593e-11,
+      "osqpFrozenProbe": {
+        "accepted": false,
+        "action": null,
+        "status": "maximum iterations reached",
+        "iterations": 20000,
+        "hostMs": 464.4205829827115
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.004553940159564143
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.0005936341332869479
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 0.00015991996088138722
+        }
+      ]
+    },
+    {
+      "poles": 6,
+      "nativeReplayMaxError": 1.2079226507921703e-13,
+      "controlPBHMinimum": 0.0012804662601239476,
+      "allEncoderObservationPBHMinimum": 0.019999607832295218,
+      "oldTwoSensorObservationPBHMinimum": 0.0019186411587519103,
+      "designAvailable": true,
+      "dareCondition": 762568732.3484046,
+      "dareNormalizedResidual": 1.5652749568335296e-10,
+      "osqpFrozenProbe": {
+        "accepted": false,
+        "action": null,
+        "status": "maximum iterations reached",
+        "iterations": 20000,
+        "hostMs": 607.0452079875395
+      },
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.006212196247118671
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.0015680209122608492
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 0.0004664991806226567
+        }
+      ]
+    },
+    {
+      "poles": 7,
+      "nativeReplayMaxError": 2.007283228522283e-13,
+      "controlPBHMinimum": 0.0010558452012706056,
+      "allEncoderObservationPBHMinimum": 0.01999951944715275,
+      "oldTwoSensorObservationPBHMinimum": 0.0016371467810948161,
+      "designAvailable": false,
+      "dareCondition": 14941703220.661795,
+      "dareNormalizedResidual": 6.553169134115419e-09,
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.012448017852979837
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.004087625606064141
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 0.0011160641092683682
+        }
+      ]
+    },
+    {
+      "poles": 8,
+      "nativeReplayMaxError": 4.503064587879635e-13,
+      "controlPBHMinimum": 0.0008819036076473596,
+      "allEncoderObservationPBHMinimum": 0.01999945545577882,
+      "oldTwoSensorObservationPBHMinimum": 0.0014354340749502543,
+      "designAvailable": false,
+      "dareCondition": 291271849563.504,
+      "dareNormalizedResidual": 2.4488039290031334e-08,
+      "shortReplayRefinement": [
+        {
+          "substeps": 1,
+          "normalizedRmsError": 0.02247708599113509
+        },
+        {
+          "substeps": 4,
+          "normalizedRmsError": 0.006489966085784194
+        },
+        {
+          "substeps": 16,
+          "normalizedRmsError": 0.0017057654907434287
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "mujoco": "3.7.0",
+  "limits": {
+    "nativeWasmReplay": 1e-08,
+    "osqpPrimalViolation": 1e-07,
+    "osqpNormalizedStationarity": 1e-07
+  },
+  "interpretation": "PBH at one equilibrium and nominal parameters is numerical local evidence. Native normalized stationarity differs from the browser absolute KKT gate; neither rejected numeric attempt proves physical impossibility."
+}
