@@ -17,11 +17,12 @@ Legend:
 | reduced-order MPC | BRIDGE | CoM planner + lower layer | centroidal momentum/contact-wrench MPC |
 | nonlinear MPC | EXECUTABLE | 4-state single-shooting iLQR-style | sparse full-order NMPC |
 | robust/stochastic MPC | BRIDGE | executable finite-model scenario-risk MPC + taxonomy; no formal robustness guarantee | tube/min-max/scenario/chance MPC |
-| safety filter / CBF / backup | CONCEPT | checklist only | platform safety layer / reachability when justified |
+| safety filter / CBF / backup | BRIDGE | executable NMPC prediction monitor + LQR backup; no formal guarantee | CBF/reachability/verified backup + hardware interlock as justified |
 | hybrid/switched contact | CONCEPT | no fake foot variables | switched/contact-mode OCP |
 | terminal invariant set | CONCEPT | not implemented | task-specific MPC stability design |
 | recursive KF | EXECUTABLE | linear KF | sensor-specific KF/ESKF |
 | EKF | EXECUTABLE | nonlinear mean/Jacobian | floating-base nonlinear filter |
+| UKF | EXECUTABLE | sigma-point nonlinear Gaussian filter | Jacobian-free nonlinear Gaussian filtering when justified |
 | invariant EKF | BRIDGE | SO(2) error geometry only | SO(3)/SE(3)/SE_2(3) InEKF |
 | MHE | BRIDGE | nonlinear single-shooting window | constrained sparse MHE/NMHE |
 | factor graph / smoothing | CONCEPT | not implemented | VIO/VILO/factor graph when needed |
@@ -33,18 +34,20 @@ Legend:
 | identifiability diagnostic | EXECUTABLE | residual sensitivity correlation | excitation design / Fisher-information analysis |
 | estimator calibration | EXECUTABLE offline | Q_e/R_e scale + NIS/NEES mean/coverage diagnostics | bilevel/likelihood calibration |
 | controller tuning | EXECUTABLE offline | LQR CEM + structured Linear-MPC horizon/cost search with held-out accept/reject gates | DiffTune/BO/Safe BO as appropriate |
-| control-estimation co-design | CONCEPT | sequencing + acceptance contract | ContEst/differentiable co-design when tractable |
+| control-estimation co-design | BRIDGE | low-dimensional closed-loop CEM co-tuning + held-out gate | ContEst/differentiable/bilevel co-design when tractable |
 | model validity envelope | EXECUTABLE offline | fixed-angle sweep across LQR/Linear/State-aware/LTV/Full-NMPC | robot-specific operating-envelope evidence |
 | train/validation/test split | EXECUTABLE | disjoint conditions/seeds + accept/reject gate | mandatory deployment evidence |
 | sensor noise / bias / outlier | EXECUTABLE | white noise, bias random walk, deterministic glitch | measured sensor models + robust update |
+| colored noise / packet faults | EXECUTABLE | AR(1) colored noise, dropout hold-last, stuck sensor + freshness/fault metadata | timestamp-aware fault detection, colored-noise/robust sensor model |
 | actuator lag/gain | EXECUTABLE | isolated first-order lag/gain scenario + combined stack | identified motor/drive model |
-| command delay | EXECUTABLE | isolated 2-tick scenario + 0–2 tick hidden delay in combined stack | measured control/comms latency/jitter |
+| command delay / jitter | EXECUTABLE | isolated fixed delay + stochastic command hold jitter | measured latency/jitter distribution + delay-aware prediction |
 | timing/deadline | EXECUTABLE diagnostic | mean/p95 solve time + deadline miss rate | scheduler/solver deadline acceptance |
+| discretization sensitivity | EXECUTABLE offline | 1/2/4/8/16 substep convergence probe | integrator/timestep convergence and error budget |
 | diagnosis triage | EXECUTABLE offline | deterministic evidence → model/estimator/constraint/actuator/timing/tuning findings | robot-scale triage using native telemetry |
 | friction/model mismatch | EXECUTABLE | hidden parameter family | identified uncertainty bracket |
 | single-factor sim2real ablation | EXECUTABLE | model/noise/bias/actuator/latency/outlier before combined stack | matched robot-scale ablation campaign |
-| torque-speed/current loop | CONCEPT | absent | actuator-native model |
-| thermal/power derating | CONCEPT | absent | actuator/thermal model |
+| torque-speed/current loop | BRIDGE | speed-dependent force envelope; no electrical current loop | actuator-native voltage/current/torque-speed model |
+| thermal/power derating | BRIDGE | history-dependent scalar thermal state and force derating | actuator thermal/current/power model |
 | contact/slip | EXTERNAL | CartPole cannot represent it faithfully | humanoid/legged plant + estimator |
 | self/environment collision | EXTERNAL | absent | rigid-body geometry/OCP |
 | exteroceptive perception | EXTERNAL | absent | VIO/LiDAR/depth pipeline |

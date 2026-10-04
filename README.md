@@ -85,6 +85,7 @@ Then learned information can enter at different points:
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
 | EKF | nonlinear prediction + numerical Jacobian covariance propagation |
+| UKF | sigma-point nonlinear Gaussian propagation with circular angle handling |
 | SO(2) error bridge | wrapped angle innovation; not the full Hartley humanoid InEKF |
 | Nonlinear shooting MHE | recent-window nonlinear single-shooting estimate with EKF arrival prior; not full constrained NMHE |
 | Learned residual | locally trained residual MLP behind the geometry-aware EKF |
@@ -216,6 +217,12 @@ More detail:
 - [Theory failure map](docs/THEORY_FAILURE_MAP.md)
 - [Reference / native-authority map](docs/REFERENCE_MAP.md)
 
+## Correctness and native references
+
+Read [the 2026-10-04 sim2real correctness review](docs/SIM2REAL_CORRECTNESS_REVIEW_2026-10-04.md) before interpreting commissioning results as robot readiness. It records reproduced observer/freshness/covariance/supervisor defects, corrections, essential deployment gaps, and a native numerical-reference lane using **SciPy, OSQP and MuJoCo**.
+
+The independent reference checks and browser optimizer parity are separate gates. The native reference passes, while strict first-action parity fails in three of four fixed browser MPC cases. This is an approximation boundary, not a hardware safety verdict. `evidence/native_reference.json` records source hashes, versions, tolerances and outcomes. Hardware admission remains **NOT_EVALUATED**.
+
 ## Fixed evidence
 
 The repo ships deterministic evidence under evidence/.
@@ -231,7 +238,10 @@ Representative fixed checks from the audited implementation:
 - the targeted LQR-fixed estimator nonlinear bench gives about 0.0080 KF RMSE versus 0.00323 EKF RMSE across five fixed seeds,
 - the SO(2) regression demonstrates that +179 deg and -179 deg differ by 2 deg, not 358 deg,
 - scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
-- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims.
+- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims,
+- colored noise, dropout, stuck-sensor, command jitter, torque-speed and thermal-derating probes are separate failure classes rather than one generic "reality gap",
+- integration refinement is checked explicitly before interpreting tuning failures,
+- low-dimensional controller-estimator co-tuning is admitted only through held-out validation/test and is not mislabeled as ContEst/DiffTune.
 
 Run:
 

@@ -117,6 +117,8 @@ ContEst jointly treats actuation, sensing and estimation in a two-stage design o
 
 For a high-dimensional humanoid this is currently a research direction, not a replacement for staged commissioning.
 
+The executable CartPole commissioning harness now contains a five-parameter controller-estimator CEM co-tuning bridge. Its only purpose is to demonstrate the coupled closed-loop search and the held-out admission gate. A candidate that improves train/validation but worsens final test is rejected rather than promoted.
+
 ## 6. The tuner objective is not one RMSE
 
 A controller objective should cover task performance and engineering cost, for example:

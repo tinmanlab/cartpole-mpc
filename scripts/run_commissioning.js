@@ -16,10 +16,14 @@ function main(){
     actuatorIdentification:C.identifyActuator(),
     estimatorCalibration:C.calibrateEstimator(),
     controllerTuning:C.tuneController(),
+    controlEstimationCoTuning:C.coTuneControlEstimation(),
     mpcTuning:C.tuneMpcStructure(),
+    safetySupervisor:C.safetySupervisorProbe(),
     robustMpcProbe:C.robustMpcProbe(),
     modelHierarchy:C.modelHierarchySweep(),
     singleFactorAblation:C.ablationReport(),
+    advancedFailures:C.advancedFailureReport(),
+    discretization:C.discretizationProbe(),
     stress:C.stressReport()
   };
   const dest=path.join(__dirname,'..','evidence','commissioning.json');
@@ -32,10 +36,16 @@ function main(){
     estimatorScores:out.estimatorCalibration.scores,
     controllerAccepted:out.controllerTuning.accepted,
     controllerScores:out.controllerTuning.scores,
+    coTuningAccepted:out.controlEstimationCoTuning.accepted,
+    coTuningScores:out.controlEstimationCoTuning.scores,
     mpcAccepted:out.mpcTuning.accepted,
     mpcScores:out.mpcTuning.scores,
+    safetySupervisorAccepted:out.safetySupervisor.accepted,
     robustMpcAccepted:out.robustMpcProbe.accepted,
     ablationPipelines:out.singleFactorAblation.length,
+    advancedSensorRows:out.advancedFailures.sensorRows.length,
+    advancedActuatorRows:out.advancedFailures.actuatorRows.length,
+    discretizationRows:out.discretization.rows.length,
     stressRows:out.stress.length
   },null,2));
 }

@@ -12,7 +12,7 @@ async def main():
         mock = """<script>(()=>{const tools={};const mc={async registerTool(tool){tools[tool.name]=tool;}};Object.defineProperty(Document.prototype,'modelContext',{configurable:true,get(){return mc;}});window.__webmcpTools=tools;})();</script>"""
         await page.set_content(HTML.replace("<head>", "<head>"+mock, 1), wait_until="load")
         await page.wait_for_function("document.querySelector('#webmcpBadge').textContent.includes('registered')")
-        assert await page.locator("#topicNav button").count() == 25
+        assert await page.locator("#topicNav button").count() == 28
         await page.evaluate("window.__webmcpTools.cartpole_set_topic.execute({topic:'full_nmpc'})")
         await page.click("#useTopic")
         state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
@@ -34,9 +34,16 @@ async def main():
         assert ltv_state["solver"]["horizon"] == 30
         assert ltv_state["solver"]["iterations"] == 1
 
+        await page.evaluate("window.__webmcpTools.cartpole_set_observer.execute({observer:'ukf'})")
+        ukf_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
+        assert ukf_state["observer"] == "ukf"
+        assert ukf_state["P"] is not None
+
         await page.evaluate("window.__webmcpTools.cartpole_set_observer.execute({observer:'mhe'})")
         mhe_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:12})"))
         assert mhe_state["observer"] == "mhe"
+        assert mhe_state["observerDiagnostics"]["iterations"] > 0
+        assert mhe_state["observerDiagnostics"]["cost"] >= 0
 
         await page.evaluate("window.__webmcpTools.cartpole_set_scenario.execute({scenario:'sim2real'})")
         s2r_state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:4})"))
@@ -54,11 +61,24 @@ async def main():
 
         actuator_probe = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'lqr',observer:'ekf',scenario:'actuator',seed:4,steps:120,pushForce:0})"))
         assert actuator_probe["rmsCommandMismatch"] > 0
+        dropout_probe = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'lqr',observer:'ekf',scenario:'dropout',seed:4,steps:120,pushForce:0})"))
+        assert any(q.get("sensorFresh") is False for q in dropout_probe["trace"])
+        assert all(q.get("measurementUsed") is False and q["S"] is None and q["innovation"] is None for q in dropout_probe["trace"] if not q["sensorFresh"])
+        thermal_probe = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_probe.execute({controller:'lqr',observer:'ekf',scenario:'thermal',seed:4,steps:250,pushForce:0})"))
+        assert max(q.get("thermalState",0) for q in thermal_probe["trace"]) > 0
 
         await page.evaluate("window.__webmcpTools.cartpole_set_scenario.execute({scenario:'actuator'})")
         await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:12})")
         live = json.loads(await page.evaluate("window.__webmcpTools.cartpole_get_state.execute({})"))
         assert "appliedForce" in live
+
+        await page.evaluate("window.__webmcpTools.cartpole_set_observer.execute({observer:'ekf'})")
+        await page.evaluate("window.__webmcpTools.cartpole_set_scenario.execute({scenario:'dropout'})")
+        missing = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:3})"))
+        assert missing["sensorFresh"] is False and missing["measurementUsed"] is False
+        assert missing["innovation"] is None
+        assert await page.locator("#mInnov").text_content() == "—"
+        assert missing["measurementCovarianceSource"] == "injected-noise-oracle"
 
         assert await page.evaluate("document.documentElement.scrollWidth-window.innerWidth") <= 1
         await browser.close()

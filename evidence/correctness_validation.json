@@ -1,0 +1,31 @@
+{
+  "schema": "cartpole-correctness-validation/v1",
+  "date": "2026-10-04",
+  "baseCommit": "9e5b2049f460b427a4d9233ef4ff002c68490625",
+  "inheritedPatchSha256": "f828932563de828a7abe226907b6395d2e601321f7fe0f3d83679b0fa3db5fa3",
+  "scope": "isolated WSL audit; no hardware or main/Pages deployment",
+  "regressions": {
+    "initialContractChecks": {"beforePassed": 0, "beforeFailed": 8, "afterPassed": 8},
+    "finalContractChecks": {"passed": 10, "failed": 0},
+    "liveMheDiagnostics": "missing observerDiagnostics reproduced, then corrected and tested",
+    "liveDropout": "unavailable innovation remains null and displays an em dash",
+    "realtimeDiagnosis": "solver-only PASS reproduced, then replaced with MEASURED_ONLY and an explicit unverified end-to-end flag"
+  },
+  "commands": [
+    {"command": "npm run check", "exitCode": 0},
+    {"command": "python3 tests/test_browser.py", "exitCode": 0, "scope": "headless Chromium; registration shim for WebMCP; not a native WebMCP deployment test"},
+    {"command": ".venv-native/bin/python tests/test_native_reference.py", "exitCode": 0},
+    {"command": ".venv-native/bin/python tests/test_native_reference.py --require-browser-parity", "exitCode": 1, "remainingFailure": "3/4 browser QP plans exceed the unchanged 0.001 N first-action parity tolerance"},
+    {"command": "npm run commission", "exitCode": 0},
+    {"command": "node scripts/diagnose_commissioning.js", "exitCode": 0}
+  ],
+  "numericalReceipt": "native_reference.json",
+  "tuningReceipt": "commissioning.json",
+  "diagnosisReceipt": "diagnosis.json",
+  "tuningReceiptScope": "Recomputed with the corrected numerical engine and DARE. Additional payload provenance fields were added after this process had loaded its modules; they do not alter the numerical computations. The commissioning receipt itself does not provide a complete per-module source hash manifest.",
+  "timingScope": "host-specific, potentially concurrent test workload; not exclusive target-processor WCET or end-to-end timing evidence",
+  "nativeReferencePass": true,
+  "browserStrictParityPass": false,
+  "hardwareAdmission": "NOT_EVALUATED",
+  "productionReadiness": "NOT_ESTABLISHED"
+}
