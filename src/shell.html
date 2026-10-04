@@ -3,6 +3,7 @@
 <main>
 <p class="footer-note"><a href="chain.html">N-pendulum 확장 실험 →</a> · 1개 cart 입력과 직렬 N-link · 기존 4-state 기능의 자동 일반화가 아닌 별도 검증 모드</p>
 <div class="titlebar"><div><h1>같은 CartPole에서 모델·제어·추정을 구분해 실험한다</h1><p>왼쪽 실시간 plant/graph 규격은 모든 개념 페이지에서 동일하고, 오른쪽 설명만 선택한 controller·observer에 맞춰 바뀝니다.</p></div><div class="legend"><span><i class="sw truth"></i>truth</span><span><i class="sw estimate"></i>estimate</span><span><i class="sw prediction"></i>MPC horizon</span><span><i class="sw uncert"></i>uncertainty</span></div></div>
+<p><button id="openCalibration">보정 → 추정 → 제어 인과 실험으로 이동</button></p>
 <nav class="topic-nav" id="topicNav" aria-label="학습 주제"></nav>
 <div class="workspace">
 <section class="card">
@@ -24,6 +25,29 @@
 </section>
 <aside class="card lesson"><div class="lesson-inner"><div class="eyebrow" id="topicKind">OVERVIEW</div><h2 id="topicTitle"></h2><p class="lead" id="topicLead"></p><div class="chips" id="topicChips"></div><div class="use-row"><button class="primary" id="useTopic">이 모드로 실험</button><span class="badge" id="topicRuntime"></span></div><p id="lessonScope" class="take" role="status"></p><div id="topicBody"></div></div></aside>
 </div>
+<section class="card calibration-lesson" id="calibrationLesson" aria-labelledby="calibrationTitle">
+<div class="card-head"><div><b id="calibrationTitle">하나의 인과 실험 · 측정 보정에서 힘과 추종까지</b><small>같은 단일 진자 · 같은 LQR / EKF / 힘 제한 · R_e 비교와 Q_e 선택을 별도 실험으로 분리합니다.</small></div><span class="badge">실제 MuJoCo · 기본값 변경 없음</span></div>
+<div class="calibration-content"><p>순서: <b>1 정지 센서 기록 → 2 R_e 추정 → 3 추정 상태와 힘 명령 → 4 포화·목표 추종</b>. 표본 분산은 알려지지 않은 상수 주변의 반복성을 추정합니다. 상수 bias·process Q_e·모델·지연까지 알아낸 것은 아닙니다.</p>
+<div class="calibration-toolbar"><label>검증 조건<select id="calibrationCase"></select></label><button class="primary" id="calibrationRun" disabled>보정 전후 3개 경로 실행</button><a href="docs/VALIDATION.md#measurement-calibration-causal-lesson">가정·검증 방법</a></div>
+<p id="calibrationStatus" role="status">아직 실행하지 않았습니다. 별도 정지 측정 512개와 다른 seed의 동적 시험을 사용합니다.</p>
+<div class="calibration-readings"><pre id="calibrationParameters">R_e 추정 결과는 실제 측정 후 표시됩니다.</pre><canvas id="calibrationHistogram" width="900" height="170" aria-label="정지 센서 측정의 표본 평균 중심 분포. 각 채널별 단위와 count."></canvas></div>
+<div class="table-wrap"><table id="calibrationTable" class="matrix"><thead><tr><th>관측기 설계 (R_e / Q_e)</th><th>실행 / 목표</th><th>위치 추정 RMSE</th><th>위치 추종 RMSE</th><th>명령 RMS</th><th>명령 변화 RMS</th><th>포화 샘플</th></tr></thead><tbody></tbody></table></div>
+<p id="calibrationInterpretation" class="take">어떤 경로도 미리 우수하다고 판정하지 않습니다. 측정 정확도와 제어 결과를 구분해서 읽습니다.</p>
+<div id="calibrationInspect" hidden><div class="calibration-toolbar"><label>기록 재생 경로<select id="calibrationArm"></select></label><button id="calibrationFirstSaturation">첫 포화 시점 보기</button><label class="calibration-scrub">샘플 탐색<input type="range" id="calibrationScrub" min="0" max="599" value="0" step="1"></label></div>
+<p id="calibrationClock" class="mono"></p><canvas id="calibrationTimeline" width="1100" height="350" aria-label="위치·각도·요청과 적용 힘의 동시 기록. 물리량별 독립 축, 경로 간 동일 축."></canvas>
+<div class="calibration-causal"><section><h3>측정 → 추정</h3><pre id="calibrationEstimate"></pre><p class="footer-note">t_k의 측정 보정 결과가 같은 t_k의 명령을 만듭니다. 다음 측정은 t_(k+1)입니다.</p></section><section><h3>추정 오차 → 요청 힘</h3><pre id="calibrationForce"></pre><table class="matrix"><thead><tr><th>성분</th><th>추정−실제</th><th>−K_i × 오차</th></tr></thead><tbody id="calibrationContributions"></tbody></table></section><section><h3>요청 힘 → 포화 → 결과</h3><pre id="calibrationOutcome"></pre><p class="footer-note">점선은 ±10 N. Request와 command와 actuator 적용은 다를 수 있습니다. 이 결과로 지연 보상을 구현했다고 주장하지 않습니다.</p></section></div>
+<details><summary>같은 데이터로 observer만 비교하면?</summary><pre id="calibrationReplay"></pre></details></div>
+<section id="processLesson" class="process-lesson" aria-labelledby="processTitle"><h3 id="processTitle">다음 질문 · R_e를 보정한 뒤, Q_e는 어떻게 선택하나?</h3>
+<p>같은 측정·명령 기록에서 <b>TRAIN → 후보 축소 → VALIDATION → 선택 잠금 → 별도 TEST</b>. 전체 Q_e의 공통 배율 하나만 바꾸며, R_e·P₀·제어기·힘 제한은 고정합니다. 이 절차는 진짜 process noise나 최적 제어기를 식별했다는 뜻이 아닙니다.</p>
+<p><code>score = ½ × [innovationᵀ S⁻¹ innovation + log det S + 2 log(2π)]</code><br>공분산을 무작정 키우지 않도록 정규화 항을 포함합니다. 연속 밀도 점수는 음수일 수 있고, 비교 데이터·m/rad 단위를 고정합니다. EKF의 근사 예측 점수이며 낮을수록 이 점수에 더 잘 맞습니다.</p>
+<button id="processRun">고정 후보 6개 선택·시험 실행</button><p id="processStatus" role="status">아직 실행하지 않았습니다. 두 TRAIN 기록과 두 VALIDATION 기록만 선택에 사용합니다.</p>
+<div class="table-wrap"><table id="processScores" class="matrix"><thead><tr><th>Q_e 공통 배율</th><th>TRAIN 평균 NLL</th><th>VALIDATION 평균 NLL</th><th>선택</th></tr></thead><tbody></tbody></table></div>
+<p>별도 TEST: 아래 결과는 후보 선택 이후에만 계산합니다. 완료와 목표 달성을 구분하며, 중단된 경로의 서로 다른 길이를 좋은 점수로 이용하지 않습니다.</p>
+<div class="table-wrap"><table id="processOutcomes" class="matrix"><thead><tr><th>잠금 후 시험</th><th>기준 / 후보 실행 샘플</th><th>위치 추종 RMSE</th><th>포화 샘플</th><th>목표 달성</th></tr></thead><tbody></tbody></table></div>
+<div class="calibration-toolbar"><label>선택된 시험 기록<select id="processCase" disabled></select></label><button id="processInspect" disabled>위 공통 그래프에서 기록 보기</button><a href="evidence/process_selection.json">전체 선택·시험 근거</a></div>
+<p class="footer-note">NIS 평균만 최소화하면 공분산을 과대평가할 수 있습니다. log det S를 포함해도 잘못된 모델·시간상관·지연이 해결되지는 않습니다. 후보를 고른 점수와 제어의 목표는 다릅니다. 다음 실험에 이 TEST를 다시 사용하면 알려진 회귀 조건입니다. <a href="https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/kalman_filter.html">KF likelihood의 기준 구현</a></p></section>
+<p class="footer-note">이 실험의 정답 상태는 오차·힘 기여를 설명하는 평가에만 사용합니다. R_e 추정기는 센서 기록만 입력받습니다. 시뮬레이션의 정지 고정장치·잡음 주입 자체는 선언된 실험 가정이며 실물 검증이 아닙니다. 과도한 R_e는 일부 오차를 줄여도 모델 신뢰도·응답을 다르게 하므로 자동 권장하지 않습니다.</p>
+<p class="footer-note">근거: <a href="https://www.itl.nist.gov/div898/handbook/mpc/section6/mpc6221.htm" target="_blank" rel="noopener noreferrer">NIST 반복성 측정</a> · <a href="https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html" target="_blank" rel="noopener noreferrer">KF 공분산의 역할</a> · <a href="evidence/calibration_lesson.json">전체 고정 비교 결과</a></p></div></section>
 <section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push · DONE은 구간 완료일 뿐 목표 추종·안전 보장 아님 · 추종/추정 오차를 별도 표기</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias</option><option value="actuator">Actuator lag/gain</option><option value="latency">Command latency</option><option value="sim2real">Sim2real stack</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
 <p class="footer-note">CartPole에는 발·contact wrench·floating base가 없습니다. 논문 소개, 축약 비유, 실제 구현을 각 페이지에서 구분하며 그래프는 현재 선택된 runtime의 값만 보여줍니다.</p>
 </main><script>/* CORE */</script><script>/* ACTOR */</script><script>/* RESIDUAL */</script><script>/* TOPICS */</script><script>/* APP */</script></body></html>

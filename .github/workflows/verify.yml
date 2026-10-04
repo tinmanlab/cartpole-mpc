@@ -50,3 +50,12 @@ jobs:
           node scripts/validate_chain.mjs --prestabilized --ekf
           node scripts/probe_chain_local.mjs
           npm run test:chain-browser
+
+      - name: Sensor calibration causal lesson and same-data replay
+        run: |
+          npm run validate:calibration
+          python tests/test_calibration_reference.py
+          python tests/test_calibration_browser.py
+          npm run validate:process
+          python tests/test_process_reference.py
+          python tests/test_process_browser.py

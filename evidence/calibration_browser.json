@@ -1,0 +1,12 @@
+{
+  "schema": "cartpole-calibration-browser/v1",
+  "passed": true,
+  "actualWasm": true,
+  "noiseOracleForbidden": true,
+  "legacyMainStateAndSettingsUnchanged": true,
+  "sameSourceNumericalMatch": true,
+  "saturationCausalFrameVerified": true,
+  "sourceScopeUnitsReplayVerified": true,
+  "pageErrors": [],
+  "deployed": false
+}

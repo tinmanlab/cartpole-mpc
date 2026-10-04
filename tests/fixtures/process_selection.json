@@ -1,0 +1,31 @@
+{
+  "schema":"cartpole-process-scale-selection/v1",
+  "purpose":"One educational scalar effective-Q selection with fixed measured R and existing EKF/LQR; not a general covariance identifier",
+  "scales":[0.0001,0.001,0.01,0.1,1,10],
+  "trainingShortlist":2,
+  "includeBaselineInValidation":true,
+  "burnInSteps":50,
+  "steps":600,
+  "training":[
+    {"id":"train-6503","seed":6503,"scenario":"sensor","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"train-6509","seed":6509,"scenario":"sensor","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null}
+  ],
+  "validation":[
+    {"id":"validation-6607","seed":6607,"scenario":"sensor","initialState":[0,0,0.08,0],"goal":0.4,"push":null},
+    {"id":"validation-6619","seed":6619,"scenario":"sensor","initialState":[0,0,-0.08,0],"goal":-0.4,"push":null}
+  ],
+  "test":[
+    {"id":"test-6701","group":"primary","seed":6701,"scenario":"sensor","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"test-6709","group":"primary","seed":6709,"scenario":"sensor","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null},
+    {"id":"test-6719","group":"primary","seed":6719,"scenario":"sensor","initialState":[0,0,0.1,0],"goal":0.5,"push":{"step":250,"force":1,"duration":10}},
+    {"id":"test-6733","group":"primary","seed":6733,"scenario":"sensor","initialState":[0,0,-0.1,0],"goal":-0.5,"push":{"step":250,"force":-1,"duration":10}},
+    {"id":"test-colored-6803","group":"boundary","seed":6803,"scenario":"colored","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"test-colored-6823","group":"boundary","seed":6823,"scenario":"colored","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null},
+    {"id":"test-delay-6907","group":"boundary","seed":6907,"scenario":"latency","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"test-delay-6911","group":"boundary","seed":6911,"scenario":"latency","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null}
+  ],
+  "score":"mean prefit Gaussian negative log likelihood: .5*(NIS+logdet(S)+2*log(2*pi)); original m/rad units held fixed",
+  "selection":"Top two training scales plus baseline Q scale 1; choose minimum validation mean NLL, ties prefer baseline then smaller scale. Freeze before test execution; no test feedback.",
+  "reporting":"Selection validity and closed-loop success are independent. Retain every failure, common-prefix metrics and excluded full-duration pairs. No performance gate forces the selected scale to win.",
+  "limits":["Q_e shape, initial P0, measured R_e, LQR gains, physical limits and sample period are fixed.","Sensor/command recordings are collected by the baseline measured-R controller. Scoring sees no truth or controller outcome.","EKF innovation likelihood is an approximation under this nonlinear model; serial correlation and unknown delay can invalidate its probabilistic interpretation.","A boundary grid winner is not an interior optimum and will not trigger expanded searching in this experiment.","New fixed seeds are held out from selection only for this evaluation. Subsequent reuse is regression data."]
+}

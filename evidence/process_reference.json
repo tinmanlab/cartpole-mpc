@@ -1,0 +1,15 @@
+{
+  "schema": "cartpole-process-reference/v1",
+  "passed": true,
+  "scipyLogpdfSamples": 9900,
+  "maximumNllError": 3.552713678800501e-15,
+  "testFramesChecked": 9600,
+  "selectedScale": 0.0001,
+  "selectionUsesTest": false,
+  "independentRankReconstructed": true,
+  "scoreIncludesLogdet": true,
+  "frozenBeforeTest": true,
+  "recordedEvidenceSha256": "5ad0da2eb4dec3dba551b8f729c0dce1e2a45de43d045e1fa1474dd181da1cae",
+  "sourceSha256": "6d486968f49210f7a19c4559fefd1fed558e58a6617471cbc8bf1bbb3b20a2b2",
+  "scope": "Independent likelihood/ranking/data-split and outcome arithmetic. No global optimum, physical process-noise identification, nonlinear posterior or hardware claim."
+}

@@ -1,0 +1,2524 @@
+{
+  "schema": "cartpole-process-selection/v1",
+  "manifestSha256": "96607c7b583b9d1253900a72b0c48e84d0a7e0ed155723072206bbe2135df04a",
+  "sourceSha256": {
+    "tests/fixtures/process_selection.json": "96607c7b583b9d1253900a72b0c48e84d0a7e0ed155723072206bbe2135df04a",
+    "tests/fixtures/calibration_lab.json": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
+    "src/calibration_lab.js": "6292666d655dc6a995de433e31e5203b0c291a944223b8ae517274a0ff5a6221",
+    "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
+    "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "scripts/run_process_selection.mjs": "3fc6000cbb15afe9df5f1857a94e07b42dfd016ecfadb5756e1dfeb8227fc81a"
+  },
+  "physics": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "stepCalls": 1216784,
+    "cachedModels": 1,
+    "integrator": "Euler",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "fit": {
+    "source": "stationary-measurements",
+    "samples": 512,
+    "mean": [
+      0.1798835136653034,
+      0.030843299363303944
+    ],
+    "covariance": [
+      [
+        0.003579174581077881,
+        -0.00009591623920307707
+      ],
+      [
+        -0.00009591623920307706,
+        0.0005672508256091505
+      ]
+    ],
+    "Rdiag": [
+      0.003579174581077881,
+      0.0005672508256091505
+    ],
+    "standardDeviation": [
+      0.05982620313105187,
+      0.023817028059964798
+    ],
+    "channelCorrelation": -0.06731519877264114,
+    "lagOne": [
+      -0.0020470084673544927,
+      0.041650036071443984
+    ],
+    "usable": true,
+    "warnings": [],
+    "covarianceUnits": [
+      [
+        "m^2",
+        "m*rad"
+      ],
+      [
+        "m*rad",
+        "rad^2"
+      ]
+    ],
+    "biasIdentified": false,
+    "scope": "Repeatability around an unknown constant in a stationary fixture. Diagnostic screens are not proof of stationarity/whiteness. No Q_e, constant bias, dynamics or delay is identified."
+  },
+  "selection": {
+    "scale": 0.0001,
+    "Qe": [
+      2e-9,
+      2.0000000000000002e-7,
+      2e-9,
+      4.0000000000000003e-7
+    ],
+    "Rdiag": [
+      0.003579174581077881,
+      0.0005672508256091505
+    ],
+    "training": [
+      {
+        "scale": 0.0001,
+        "meanNll": -3.604094108690435,
+        "meanNis": 2.0410024719795397,
+        "meanLogdet": -12.924944822179109,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      },
+      {
+        "scale": 0.001,
+        "meanNll": -3.600827083591238,
+        "meanNis": 2.035631375343423,
+        "meanLogdet": -12.91303967534459,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      },
+      {
+        "scale": 0.01,
+        "meanNll": -3.592993847627512,
+        "meanNis": 2.017722717884668,
+        "meanLogdet": -12.879464545958383,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      },
+      {
+        "scale": 0.1,
+        "meanNll": -3.566484821566309,
+        "meanNis": 1.9701684340046293,
+        "meanLogdet": -12.778892209955933,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      },
+      {
+        "scale": 1,
+        "meanNll": -3.4886343759153897,
+        "meanNis": 1.8719650995626624,
+        "meanLogdet": -12.52498798421212,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      },
+      {
+        "scale": 10,
+        "meanNll": -3.3042143675789046,
+        "meanNis": 1.6039929531516661,
+        "meanLogdet": -11.888175821128163,
+        "samples": 1100,
+        "recordIds": [
+          "train-6503",
+          "train-6509"
+        ]
+      }
+    ],
+    "validation": [
+      {
+        "scale": 0.0001,
+        "meanNll": -3.5718337526042707,
+        "meanNis": 2.1055235031430475,
+        "meanLogdet": -12.924945141170275,
+        "samples": 1100,
+        "recordIds": [
+          "validation-6607",
+          "validation-6619"
+        ]
+      },
+      {
+        "scale": 0.001,
+        "meanNll": -3.567684034645586,
+        "meanNis": 2.1019177165485208,
+        "meanLogdet": -12.913039918658386,
+        "samples": 1100,
+        "recordIds": [
+          "validation-6607",
+          "validation-6619"
+        ]
+      },
+      {
+        "scale": 1,
+        "meanNll": -3.4531728492928857,
+        "meanNis": 1.9428875352255934,
+        "meanLogdet": -12.524987366630045,
+        "samples": 1100,
+        "recordIds": [
+          "validation-6607",
+          "validation-6619"
+        ]
+      }
+    ],
+    "shortlist": [
+      0.0001,
+      0.001,
+      1
+    ],
+    "selectedBy": "validation mean prefit Gaussian NLL among training shortlist plus baseline",
+    "testUsedForSelection": false,
+    "atGridBoundary": true
+  },
+  "recordMetadata": {
+    "training": [
+      {
+        "id": "train-6503",
+        "seed": 6503,
+        "transitions": 600
+      },
+      {
+        "id": "train-6509",
+        "seed": 6509,
+        "transitions": 600
+      }
+    ],
+    "validation": [
+      {
+        "id": "validation-6607",
+        "seed": 6607,
+        "transitions": 600
+      },
+      {
+        "id": "validation-6619",
+        "seed": 6619,
+        "transitions": 600
+      }
+    ],
+    "fields": [
+      "id",
+      "seed",
+      "controlDt",
+      "measurements",
+      "commands",
+      "information"
+    ]
+  },
+  "selectionLockedBeforeTest": true,
+  "events": [
+    {
+      "stage": "acquisition-training",
+      "completed": 1,
+      "total": 2
+    },
+    {
+      "stage": "acquisition-training",
+      "completed": 2,
+      "total": 2
+    },
+    {
+      "stage": "acquisition-validation",
+      "completed": 1,
+      "total": 2
+    },
+    {
+      "stage": "acquisition-validation",
+      "completed": 2,
+      "total": 2
+    },
+    {
+      "stage": "training",
+      "scale": 0.0001,
+      "completed": 1,
+      "total": 6
+    },
+    {
+      "stage": "training",
+      "scale": 0.001,
+      "completed": 2,
+      "total": 6
+    },
+    {
+      "stage": "training",
+      "scale": 0.01,
+      "completed": 3,
+      "total": 6
+    },
+    {
+      "stage": "training",
+      "scale": 0.1,
+      "completed": 4,
+      "total": 6
+    },
+    {
+      "stage": "training",
+      "scale": 1,
+      "completed": 5,
+      "total": 6
+    },
+    {
+      "stage": "training",
+      "scale": 10,
+      "completed": 6,
+      "total": 6
+    },
+    {
+      "stage": "validation",
+      "scale": 0.0001,
+      "completed": 1,
+      "total": 3
+    },
+    {
+      "stage": "validation",
+      "scale": 0.001,
+      "completed": 2,
+      "total": 3
+    },
+    {
+      "stage": "validation",
+      "scale": 1,
+      "completed": 3,
+      "total": 3
+    },
+    {
+      "stage": "selection-locked",
+      "scale": 0.0001,
+      "testEvaluations": 0
+    },
+    {
+      "stage": "locked-test",
+      "completed": 1,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 2,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 3,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 4,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 5,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 6,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 7,
+      "total": 8
+    },
+    {
+      "stage": "locked-test",
+      "completed": 8,
+      "total": 8
+    }
+  ],
+  "groups": [
+    {
+      "group": "primary",
+      "pairs": 4,
+      "bothCompletedPairs": 4,
+      "excludedPairs": 0,
+      "arms": [
+        {
+          "arm": "baseline",
+          "completed": 4,
+          "taskPassed": 2,
+          "requested": 4,
+          "saturatedSamples": 4,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.12978683422554815,
+          "bothCompletedForceRms_N": 1.9040992808212707,
+          "bothCompletedSlewRms_N": 1.6884292970040808
+        },
+        {
+          "arm": "candidate",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 4,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.18304791513335433,
+          "bothCompletedForceRms_N": 1.0656193512772945,
+          "bothCompletedSlewRms_N": 0.8710319699253473
+        }
+      ]
+    },
+    {
+      "group": "boundary",
+      "pairs": 4,
+      "bothCompletedPairs": 4,
+      "excludedPairs": 0,
+      "arms": [
+        {
+          "arm": "baseline",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 1,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.3406059221679276,
+          "bothCompletedForceRms_N": 2.3237286747290176,
+          "bothCompletedSlewRms_N": 1.2630432251072379
+        },
+        {
+          "arm": "candidate",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 1,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.7061751921422985,
+          "bothCompletedForceRms_N": 1.7271579279202987,
+          "bothCompletedSlewRms_N": 0.5847801466621884
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "test-6701",
+      "group": "primary",
+      "baseline": {
+        "caseId": "test-6701",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6701,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.13216747508349827,
+        "estimationRmseByState": [
+          0.024634434057514976,
+          0.11656688057742559,
+          0.01261787766629046,
+          0.09484954635784537
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.8964419700565842,
+        "rmsRequestedForce_N": 1.9357340063243593,
+        "rmsEstimationForce_N": 1.8891369814542927,
+        "rmsCommandSlew_N": 1.6578401042423196,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 2.12751488232327,
+        "innovationLagOne": [
+          -0.06107206857995468,
+          -0.07648040920661427
+        ],
+        "maxPosition_m": 0.4291512592231679,
+        "finalTruth": [
+          0.2745881376429986,
+          0.08278674381786862,
+          0.004185022319153072,
+          -0.05445671379121102
+        ],
+        "finalEstimate": [
+          0.290258808312992,
+          0.19548457988060397,
+          0.021932605941328554,
+          0.07865281748541947
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-6701",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6701,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.1761985042276051,
+        "estimationRmseByState": [
+          0.013038890010404446,
+          0.08689328019714489,
+          0.009983255106842188,
+          0.06162252531486679
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.0157998334751306,
+        "rmsRequestedForce_N": 1.0895386720880869,
+        "rmsEstimationForce_N": 1.311286958908112,
+        "rmsCommandSlew_N": 0.7304118185917947,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 2.29633442355976,
+        "innovationLagOne": [
+          -0.015782123239401685,
+          0.01602969566222844
+        ],
+        "maxPosition_m": 0.49850261431082415,
+        "finalTruth": [
+          0.13960341577143157,
+          0.016059396661776262,
+          0.008722733490653271,
+          0.01892143309332888
+        ],
+        "finalEstimate": [
+          0.12994644943952233,
+          0.012958735315021903,
+          0.018053021410595366,
+          0.05561991898396672
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.01746824146994714,
+        "candidateTrackingMse": 0.031045912892045373,
+        "baselineEstimatePositionMse": 0.0006068553413340538,
+        "candidateEstimatePositionMse": 0.00017001265270342482,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.024634434057514976,
+            0.11656688057742559,
+            0.01261787766629046,
+            0.09484954635784537
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.013039802711566613,
+            0.08689327471799978,
+            0.009984261058003168,
+            0.06163249185326048
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-6709",
+      "group": "primary",
+      "baseline": {
+        "caseId": "test-6709",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6709,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.14160318561105162,
+        "estimationRmseByState": [
+          0.023534719749761044,
+          0.08319341910360832,
+          0.012381060008215821,
+          0.09658956523217863
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.8370088115999967,
+        "rmsRequestedForce_N": 1.911872360026933,
+        "rmsEstimationForce_N": 1.8645842878492633,
+        "rmsCommandSlew_N": 1.6551044993221982,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 1.8986751099992827,
+        "innovationLagOne": [
+          -0.14645314892417827,
+          -0.13440503061706488
+        ],
+        "maxPosition_m": 0.4821089507516842,
+        "finalTruth": [
+          -0.39633371623983915,
+          0.17533151776170938,
+          0.003603968454196032,
+          -0.12039008410846182
+        ],
+        "finalEstimate": [
+          -0.3749209591486952,
+          0.18862517650643945,
+          0.00017845520959521672,
+          -0.11562490874100113
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-6709",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6709,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.18657764743716448,
+        "estimationRmseByState": [
+          0.009694827645410476,
+          0.02953910990184832,
+          0.010060480540544018,
+          0.07002879399061145
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 0.9861123043707876,
+        "rmsRequestedForce_N": 1.1222991250285523,
+        "rmsEstimationForce_N": 1.2814982625519258,
+        "rmsCommandSlew_N": 0.8515622041864044,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 2.072322502910301,
+        "innovationLagOne": [
+          -0.0877344856344792,
+          -0.029236918025210393
+        ],
+        "maxPosition_m": 0.6129268600911559,
+        "finalTruth": [
+          -0.5180172046323562,
+          0.15219353499688396,
+          0.01988373144483796,
+          0.0047091454688182885
+        ],
+        "finalEstimate": [
+          -0.5098008226830897,
+          0.15626749951868582,
+          0.01078517935664371,
+          -0.031058085162958552
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.020051462175197935,
+        "candidateTrackingMse": 0.034811218523186846,
+        "baselineEstimatePositionMse": 0.0005538830336997925,
+        "candidateEstimatePositionMse": 0.00009398968307421526,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.023534719749761044,
+            0.08319341910360832,
+            0.012381060008215821,
+            0.09658956523217863
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.009695009462279894,
+            0.029539399742435732,
+            0.010062682046601962,
+            0.07004322944637983
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-6719",
+      "group": "primary",
+      "baseline": {
+        "caseId": "test-6719",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6719,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": true,
+        "positionTrackingRmse_m": 0.13154156917798854,
+        "estimationRmseByState": [
+          0.02013067980364144,
+          0.08177430815086437,
+          0.013138646120050793,
+          0.10765258823594763
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.007471333554299,
+        "rmsRequestedForce_N": 2.0784156185076355,
+        "rmsEstimationForce_N": 1.9592601764732145,
+        "rmsCommandSlew_N": 1.7311310665575266,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 1.9218645351098755,
+        "innovationLagOne": [
+          -0.09698536693488913,
+          -0.0774030060689452
+        ],
+        "maxPosition_m": 0.5648217801752371,
+        "finalTruth": [
+          0.48560405415597774,
+          0.19916142016401064,
+          0.03231491155686488,
+          -0.09523498683162075
+        ],
+        "finalEstimate": [
+          0.4401186067836565,
+          0.1078536685505041,
+          0.03908048681407567,
+          0.016098529832893588
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-6719",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6719,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.18559326657126396,
+        "estimationRmseByState": [
+          0.06600857192428376,
+          0.08193782947180309,
+          0.011006613585723711,
+          0.08486364604044923
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.1283729217906218,
+        "rmsRequestedForce_N": 1.2530411921321578,
+        "rmsEstimationForce_N": 1.4137868850673276,
+        "rmsCommandSlew_N": 0.9107201384802843,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 3.278042328958951,
+        "innovationLagOne": [
+          0.37485557232494254,
+          0.048826186538815965
+        ],
+        "maxPosition_m": 0.7903367539626824,
+        "finalTruth": [
+          0.4787099755332345,
+          0.12999311487582724,
+          0.0448953433961154,
+          -0.017707638851066965
+        ],
+        "finalEstimate": [
+          0.4645667714383902,
+          0.13670099713100214,
+          0.033094059180705335,
+          -0.06409162181266201
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.017303184421807543,
+        "candidateTrackingMse": 0.03444486059659224,
+        "baselineEstimatePositionMse": 0.0004052442693567374,
+        "candidateEstimatePositionMse": 0.0043571315674833435,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.02013067980364144,
+            0.08177430815086437,
+            0.013138646120050793,
+            0.10765258823594763
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.06602055135796796,
+            0.081946067642191,
+            0.011005590125480516,
+            0.08485767795033096
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-6733",
+      "group": "primary",
+      "baseline": {
+        "caseId": "test-6733",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6733,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": true,
+        "positionTrackingRmse_m": 0.11205177948701696,
+        "estimationRmseByState": [
+          0.019394865170161292,
+          0.07903377158122697,
+          0.011621393009767805,
+          0.08798804514582678
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.8711872194320687,
+        "rmsRequestedForce_N": 1.8878063455080565,
+        "rmsEstimationForce_N": 1.8069204493482816,
+        "rmsCommandSlew_N": 1.7083777332356598,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 1.9444125303251691,
+        "innovationLagOne": [
+          -0.09318743805353001,
+          -0.15022807678061323
+        ],
+        "maxPosition_m": 0.582198191988294,
+        "finalTruth": [
+          -0.5462145569544038,
+          0.05793860620020256,
+          -0.012214778544416025,
+          -0.06020908640805013
+        ],
+        "finalEstimate": [
+          -0.5294726892930054,
+          0.11123215322714317,
+          -0.0009096804224359063,
+          -0.013665753189405157
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-6733",
+        "group": "primary",
+        "scenario": "sensor",
+        "seed": 6733,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.18364140308450677,
+        "estimationRmseByState": [
+          0.06617646296664963,
+          0.08115422506577936,
+          0.00964897339079344,
+          0.06867291785342833
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.1245826684226883,
+        "rmsRequestedForce_N": 1.1523493228093957,
+        "rmsEstimationForce_N": 1.416254474309247,
+        "rmsCommandSlew_N": 0.972993313212992,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 3.25669946867789,
+        "innovationLagOne": [
+          0.36467988818497155,
+          -0.022532479349204274
+        ],
+        "maxPosition_m": 0.8550047181165754,
+        "finalTruth": [
+          -0.6554555673256777,
+          0.0767185647927584,
+          0.013179459004686854,
+          -0.10413582263369793
+        ],
+        "finalEstimate": [
+          -0.6463826654257567,
+          0.06887098887553007,
+          0.02372744938290155,
+          -0.06262594336349732
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.012555601286207075,
+        "candidateTrackingMse": 0.03372416492684629,
+        "baselineEstimatePositionMse": 0.00037616079496873565,
+        "candidateEstimatePositionMse": 0.004379324250776349,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.019394865170161292,
+            0.07903377158122697,
+            0.011621393009767805,
+            0.08798804514582678
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.06619116421259665,
+            0.0811664741699606,
+            0.009649304386056773,
+            0.06867595755144364
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-colored-6803",
+      "group": "boundary",
+      "baseline": {
+        "caseId": "test-colored-6803",
+        "group": "boundary",
+        "scenario": "colored",
+        "seed": 6803,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.27732658813743494,
+        "estimationRmseByState": [
+          0.06758276029631521,
+          0.18261469054046323,
+          0.0270996377801982,
+          0.11621464473253597
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.1776995726640376,
+        "rmsRequestedForce_N": 2.1776995726640376,
+        "rmsEstimationForce_N": 2.742399116617402,
+        "rmsCommandSlew_N": 0.6929211093088254,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 0.4964742200161388,
+        "innovationLagOne": [
+          0.7925940085158819,
+          0.6872367400530308
+        ],
+        "maxPosition_m": 1.0311163469425084,
+        "finalTruth": [
+          0.4942152491126561,
+          -0.39317330981590054,
+          0.028572597698491,
+          0.21065856851353615
+        ],
+        "finalEstimate": [
+          0.43602261724586044,
+          -0.425569630532562,
+          0.02111200127732668,
+          0.17057201948078723
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-colored-6803",
+        "group": "boundary",
+        "scenario": "colored",
+        "seed": 6803,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.6380349809880365,
+        "estimationRmseByState": [
+          0.05780188643788618,
+          0.12714343729121852,
+          0.03541835993599144,
+          0.14313807427889044
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.7908698764196682,
+        "rmsRequestedForce_N": 1.7908698764196682,
+        "rmsEstimationForce_N": 3.5109036748045552,
+        "rmsCommandSlew_N": 0.3526458885376915,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 2.04110701897392,
+        "innovationLagOne": [
+          0.9371570187803636,
+          0.9262325887752338
+        ],
+        "maxPosition_m": 1.7683886445995178,
+        "finalTruth": [
+          0.8256497475247644,
+          -0.5125016633213156,
+          -0.035056967616621415,
+          0.19446798431176077
+        ],
+        "finalEstimate": [
+          0.7716168745053343,
+          -0.528008911607323,
+          -0.03389437442391591,
+          0.19900076804931088
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.07691003648795046,
+        "candidateTrackingMse": 0.407088636964404,
+        "baselineEstimatePositionMse": 0.0045674294892692,
+        "candidateEstimatePositionMse": 0.003341058075778291,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.06758276029631521,
+            0.18261469054046323,
+            0.0270996377801982,
+            0.11621464473253597
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.05783810595660557,
+            0.12718185490535727,
+            0.03542536790477232,
+            0.1430413117267826
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-colored-6823",
+      "group": "boundary",
+      "baseline": {
+        "caseId": "test-colored-6823",
+        "group": "boundary",
+        "scenario": "colored",
+        "seed": 6823,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.5925976464308916,
+        "estimationRmseByState": [
+          0.04647020839566644,
+          0.12156451796277967,
+          0.039774345665785214,
+          0.1394653111954058
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.2910141528323877,
+        "rmsRequestedForce_N": 2.2910141528323877,
+        "rmsEstimationForce_N": 3.725786764961671,
+        "rmsCommandSlew_N": 0.6626284489993123,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 0.4642350461869598,
+        "innovationLagOne": [
+          0.7499468347917889,
+          0.7539704910141027
+        ],
+        "maxPosition_m": 1.3364538760044413,
+        "finalTruth": [
+          -0.9204545042211627,
+          0.7515431021432692,
+          -0.04090630927427583,
+          -0.27929398844708675
+        ],
+        "finalEstimate": [
+          -0.8529428204765411,
+          0.8239185042112264,
+          -0.028815995863881224,
+          -0.23084734496213707
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-colored-6823",
+        "group": "boundary",
+        "scenario": "colored",
+        "seed": 6823,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 1.235443138904651,
+        "estimationRmseByState": [
+          0.0328624555553301,
+          0.04571778649080671,
+          0.059019607531201404,
+          0.23755507778315585
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.3196981478458816,
+        "rmsRequestedForce_N": 2.3196981478458816,
+        "rmsEstimationForce_N": 6.142208106046011,
+        "rmsCommandSlew_N": 0.3704893827281312,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 2.7492020589386303,
+        "innovationLagOne": [
+          0.886758262996054,
+          0.9688452844814105
+        ],
+        "maxPosition_m": 2.3783728544422207,
+        "finalTruth": [
+          -2.0529664266272514,
+          1.0695459075480016,
+          0.1240213152036792,
+          -0.4811559038867936
+        ],
+        "finalEstimate": [
+          -2.00043638183582,
+          1.0807199832975998,
+          0.13217142735388637,
+          -0.4486488549961572
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.35117197055543203,
+        "candidateTrackingMse": 1.5263197494665766,
+        "baselineEstimatePositionMse": 0.002159480268336668,
+        "candidateEstimatePositionMse": 0.001079940985126046,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.04647020839566644,
+            0.12156451796277967,
+            0.039774345665785214,
+            0.1394653111954058
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.032449579433651586,
+            0.045655425064557685,
+            0.05907802239195269,
+            0.23626877182758402
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-delay-6907",
+      "group": "boundary",
+      "baseline": {
+        "caseId": "test-delay-6907",
+        "group": "boundary",
+        "scenario": "latency",
+        "seed": 6907,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.10918839404417091,
+        "estimationRmseByState": [
+          0.021863159485922885,
+          0.13184424749893828,
+          0.013065184059544956,
+          0.12381555019421908
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.208426661522452,
+        "rmsRequestedForce_N": 2.208426661522452,
+        "rmsEstimationForce_N": 1.9011422946439258,
+        "rmsCommandSlew_N": 1.6286887703048065,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 2.008935654314322,
+        "innovationLagOne": [
+          -0.07428128456818375,
+          -0.1256059133924449
+        ],
+        "maxPosition_m": 0.5308036841181986,
+        "finalTruth": [
+          0.3434980499281086,
+          0.1654756912795088,
+          -0.04123890479112612,
+          -0.20902797555629038
+        ],
+        "finalEstimate": [
+          0.3521999296749818,
+          0.1866701613457066,
+          -0.01764805254650898,
+          -0.12518107487122476
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-delay-6907",
+        "group": "boundary",
+        "scenario": "latency",
+        "seed": 6907,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.16057583405045905,
+        "estimationRmseByState": [
+          0.014567710674763775,
+          0.08573300098958438,
+          0.012688019837280623,
+          0.09718252594308456
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.226520014062389,
+        "rmsRequestedForce_N": 1.226520014062389,
+        "rmsEstimationForce_N": 1.5337465238803338,
+        "rmsCommandSlew_N": 0.6834853028195015,
+        "saturatedSamples": 0,
+        "saturationFraction": 0,
+        "meanNis": 2.3557790319997247,
+        "innovationLagOne": [
+          -0.000662835841815519,
+          0.08755786822106645
+        ],
+        "maxPosition_m": 0.7113625052800725,
+        "finalTruth": [
+          0.24772276950249678,
+          0.15792592572380598,
+          -0.004553035460248677,
+          -0.16166553684550064
+        ],
+        "finalEstimate": [
+          0.25251078944205624,
+          0.17159670345376066,
+          0.01426264461831146,
+          -0.08994230046227579
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.011922105393945137,
+        "candidateTrackingMse": 0.02578459848100056,
+        "baselineEstimatePositionMse": 0.00047799774270689986,
+        "candidateEstimatePositionMse": 0.00021221819430362646,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.021863159485922885,
+            0.13184424749893828,
+            0.013065184059544956,
+            0.12381555019421908
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.01483208091226218,
+            0.10747116820051532,
+            0.014509914053278897,
+            0.14296993872869537
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    },
+    {
+      "id": "test-delay-6911",
+      "group": "boundary",
+      "baseline": {
+        "caseId": "test-delay-6911",
+        "group": "boundary",
+        "scenario": "latency",
+        "seed": 6911,
+        "armId": "q_baseline",
+        "label": "보정 R + 기존 Q_e",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          0.00002,
+          0.002,
+          0.00002,
+          0.004
+        ],
+        "processScale": 1,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.15506600022612893,
+        "estimationRmseByState": [
+          0.023960727772667265,
+          0.14783989755187774,
+          0.01349545899951236,
+          0.13971793970244428
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 2.594338107966821,
+        "rmsRequestedForce_N": 2.6101292093564137,
+        "rmsEstimationForce_N": 2.0797200771805393,
+        "rmsCommandSlew_N": 1.6760875628353014,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 2.029588210207363,
+        "innovationLagOne": [
+          -0.05472766410721001,
+          -0.06193748278688577
+        ],
+        "maxPosition_m": 0.5404546012350431,
+        "finalTruth": [
+          -0.31553301757482144,
+          0.15068574204521332,
+          -0.015973414107503883,
+          -0.10293239894562985
+        ],
+        "finalEstimate": [
+          -0.3255835255046205,
+          0.05765681068892879,
+          -0.003141756737206968,
+          0.046029554363300806
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "candidate": {
+        "caseId": "test-delay-6911",
+        "group": "boundary",
+        "scenario": "latency",
+        "seed": 6911,
+        "armId": "q_selected",
+        "label": "보정 R + 선택 Q_e ×0.0001",
+        "Rdiag": [
+          0.003579174581077881,
+          0.0005672508256091505
+        ],
+        "parameterSource": "stationary-measurements",
+        "calibrationMultiplier": 1,
+        "K": [
+          -3.5256071393853765,
+          -5.650285003515216,
+          -50.970936692319704,
+          -12.804621149907012
+        ],
+        "Qc": [
+          [
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0.5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "Rc": 0.12,
+        "Qe": [
+          2e-9,
+          2.0000000000000002e-7,
+          2e-9,
+          4.0000000000000003e-7
+        ],
+        "processScale": 0.0001,
+        "processCovarianceSource": "declared-effective-scale",
+        "outcome": "completed",
+        "reason": null,
+        "appliedSteps": 600,
+        "requestedSteps": 600,
+        "taskPassed": false,
+        "positionTrackingRmse_m": 0.18852220844470133,
+        "estimationRmseByState": [
+          0.012358816729127324,
+          0.07562535750231358,
+          0.011978478645269889,
+          0.09732111729827637
+        ],
+        "stateUnits": [
+          "m",
+          "m/s",
+          "rad",
+          "rad/s"
+        ],
+        "rmsForce_N": 1.3563673085227124,
+        "rmsRequestedForce_N": 1.3879121890462924,
+        "rmsEstimationForce_N": 1.5084766532373564,
+        "rmsCommandSlew_N": 0.7994358105150949,
+        "saturatedSamples": 1,
+        "saturationFraction": 0.0016666666666666668,
+        "meanNis": 2.2707898540961358,
+        "innovationLagOne": [
+          0.0007126795983731654,
+          0.07604958412278515
+        ],
+        "maxPosition_m": 0.7001099244326063,
+        "finalTruth": [
+          -0.3445312486236658,
+          0.41145148903085893,
+          -0.018731676295863395,
+          -0.1945474316852527
+        ],
+        "finalEstimate": [
+          -0.3383977608677491,
+          0.3873219283735693,
+          -0.013202967383764901,
+          -0.12900529612038975
+        ],
+        "information": {
+          "controllerInput": "observer-output only",
+          "calibration": "separate sensor-readings only",
+          "truth": "evaluation/plots only",
+          "fixture": "simulated noise amplitude and static acquisition are test assumptions",
+          "timing": "measurement and estimate at t_k drive force during [t_k,t_(k+1)); post-step measurement is next frame"
+        }
+      },
+      "paired": {
+        "commonPrefixSteps": 600,
+        "bothCompleted": true,
+        "baselineTrackingMse": 0.02404546442612982,
+        "candidateTrackingMse": 0.035540623076867416,
+        "baselineEstimatePositionMse": 0.0005741164753958685,
+        "candidateEstimatePositionMse": 0.00015274035094415742,
+        "scope": "Closed loops share fixture/RNG, not identical measurements after different controls; early endings are not scored as long-horizon success"
+      },
+      "sameDataReplay": [
+        {
+          "armId": "q_baseline",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.023960727772667265,
+            0.14783989755187774,
+            0.01349545899951236,
+            0.13971793970244428
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": 0,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        },
+        {
+          "armId": "q_selected",
+          "recordedArm": "q_baseline",
+          "samples": 600,
+          "estimationRmseByState": [
+            0.013020598598525114,
+            0.1121160583804124,
+            0.014468030519172241,
+            0.16534048153982805
+          ],
+          "stateUnits": [
+            "m",
+            "m/s",
+            "rad",
+            "rad/s"
+          ],
+          "matchedArmMaximumDifference": null,
+          "controllerApplied": false,
+          "scope": "Same recorded measurements/commands, no new plant evolution; not a new closed-loop performance measurement"
+        }
+      ]
+    }
+  ],
+  "experimentValid": true,
+  "defaultPromoted": false,
+  "hardware": "NOT_EVALUATED",
+  "scope": "Scalar effective Q scale selected using sensor/command likelihood. Q shape/P0/model fixed; not physical Q identification, global optimum, optimal controller design or hardware validation.",
+  "scoreScope": "Mean prefit Gaussian NLL in fixed m/rad coordinates; approximate EKF likelihood. R/Q shape/P0 remain fixed. Lower NLL does not prove closed-loop improvement.",
+  "splitScope": "Training produces a shortlist; separate validation selects once; new fixed test seeds evaluated only after the selection lock. Known results become regression data on reuse."
+}

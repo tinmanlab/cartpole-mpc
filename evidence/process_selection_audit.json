@@ -1,0 +1,230 @@
+{
+  "schema": "cartpole-process-selection-audit/v1",
+  "baseCommit": "04fb632d2d123fc32ce0a7d02d6dddc6604a693b",
+  "sourceSha256": {
+    "src/calibration_lab.js": "6292666d655dc6a995de433e31e5203b0c291a944223b8ae517274a0ff5a6221",
+    "src/calibration_view.js": "fadeb7f4c0b440958fe3397b0e0292617548c74ff288ca63afe9367d1506fbe6",
+    "src/app.js": "786a38c0ffe6bd00389b18e208333e6a909495ce9f3bda67a38adbeca0caf494",
+    "src/shell.html": "f5797c33b106b85b09c0c1eb31a0ccf210ab094cb7232cba252d16b930b1e504",
+    "src/styles.css": "c05e8db3614d6eaa02b0f142f9f72aa3d657f06138b46c114a8a4258e87ef746",
+    "scripts/build.py": "a8eb5e17aa1d7729c25b9a30ddc263d7b4ba7dfb951ae7a9ceca4b3595aa2b46",
+    "scripts/run_process_selection.mjs": "3fc6000cbb15afe9df5f1857a94e07b42dfd016ecfadb5756e1dfeb8227fc81a",
+    "tests/test_process_selection.mjs": "36045ac78be135bc960ccaa104c9c2391ad54e55120b5adee0b216e2ac779ee1",
+    "tests/test_process_reference.py": "6d486968f49210f7a19c4559fefd1fed558e58a6617471cbc8bf1bbb3b20a2b2",
+    "tests/test_process_browser.py": "f7dd43345cb02fc627e31c25fd4a121a41f90d48ccbdeed84917901a3d0a5923",
+    "tests/fixtures/process_selection.json": "96607c7b583b9d1253900a72b0c48e84d0a7e0ed155723072206bbe2135df04a",
+    "tests/fixtures/calibration_lab.json": "6300111aae39c0858702d430de7ec04cb03d926be923858bf6d0e85412188698",
+    "index.html": "b60ce5d50a6089184014ce497f139befaa840056ce5bbea7847d55efd15671a4",
+    "README.md": "b5a5df18f5276535ebfb09ea5bddd5ec2f6b9e3a3bcaf1ed79e2815a9d55b8fa",
+    "docs/VALIDATION.md": "7bd1cd00372780a99f18d31888396b2449089316878b4e01073097ea0abae35a",
+    "package.json": "48045037e67c855da184d0b7e51f6bef5e3ce661756d9ea69150fecc14383281",
+    ".github/workflows/verify.yml": "c4487a29bf9fbe2a151f1c97848fe6c72809b593619fa82609c537958baf071b"
+  },
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_terminal_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:terminal",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:calibration",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_calibration_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:process",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_process_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_process_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "verificationHistory": [
+    "Fail-first tests exposed missing scoring/selection and missing UI.",
+    "A rerun-failure test exposed a stale previous selection. The view now clears it before running, and the rejection regression passes.",
+    "A synchronous whole-check attempt timed out after 90 seconds under shared load; a later durable complete gate is the source of the exit-0 outcomes recorded here. No unrelated processes were terminated."
+  ],
+  "implementation": "Existing calibration lesson extended; same real MuJoCo, EKF, LQR, measurement-only R fit, fixed Q shape/P0 and physical limits. No new solver/framework/dependency.",
+  "dataSplit": {
+    "training": [
+      {
+        "id": "train-6503",
+        "seed": 6503,
+        "transitions": 600
+      },
+      {
+        "id": "train-6509",
+        "seed": 6509,
+        "transitions": 600
+      }
+    ],
+    "validation": [
+      {
+        "id": "validation-6607",
+        "seed": 6607,
+        "transitions": 600
+      },
+      {
+        "id": "validation-6619",
+        "seed": 6619,
+        "transitions": 600
+      }
+    ],
+    "fields": [
+      "id",
+      "seed",
+      "controlDt",
+      "measurements",
+      "commands",
+      "information"
+    ]
+  },
+  "manifestSha256": "96607c7b583b9d1253900a72b0c48e84d0a7e0ed155723072206bbe2135df04a",
+  "selectionLockedBeforeTest": true,
+  "selectedScale": 0.0001,
+  "gridBoundary": true,
+  "selectionMethod": "validation mean prefit Gaussian NLL among training shortlist plus baseline",
+  "scipyLogpdfScoresChecked": 9900,
+  "maximumNllError": 3.552713678800501e-15,
+  "heldOutFramesChecked": 9600,
+  "groups": [
+    {
+      "group": "primary",
+      "pairs": 4,
+      "bothCompletedPairs": 4,
+      "excludedPairs": 0,
+      "arms": [
+        {
+          "arm": "baseline",
+          "completed": 4,
+          "taskPassed": 2,
+          "requested": 4,
+          "saturatedSamples": 4,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.12978683422554815,
+          "bothCompletedForceRms_N": 1.9040992808212707,
+          "bothCompletedSlewRms_N": 1.6884292970040808
+        },
+        {
+          "arm": "candidate",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 4,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.18304791513335433,
+          "bothCompletedForceRms_N": 1.0656193512772945,
+          "bothCompletedSlewRms_N": 0.8710319699253473
+        }
+      ]
+    },
+    {
+      "group": "boundary",
+      "pairs": 4,
+      "bothCompletedPairs": 4,
+      "excludedPairs": 0,
+      "arms": [
+        {
+          "arm": "baseline",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 1,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.3406059221679276,
+          "bothCompletedForceRms_N": 2.3237286747290176,
+          "bothCompletedSlewRms_N": 1.2630432251072379
+        },
+        {
+          "arm": "candidate",
+          "completed": 4,
+          "taskPassed": 0,
+          "requested": 4,
+          "saturatedSamples": 1,
+          "executedSamples": 2400,
+          "bothCompletedTrackingRmse_m": 0.7061751921422985,
+          "bothCompletedForceRms_N": 1.7271579279202987,
+          "bothCompletedSlewRms_N": 0.5847801466621884
+        }
+      ]
+    }
+  ],
+  "originalR24NumericalResultsUnchanged": true,
+  "originalTerminal80StatesAndOutcomesUnchanged": true,
+  "corePhysicsControllerObserverUnchanged": true,
+  "browser": {
+    "schema": "cartpole-process-browser/v1",
+    "passed": true,
+    "actualWasm": true,
+    "noiseOracleForbidden": true,
+    "computedSelectionMatchesNode": true,
+    "trainValidationTestVisible": true,
+    "gridBoundaryCaveatVisible": true,
+    "negativeOutcomesPreserved": true,
+    "sharedCausalTraceReused": true,
+    "legacyModeRestored": true,
+    "failedRerunDoesNotShowStaleSelection": true,
+    "mainLoopUnchanged": true,
+    "pageErrors": [],
+    "deployed": false
+  },
+  "defaultPromotion": false,
+  "hardwareAdmission": "NOT_EVALUATED",
+  "independentApproval": false,
+  "mergeDeployment": "Not implied by this receipt",
+  "claimBoundary": "One scalar effective-Q fit is not identification of physical process noise or an optimal controller. The selected candidate predicts better but tracks worse in this independent fixed evaluation. No test-driven retuning or default promotion.",
+  "remaining": [
+    "Full Q/P0 and bias/model/time calibration",
+    "Objective-aware closed-loop design and an independently reserved assessment",
+    "Interactive Lyapunov and recovery-region explanation"
+  ],
+  "receipts": [
+    "process_selection.json",
+    "process_reference.json",
+    "process_browser.json",
+    "process_selection_browser.png"
+  ]
+}

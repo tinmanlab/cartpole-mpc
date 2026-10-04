@@ -24,6 +24,10 @@ Position tracking RMSE and per-component estimation RMSE are separate. Physical 
 
 [Open the N-link experiment](chain.html) uses the same official MuJoCo WASM, a serial chain of unactuated hinges and one cart force. The generator admits 1–32 poles as a resource limit; packaged profiles and controller screens cover 1–8. Model creation, local controllability/observability, numerical solver admission and closed-loop task achievement are separate verdicts. The original four-state modes are not automatically generalized. The N-view now explicitly adds exact pre-stabilized MPC coordinates and a tested N-dimensional nonlinear EKF; UKF/MHE/PPO/nonlinear MPC remain separate work. The new output-feedback diagnostic shows measurement-noise-to-force amplification, delay sensitivity and a limited nominal LTI admissible-region calculation. See [definition and tested failure boundaries](docs/N_PENDULUM.md). The main single-pole default is unchanged.
 
+## Calibration → estimation → control: one causal experiment
+
+The shared page now includes **보정 → 추정 → 제어 인과 실험**. It estimates position/angle measurement variance from a separate 512-reading stationary fixture, then compares the same existing LQR/EKF using a small assumed R_e, the measured R_e, and an intentionally inflated R_e. Q_e, gains, limits and cases stay fixed. Select a recorded saturation sample to see sensor readings, estimates, per-state force-error contributions, requested/clipped/applied forces and tracking. A same-data observer replay separates filter comparison from the different closed-loop trajectories. This is a specific educational experiment, not optimal Q/R co-tuning, hardware calibration or a default change. See [verification and limitations](docs/VALIDATION.md#measurement-calibration-causal-lesson).
+
 ## Start here
 
 The entire lab uses one control loop:
@@ -351,3 +355,7 @@ See [third-party notices](THIRD_PARTY_NOTICES.md).
 This is a teaching and research prototype, not a production robot controller.
 
 The CartPole versions preserve the **control/estimation structure** needed to understand the algorithms, but they do not reproduce humanoid multi-contact dynamics, hardware state estimation, actuator limits, safety behavior, or OCS2 solver equivalence.
+
+## Q_e selection and an independent control test
+
+The same calibration panel now adds **TRAIN → VALIDATION → locked TEST**. One effective Q_e multiplier is selected from fixed sensor/command recordings using normalized predictive likelihood; measured R, Q shape, P0, LQR and limits stay fixed. The recorded winner predicts better yet tracks worse, so it is not promoted. Stage scores, grid-boundary limits and every test outcome are visible, and the existing causal trace panel is reused. See [process-selection scope](docs/VALIDATION.md#process-covariance-selection-predictive-fit-is-not-a-control-objective). This is not identification of every noise parameter or a newly implemented covariance optimizer.
