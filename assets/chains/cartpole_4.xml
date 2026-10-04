@@ -1,0 +1,48 @@
+<!-- Serial N-link extension: relative hinges, one cart force, non-colliding ideal uniform rods. -->
+<mujoco model="cartpole-serial-4-uniform-rods">
+  <compiler angle="radian" inertiafromgeom="false" />
+  <option timestep="0.005" gravity="0 0 -9.8" integrator="Euler" />
+  <default>
+    <joint damping="0" armature="0" frictionloss="0" />
+    <geom contype="0" conaffinity="0" />
+  </default>
+  <worldbody>
+    <geom name="rail" type="box" pos="0 0 0.04" size="2.4 0.12 0.02" rgba="0.55 0.6 0.65 1" />
+    <body name="cart" pos="0 0 0.12">
+      <joint name="cart_slide" type="slide" axis="1 0 0" limited="false" />
+      <inertial pos="0 0 0" mass="1.0" diaginertia="0.01 0.01 0.01" />
+      <geom name="cart_visual" type="box" size="0.15 0.1 0.06" rgba="0.18 0.46 0.75 1" />
+      <body name="pole" pos="0 0 0.06">
+        <joint name="pole_hinge" type="hinge" axis="0 1 0" limited="false" />
+        <inertial pos="0 0 0.5" mass="0.1" diaginertia="0.008333333333333333 0.008333333333333333 1e-08" />
+        <geom name="pole_visual" type="capsule" fromto="0 0 0 0 0 1.0" size="0.015" rgba="0.18 0.46 0.75 1" />
+        <site name="pivot" pos="0 0 0" size="0.02" />
+        <site name="pole_tip" pos="0 0 1.0" size="0.02" />
+        <body name="pole_2" pos="0 0 1.0">
+          <joint name="pole_hinge_2" type="hinge" axis="0 1 0" limited="false" />
+          <inertial pos="0 0 0.5" mass="0.1" diaginertia="0.008333333333333333 0.008333333333333333 1e-08" />
+          <geom name="pole_visual_2" type="capsule" fromto="0 0 0 0 0 1.0" size="0.015" rgba="0.18 0.46 0.75 1" />
+          <site name="pivot_2" pos="0 0 0" size="0.02" />
+          <site name="pole_tip_2" pos="0 0 1.0" size="0.02" />
+          <body name="pole_3" pos="0 0 1.0">
+            <joint name="pole_hinge_3" type="hinge" axis="0 1 0" limited="false" />
+            <inertial pos="0 0 0.5" mass="0.1" diaginertia="0.008333333333333333 0.008333333333333333 1e-08" />
+            <geom name="pole_visual_3" type="capsule" fromto="0 0 0 0 0 1.0" size="0.015" rgba="0.18 0.46 0.75 1" />
+            <site name="pivot_3" pos="0 0 0" size="0.02" />
+            <site name="pole_tip_3" pos="0 0 1.0" size="0.02" />
+            <body name="pole_4" pos="0 0 1.0">
+              <joint name="pole_hinge_4" type="hinge" axis="0 1 0" limited="false" />
+              <inertial pos="0 0 0.5" mass="0.1" diaginertia="0.008333333333333333 0.008333333333333333 1e-08" />
+              <geom name="pole_visual_4" type="capsule" fromto="0 0 0 0 0 1.0" size="0.015" rgba="0.18 0.46 0.75 1" />
+              <site name="pivot_4" pos="0 0 0" size="0.02" />
+              <site name="pole_tip_4" pos="0 0 1.0" size="0.02" />
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="cart_force" joint="cart_slide" gear="1" ctrllimited="false" />
+  </actuator>
+</mujoco>

@@ -35,3 +35,18 @@ jobs:
         run: python tests/test_terminal_reference.py && npm run validate:terminal
       - name: Real browser network, solver and failure paths
         run: npm run test:browser
+
+      - name: N-chain model, native reference, frozen failure screen and browser
+        run: |
+          python tests/test_chain_model.py
+          npm run test:chain
+          python tests/test_chain_reference.py
+          python tests/test_chain_preconditioned_reference.py
+          python tests/test_chain_ekf_reference.py
+          python scripts/diagnose_chain_output_feedback.py
+          python scripts/diagnose_chain_feasibility.py
+          npm run validate:chain
+          node scripts/validate_chain.mjs --prestabilized
+          node scripts/validate_chain.mjs --prestabilized --ekf
+          node scripts/probe_chain_local.mjs
+          npm run test:chain-browser

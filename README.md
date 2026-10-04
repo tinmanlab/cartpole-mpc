@@ -20,6 +20,10 @@ All 28 lessons disclose **implemented / analogue / paper / concept** scope and l
 
 Position tracking RMSE and per-component estimation RMSE are separate. Physical quantities use labelled plot scales; mixed-unit legacy aggregates are not shown as controller scores. Reduced CoM plans no longer synthesize uncomputed pole-angle forecasts, and a cost decrease is not labelled optimizer convergence. See [proposal corrections and visual contracts](docs/IMPLEMENTATION_BOUNDARIES.md#educational-and-visualization-contract).
 
+## N-pendulum extension
+
+[Open the N-link experiment](chain.html) uses the same official MuJoCo WASM, a serial chain of unactuated hinges and one cart force. The generator admits 1–32 poles as a resource limit; packaged profiles and controller screens cover 1–8. Model creation, local controllability/observability, numerical solver admission and closed-loop task achievement are separate verdicts. The original four-state modes are not automatically generalized. The N-view now explicitly adds exact pre-stabilized MPC coordinates and a tested N-dimensional nonlinear EKF; UKF/MHE/PPO/nonlinear MPC remain separate work. The new output-feedback diagnostic shows measurement-noise-to-force amplification, delay sensitivity and a limited nominal LTI admissible-region calculation. See [definition and tested failure boundaries](docs/N_PENDULUM.md). The main single-pole default is unchanged.
+
 ## Start here
 
 The entire lab uses one control loop:

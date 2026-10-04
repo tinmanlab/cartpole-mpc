@@ -1,0 +1,185 @@
+{
+  "sourceSha256": "b7c625baf12ffcd3b0b39a57d6980ffd8be29865ba3c98582b1599991b2aaff7",
+  "schema": "cartpole-chain-output-feedback-diagnosis/v1",
+  "rows": [
+    {
+      "poles": 1,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 0.9818366033305556,
+        "knownAppliedInputObserverRadius": 0.9813958220950092,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9811542551898448,
+      "observerRadius": 0.868099221053324,
+      "jointUnsaturatedRadius": 0.9811542551898434,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 0.024161590072671282,
+      "stationaryUnsaturatedForceSigma_N": 0.027367627281199573,
+      "lyapunovResidual": 5.306363629527673e-22,
+      "impulseVarianceRelativeDisagreement": 3.0398718432955854e-15,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.711572324438027,
+      "localLtiEllipsoid": {
+        "c": 59.95711433903088,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 2,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 0.9829641931962887,
+        "knownAppliedInputObserverRadius": 0.9836102792462008,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9838016923782302,
+      "observerRadius": 0.8680793339612997,
+      "jointUnsaturatedRadius": 0.9838016923782297,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 0.09252051079229527,
+      "stationaryUnsaturatedForceSigma_N": 0.11826148138480029,
+      "lyapunovResidual": 1.6256166988198376e-19,
+      "impulseVarianceRelativeDisagreement": 3.22490536043573e-15,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.4794851392069247,
+      "localLtiEllipsoid": {
+        "c": 35.84494386620543,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 3,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 1.0154325925301737,
+        "knownAppliedInputObserverRadius": 0.9853692275867258,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9851911172734217,
+      "observerRadius": 0.8680258553980752,
+      "jointUnsaturatedRadius": 0.9851911172734323,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 0.24837037105708723,
+      "stationaryUnsaturatedForceSigma_N": 0.37410480089078485,
+      "lyapunovResidual": 8.222881701020215e-18,
+      "impulseVarianceRelativeDisagreement": 5.3546050045409995e-15,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.4520613047932943,
+      "localLtiEllipsoid": {
+        "c": 25.311136126946014,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 4,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 1.1284889802237092,
+        "knownAppliedInputObserverRadius": 1.2125363398713618,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9861078835693721,
+      "observerRadius": 0.8679261353709844,
+      "jointUnsaturatedRadius": 0.9861078835693686,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 0.7227364242720179,
+      "stationaryUnsaturatedForceSigma_N": 1.3158802537107466,
+      "lyapunovResidual": 2.4572543259494235e-17,
+      "impulseVarianceRelativeDisagreement": 1.9619996091003076e-14,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.4501368549915484,
+      "localLtiEllipsoid": {
+        "c": 20.207021728472554,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 5,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 1.2720212760446545,
+        "knownAppliedInputObserverRadius": 1.4598317370543394,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9867823843696275,
+      "observerRadius": 0.8678344083486061,
+      "jointUnsaturatedRadius": 0.9867823843696039,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 2.3274007436077095,
+      "stationaryUnsaturatedForceSigma_N": 5.312920759284962,
+      "lyapunovResidual": 5.826212985710945e-15,
+      "impulseVarianceRelativeDisagreement": 1.1705136416947798e-14,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.45000880081934796,
+      "localLtiEllipsoid": {
+        "c": 17.513654332034513,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 6,
+      "designAvailable": true,
+      "oneSampleDelayProbe": {
+        "equationCheckPassed": true,
+        "seconds": 0.02,
+        "unmodeledDelayRadius": 1.4696946199713525,
+        "knownAppliedInputObserverRadius": 1.7126963387304963,
+        "scope": "Linear diagnostic only. Updating observer input history is not redesigning the controller for delay or proving nonlinear delay robustness."
+      },
+      "controllerRadius": 0.9873116661675452,
+      "observerRadius": 0.8678723057533511,
+      "jointUnsaturatedRadius": 0.9873116661675432,
+      "measurementSigma": 0.0002,
+      "instantaneousMeasurementToForceSigma_N": 7.769996250168965,
+      "stationaryUnsaturatedForceSigma_N": 22.856204277578396,
+      "lyapunovResidual": 4.504309334712623e-14,
+      "impulseVarianceRelativeDisagreement": 3.2273281023946194e-13,
+      "noiseAnalysisNumericallyVerified": true,
+      "declaredForceLimit_N": 10.0,
+      "minimumNominalLyapunovDecreaseEigenvalue": 0.4500005938166863,
+      "localLtiEllipsoid": {
+        "c": 16.022741935924245,
+        "limitingConstraint": "force",
+        "decreaseVerified": true,
+        "scope": "nominal linear unsaturated LQR only; no nonlinear, noisy, actuator or sample-time robust guarantee"
+      }
+    },
+    {
+      "poles": 7,
+      "designAvailable": false
+    },
+    {
+      "poles": 8,
+      "designAvailable": false
+    }
+  ],
+  "profileSha256": "b4d6cdf2560eecc30613a15743b2c7ae4135649985687b0dff7954062e3f5237",
+  "scope": "Gaussian white measurement noise only; no process disturbance or saturation in the Lyapunov calculation. Large command sigma flags breakdown of the linear operating assumption, not a guaranteed failure probability.",
+  "meaning": "Stable separate controller/observer poles do not establish usable force margins or nonlinear robustness. K*L noise amplification, transient behavior and physical constraints must be examined together."
+}
