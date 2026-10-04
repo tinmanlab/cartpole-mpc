@@ -5,11 +5,14 @@
 .calibration-lesson{margin:20px 0;scroll-margin-top:18px}.calibration-content{padding:16px 20px}.calibration-content p{font-size:14px;line-height:1.7}.calibration-toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap;margin:12px 0}.calibration-toolbar label{display:flex;flex-direction:column;font-size:13px;min-width:185px}.calibration-toolbar select{font:inherit;padding:8px;min-width:200px}.calibration-content pre{font:13px/1.8 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0}.calibration-readings{display:grid;grid-template-columns:minmax(250px,.7fr) minmax(460px,1.3fr);gap:18px;align-items:center}.calibration-readings canvas{width:100%;height:auto}#calibrationTable th,#calibrationTable td{font-size:12px;line-height:1.55;white-space:normal;min-width:105px}#calibrationTable th:first-child,#calibrationTable td:first-child{min-width:150px}#calibrationTimeline{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:7px;margin:12px 0}.calibration-causal{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:16px}.calibration-causal section{padding:12px;border:1px solid var(--line);border-radius:8px;min-width:0}.calibration-causal h3{font-size:15px;margin:0}.calibration-causal td,.calibration-causal th{font-size:11px}.calibration-toolbar .calibration-scrub{flex:1;min-width:230px}.calibration-scrub input{width:100%;margin:9px 0}.calibration-content details{margin:14px 0}.calibration-content summary{cursor:pointer;font-weight:600}[hidden]{display:none!important}@media(max-width:1050px){.calibration-causal,.calibration-readings{grid-template-columns:1fr}}
 
 .process-lesson{margin-top:22px;padding:18px;border:1px solid #c6d6e3;border-radius:8px;background:#f8fbfd}.process-lesson h3{font-size:18px}.process-lesson p{font-size:13px;line-height:1.7}.process-lesson code{white-space:normal;overflow-wrap:anywhere}.process-lesson .matrix{font-size:12px}
+
+.design-lesson{padding:18px;margin:20px 0}.design-lesson p{font-size:13px;line-height:1.7}.design-lesson code{white-space:normal;overflow-wrap:anywhere}.design-lesson .matrix{font-size:12px}.design-lesson pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f7fa;border:1px solid #d5e0e8;border-radius:7px;padding:12px}.design-lesson label{display:inline-block;margin:10px 12px 10px 0}
 </style></head><body>
 <header class="topbar"><div class="brand"><strong>CartPole Control × Observer Lab</strong><span>Shared plant · explicit model/evidence scope</span></div><div class="badges"><span class="badge" id="physicsBadge">MuJoCo WASM loading…</span><span class="badge" id="webmcpBadge">WebMCP 확인 중</span></div></header>
 <main>
 <p class="footer-note"><a href="chain.html">N-pendulum 확장 실험 →</a> · 1개 cart 입력과 직렬 N-link · 기존 4-state 기능의 자동 일반화가 아닌 별도 검증 모드</p>
 <div class="titlebar"><div><h1>같은 CartPole에서 모델·제어·추정을 구분해 실험한다</h1><p>왼쪽 실시간 plant/graph 규격은 모든 개념 페이지에서 동일하고, 오른쪽 설명만 선택한 controller·observer에 맞춰 바뀝니다.</p></div><div class="legend"><span><i class="sw truth"></i>truth</span><span><i class="sw estimate"></i>estimate</span><span><i class="sw prediction"></i>MPC horizon</span><span><i class="sw uncert"></i>uncertainty</span></div></div>
+<p><button id="openDesign">공통 과제로 조합·파라미터 선택하기</button></p>
 <p><button id="openCalibration">보정 → 추정 → 제어 인과 실험으로 이동</button></p>
 <nav class="topic-nav" id="topicNav" aria-label="학습 주제"></nav>
 <div class="workspace">
@@ -24,6 +27,7 @@
  </div>
  <p id="terminalStatus" class="footer-note" role="status"></p>
  <p id="informationScope" class="footer-note"></p><div class="pipeline"><div class="pipe-box"><b>Sensor</b><span id="pipeSensor">y=[p,θ]</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Observer</b><span id="pipeObserver">KF</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Controller</b><span id="pipeController">LQR</span></div><div class="pipe-arrow">→</div><div class="pipe-box"><b>Plant</b><span>MuJoCo WASM · 200 Hz</span></div></div>
+ <p id="designLiveScope" class="footer-note" role="status">일반 실험 · 공통 과제 설정 미적용</p>
  <p id="assetStatus" class="footer-note">MJCF loading; simulation is disabled until the official engine and asset are ready.</p><div class="world-wrap"><canvas class="world" id="world" width="960" height="360"></canvas>
   <div class="transport"><button class="primary" id="play">일시정지</button><button id="step">1 step</button><button id="reset">Reset</button><button id="pushL">← 3 N</button><button id="pushR">3 N →</button><span class="spacer"></span><span class="mono" id="clock">t=0.00 s</span></div>
   <div class="metrics"><div class="metric"><small>θ truth</small><b id="mTheta">0°</b></div><div class="metric"><small>θ estimate</small><b id="mThetaHat">0°</b></div><div class="metric"><small>위치 추정 RMSE</small><b id="mRmse">0</b></div><div class="metric"><small>위치 추종 RMSE</small><b id="mTracking">—</b></div><div class="metric"><small>cmd / applied</small><b id="mForce">0 / 0 N</b></div><div class="metric"><small>잔차 p / θ (단위별)</small><b id="mInnov">0</b></div><div class="metric"><small>solver</small><b id="mSolve">—</b></div><div class="metric"><small>horizon / iter</small><b id="mIter">—</b></div></div>
@@ -55,6 +59,26 @@
 <p class="footer-note">NIS 평균만 최소화하면 공분산을 과대평가할 수 있습니다. log det S를 포함해도 잘못된 모델·시간상관·지연이 해결되지는 않습니다. 후보를 고른 점수와 제어의 목표는 다릅니다. 다음 실험에 이 TEST를 다시 사용하면 알려진 회귀 조건입니다. <a href="https://filterpy.readthedocs.io/en/latest/_modules/filterpy/kalman/kalman_filter.html">KF likelihood의 기준 구현</a></p></section>
 <p class="footer-note">이 실험의 정답 상태는 오차·힘 기여를 설명하는 평가에만 사용합니다. R_e 추정기는 센서 기록만 입력받습니다. 시뮬레이션의 정지 고정장치·잡음 주입 자체는 선언된 실험 가정이며 실물 검증이 아닙니다. 과도한 R_e는 일부 오차를 줄여도 모델 신뢰도·응답을 다르게 하므로 자동 권장하지 않습니다.</p>
 <p class="footer-note">근거: <a href="https://www.itl.nist.gov/div898/handbook/mpc/section6/mpc6221.htm" target="_blank" rel="noopener noreferrer">NIST 반복성 측정</a> · <a href="https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html" target="_blank" rel="noopener noreferrer">KF 공분산의 역할</a> · <a href="evidence/calibration_lesson.json">전체 고정 비교 결과</a></p></div></section>
+<section class="card design-lesson" id="designLesson" aria-labelledby="designTitle"><div class="card-head"><div><b id="designTitle">하나의 과제 · LQR/MPC × KF/EKF 선택과 검증</b><small>새 controller·observer 없이 기존 네 조합을 같은 목적·제약·센서 정보·후보 예산으로 비교합니다.</small></div><span class="badge">명시적 수동 적용만</span></div>
+<p>과제: 12초 위치 추종, 실제 레일 ±2.4 m · 절대각 35° · 명령 ±10 N. 마지막 2초의 위치 RMS ≤0.15 m, 각도 RMS ≤0.06 rad를 별도로 요구합니다. 센서 표준편차는 위치 0.06 m / 각도 0.025 rad인 선언된 시험 조건입니다. 실제 보정기는 별도의 512개 정지 측정만 받습니다.</p>
+<p><code>J_task = mean[(e_p/0.25)² + 0.2(θ/0.1)² + 0.05(u/5)² + 0.02(Δu/2)²]</code><br>힘·명령 변화 비용은 설계한 선호도이지 자연법칙이 아닙니다. 실패는 점수와 분리하고 조기 중단을 좋은 전체 구간 점수로 취급하지 않습니다. 내부 Q_c/R_c는 이 평가 비용과 별도의 설계변수입니다.</p>
+<p>각 조합의 시작점은 선언한 상태·힘 척도의 역제곱 가중치와 full Riccati 설계입니다. 힘 비용 배율 3개 × 유효 Q_e 배율 3개 = 9개 후보. 같은 TRAIN 3개 → 상위 2개+기준의 VALIDATION → 조합·파라미터 잠금 → 별도 TEST 6개를 사용합니다. 통과 조합의 validation 점수가 1% 이내이면 고정된 단순성 순서로 선택합니다. 수학적 전역 최적을 찾는 알고리즘이 아닙니다.</p>
+<button id="designRun">공통 목적의 설계·선택·시험 실행</button><p id="designStatus" role="status">아직 실행하지 않았습니다. 실행은 위 공통 시뮬레이션을 일시정지할 뿐 설정을 바꾸지 않습니다.</p>
+<div class="table-wrap"><table class="matrix" id="designPairs"><thead><tr><th>조합</th><th>선택 후보</th><th>기준 대비</th><th>VALIDATION</th><th>J_task</th><th>추천</th></tr></thead><tbody></tbody></table></div>
+<label>과정을 확인할 조합<select id="designPair"><option value="lqr-kf">lqr-kf</option></select></label>
+<div class="table-wrap"><table class="matrix" id="designCandidates"><thead><tr><th>후보 ID</th><th>출발점</th><th>TRAIN 실패/목표미달</th><th>TRAIN J</th><th>VAL 실패/목표미달</th><th>VAL J</th><th>판정</th></tr></thead><tbody></tbody></table></div>
+<p id="designTestScope">TEST 결과로 다른 후보를 재선택하지 않습니다.</p><div class="table-wrap"><table class="matrix" id="designTests"><thead><tr><th>TEST</th><th>범위</th><th>기준 / 선택 실행</th><th>목표 달성</th><th>J_task</th><th>위치 RMSE</th><th>공통 샘플</th></tr></thead><tbody></tbody></table></div>
+<pre id="designParameters" class="calibration-readout"></pre><p id="designVerdict" class="take">아직 추천·채택 결과가 없습니다.</p>
+<label>명시적으로 재실행할 primary 조건<select id="designApplyCase" disabled></select></label><button id="designApply" disabled>승인된 설정을 공통 실험에 적용</button>
+<p class="footer-note">TEST는 고정 추천을 거부할 수 있지만 다른 조합을 새로 고르지 않습니다. 승인도 명시된 primary 시뮬레이션 과제에만 해당하며 boundary·하드웨어·실시간 WCET로 확대하지 않습니다. 적용하면 해당 초기 상태로 돌아가 일시정지합니다. 일반 설정 변경·Reset은 연구 설정을 해제합니다. 이전 공분산 선택 실험과 달리 여기서는 실제 폐루프 목적을 사용하며, 유효 Q_e 탐색값을 물리적 잡음 식별값이라고 부르지 않습니다.</p>
+<p><a href="evidence/design_study.json">전체 설계·선택·시험 근거</a> · <a href="docs/VALIDATION.md#task-aware-four-pair-design-study">과제와 주장 범위</a></p></section>
+<section class="card design-lesson"><details id="tuningDetails"><summary>순차 탐색 SMAC3 · 동일 예산 효과 검증</summary>
+<p>이는 Python에서 실제 MuJoCo 평가기를 호출한 <b>오프라인 실행 결과</b>입니다. 브라우저에서 SMAC을 실행하거나 기존 controller의 solver를 교체하는 기능이 아닙니다. 같은 108회 탐색 예산, 같은 12회 초기 기준 평가, 동일한 12초 rollout과 실패 판정을 사용합니다.</p>
+<p>grid_budget, random_full, 무작위 후보+표준 racing, SMAC의 모델 기반 후보+같은 racing을 5개 optimizer seed로 비교합니다. MPC에만 horizon 20/30/40이 있고 LQR에는 해당 변수가 없습니다. grid_exhaustive는 별도로 216회를 사용한 유한 grid 참조이며 전역 최적값이 아닙니다.</p>
+<button id="loadTuningComparison">기록된 비교 결과 읽기</button><p id="tuningComparisonStatus" role="status" data-state="idle">아직 결과를 읽지 않았습니다.</p>
+<div class="table-wrap"><table id="tuningComparison" class="matrix"><thead><tr><th>방법</th><th>반복</th><th>탐색 호출/반복</th><th>완전 평가 후보 평균</th><th>선택/배분 시간 평균</th><th>전체 탐색 시간 평균</th><th>반복당 주 시험 목표 충족 / 12</th><th>grid 대비 시험 점수 변화 · 조건부 95% 구간</th></tr></thead><tbody></tbody></table></div>
+<p class="footer-note">음의 점수 변화는 낮은 task cost를 뜻하지만 목표 실패와 분리해 읽어야 합니다. 부분 평가 후보는 최종 추천에 사용할 수 없습니다. 600개 연속 프레임을 독립 통계 표본으로 세지 않습니다. 동일한 설정이 반복 선택되면 [0,0] 구간은 기록이 같다는 뜻이지 일반적인 동등성 증명이 아닙니다. 구간은 같은 시험표에서 optimizer seed 5개의 차이를 재표본화한 pilot 결과이며 일반적인 우월성·하드웨어 안전을 보장하지 않습니다. 새 기본값을 자동 채택하지 않습니다.</p>
+<p><a href="docs/SEQUENTIAL_TUNING.md">실험계획·비용·통계 해석</a> · <a href="evidence/sequential_tuning.json">전체 원본 결과</a> · <a href="evidence/sequential_tuning_reference.json">독립 재계산</a></p></details></section>
 <section class="card compare-card"><div class="card-head"><div><b>고정 조건 조합 비교</b><small>같은 seed/push · DONE은 구간 완료일 뿐 목표 추종·안전 보장 아님 · 추종/추정 오차를 별도 표기</small></div><div class="compare-tools"><select id="compareScenario"><option value="nominal">Nominal</option><option value="sensor">Sensor noise ↑</option><option value="model">Model mismatch</option><option value="mixed">Mixed model + sensor</option><option value="bias">Sensor bias</option><option value="actuator">Actuator lag/gain</option><option value="latency">Command latency</option><option value="sim2real">Sim2real stack</option><option value="glitch">Measurement glitch</option></select><button id="compare">비교 실행</button></div></div><div class="table-wrap"><table class="matrix" id="matrix"><tbody><tr><td>아직 실행하지 않음</td></tr></tbody></table></div></section>
 <p class="footer-note">CartPole에는 발·contact wrench·floating base가 없습니다. 논문 소개, 축약 비유, 실제 구현을 각 페이지에서 구분하며 그래프는 현재 선택된 runtime의 값만 보여줍니다.</p>
 </main><script>/* BAM upstream parameters: Apache-2.0; see vendor/bam/NOTICE.md. */
@@ -1695,6 +1719,223 @@ if(typeof module!=='undefined')module.exports=ControlLab;
  return {estimateMeasurementNoise,collectStationary,armCovariance,createRun,replayObserver,comparePair,effectiveProcessQ,innovationScore,processRecord,scoreProcessRecord,selectProcessScale,runProcessStudy};
 });
 
+// Task-scoped experiment adapter: existing MuJoCo, LQR/quadprog MPC, KF/EKF and R fitting.
+// No new optimizer/controller/filter. Training objective and test admission are separate.
+(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?require('./engine'):ControlLab,node?require('./calibration_lab'):CalibrationLab);if(node)module.exports=api;else root.DesignStudy=api;})(globalThis,function(L,C){
+ 'use strict';
+ const copy=x=>JSON.parse(JSON.stringify(x)),mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:null;
+ const finite=a=>Array.isArray(a)&&a.every(Number.isFinite),freeze=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(freeze);Object.freeze(x);}return x;};
+ const clock=()=>typeof performance!=='undefined'?performance.now():Date.now();
+ const scalar=(v,name)=>{if(!Number.isFinite(v)||v<=0)throw Error('Positive finite '+name+' required');};
+ function candidates(m){
+  return m.candidateGrid.effortMultipliers.flatMap(e=>m.candidateGrid.processMultipliers.map(q=>({id:'r'+e+'-q'+q,effortMultiplier:e,processMultiplier:q,baseline:e===m.candidateGrid.baseline.effortMultiplier&&q===m.candidateGrid.baseline.processMultiplier})));
+ }
+ function validateManifest(m){
+  if(m.controlDt!==L.DT||!Number.isInteger(m.steps)||m.steps<1||!Number.isInteger(m.theoryDesign.horizon)||m.theoryDesign.horizon<1)throw Error('Invalid sample/horizon contract');
+  for(const [name,a,n] of [['state scales',m.theoryDesign.stateScales,4],['Qe shape',m.theoryDesign.QeBase,4],['P0',m.theoryDesign.P0diag,4]]){if(!finite(a)||a.length!==n)throw Error('Invalid '+name);a.forEach(v=>scalar(v,name));}
+  scalar(m.theoryDesign.forceScale_N,'force scale');scalar(m.task.forceLimit_N,'force limit');
+  if(m.task.forceLimit_N!==10||m.task.railLimit_m!==2.4||Math.abs(m.task.angleEnvelope_rad-35*Math.PI/180)>1e-12)throw Error('Task physical bounds must match the verified plant');
+  for(const q of Object.values(m.task.objective)){scalar(q.scale,'objective scale');scalar(q.weight,'objective weight');}
+  if(m.pairs.length!==4||m.pairs.some(p=>!['lqr','hard_mpc'].includes(p.controller)||!['kf','ekf'].includes(p.observer))||new Set(m.pairs.map(p=>p.controller+'/'+p.observer)).size!==4)throw Error('Expected four admitted controller/observer pairs');
+  const grid=candidates(m);if(grid.length!==9||grid.filter(c=>c.baseline).length!==1||new Set(grid.map(c=>c.id)).size!==grid.length)throw Error('Invalid equal candidate budget');
+  grid.forEach(c=>{scalar(c.effortMultiplier,'effort factor');scalar(c.processMultiplier,'process factor');});
+  const all=[...m.training,...m.validation,...m.test];
+  if(new Set(all.map(c=>c.id)).size!==all.length||new Set([...all.map(c=>c.seed),m.calibration.seed]).size!==all.length+1)throw Error('Calibration/train/validation/test must be disjoint');
+  if(m.training.length!==3||m.validation.length!==3||m.test.length!==6||m.test.filter(c=>c.group==='primary').length!==4)throw Error('Invalid frozen study split');
+  for(const c of all){if(!finite(c.initialState)||c.initialState.length!==4||!Number.isFinite(c.goal)||Math.abs(c.goal)>m.task.railLimit_m)throw Error('Invalid task initial state/goal');}
+  return true;
+ }
+ function checkPair(m,pair){const p=m.pairs.find(p=>p.id===pair.id);if(!p||p.controller!==pair.controller||p.observer!==pair.observer)throw Error('Unsupported study pair');return p;}
+ function checkCandidate(m,c){const candidate=candidates(m).find(q=>q.id===c.id);if(!candidate||candidate.effortMultiplier!==c.effortMultiplier||candidate.processMultiplier!==c.processMultiplier)throw Error('Invalid candidate outside fixed positive grid');return candidate;}
+ function calibrate(m){
+  const p=new L.LabPlant({seed:m.calibration.seed,scenario:m.calibration.scenario});p.reset(m.calibration.fixtureState);
+  p.sensorStd=[m.sensorFixture.sigmaPosition_m,m.sensorFixture.sigmaAngle_rad];
+  const measurements=Array.from({length:m.calibration.samples},()=>p.sensor().slice());
+  const fit=C.estimateMeasurementNoise(measurements,m.calibrationScreen);if(!fit.usable)throw Error('Stationary R measurement screen rejected');
+  return {measurements,fit,scope:'simulated clamped repeatability; fitter receives only readings, not true variance or bias'};
+ }
+ function searchCandidate(pair,c,domain){
+  if(!domain.controllers?.includes(pair.controller)||!domain.observers?.includes(pair.observer))throw Error('Unsupported search pair');
+  for(const [name,bounds] of [['effortMultiplier',domain.effortBounds],['processMultiplier',domain.processBounds]]){
+   if(!Array.isArray(bounds)||bounds.length!==2||!bounds.every(Number.isFinite)||bounds[0]<=0||bounds[1]<bounds[0]||!Number.isFinite(c[name])||c[name]<bounds[0]||c[name]>bounds[1])throw Error('Candidate outside declared search domain');
+  }
+  if(pair.controller==='hard_mpc'){if(!Number.isInteger(c.horizon)||!domain.mpcHorizons.includes(c.horizon))throw Error('Unsupported search horizon');}
+  else if(c.horizon!==undefined)throw Error('MPC horizon is inactive for LQR');
+  return {...c,baseline:c.effortMultiplier===domain.baselineEffort&&c.processMultiplier===domain.baselineProcess&&(pair.controller==='lqr'||c.horizon===domain.baselineHorizon)};
+ }
+ function design(m,pair,candidate,fit,searchDomain=null){
+  checkPair(m,pair);const c=searchDomain?searchCandidate(pair,candidate,searchDomain):checkCandidate(m,candidate);if(!fit?.usable)throw Error('R calibration rejected');
+  const spec=new L.LabPlant().spec,Qc=m.theoryDesign.stateScales.map(v=>1/v**2),Rc=c.effortMultiplier/m.theoryDesign.forceScale_N**2,Qe=m.theoryDesign.QeBase.map(v=>c.processMultiplier*v),Re=fit.Rdiag.slice();
+  const {A,B}=L.linearModel(spec),terminal=L.riccatiTerminal(A,B,L.diag(Qc),Rc);
+  const BtP=L.mul(L.T(B),terminal.P),den=Rc+L.mul(BtP,B)[0][0],K=L.mul(BtP,A)[0].map(v=>v/den);
+  return {pairId:pair.id,controller:pair.controller,observer:pair.observer,candidate:c,Qc,Rc,Qe,Re,P0:m.theoryDesign.P0diag.slice(),A,B,Pf:terminal.P,K,terminalInfo:terminal.info,horizon:searchDomain&&pair.controller==='hard_mpc'?c.horizon:m.theoryDesign.horizon,
+   information:{Qc:'declared inverse-squared state scales',Rc:'declared effort multiplier / forceScale^2',Qe:'effective task-tuned scale, not calibrated physical process noise',Re:'stationary measured repeatability',Pf:'nominal full discrete Riccati tail cost; no terminal-set guarantee'}};
+ }
+ function buildControllers(m,pair,d,spec){
+  const opts={Qdiag:d.Qc,R:d.Rc};
+  const controller=pair.controller==='lqr'?new L.LQRController(spec,opts):new L.LinearMPCController(spec,{...opts,N:d.horizon,positionLimit:m.task.railLimit_m,terminalCost:'dare'});
+  const observer=L.makeObserver(pair.observer,spec,{Q:d.Qe,R:d.Re});
+  if(controller.limit!==m.task.forceLimit_N)throw Error('Controller force authority differs from task');
+  if(pair.controller==='lqr'&&Math.max(...controller.K.map((v,i)=>Math.abs(v-d.K[i])))>1e-8)throw Error('LQR gain differs from verified Riccati design');
+  return {controller,observer};
+ }
+ function stageCost(m,{truth,goal,u,previousU}){
+  if(!finite(truth)||truth.length!==4||![goal,u,previousU].every(Number.isFinite))throw Error('Invalid finite task state/input');
+  const o=m.task.objective,term=(v,q)=>q.weight*(v/q.scale)**2;
+  const parts={position:term(truth[0]-goal,o.position),angle:term(L.wrap(truth[2]),o.angle),force:term(u,o.force),deltaForce:term(u-previousU,o.deltaForce)};
+  return {...parts,total:Object.values(parts).reduce((a,b)=>a+b,0)};
+ }
+ function distribution(a){if(!a.length)return null;const s=a.slice().sort((a,b)=>a-b),at=q=>s[Math.max(0,Math.ceil(s.length*q)-1)];return {samples:s.length,p50:at(.5),p95:at(.95),max:s.at(-1)};}
+ function createRun(m,test,pair,candidate,fit,{record=false,searchDomain=null}={}){
+  if(L.physicsInfo().backend!=='mujoco-wasm')throw Error('Actual MuJoCo WASM required');
+  const started=clock(),d=design(m,pair,candidate,fit,searchDomain),plant=new L.LabPlant({seed:test.seed,scenario:test.scenario});plant.reset(test.initialState);plant.goal=test.goal;
+  plant.sensorStd=[m.sensorFixture.sigmaPosition_m,m.sensorFixture.sigmaAngle_rad];
+  const {controller,observer}=buildControllers(m,pair,d,plant.spec);let y=plant.sensor();observer.reset(y);observer.P=L.diag(d.P0);controller.reset();let xhat=observer.x.slice(),previousU=0,outcome='running',reason=null;
+  const trace=[],series=[],times={solve:[],observer:[],step:[]},termSum={position:0,angle:0,force:0,deltaForce:0},constructionMs=clock()-started;
+  let saturation=0,activeRail=0,maxKkt=0,maxPrimal=0;
+  function step(){
+   if(outcome!=='running')return false;const k=series.length,begin=clock(),truth=plant.s.slice(),estimate=xhat.slice();
+   try{
+    const row={k,measurementTime:k*L.DT,nextTime:(k+1)*L.DT,truth,estimate,measurement:y.slice(),P:copy(observer.P),goal:test.goal,previousU};
+    const t=clock(),u=controller.act(estimate,test.goal);times.solve.push(clock()-t);
+    if(!Number.isFinite(u)||Math.abs(u)>m.task.forceLimit_N+1e-8)throw Error('Command rejected by physical force gate');
+    if(pair.controller==='hard_mpc'){
+     if(!controller.lastConverged||controller.lastKktResidual>1e-7||controller.lastPrimalResidual>1e-8)throw Error('QP numerical admission failed');
+     maxKkt=Math.max(maxKkt,controller.lastKktResidual);maxPrimal=Math.max(maxPrimal,controller.lastPrimalResidual);
+     if(controller.lastPrediction.some(x=>Math.abs(x[0])>=m.task.railLimit_m-1e-6))activeRail++;
+    }
+    if(Math.abs(u)>=m.task.forceLimit_N-1e-8)saturation++;
+    const costs=stageCost(m,{truth,goal:test.goal,u,previousU});for(const key in termSum)termSum[key]+=costs[key];
+    if(test.push&&k===test.push.step)plant.applyPush(test.push.force,test.push.duration);
+    const out=plant.step(u);y=plant.sensor();const ob=clock();xhat=observer.step(plant.sensorMeta.fresh?y:null,u);times.observer.push(clock()-ob);
+    if(!xhat.every(Number.isFinite)||!observer.P.flat().every(Number.isFinite))throw Error('Nonfinite observer output');
+    const err=estimate.map((v,i)=>i===2?L.wrap(v-truth[i]):v-truth[i]);
+    // compact independent-audit series: all task terms can be recomputed without trusting costs.
+    series.push([truth[0]-test.goal,L.wrap(truth[2]),u,u-previousU,...err,out.state[0],out.state[2],out.appliedCommand]);
+    if(record)trace.push({...row,command:u,appliedForce:out.appliedCommand,external:out.external,nextTruth:out.state.slice(),nextMeasurement:y.slice(),nextEstimate:xhat.slice(),nextP:copy(observer.P),nextInnovation:observer.last?.innovation?.slice()??null,nextS:observer.last?.S?copy(observer.last.S):null,costs,solverKkt:controller.lastKktResidual??null,solverPrimal:controller.lastPrimalResidual??null});
+    previousU=u;times.step.push(clock()-begin);
+    if(Math.abs(out.state[0])>m.task.railLimit_m||Math.abs(L.wrap(out.state[2]))>m.task.angleEnvelope_rad){outcome='envelope-failure';reason='physical rail or angle envelope';}
+    else if(series.length>=m.steps)outcome='completed';return outcome==='running';
+   }catch(e){reason=String(e.message);outcome=reason.startsWith('QP ')?'solver-rejected':'execution-error';times.step.push(clock()-begin);return false;}
+  }
+  function result(){
+   const n=series.length,window=series.slice(-m.task.finalWindowSteps),rms=(a,index)=>a.length?Math.sqrt(mean(a.map(r=>r[index]**2))):null;
+   const tailPosition=window.length?Math.sqrt(mean(window.map(r=>(r[8]-test.goal)**2))):null,tailAngle=window.length?Math.sqrt(mean(window.map(r=>L.wrap(r[9])**2))):null;
+   const passed=outcome==='completed'&&window.length===m.task.finalWindowSteps&&tailPosition<=m.task.finalPositionRms_m&&tailAngle<=m.task.finalAngleRms_rad;
+   const components=Object.fromEntries(Object.entries(termSum).map(([k,v])=>[k,n?v/n:null]));
+   return {caseId:test.id,seed:test.seed,scenario:test.scenario,pairId:pair.id,candidateId:candidate.id,design:d,outcome,reason,taskPassed:passed,appliedSteps:n,requestedSteps:m.steps,
+    fullScore:outcome==='completed'?Object.values(components).reduce((a,b)=>a+b,0):null,scoreComponents:components,partialScore:n?Object.values(components).reduce((a,b)=>a+b,0):null,
+    positionTrackingRmse:rms(series,0),angleRms:rms(series,1),forceRms:rms(series,2),deltaForceRms:rms(series,3),estimationRmseByState:[4,5,6,7].map(i=>rms(series,i)),tailPositionRms:tailPosition,tailAngleRms:tailAngle,
+    saturatedSamples:saturation,predictedRailActiveSamples:activeRail,maxKktResidual:pair.controller==='hard_mpc'?maxKkt:null,maxPrimalResidual:pair.controller==='hard_mpc'?maxPrimal:null,
+    finalTruth:plant.s.slice(),finalEstimate:xhat.slice(),timing:{constructionMs,solve:distribution(times.solve),observer:distribution(times.observer),synchronousStep:distribution(times.step),overBudgetSamples:times.step.filter(v=>v>m.task.executionBudget_ms).length,scope:m.task.timingScope},
+    information:{controller:'observer-output only',observer:'current/past measurements and requested commands only',Re:'separate stationary readings',truth:'simulator task evaluator only',stateUnits:['m','m/s','rad','rad/s']},auditSeries:series,trace};
+  }
+  return {step,result,components:()=>({plant,controller,observer}),get done(){return outcome!=='running';},snapshot:()=>({steps:series.length,outcome,truth:plant.s.slice(),estimate:xhat.slice(),goal:test.goal,design:d,last:trace.at(-1)??null})};
+ }
+ function withoutSeries(r){const {trace,auditSeries,...summary}=r;return summary;}
+ function aggregate(candidate,runs){const completed=runs.filter(r=>r.outcome==='completed');return {candidate,hardFailures:runs.length-completed.length,taskFailures:runs.filter(r=>!r.taskPassed).length,fullScore:completed.length===runs.length?mean(completed.map(r=>r.fullScore)):null,eligible:completed.length===runs.length&&runs.every(r=>r.taskPassed),runs:runs.map(withoutSeries)};}
+ function rankCandidates(a,b){return a.hardFailures-b.hardFailures||a.taskFailures-b.taskFailures||((a.fullScore??Infinity)-(b.fullScore??Infinity))||Number(b.candidate.baseline)-Number(a.candidate.baseline)||a.candidate.id.localeCompare(b.candidate.id);}
+ function settingsSignature(m){return JSON.stringify({controlDt:m.controlDt,steps:m.steps,theoryDesign:m.theoryDesign,sensorFixture:m.sensorFixture,calibration:m.calibration,task:m.task,candidateGrid:m.candidateGrid,pairs:m.pairs,selection:m.selection});}
+ async function select(m,fit,{evaluate,onProgress=()=>{}}={}){
+  if(typeof evaluate!=='function')throw Error('An explicit training/validation evaluator is required');
+  const available=[...m.training,...m.validation];if(new Set(available.map(r=>r.id)).size!==available.length||new Set(available.map(r=>r.seed)).size!==available.length||available.some(r=>r.seed===m.calibration.seed))throw Error('Training/validation records must be disjoint');
+  // This function intentionally never references m.test; test getter poisoning is a contract test.
+  const candidatesAll=candidates(m),results=[];let trainingEvaluations=0,validationEvaluations=0;
+  for(const pair of m.pairs){
+   const training=[];for(const c of candidatesAll){const runs=await evaluate(pair,c,m.training,'training');training.push(aggregate(c,runs));trainingEvaluations+=runs.length;onProgress({stage:'training',pairId:pair.id,candidateId:c.id,done:trainingEvaluations,total:4*9*3});}
+   const short=training.slice().sort(rankCandidates).slice(0,m.candidateGrid.shortlist).map(x=>x.candidate);
+   const base=candidatesAll.find(c=>c.baseline);if(m.candidateGrid.includeBaseline&&!short.some(c=>c.baseline))short.push(base);
+   const validation=[];for(const c of short){const runs=await evaluate(pair,c,m.validation,'validation');validation.push(aggregate(c,runs));validationEvaluations+=runs.length;onProgress({stage:'validation',pairId:pair.id,candidateId:c.id});}
+   const winner=validation.slice().sort(rankCandidates)[0];results.push({pairId:pair.id,candidate:winner.candidate,eligible:winner.eligible,validationScore:winner.fullScore,training,validation});
+  }
+  const eligible=results.filter(r=>r.eligible),best=eligible.length?Math.min(...eligible.map(r=>r.validationScore)):null;
+  const near=eligible.filter(r=>r.validationScore<=best*(1+m.selection.crossPairTieRelative));near.sort((a,b)=>m.pairs.find(p=>p.id===a.pairId).simplicityOrder-m.pairs.find(p=>p.id===b.pairId).simplicityOrder);
+  const recommendedPairId=near[0]?.pairId??null,id=JSON.stringify({pairs:results.map(r=>[r.pairId,r.candidate.id]),recommendedPairId});
+  return freeze({id,settingsSignature:settingsSignature(m),Re:fit.Rdiag.slice(),pairs:results,recommendedPairId,trainingEvaluations,validationEvaluations,testUsedForSelection:false,locked:true,tiePolicy:m.selection.crossPairRule,scope:'best within the declared candidates and validation task; not global optimum or hardware admission'});
+ }
+ function pairedMetrics(a,b,m){const n=Math.min(a.auditSeries.length,b.auditSeries.length),score=r=>n?mean(r.auditSeries.slice(0,n).map(v=>m.task.objective.position.weight*(v[0]/m.task.objective.position.scale)**2+m.task.objective.angle.weight*(v[1]/m.task.objective.angle.scale)**2+m.task.objective.force.weight*(v[2]/m.task.objective.force.scale)**2+m.task.objective.deltaForce.weight*(v[3]/m.task.objective.deltaForce.scale)**2)):null;
+  return {commonPrefixSteps:n,baselineScore:score(a),candidateScore:score(b),bothCompleted:a.outcome==='completed'&&b.outcome==='completed',scope:'shared-prefix diagnostic only; failed runs never receive a full-duration score'};}
+ function adjudicate(m,selection,rows){
+  const id=selection.recommendedPairId,p=rows.filter(r=>r.pairId===id&&r.group==='primary'),expected=m.test.filter(t=>t.group==='primary'),reasons=[];
+  if(selection.settingsSignature!==settingsSignature(m))reasons.push('Design settings changed after selection');
+  if(!id)reasons.push('No validation-eligible pair; no recommendation to promote');
+  if(p.length!==expected.length||new Set(p.map(r=>r.caseId)).size!==expected.length||expected.some(t=>!p.some(r=>r.caseId===t.id)))reasons.push('Incomplete or mismatched primary test coverage');
+  if(p.some(r=>r.candidate.outcome!=='completed'||!r.candidate.taskPassed))reasons.push('Locked candidate fails at least one primary task');
+  if(p.some(r=>r.baseline.taskPassed&&!r.candidate.taskPassed))reasons.push('Candidate-only primary task failure');
+  const both=p.filter(r=>r.baseline.outcome==='completed'&&r.candidate.outcome==='completed'),bs=both.length===p.length&&p.length?mean(both.map(r=>r.baseline.fullScore)):null,cs=both.length===p.length&&p.length?mean(both.map(r=>r.candidate.fullScore)):null;
+  if(cs===null||bs===null||!Number.isFinite(cs)||!Number.isFinite(bs)||cs>(1+m.selection.primaryNonRegressionTolerance)*bs)reasons.push('Primary full-duration non-regression gate not established');
+  return freeze({selectionId:selection.id,settingsSignature:settingsSignature(m),testCaseSignature:JSON.stringify(m.test),recommendedPairId:id,accepted:reasons.length===0,reasons,primaryCases:p.length,baselineScore:bs,candidateScore:cs,relativeScore:bs>0&&cs!==null?cs/bs:null,testCanReselect:false,hardwareAdmission:false,scope:m.selection.adoptionScope});
+ }
+ function application(m,selection,admission,test,fit){
+  if(!Object.isFrozen(selection)||!selection.locked||!admission.accepted)throw Error('Design not admitted; selection/application rejected');
+  if(selection.settingsSignature!==settingsSignature(m)||admission.settingsSignature!==selection.settingsSignature||admission.testCaseSignature!==JSON.stringify(m.test))throw Error('Study settings/signature changed since evaluation');
+  if(JSON.stringify(fit.Rdiag)!==JSON.stringify(selection.Re))throw Error('Measurement calibration covariance changed');
+  if(admission.selectionId!==selection.id||admission.recommendedPairId!==selection.recommendedPairId)throw Error('Selection/admission identity mismatch');
+  const actual=m.test.find(t=>t.id===test.id&&t.group==='primary');if(!actual||JSON.stringify(actual)!==JSON.stringify(test))throw Error('Application case outside admitted explicit task');
+  const picked=selection.pairs.find(p=>p.pairId===selection.recommendedPairId),pair=m.pairs.find(p=>p.id===picked?.pairId);if(!pair)throw Error('Invalid locked selection');
+  return freeze({study:'task-aware-design',case:copy(actual),pair:copy(pair),candidate:copy(picked.candidate),design:design(m,pair,picked.candidate,fit),sensorStd:[m.sensorFixture.sigmaPosition_m,m.sensorFixture.sigmaAngle_rad],startPaused:true,defaultChanged:false,scope:'Explicit replay of one admitted simulated task; not permission for arbitrary conditions or hardware'});
+ }
+ async function runStudy(m,{onProgress=()=>{},yieldControl=()=>Promise.resolve(),retainAudit=true}={}){
+  validateManifest(m);const capture=calibrate(m),fit=capture.fit,allRuns=[];
+  async function execute(pair,candidate,test,phase,record=false){const run=createRun(m,test,pair,candidate,fit,{record});let n=0;while(!run.done){run.step();if(++n%100===0)await yieldControl();}const r=run.result();if(r.outcome==='execution-error')throw Error('Study implementation error at '+test.id+': '+r.reason);if(retainAudit)allRuns.push({phase,...r});return r;}
+  const selection=await select(m,fit,{onProgress,evaluate:async(pair,candidate,tests,phase)=>{const rows=[];for(const t of tests)rows.push(await execute(pair,candidate,t,phase));return rows;}});
+  onProgress({stage:'selection-locked',recommendedPairId:selection.recommendedPairId,testEvaluations:0});
+  const tests=[],base=candidates(m).find(c=>c.baseline);let evaluated=0;
+  for(const pair of m.pairs){const selected=selection.pairs.find(p=>p.pairId===pair.id).candidate;
+   for(const test of m.test){const baseline=await execute(pair,base,test,'test-baseline',true),candidate=await execute(pair,selected,test,'test-selected',true);tests.push({caseId:test.id,pairId:pair.id,group:test.group,baseline,candidate,paired:pairedMetrics(baseline,candidate,m)});onProgress({stage:'locked-test',pairId:pair.id,caseId:test.id,done:++evaluated,total:m.pairs.length*m.test.length});await yieldControl();}
+  }
+  const admission=adjudicate(m,selection,tests);
+  const summary=m.pairs.map(pair=>({pairId:pair.id,selectedCandidateId:selection.pairs.find(p=>p.pairId===pair.id).candidate.id,groups:['primary','boundary'].map(group=>{
+   const rr=tests.filter(t=>t.pairId===pair.id&&t.group===group),both=rr.filter(t=>t.paired.bothCompleted);
+   return {group,cases:rr.length,bothCompleted:both.length,excludedFromFullDuration:rr.length-both.length,arms:['baseline','candidate'].map(arm=>({arm,completed:rr.filter(t=>t[arm].outcome==='completed').length,taskPassed:rr.filter(t=>t[arm].taskPassed).length,score:both.length?mean(both.map(t=>t[arm].fullScore)):null,trackingRmse:both.length?Math.sqrt(mean(both.map(t=>t[arm].positionTrackingRmse**2))):null,forceRms:both.length?Math.sqrt(mean(both.map(t=>t[arm].forceRms**2))):null,deltaForceRms:both.length?Math.sqrt(mean(both.map(t=>t[arm].deltaForceRms**2))):null,saturatedSamples:rr.reduce((s,t)=>s+t[arm].saturatedSamples,0)}))};
+  })}));
+  return {capture,selection,tests,summary,admission,auditRuns:allRuns,defaultsChanged:false,method:'Measured R + inverse-squared-scale Riccati baseline + identical two-factor candidate budgets + task-first rank + locked independent test'};
+ }
+ return {validateManifest,candidates,calibrate,design,buildControllers,stageCost,createRun,withoutSeries,aggregate,rankCandidates,select,adjudicate,application,runStudy};
+});
+
+const CONTROL_LAB_DESIGN_MANIFEST = {
+  "schema":"cartpole-task-aware-design/v1",
+  "purpose":"One closed-loop task, four existing controller/observer pairs, equal bounded design budget, train/validation lock then independent test; no global optimum or hardware claim",
+  "controlDt":0.02,
+  "steps":600,
+  "calibration":{"seed":7103,"samples":512,"fixtureState":[0.18,0,0.03,0],"scenario":"sensor","stationaryAssumption":true},
+  "calibrationScreen":{"minimumSamples":32,"maximumAbsLagOne":0.2,"maximumAbsChannelCorrelation":0.2},
+  "sensorFixture":{"sigmaPosition_m":0.06,"sigmaAngle_rad":0.025,"scope":"Same test injection amplitudes in all cases; calibration estimator sees readings only. Colored noise and actuator/model mechanisms remain as declared by scenario."},
+  "theoryDesign":{"stateScales":[0.5,1.0,0.15,0.5],"forceScale_N":3,"QeBase":[0.00002,0.002,0.00002,0.004],"P0diag":[0.1,1,0.04,1],"horizon":30,"terminal":"full nominal discrete Riccati for each actual Qc/Rc","note":"Qc_i=1/stateScale_i^2 and Rc=effortMultiplier/forceScale^2. Scales are declared engineering design choices, not identified physical values or safety bounds."},
+  "candidateGrid":{"effortMultipliers":[0.5,1,2],"processMultipliers":[0.1,1,10],"baseline":{"effortMultiplier":1,"processMultiplier":1},"shortlist":2,"includeBaseline":true},
+  "pairs":[
+    {"id":"lqr-kf","controller":"lqr","observer":"kf","simplicityOrder":0},
+    {"id":"lqr-ekf","controller":"lqr","observer":"ekf","simplicityOrder":1},
+    {"id":"mpc-kf","controller":"hard_mpc","observer":"kf","simplicityOrder":2},
+    {"id":"mpc-ekf","controller":"hard_mpc","observer":"ekf","simplicityOrder":3}
+  ],
+  "task":{"railLimit_m":2.4,"angleEnvelope_rad":0.6108652381980153,"forceLimit_N":10,"finalWindowSteps":100,"finalPositionRms_m":0.15,"finalAngleRms_rad":0.06,
+    "objective":{"position":{"scale":0.25,"weight":1},"angle":{"scale":0.1,"weight":0.2},"force":{"scale":5,"weight":0.05},"deltaForce":{"scale":2,"weight":0.02}},
+    "score":"Mean of declared normalized tracking, upright-angle, effort and command-increment squared costs. Evaluate x_k/u_k; first delta-u is from zero. Failed/partial runs receive no full-duration score.",
+    "executionBudget_ms":20,"timingScope":"Host construction/solve/observer/full-step measurements reported separately. Not used to choose a stochastic timing winner or claim WCET/sensor-to-hardware admission."},
+  "selection":{"order":"hard failure count, final-task failure count, mean score for full-completed sets, exact ties prefer baseline then fixed candidate ID","crossPairTieRelative":0.01,"crossPairRule":"Among validation-eligible pairs within 1% of minimum validation score, choose fixed lower simplicityOrder. It is a policy, not proof of algorithm dominance.","testRule":"Lock one candidate per pair and one recommended pair BEFORE test. Report baseline and selected for every pair. Test can reject the locked recommendation but cannot select another one.","primaryNonRegressionTolerance":0.02,"adoptionScope":"Optional manual application to the declared simulation task only; all primary cases must meet task, no candidate-only primary task failure, and mean primary task score <=1.02*same-pair baseline if both complete. Boundaries do not expand admission."},
+  "training":[
+    {"id":"train-sensor-7207","seed":7207,"scenario":"sensor","initialState":[0,0,0.06,0],"goal":0.35,"push":null},
+    {"id":"train-model-7211","seed":7211,"scenario":"model","initialState":[0.1,0,-0.06,0],"goal":-0.35,"push":null},
+    {"id":"train-push-7219","seed":7219,"scenario":"sensor","initialState":[0,0,0.1,0],"goal":0.5,"push":{"step":250,"force":1,"duration":10}}
+  ],
+  "validation":[
+    {"id":"validation-sensor-7307","seed":7307,"scenario":"sensor","initialState":[0,0,0.08,0],"goal":0.4,"push":null},
+    {"id":"validation-mixed-7311","seed":7311,"scenario":"mixed","initialState":[0,0,-0.08,0],"goal":-0.4,"push":null},
+    {"id":"validation-push-7321","seed":7321,"scenario":"sensor","initialState":[0,0,-0.1,0],"goal":-0.5,"push":{"step":250,"force":-1,"duration":10}}
+  ],
+  "test":[
+    {"id":"test-sensor-7403","group":"primary","seed":7403,"scenario":"sensor","initialState":[0,0,0.05,0],"goal":0.3,"push":null},
+    {"id":"test-sensor-7411","group":"primary","seed":7411,"scenario":"sensor","initialState":[0.1,0,-0.05,0],"goal":-0.3,"push":null},
+    {"id":"test-model-7417","group":"primary","seed":7417,"scenario":"model","initialState":[0,0,0.08,0],"goal":0.45,"push":null},
+    {"id":"test-mixed-7433","group":"primary","seed":7433,"scenario":"mixed","initialState":[0,0,-0.08,0],"goal":-0.45,"push":{"step":250,"force":1,"duration":10}},
+    {"id":"test-colored-7507","group":"boundary","seed":7507,"scenario":"colored","initialState":[0,0,0.1,0],"goal":0.5,"push":null},
+    {"id":"test-delay-7517","group":"boundary","seed":7517,"scenario":"latency","initialState":[0,0,-0.1,0],"goal":-0.5,"push":null}
+  ],
+  "claims":["This finite 2-parameter grid is an interpretable joint design search, not a globally optimal co-design or complete identification.","Qc shape, horizon, P0 and measured Re are fixed. Varying Qe is an effective task-tuning choice and is not labelled calibrated physical noise.","LQR has force clipping and common physical rail/angle evaluation; MPC additionally enforces nominal predicted rail/input constraints. Both use same task and nominal model, but their optimization formulations differ.","Truth is used only for simulated task evaluation; no controller or observer receives it.","Every candidate gets the same training cases; selection does not inspect test data or timing measurements. New tests are held out only for this first study, then become regression data.","A validation winner failing admission is retained as a rejected result, not replaced by the best test performer."]
+}
+;
 const CONTROL_LAB_CALIBRATION_MANIFEST = {
   "schema": "cartpole-measurement-calibration-lesson/v1",
   "purpose": "Single-pole causal lesson, not robot deployment or a new tuning framework",
@@ -2577,6 +2818,75 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
  return {run,getState,seek,seekFirstSaturation,runProcess,getProcessState:processState,inspectProcessCase};
 }};
 
+// Existing-controller study UI: task, candidate budget, lock, test and explicit application.
+// Every number shown is computed by DesignStudy or a declared task setting, not a mock score.
+const DesignLessonView={mount({manifest:m,pause,apply}){
+ const D=globalThis.DesignStudy,$=id=>document.getElementById(id),label=id=>m.pairs.find(p=>p.id===id)?.id??'없음';
+ let status='idle',result=null,error=null,busy=false;
+ const f=(v,d=4)=>Number.isFinite(v)?v.toFixed(d):'—';
+ const cells=(table,rows)=>{const b=$(table).tBodies[0];b.replaceChildren();for(const row of rows){const tr=b.insertRow();for(const v of row)tr.insertCell().textContent=String(v);}};
+ function state(){return {status,error,selection:result?{recommendedPairId:result.selection.recommendedPairId,pairs:result.selection.pairs.map(p=>({pairId:p.pairId,candidate:p.candidate,eligible:p.eligible,validationScore:p.validationScore})),testUsedForSelection:false}:null,admission:result?.admission??null,summary:result?.summary??null,defaultsChanged:false};}
+ function candidateTable(){
+  if(!result)return;const p=result.selection.pairs.find(p=>p.pairId===$('designPair').value);if(!p)return;
+  cells('designCandidates',p.training.map(t=>{const v=p.validation.find(v=>v.candidate.id===t.candidate.id);return [t.candidate.id,t.candidate.baseline?'선언 기준':'후보',t.hardFailures+' / '+t.taskFailures,f(t.fullScore),v?(v.hardFailures+' / '+v.taskFailures):'선발 제외',f(v?.fullScore),p.candidate.id===t.candidate.id?'선택 · TEST 이전':'—'];}));
+  const summary=result.summary.find(s=>s.pairId===p.pairId);
+  cells('designTests',result.tests.filter(t=>t.pairId===p.pairId).map(t=>[t.caseId,t.group,t.baseline.outcome+' / '+t.candidate.outcome,(t.baseline.taskPassed?'충족':'미달')+' → '+(t.candidate.taskPassed?'충족':'미달'),f(t.baseline.fullScore)+' → '+f(t.candidate.fullScore),f(t.baseline.positionTrackingRmse,3)+' → '+f(t.candidate.positionTrackingRmse,3)+' m',t.paired.commonPrefixSteps]));
+  const d=D.design(m,m.pairs.find(q=>q.id===p.pairId),p.candidate,result.capture.fit);
+  $('designParameters').textContent=p.pairId+' / '+p.candidate.id+'\nQ_c=['+d.Qc.map(v=>f(v,3)).join(', ')+'], R_c='+f(d.Rc,6)+'\nQ_e=['+d.Qe.map(v=>v.toExponential(2)).join(', ')+']\nR_e(별도 측정)=['+d.Re.map(v=>v.toExponential(4)).join(', ')+']\nP_0 diag=['+d.P0.join(', ')+']\nK(LQR 기준)=['+d.K.map(v=>f(v,5)).join(', ')+']\nMPC horizon='+d.horizon+', full Riccati terminal residual='+d.terminalInfo.normalizedResidual.toExponential(2)+'\nQ_c/R_c는 요구사항 설계값, Q_e는 유효 탐색값입니다. R_e 이외를 실측 보정값이라고 부르지 않습니다.';
+  $('designTestScope').textContent='TEST는 선택에 사용하지 않았습니다. 실패한 조합으로 바꿔 재추천하지 않습니다. 현재 표: '+summary.pairId+' · primary와 boundary를 합쳐 승인하지 않습니다.';
+ }
+ function render(){
+  const selected=result.selection;
+  cells('designPairs',selected.pairs.map(p=>[p.pairId,p.candidate.id,p.candidate.baseline?'기준 유지':'후보 변경',p.eligible?'과제 기준 충족':'과제 미충족',f(p.validationScore,6),p.pairId===selected.recommendedPairId?'사전 규칙 추천':'—']));
+  $('designPair').innerHTML=m.pairs.map(p=>'<option value="'+p.id+'">'+p.id+'</option>').join('');$('designPair').value=selected.recommendedPairId??m.pairs[0].id;
+  $('designApplyCase').innerHTML=m.test.filter(t=>t.group==='primary').map(t=>'<option value="'+t.id+'">'+t.id+'</option>').join('');
+  const a=result.admission;
+  $('designVerdict').textContent='VALIDATION 추천: '+label(selected.recommendedPairId)+' · TEST 판정: '+(a.accepted?'선언한 primary 과제의 명시적 재실행 허용':'채택 거부: '+a.reasons.join('; '))+'. 점수 차이 1% 이내에서는 사전 순서로 단순한 조합을 택합니다. 전역 최적·임의 조건·하드웨어 보장은 아닙니다.';
+  $('designApply').disabled=!a.accepted;$('designApplyCase').disabled=!a.accepted;
+  $('designStatus').textContent='완료: TRAIN '+selected.trainingEvaluations+' + VALIDATION '+selected.validationEvaluations+' + TEST '+result.tests.length*2+' 회. 새로운 숫자로 바뀌어야 성공인 것이 아닙니다. 기본값은 변경하지 않았습니다.';
+  candidateTable();
+ }
+ function disable(value){for(const id of ['designRun','designPair','calibrationRun','processRun'])$(id).disabled=value;}
+ async function run(){
+  if(busy||window.calibrationLesson?.getState().status==='running')throw Error('Another study is running');
+  pause();busy=true;status='running';error=null;result=null;disable(true);
+  for(const id of ['designPairs','designCandidates','designTests'])cells(id,[]);
+  $('designApply').disabled=true;$('designApplyCase').disabled=true;$('designVerdict').textContent='아직 추천·채택 결과가 없습니다.';$('designParameters').textContent='';
+  try{
+   result=await D.runStudy(m,{retainAudit:false,yieldControl:()=>new Promise(resolve=>setTimeout(resolve,0)),onProgress:e=>{
+    $('designStatus').textContent=e.stage==='selection-locked'?'선택 잠금: '+label(e.recommendedPairId)+' · 아직 TEST 평가 0회':e.stage+' · '+(e.pairId??'')+' '+(e.candidateId??e.caseId??'')+' '+(e.done??'')+(e.total?' / '+e.total:'');
+   }});
+   status='completed';render();return state();
+  }catch(e){status='error';error=String(e.message);result=null;$('designStatus').textContent='중단: '+error;$('designApply').disabled=true;throw e;}
+  finally{busy=false;disable(false);}
+ }
+ function applySelected(){
+  if(busy||!result)throw Error('No completed design study');
+  const test=m.test.find(t=>t.id===$('designApplyCase').value),recipe=D.application(m,result.selection,result.admission,test,result.capture.fit);
+  apply(recipe);$('designStatus').textContent='수동 적용: '+recipe.pair.id+' / '+recipe.candidate.id+' / '+test.id+' · 공통 시뮬레이션을 지정 초기 상태로 되돌리고 일시정지했습니다. 일반 설정 변경·Reset은 이 과제 설정을 해제합니다.';
+  $('world').scrollIntoView({behavior:'smooth',block:'center'});return recipe;
+ }
+ async function loadTuningComparison(){
+  const status=$('tuningComparisonStatus');status.dataset.state='loading';status.textContent='오프라인 근거를 읽는 중';$('tuningComparison').tBodies[0].replaceChildren();$('loadTuningComparison').disabled=true;
+  try{
+   const response=await fetch('evidence/sequential_tuning.json',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);
+   const report=await response.json();if(!report.experimentValid||report.mode!=='frozen-full')throw Error('완료된 고정 비교가 아닙니다');
+   const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN,fmt=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):'—';
+   const rows=['grid_budget','random_full','random_racing','smac_racing','grid_exhaustive'].map(method=>{
+    const rr=report.campaigns.filter(c=>c.method===method),effect=report.pairedStatistics.find(c=>c.method===method),ci=effect?.conditionalPairedBootstrap95;
+    return [method,rr.length,fmt(mean(rr.map(r=>r.actualSearchRollouts)),0),fmt(mean(rr.map(r=>r.fullyEvaluatedConfigurations)),1),fmt(mean(rr.map(r=>r.tunerSeconds)))+' s',fmt(mean(rr.map(r=>r.searchWallSeconds)))+' s',fmt(mean(rr.map(r=>r.primaryTaskSuccesses)),1)+' / 12',effect?fmt(effect.meanRelativeTaskDifference*100)+'%'+(ci?' ['+fmt(ci[0]*100)+', '+fmt(ci[1]*100)+']':' · 구간 미확정'):method==='grid_exhaustive'?'추가 예산 유한 참조':'동일 예산 기준'];
+   });cells('tuningComparison',rows);
+   status.dataset.state='loaded';status.textContent='SMAC '+report.versions.smac+' / ConfigSpace '+report.versions.ConfigSpace+' · 실제 총 평가 '+report.actualEvaluations+'회 · validation/test 추가 비용은 원본 기록에 별도 표기 · 기본값 변경 없음';
+  }catch(e){$('tuningComparison').tBodies[0].replaceChildren();status.dataset.state='error';status.textContent='결과 표시 중단: '+e.message;}
+  finally{$('loadTuningComparison').disabled=false;}
+ }
+ $('loadTuningComparison').onclick=loadTuningComparison;
+ $('designRun').onclick=()=>run().catch(()=>{});$('designPair').onchange=candidateTable;$('designApply').onclick=()=>{try{applySelected();}catch(e){$('designVerdict').textContent=String(e.message);}};
+ $('openDesign').onclick=()=>$('designLesson').scrollIntoView({behavior:'smooth',block:'start'});
+ $('designApply').disabled=true;$('designApplyCase').disabled=true;
+ return {run,getState:state,applySelected};
+}};
+
 'use strict';
 (async function(){
   const $=function(id){return document.getElementById(id);};
@@ -2595,6 +2905,7 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
   const relationObservers="<p>서로 다른 문제 설정에 맞는 선택지입니다.</p><div class='relation'><div class='rel-row'><span class='rel-node'>재귀 추정: KF / EKF / sigma-point UKF</span></div><div class='rel-row'><span class='rel-node'>오차 geometry: Euclidean / invariant</span><span class='rel-node'>window: MHE</span></div><div class='rel-row'><span class='rel-node'>학습 위치: contact event / measurement / output residual / covariance</span></div></div>";
   let topic=(location.hash||'#overview').slice(1);if(!TOPICS[topic])topic='overview';
   let runtimeError=null,lastTick=null,activeConfig=null,componentSE=[0,0,0,0],trackingSE=0;
+  let designRun=null,designRecipe=null;
   let plant,controller,observer,running=true,lastTs=0,acc=0,trace=[],sumErr=0,nErr=0,lastEstimate=[0,0,0,0],lastMeasurement=[0,0],lastInnovation=null,lastForce=0,lastAppliedForce=0;
 
   const supportsTerminal=name=>['linear_mpc','hard_mpc'].includes(name);
@@ -2661,7 +2972,8 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
       const nextObserver=L.makeObserver($('observer').value,nextPlant.spec,{model:residualModel,R:nextPlant.measurementVariance()});
       const y=nextPlant.sensor();nextObserver.reset(y,nextPlant.s);nextController.reset();
       const modelGeometry=physics.geometry(nextPlant.s,nextPlant.spec,nextPlant.params);
-      plant=nextPlant;controller=nextController;observer=nextObserver;
+      plant=nextPlant;controller=nextController;observer=nextObserver;designRun=null;designRecipe=null;
+      $('pushL').disabled=false;$('pushR').disabled=false;$('designLiveScope').textContent='일반 실험 · 공통 과제 설정 미적용';
       activeConfig={controller:$('controller').value,observer:$('observer').value,scenario:$('scenario').value};
       runtimeError=null;lastTick=null;acc=0;lastTs=0;trace=[];sumErr=0;nErr=0;componentSE=[0,0,0,0];trackingSE=0;
       lastEstimate=observer.outputX&&observer.outputX.slice?observer.outputX.slice():(observer.x&&observer.x.slice?observer.x.slice():plant.s.slice());
@@ -2675,8 +2987,37 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
       $('terminalStatus').textContent='설정 적용 실패 · 이전 상태에서 정지 · Reset 필요';renderAll();return false;
     }
   }
+  function applyDesign(recipe){
+    if(!Object.isFrozen(recipe)||recipe.study!=='task-aware-design')throw Error('Unverified study recipe');
+    running=false;
+    const m=CONTROL_LAB_DESIGN_MANIFEST,run=DesignStudy.createRun(m,recipe.case,recipe.pair,recipe.candidate,{usable:true,Rdiag:recipe.design.Re.slice()},{record:true});
+    const next=run.components(),s=run.snapshot();
+    plant=next.plant;controller=next.controller;observer=next.observer;designRun=run;designRecipe=recipe;
+    $('controller').value=recipe.pair.controller;$('observer').value=recipe.pair.observer;$('scenario').value=recipe.case.scenario;$('goal').value=String(recipe.case.goal);
+    $('terminalCost').value=recipe.pair.controller==='hard_mpc'?'dare':'original';$('terminalCost').disabled=!supportsTerminal(recipe.pair.controller);
+    activeConfig={controller:recipe.pair.controller,observer:recipe.pair.observer,scenario:recipe.case.scenario};
+    runtimeError=null;lastTick=null;acc=0;lastTs=0;trace=[];sumErr=0;nErr=0;componentSE=[0,0,0,0];trackingSE=0;
+    lastEstimate=s.estimate.slice();lastMeasurement=[s.estimate[0],s.estimate[2]];lastInnovation=null;lastForce=0;lastAppliedForce=0;
+    $('pushL').disabled=true;$('pushR').disabled=true;
+    const modelGeometry=physics.geometry(plant.s,plant.spec,plant.params);
+    $('assetStatus').textContent='MJCF '+physics.assetSha256.slice(0,12)+' · true rod '+(2*modelGeometry.poleCom[2]).toFixed(3)+' m · mass '+modelGeometry.mass.map(v=>v.toFixed(3)).join(' / ')+' kg · ideal force actuator';
+    $('designLiveScope').textContent='공통 과제 적용: '+recipe.pair.id+' / '+recipe.candidate.id+' / '+recipe.case.id+' · 명시된 초기 상태·외력만 · 600 step 후 정지 · Reset/설정 변경 시 해제';
+    $('terminalStatus').textContent='설계한 Q_c/R_c + 별도 측정 R_e + 유효 Q_e · 선택 근거는 공통 과제 패널에 기록됨';
+    renderAll();return statePayload();
+  }
+  function stepDesign(){
+    if(designRun.done){running=false;return false;}
+    const before=designRun.snapshot().steps,t0=performance.now();designRun.step();const s=designRun.snapshot(),row=s.last;
+    if(s.steps===before){running=false;runtimeError=designRun.result().reason||'Study run rejected';return false;}
+    lastEstimate=row.nextEstimate.slice();lastMeasurement=row.nextMeasurement.slice();lastInnovation=row.nextInnovation?.slice()??null;lastForce=row.command;lastAppliedForce=row.appliedForce;
+    const e=row.nextTruth.map((v,i)=>i===2?L.wrap(v-lastEstimate[i]):v-lastEstimate[i]);e.forEach((v,i)=>componentSE[i]+=v*v);trackingSE+=(row.nextTruth[0]-row.goal)**2;sumErr+=e.reduce((a,v)=>a+v*v,0);nErr+=4;
+    lastTick={sourceStateTime:row.measurementTime,postStateTime:row.nextTime,computeMs:performance.now()-t0,deadlineMs:20,scope:'shared study runner; not hardware timing'};
+    trace.push({t:row.nextTime,studyCase:designRecipe.case.id,truth:row.nextTruth.slice(),estimate:lastEstimate.slice(),u:row.command,external:row.external,appliedCommand:row.appliedForce,P:row.nextP,innovation:lastInnovation,measurementUsed:true,sensorFresh:true,terminalCost:controller.terminalInfo?.kind??null,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0});
+    if(trace.length>500)trace.shift();
+    if(designRun.done){running=false;if(s.outcome!=='completed')runtimeError=designRun.result().reason||s.outcome;return false;}return true;
+  }
   function stepOne(){
-    if(runtimeError)return false;const wallStart=performance.now(),sourceTime=plant.steps*L.DT;
+    if(runtimeError)return false;if(designRun)return stepDesign();const wallStart=performance.now(),sourceTime=plant.steps*L.DT;
     try{
     // Discrete-time order: x_hat_k -> u_k -> plant x_(k+1) -> y_(k+1)
     // -> observer predict/update -> x_hat_(k+1). This keeps measurement,
@@ -2791,11 +3132,11 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
   }
   function statePayload(){
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
-    return {physics:L.physicsInfo(),terminalCost:terminalPayload(),fault:runtimeError,timing:lastTick,topic:topic,controller:activeConfig.controller,observer:activeConfig.observer,scenario:activeConfig.scenario,t:plant.steps*L.DT,goal:plant.goal,metrics:metricPayload(),
+    return {physics:L.physicsInfo(),study:designRecipe?{caseId:designRecipe.case.id,design:designRecipe.design,run:DesignStudy.withoutSeries(designRun.result()),scope:designRecipe.scope}:null,terminalCost:terminalPayload(),fault:runtimeError,timing:lastTick,topic:topic,controller:activeConfig.controller,observer:activeConfig.observer,scenario:activeConfig.scenario,t:plant.steps*L.DT,goal:plant.goal,metrics:metricPayload(),
       truth:plant.s.slice(),estimate:lastEstimate.slice(),measurement:lastMeasurement.slice(),innovation:lastInnovation?.slice()??null,force:lastForce,appliedForce:lastAppliedForce,
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
       covarianceScope:Pout?'output-estimate':'base-filter-only-or-not-applicable',
-      sensorFresh:plant.sensorMeta.fresh,measurementUsed:observer.last?.measurementUsed??plant.sensorMeta.fresh,measurementCovarianceSource:'injected-noise-oracle',
+      sensorFresh:plant.sensorMeta.fresh,measurementUsed:observer.last?.measurementUsed??plant.sensorMeta.fresh,measurementCovarianceSource:designRecipe?'stationary-measurements':'injected-noise-oracle',
       observerDiagnostics:{iterations:observer.last?.iterations??0,cost:observer.last?.cost??null,window:observer.last?.window??0},
       solver:{predictionSpace:controller.predictionSpace??'nominal-full-state',predictionAppliesTo:controller.lastBackup?'primary-not-applied':'nominal-plan',updateAccepted:controller.lastUpdateAccepted??null,termination:controller.lastTermination??null,implementation:controller.lastSolver??controller.name,kktResidual:controller.lastKktResidual??null,primalResidual:controller.lastPrimalResidual??null,stateConstrained:controller.lastStateConstrained??false,converged:controller.lastConverged??null,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0,horizon:(controller.lastPredictionReduced?.length||controller.lastPrediction?.length||1)-1,cost:controller.lastCost===undefined?null:controller.lastCost},
       rmse:Math.sqrt(sumErr/Math.max(1,nErr)),legacyRmseScope:'mixed-units; not a controller score',running:running};
@@ -2809,7 +3150,7 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
       await reg({name:'cartpole_set_observer',description:'Select an observer.',inputSchema:{type:'object',properties:{observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']}},required:['observer'],additionalProperties:false},annotations:rw,execute:async function(a){$('observer').value=a.observer;rebuild();return 'observer='+a.observer;}});
       await reg({name:'cartpole_set_topic',description:'Open an educational topic without changing plant state.',inputSchema:{type:'object',properties:{topic:{type:'string',enum:ORDER}},required:['topic'],additionalProperties:false},annotations:rw,execute:async function(a){setTopic(a.topic);return 'topic='+a.topic;}});
       await reg({name:'cartpole_set_scenario',description:'Select scenario.',inputSchema:{type:'object',properties:{scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']}},required:['scenario'],additionalProperties:false},annotations:rw,execute:async function(a){$('scenario').value=a.scenario;rebuild();return 'scenario='+a.scenario;}});
-      await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
+      await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){if(designRun)throw Error('Reset first: a custom push changes the admitted study case');plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
       await reg({name:'cartpole_reset',description:'Reset experiment.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:rw,execute:async function(){rebuild();return 'reset';}});
       await reg({name:'cartpole_run_steps',description:'Advance live experiment.',inputSchema:{type:'object',properties:{steps:{type:'integer',minimum:1,maximum:500}},required:['steps'],additionalProperties:false},annotations:rw,execute:async function(a){for(let i=0;i<a.steps;i++)if(!stepOne())break;renderAll();return JSON.stringify(statePayload());}});
       await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']},terminalCost:{type:'string',enum:['original','dare']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,controllerOpts:terminalOptions(a.controller,a.terminalCost??$('terminalCost').value,a.terminalCost!==undefined),observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
@@ -2818,5 +3159,5 @@ const CalibrationLessonView={mount({manifest,processManifest,pause}){
   }
   $('useTopic').addEventListener('click',useTopic);['controller','observer','scenario','goal','terminalCost'].forEach(function(id){$(id).addEventListener('change',rebuild);});$('play').addEventListener('click',function(){if(runtimeError)return;running=!running;renderMetrics();});$('step').addEventListener('click',function(){running=false;stepOne();renderAll();});$('reset').addEventListener('click',rebuild);$('pushL').addEventListener('click',function(){plant.applyPush(-3,10);});$('pushR').addEventListener('click',function(){plant.applyPush(3,10);});$('compare').addEventListener('click',compare);
   window.addEventListener('hashchange',function(){const k=(location.hash||'#overview').slice(1);if(TOPICS[k]){topic=k;renderTopic();}});
-  $('controller').value='hard_mpc';$('terminalCost').value='original';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.calibrationLesson=CalibrationLessonView.mount({manifest:CONTROL_LAB_CALIBRATION_MANIFEST,processManifest:CONTROL_LAB_PROCESS_MANIFEST,pause:()=>{running=false;renderAll();}});window.__labReady=true;requestAnimationFrame(loop);
+  $('controller').value='hard_mpc';$('terminalCost').value='original';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.calibrationLesson=CalibrationLessonView.mount({manifest:CONTROL_LAB_CALIBRATION_MANIFEST,processManifest:CONTROL_LAB_PROCESS_MANIFEST,pause:()=>{running=false;renderAll();}});window.designLesson=DesignLessonView.mount({manifest:CONTROL_LAB_DESIGN_MANIFEST,pause:()=>{running=false;renderAll();},apply:applyDesign});window.__labReady=true;requestAnimationFrame(loop);
 })().catch(error=>{console.error(error);document.getElementById('statusBadge').textContent='LOAD ERROR';document.getElementById('assetStatus').textContent=error.message;document.querySelectorAll('button,select').forEach(e=>e.disabled=true);window.__labLoadError=error.message;});</script></body></html>

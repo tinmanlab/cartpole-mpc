@@ -1,0 +1,160 @@
+{
+  "schema": "cartpole-sequential-tuning-reference/v1",
+  "passed": true,
+  "independentlyCheckedRollouts": 2943,
+  "independentlyScoredFrames": 1765800,
+  "maximumTaskScoreError": 1.1102230246251565e-16,
+  "campaignBudgetsAndLocks": [
+    {
+      "campaign": "grid_budget-17011",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_full-17011",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_racing-17011",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "smac_racing-17011",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "grid_budget-17021",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_full-17021",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_racing-17021",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "smac_racing-17021",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "grid_budget-17027",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_full-17027",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_racing-17027",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "smac_racing-17027",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "grid_budget-17033",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_full-17033",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_racing-17033",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "smac_racing-17033",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "grid_budget-17041",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_full-17041",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "random_racing-17041",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "smac_racing-17041",
+      "training": 108,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    },
+    {
+      "campaign": "grid_exhaustive-17011",
+      "training": 216,
+      "validation": 9,
+      "test": 18,
+      "valid": true
+    }
+  ],
+  "conditionalBootstrapReconstructed": true,
+  "evidenceSha256": "25e2e47a97c8d55d612fc0d929e6ee764e00b50b180b6fcbec3653a08d7fc78a",
+  "rawLogSha256": "2391ca0b28372a0fd88acc756a548caffc40c0f99dce529e7668d042d650b2bc",
+  "scope": "Independent arithmetic/data-split/rank/budget validation. Statistical intervals are conditional pilot estimates, not proof of global superiority or deployment safety."
+}

@@ -16,6 +16,7 @@
   const relationObservers="<p>서로 다른 문제 설정에 맞는 선택지입니다.</p><div class='relation'><div class='rel-row'><span class='rel-node'>재귀 추정: KF / EKF / sigma-point UKF</span></div><div class='rel-row'><span class='rel-node'>오차 geometry: Euclidean / invariant</span><span class='rel-node'>window: MHE</span></div><div class='rel-row'><span class='rel-node'>학습 위치: contact event / measurement / output residual / covariance</span></div></div>";
   let topic=(location.hash||'#overview').slice(1);if(!TOPICS[topic])topic='overview';
   let runtimeError=null,lastTick=null,activeConfig=null,componentSE=[0,0,0,0],trackingSE=0;
+  let designRun=null,designRecipe=null;
   let plant,controller,observer,running=true,lastTs=0,acc=0,trace=[],sumErr=0,nErr=0,lastEstimate=[0,0,0,0],lastMeasurement=[0,0],lastInnovation=null,lastForce=0,lastAppliedForce=0;
 
   const supportsTerminal=name=>['linear_mpc','hard_mpc'].includes(name);
@@ -82,7 +83,8 @@
       const nextObserver=L.makeObserver($('observer').value,nextPlant.spec,{model:residualModel,R:nextPlant.measurementVariance()});
       const y=nextPlant.sensor();nextObserver.reset(y,nextPlant.s);nextController.reset();
       const modelGeometry=physics.geometry(nextPlant.s,nextPlant.spec,nextPlant.params);
-      plant=nextPlant;controller=nextController;observer=nextObserver;
+      plant=nextPlant;controller=nextController;observer=nextObserver;designRun=null;designRecipe=null;
+      $('pushL').disabled=false;$('pushR').disabled=false;$('designLiveScope').textContent='일반 실험 · 공통 과제 설정 미적용';
       activeConfig={controller:$('controller').value,observer:$('observer').value,scenario:$('scenario').value};
       runtimeError=null;lastTick=null;acc=0;lastTs=0;trace=[];sumErr=0;nErr=0;componentSE=[0,0,0,0];trackingSE=0;
       lastEstimate=observer.outputX&&observer.outputX.slice?observer.outputX.slice():(observer.x&&observer.x.slice?observer.x.slice():plant.s.slice());
@@ -96,8 +98,37 @@
       $('terminalStatus').textContent='설정 적용 실패 · 이전 상태에서 정지 · Reset 필요';renderAll();return false;
     }
   }
+  function applyDesign(recipe){
+    if(!Object.isFrozen(recipe)||recipe.study!=='task-aware-design')throw Error('Unverified study recipe');
+    running=false;
+    const m=CONTROL_LAB_DESIGN_MANIFEST,run=DesignStudy.createRun(m,recipe.case,recipe.pair,recipe.candidate,{usable:true,Rdiag:recipe.design.Re.slice()},{record:true});
+    const next=run.components(),s=run.snapshot();
+    plant=next.plant;controller=next.controller;observer=next.observer;designRun=run;designRecipe=recipe;
+    $('controller').value=recipe.pair.controller;$('observer').value=recipe.pair.observer;$('scenario').value=recipe.case.scenario;$('goal').value=String(recipe.case.goal);
+    $('terminalCost').value=recipe.pair.controller==='hard_mpc'?'dare':'original';$('terminalCost').disabled=!supportsTerminal(recipe.pair.controller);
+    activeConfig={controller:recipe.pair.controller,observer:recipe.pair.observer,scenario:recipe.case.scenario};
+    runtimeError=null;lastTick=null;acc=0;lastTs=0;trace=[];sumErr=0;nErr=0;componentSE=[0,0,0,0];trackingSE=0;
+    lastEstimate=s.estimate.slice();lastMeasurement=[s.estimate[0],s.estimate[2]];lastInnovation=null;lastForce=0;lastAppliedForce=0;
+    $('pushL').disabled=true;$('pushR').disabled=true;
+    const modelGeometry=physics.geometry(plant.s,plant.spec,plant.params);
+    $('assetStatus').textContent='MJCF '+physics.assetSha256.slice(0,12)+' · true rod '+(2*modelGeometry.poleCom[2]).toFixed(3)+' m · mass '+modelGeometry.mass.map(v=>v.toFixed(3)).join(' / ')+' kg · ideal force actuator';
+    $('designLiveScope').textContent='공통 과제 적용: '+recipe.pair.id+' / '+recipe.candidate.id+' / '+recipe.case.id+' · 명시된 초기 상태·외력만 · 600 step 후 정지 · Reset/설정 변경 시 해제';
+    $('terminalStatus').textContent='설계한 Q_c/R_c + 별도 측정 R_e + 유효 Q_e · 선택 근거는 공통 과제 패널에 기록됨';
+    renderAll();return statePayload();
+  }
+  function stepDesign(){
+    if(designRun.done){running=false;return false;}
+    const before=designRun.snapshot().steps,t0=performance.now();designRun.step();const s=designRun.snapshot(),row=s.last;
+    if(s.steps===before){running=false;runtimeError=designRun.result().reason||'Study run rejected';return false;}
+    lastEstimate=row.nextEstimate.slice();lastMeasurement=row.nextMeasurement.slice();lastInnovation=row.nextInnovation?.slice()??null;lastForce=row.command;lastAppliedForce=row.appliedForce;
+    const e=row.nextTruth.map((v,i)=>i===2?L.wrap(v-lastEstimate[i]):v-lastEstimate[i]);e.forEach((v,i)=>componentSE[i]+=v*v);trackingSE+=(row.nextTruth[0]-row.goal)**2;sumErr+=e.reduce((a,v)=>a+v*v,0);nErr+=4;
+    lastTick={sourceStateTime:row.measurementTime,postStateTime:row.nextTime,computeMs:performance.now()-t0,deadlineMs:20,scope:'shared study runner; not hardware timing'};
+    trace.push({t:row.nextTime,studyCase:designRecipe.case.id,truth:row.nextTruth.slice(),estimate:lastEstimate.slice(),u:row.command,external:row.external,appliedCommand:row.appliedForce,P:row.nextP,innovation:lastInnovation,measurementUsed:true,sensorFresh:true,terminalCost:controller.terminalInfo?.kind??null,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0});
+    if(trace.length>500)trace.shift();
+    if(designRun.done){running=false;if(s.outcome!=='completed')runtimeError=designRun.result().reason||s.outcome;return false;}return true;
+  }
   function stepOne(){
-    if(runtimeError)return false;const wallStart=performance.now(),sourceTime=plant.steps*L.DT;
+    if(runtimeError)return false;if(designRun)return stepDesign();const wallStart=performance.now(),sourceTime=plant.steps*L.DT;
     try{
     // Discrete-time order: x_hat_k -> u_k -> plant x_(k+1) -> y_(k+1)
     // -> observer predict/update -> x_hat_(k+1). This keeps measurement,
@@ -212,11 +243,11 @@
   }
   function statePayload(){
     const Pout=observer.outputCovariance?observer.outputCovariance():observer.P;
-    return {physics:L.physicsInfo(),terminalCost:terminalPayload(),fault:runtimeError,timing:lastTick,topic:topic,controller:activeConfig.controller,observer:activeConfig.observer,scenario:activeConfig.scenario,t:plant.steps*L.DT,goal:plant.goal,metrics:metricPayload(),
+    return {physics:L.physicsInfo(),study:designRecipe?{caseId:designRecipe.case.id,design:designRecipe.design,run:DesignStudy.withoutSeries(designRun.result()),scope:designRecipe.scope}:null,terminalCost:terminalPayload(),fault:runtimeError,timing:lastTick,topic:topic,controller:activeConfig.controller,observer:activeConfig.observer,scenario:activeConfig.scenario,t:plant.steps*L.DT,goal:plant.goal,metrics:metricPayload(),
       truth:plant.s.slice(),estimate:lastEstimate.slice(),measurement:lastMeasurement.slice(),innovation:lastInnovation?.slice()??null,force:lastForce,appliedForce:lastAppliedForce,
       P:Pout?Pout.map(function(r){return r.slice();}):null,baseP:observer.P?observer.P.map(function(r){return r.slice();}):null,
       covarianceScope:Pout?'output-estimate':'base-filter-only-or-not-applicable',
-      sensorFresh:plant.sensorMeta.fresh,measurementUsed:observer.last?.measurementUsed??plant.sensorMeta.fresh,measurementCovarianceSource:'injected-noise-oracle',
+      sensorFresh:plant.sensorMeta.fresh,measurementUsed:observer.last?.measurementUsed??plant.sensorMeta.fresh,measurementCovarianceSource:designRecipe?'stationary-measurements':'injected-noise-oracle',
       observerDiagnostics:{iterations:observer.last?.iterations??0,cost:observer.last?.cost??null,window:observer.last?.window??0},
       solver:{predictionSpace:controller.predictionSpace??'nominal-full-state',predictionAppliesTo:controller.lastBackup?'primary-not-applied':'nominal-plan',updateAccepted:controller.lastUpdateAccepted??null,termination:controller.lastTermination??null,implementation:controller.lastSolver??controller.name,kktResidual:controller.lastKktResidual??null,primalResidual:controller.lastPrimalResidual??null,stateConstrained:controller.lastStateConstrained??false,converged:controller.lastConverged??null,solveMs:controller.lastSolveMs||0,iterations:controller.lastIterations||0,horizon:(controller.lastPredictionReduced?.length||controller.lastPrediction?.length||1)-1,cost:controller.lastCost===undefined?null:controller.lastCost},
       rmse:Math.sqrt(sumErr/Math.max(1,nErr)),legacyRmseScope:'mixed-units; not a controller score',running:running};
@@ -230,7 +261,7 @@
       await reg({name:'cartpole_set_observer',description:'Select an observer.',inputSchema:{type:'object',properties:{observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']}},required:['observer'],additionalProperties:false},annotations:rw,execute:async function(a){$('observer').value=a.observer;rebuild();return 'observer='+a.observer;}});
       await reg({name:'cartpole_set_topic',description:'Open an educational topic without changing plant state.',inputSchema:{type:'object',properties:{topic:{type:'string',enum:ORDER}},required:['topic'],additionalProperties:false},annotations:rw,execute:async function(a){setTopic(a.topic);return 'topic='+a.topic;}});
       await reg({name:'cartpole_set_scenario',description:'Select scenario.',inputSchema:{type:'object',properties:{scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']}},required:['scenario'],additionalProperties:false},annotations:rw,execute:async function(a){$('scenario').value=a.scenario;rebuild();return 'scenario='+a.scenario;}});
-      await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
+      await reg({name:'cartpole_apply_push',description:'Apply bounded external force.',inputSchema:{type:'object',properties:{force:{type:'number',minimum:-8,maximum:8},steps:{type:'integer',minimum:1,maximum:50}},required:['force'],additionalProperties:false},annotations:rw,execute:async function(a){if(designRun)throw Error('Reset first: a custom push changes the admitted study case');plant.applyPush(a.force,a.steps||10);return 'push='+a.force;}});
       await reg({name:'cartpole_reset',description:'Reset experiment.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:rw,execute:async function(){rebuild();return 'reset';}});
       await reg({name:'cartpole_run_steps',description:'Advance live experiment.',inputSchema:{type:'object',properties:{steps:{type:'integer',minimum:1,maximum:500}},required:['steps'],additionalProperties:false},annotations:rw,execute:async function(a){for(let i=0;i<a.steps;i++)if(!stepOne())break;renderAll();return JSON.stringify(statePayload());}});
       await reg({name:'cartpole_run_probe',description:'Run deterministic offline controller-observer probe without changing live state.',inputSchema:{type:'object',properties:{controller:{type:'string',enum:['pid','lqr','linear_mpc','hard_mpc','scenario_mpc','state_mpc','ltv_mpc','centroidal_mpc','full_nmpc','supervised_nmpc','ppo']},observer:{type:'string',enum:['truth','raw','kf','ekf','ukf','so2','mhe','residual','adaptive']},scenario:{type:'string',enum:['nominal','sensor','model','mixed','bias','actuator','latency','colored','dropout','stuck','jitter','torque_speed','thermal','nonlinear','sim2real','glitch']},terminalCost:{type:'string',enum:['original','dare']},seed:{type:'integer',minimum:1,maximum:1000000},steps:{type:'integer',minimum:20,maximum:500},pushForce:{type:'number',minimum:-8,maximum:8}},required:['controller','observer','scenario'],additionalProperties:false},annotations:ro,execute:async function(a){return JSON.stringify(L.runEpisode({controller:a.controller,controllerOpts:terminalOptions(a.controller,a.terminalCost??$('terminalCost').value,a.terminalCost!==undefined),observer:a.observer,scenario:a.scenario,seed:a.seed||77,steps:a.steps||300,goal:+$('goal').value,actor:actor,residualModel:residualModel,pushAt:Math.min(120,Math.floor((a.steps||300)*.4)),pushForce:a.pushForce===undefined?(a.scenario==='nonlinear'?0:3):a.pushForce}));}});
@@ -239,5 +270,5 @@
   }
   $('useTopic').addEventListener('click',useTopic);['controller','observer','scenario','goal','terminalCost'].forEach(function(id){$(id).addEventListener('change',rebuild);});$('play').addEventListener('click',function(){if(runtimeError)return;running=!running;renderMetrics();});$('step').addEventListener('click',function(){running=false;stepOne();renderAll();});$('reset').addEventListener('click',rebuild);$('pushL').addEventListener('click',function(){plant.applyPush(-3,10);});$('pushR').addEventListener('click',function(){plant.applyPush(3,10);});$('compare').addEventListener('click',compare);
   window.addEventListener('hashchange',function(){const k=(location.hash||'#overview').slice(1);if(TOPICS[k]){topic=k;renderTopic();}});
-  $('controller').value='hard_mpc';$('terminalCost').value='original';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.calibrationLesson=CalibrationLessonView.mount({manifest:CONTROL_LAB_CALIBRATION_MANIFEST,processManifest:CONTROL_LAB_PROCESS_MANIFEST,pause:()=>{running=false;renderAll();}});window.__labReady=true;requestAnimationFrame(loop);
+  $('controller').value='hard_mpc';$('terminalCost').value='original';$('observer').value='ekf';$('scenario').value='nominal';$('goal').value='0';renderTopic();rebuild();await registerWebMCP();window.controlLab={getState:statePayload,getTrace:()=>trace.slice(),pause:()=>{running=false;},step:n=>{for(let i=0;i<n;i++)if(!stepOne())break;renderAll();return statePayload();}};window.calibrationLesson=CalibrationLessonView.mount({manifest:CONTROL_LAB_CALIBRATION_MANIFEST,processManifest:CONTROL_LAB_PROCESS_MANIFEST,pause:()=>{running=false;renderAll();}});window.designLesson=DesignLessonView.mount({manifest:CONTROL_LAB_DESIGN_MANIFEST,pause:()=>{running=false;renderAll();},apply:applyDesign});window.__labReady=true;requestAnimationFrame(loop);
 })().catch(error=>{console.error(error);document.getElementById('statusBadge').textContent='LOAD ERROR';document.getElementById('assetStatus').textContent=error.message;document.querySelectorAll('button,select').forEach(e=>e.disabled=true);window.__labLoadError=error.message;});

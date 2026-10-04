@@ -28,6 +28,14 @@ Position tracking RMSE and per-component estimation RMSE are separate. Physical 
 
 The shared page now includes **보정 → 추정 → 제어 인과 실험**. It estimates position/angle measurement variance from a separate 512-reading stationary fixture, then compares the same existing LQR/EKF using a small assumed R_e, the measured R_e, and an intentionally inflated R_e. Q_e, gains, limits and cases stay fixed. Select a recorded saturation sample to see sensor readings, estimates, per-state force-error contributions, requested/clipped/applied forces and tracking. A same-data observer replay separates filter comparison from the different closed-loop trajectories. This is a specific educational experiment, not optimal Q/R co-tuning, hardware calibration or a default change. See [verification and limitations](docs/VALIDATION.md#measurement-calibration-causal-lesson).
 
+## Task-aware controller–observer selection
+
+The shared page now provides a complete **declared task → Riccati-based initial design → equal candidate search → validation lock → independent test → manual live application** path for LQR/MPC × KF/EKF. Sensor R is measured separately; control-cost and effective process-noise scales are selected against the same normalized closed-loop objective. The recorded choice retains the baseline and recommends LQR/KF under a predeclared 1% simplicity tie policy; this is a scoped choice, not a global optimum or universal ranking. The primary test passes, the colored-noise boundary still has a task failure, and defaults remain unchanged. See [the complete task/selection contract](docs/VALIDATION.md#task-aware-four-pair-design-study) and `evidence/design_study.json`.
+
+## Sequential tuning experiment
+
+An optional native **SMAC3 + ConfigSpace + standard Intensifier** lane asks the existing MuJoCo evaluator for configurations/instances instead of expanding a brute-force sweep. Four equally budgeted methods and an extra finite-grid reference are run on a frozen protocol. Controller/observer choice, log-scale design factors and an MPC-only horizon are explicit. The shared page reads the offline evidence; it does not run Python SMAC or replace the controller solver. See [protocol, costs and statistical limits](docs/SEQUENTIAL_TUNING.md). Defaults are not automatically promoted.
+
 ## Start here
 
 The entire lab uses one control loop:

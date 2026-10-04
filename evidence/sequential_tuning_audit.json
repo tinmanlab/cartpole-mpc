@@ -1,0 +1,560 @@
+{
+  "schema": "cartpole-sequential-tuning-audit/v1",
+  "baseCommit": "c2ee97a0f08b4933e8c49738b422de7caddd48a1",
+  "sourceSha256": {
+    "scripts/sequential_tuning.py": "204ed083efd35ead9a3ddaa0bb24dd228e4c8c49683d100175d6d6d326a557aa",
+    "scripts/run_tuning_campaign.py": "b8131ff720c19272af1aa8e5168967b9df18fa8a87140cede4ec6edf50292b06",
+    "scripts/tuning_bridge.mjs": "82aee3b6177269cd7c7e30c98cf7e1bb439c6dc15ce79d33ce3792158259bd4c",
+    "src/design_study.js": "2a8a7d38a03e98ff017e4bfeef430b4d636bf01cdd5c105891a6effdd5bf02bb",
+    "src/design_view.js": "40ec9be68af3acf7579036e84e835bbc96d2c9365fa49135b4faff7cdeed8947",
+    "src/shell.html": "ad163269ba7810a2afe3b643c013d3f51907fde5a57ef2852fd6aebc6a070c91",
+    "index.html": "55e220e47e175fb7df9b16bdf402b3496a4978777cf42a539d009d7df13fd23e",
+    "tests/test_tuning_adapter.mjs": "3322ca14ce2bc23241e6068388c328f18c08efa8c24922fdcc56bab314e19b49",
+    "tests/test_sequential_tuning.py": "1e929a67c979a5a8e349af14cabf567583c0902406f380afd45739361544a332",
+    "tests/test_tuning_reference.py": "d499ae7f13a7aa29fe8b1848389ea490826e14230bff9c2a36ee2a691b2cd168",
+    "tests/test_tuning_receipt.py": "07d4f8124dc4ce587bf2c93ecc304b00199e4e764500aaca11612bace607cc09",
+    "tests/test_tuning_browser.py": "f484ae0083e770d0dd136bbe53b76a57679511a8ba70e1b8549cd15774bd684b",
+    "tests/fixtures/sequential_tuning.json": "9ca92d14fceea5b847d75175e8edc4f51837eb920d1d35b5361929a5387accf0",
+    "requirements-tuning.txt": "5e2ddb19fd81246f6b8d814d342546d72cdc54c865fd7d523249550524191ca9",
+    "README.md": "bc9aaf41cc23dcabe57b6ec429373d8b4ac73701dc6d729bf43dd503df377a09",
+    "docs/SEQUENTIAL_TUNING.md": "3f1b5c14cdd84661df26dfa95671773dfef0a4632949bac56538bed327192151",
+    "docs/VALIDATION.md": "36cb0e9e6c5089eb40c1a50adf09782bdfd4e39620a0abdd6e9125385ea1703b",
+    "THIRD_PARTY_NOTICES.md": "b5d4499c6432015d87834b30cfe690fc72905d3e52352c9785559f1539d45211",
+    "package.json": "d07d377915f0532f4619f69e0a62324ffffa1809cac48e57ad5b9ee9173fa893",
+    ".github/workflows/verify.yml": "d4fa3904ab2ba5494d6e30f84e3c6b515e18fc65fad6eb68eee9615dbe5f8ce2"
+  },
+  "commands": [
+    {
+      "command": "node tests/test_tuning_adapter.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_sequential_tuning.py",
+      "exitCode": 0
+    },
+    {
+      "command": "five source-pinned run_tuning_campaign.py --seed runs",
+      "exitCode": 0
+    },
+    {
+      "command": "run_tuning_campaign.py --grid-reference",
+      "exitCode": 0
+    },
+    {
+      "command": "run_tuning_campaign.py --finalize",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_tuning_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_tuning_receipt.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_tuning_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:design",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_design_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_design_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "implemented": "Actual SMAC3/ConfigSpace conditional ask-tell with existing RF/EI/Intensifier, plus equal-budget grid, random-full and random-racing controls; existing MuJoCo task and numerical controller/observer algorithms reused.",
+  "effectSummary": [
+    {
+      "method": "grid_budget",
+      "repeats": 5,
+      "searchCallsPerRepeat": 108,
+      "meanConfigurations": 36,
+      "meanFullyEvaluatedConfigurations": 36,
+      "meanTunerSeconds": 0.0034674134014494483,
+      "meanEvaluationSeconds": 61.0714016289985,
+      "meanSearchWallSeconds": 63.568847118600026,
+      "meanValidationCalls": 9,
+      "meanValidationSeconds": 4.302742267199937,
+      "meanPrimaryTasksPer12": 12,
+      "meanBoundaryTasksPer6": 4,
+      "meanPrimaryTaskScore": 0.2508881300548215,
+      "selectedConfigurations": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "certifiedTrainingScoreAt108": [
+        0.27297109903869127,
+        0.27297109903869127,
+        0.27297109904010985,
+        0.27297109904010985,
+        0.27297109904010985
+      ]
+    },
+    {
+      "method": "random_full",
+      "repeats": 5,
+      "searchCallsPerRepeat": 108,
+      "meanConfigurations": 36,
+      "meanFullyEvaluatedConfigurations": 36,
+      "meanTunerSeconds": 0.028217216799384916,
+      "meanEvaluationSeconds": 48.90550476459903,
+      "meanSearchWallSeconds": 51.4336537018,
+      "meanValidationCalls": 9,
+      "meanValidationSeconds": 4.125822420000622,
+      "meanPrimaryTasksPer12": 12,
+      "meanBoundaryTasksPer6": 4,
+      "meanPrimaryTaskScore": 0.2508881300548215,
+      "selectedConfigurations": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "certifiedTrainingScoreAt108": [
+        0.27297109904010985,
+        0.27287312999774915,
+        0.27259109004134235,
+        0.27297109904010985,
+        0.27283442324755613
+      ]
+    },
+    {
+      "method": "random_racing",
+      "repeats": 5,
+      "searchCallsPerRepeat": 108,
+      "meanConfigurations": 86.8,
+      "meanFullyEvaluatedConfigurations": 8,
+      "meanTunerSeconds": 28.10373846740331,
+      "meanEvaluationSeconds": 45.97573507679226,
+      "meanSearchWallSeconds": 76.5186128150006,
+      "meanValidationCalls": 9,
+      "meanValidationSeconds": 3.1078998310000316,
+      "meanPrimaryTasksPer12": 12,
+      "meanBoundaryTasksPer6": 4,
+      "meanPrimaryTaskScore": 0.2508881300548215,
+      "selectedConfigurations": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "certifiedTrainingScoreAt108": [
+        0.2726539710793499,
+        0.2724727987605496,
+        0.27259109004134235,
+        0.27297109904010985,
+        0.2729007286984122
+      ]
+    },
+    {
+      "method": "smac_racing",
+      "repeats": 5,
+      "searchCallsPerRepeat": 108,
+      "meanConfigurations": 83.2,
+      "meanFullyEvaluatedConfigurations": 9.2,
+      "meanTunerSeconds": 38.11769491099221,
+      "meanEvaluationSeconds": 47.585821664205284,
+      "meanSearchWallSeconds": 88.2679377059998,
+      "meanValidationCalls": 9,
+      "meanValidationSeconds": 3.328873528999975,
+      "meanPrimaryTasksPer12": 12,
+      "meanBoundaryTasksPer6": 4,
+      "meanPrimaryTaskScore": 0.2508881300548215,
+      "selectedConfigurations": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "certifiedTrainingScoreAt108": [
+        0.27245599174354623,
+        0.272411520192545,
+        0.27232164198778536,
+        0.272392753387136,
+        0.27297109904010985
+      ]
+    },
+    {
+      "method": "grid_exhaustive",
+      "repeats": 1,
+      "searchCallsPerRepeat": 216,
+      "meanConfigurations": 72,
+      "meanFullyEvaluatedConfigurations": 72,
+      "meanTunerSeconds": 0.002386733980529243,
+      "meanEvaluationSeconds": 111.96283897503054,
+      "meanSearchWallSeconds": 116.570382797001,
+      "meanValidationCalls": 9,
+      "meanValidationSeconds": 5.6545697070032475,
+      "meanPrimaryTasksPer12": 12,
+      "meanBoundaryTasksPer6": 4,
+      "meanPrimaryTaskScore": 0.2508881300548215,
+      "selectedConfigurations": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "certifiedTrainingScoreAt108": [
+        0.27297109903869127
+      ]
+    }
+  ],
+  "pairedStatistics": [
+    {
+      "method": "random_full",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 0.8189242096341912,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    },
+    {
+      "method": "random_racing",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 1.2011335951276387,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    },
+    {
+      "method": "smac_racing",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 1.3925536721032352,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    }
+  ],
+  "actualEvaluations": 2943,
+  "independentlyScoredFrames": 1765800,
+  "scoreReconstructionError": 1.1102230246251565e-16,
+  "budget": "20 campaigns x108 search calls, plus grid216. Every method pays the same12 baseline calls. Later validation/test costs are counted separately; no shared evaluation cache.",
+  "dataScope": "Known training/validation templates. Fixed selection-excluded 12primary+6boundary seeds; all formal campaign selections lock before test. One primary seed was exercised in an earlier API-phase-only contract test without inspecting/optimizing its task quality; no pristine-domain generalization claim.",
+  "statisticalScope": "Five optimizer-seed differences conditional on one fixed test panel; no serial-frame independence, no multiplicity-adjusted superiority or formal equivalence claim. Degenerate identical outcomes do not prove universal equivalence.",
+  "legacy180StudyOutcomesAndSelectedParametersUnchanged": true,
+  "corePhysicsControllerObserverAssetsUnchanged": true,
+  "newDependenciesOnlyInIsolatedOptionalEnvironment": true,
+  "environment": {
+    "python": "3.10.12",
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "directVersions": {
+      "smac": "2.4.1",
+      "ConfigSpace": "1.2.1",
+      "scikit-learn": "1.7.2",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3"
+    },
+    "installedPackages": [
+      "ConfigSpace==1.2.1",
+      "Jinja2==3.1.6",
+      "MarkupSafe==3.0.4",
+      "PyYAML==6.0.3",
+      "click==8.5.0",
+      "cloudpickle==3.1.2",
+      "dask-jobqueue==0.9.0",
+      "dask==2026.8.0",
+      "distributed==2026.8.0",
+      "emcee==3.1.6",
+      "fsspec==2026.9.0",
+      "importlib_metadata==9.0.1",
+      "joblib==1.6.0",
+      "locket==1.0.0",
+      "more-itertools==11.1.0",
+      "msgpack==1.2.3",
+      "numpy==2.2.6",
+      "packaging==26.3",
+      "partd==1.4.2",
+      "pip==22.0.2",
+      "psutil==7.2.2",
+      "pynisher==1.0.10",
+      "pyparsing==3.3.3",
+      "regex==2026.9.29",
+      "scikit-learn==1.7.2",
+      "scipy==1.15.3",
+      "setuptools==59.6.0",
+      "smac==2.4.1",
+      "sortedcontainers==2.4.0",
+      "tblib==3.2.2",
+      "threadpoolctl==3.7.0",
+      "toolz==1.1.0",
+      "tornado==6.5.10",
+      "typing_extensions==4.16.0",
+      "zict==3.0.0",
+      "zipp==4.1.1"
+    ],
+    "threadLimits": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "browser": {
+    "schema": "cartpole-sequential-tuning-browser/v1",
+    "passed": true,
+    "offlineReceiptLabel": true,
+    "equalAndExtraBudgetLabels": true,
+    "mainRuntimeUnchanged": true,
+    "missingReceiptClearsStaleResult": true,
+    "pageErrors": [],
+    "publicDeployment": false
+  },
+  "defaultPromoted": false,
+  "hardwareAdmission": "NOT_EVALUATED",
+  "independentApproval": false,
+  "mergeDeployment": "Not implied by implementation or local/CI numerical tests.",
+  "verificationHistory": [
+    "Fail-first optional-domain and SMAC/native bridge contracts passed after implementation.",
+    "Smoke exposed internal NaN model metadata; source identity is now recorded instead of trying to serialize unbounded categories. Numerical results were not sanitized.",
+    "The monolithic pre-holdout run was cancelled when the remote600-second cap was confirmed; same-method bounded seed campaigns preserve completed receipts and all locks.",
+    "The stored UI is labelled offline, clears missing/stale evidence and does not alter the shared runtime."
+  ],
+  "receipts": [
+    "sequential_tuning.json",
+    "sequential_tuning_reference.json",
+    "sequential_tuning_browser.json",
+    "sequential_tuning_browser.png"
+  ],
+  "fullRawHistory": "ignored test-results/sequential-tuning (reproducible); not a new persistent control plane",
+  "resumedReview": {
+    "interruptionPoint": "Full implementation and frozen benchmark were present; a remaining prior verification command timed out. Recovered the original evidence without replaying unknown optimization or changing test-driven settings.",
+    "independentRechecks": "Actual imported SMAC ask/tell + standard Intensifier contracts, conditional WASM adapter, all raw task/loss/rank/budget/statistical reconstruction and actual offline-results browser rerun.",
+    "coreRechecks": "Fresh npm checks, actual WASM, native QP and same-MJCF parity, shared browser and whitespace check.",
+    "noNewTuning": true,
+    "noDefaultPromotion": true,
+    "selectionInterpretation": "Four of five SMAC repeats found slightly lower certified training cost, but every shortlisted new continuous candidate had a worse validation score than the retained LQR/KF baseline. Prior baseline pair differences remain inside the declared 1% simplicity policy.",
+    "ciScope": "Full 2943-evaluation optional study was run and independently reconstructed locally. Default CI checks committed receipt/source/budget coherence and actual browser UI along with ordinary numerical regressions; it does not install SMAC or rerun the whole optional benchmark."
+  }
+}
