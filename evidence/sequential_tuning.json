@@ -1,0 +1,3988 @@
+{
+  "schema": "cartpole-sequential-tuning/v1",
+  "mode": "frozen-full",
+  "sourceSha256": {
+    "scripts/sequential_tuning.py": "204ed083efd35ead9a3ddaa0bb24dd228e4c8c49683d100175d6d6d326a557aa",
+    "scripts/run_tuning_campaign.py": "b8131ff720c19272af1aa8e5168967b9df18fa8a87140cede4ec6edf50292b06",
+    "scripts/tuning_bridge.mjs": "82aee3b6177269cd7c7e30c98cf7e1bb439c6dc15ce79d33ce3792158259bd4c",
+    "src/design_study.js": "2a8a7d38a03e98ff017e4bfeef430b4d636bf01cdd5c105891a6effdd5bf02bb",
+    "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
+    "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
+    "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "tests/fixtures/sequential_tuning.json": "9ca92d14fceea5b847d75175e8edc4f51837eb920d1d35b5361929a5387accf0",
+    "tests/fixtures/design_study.json": "1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445"
+  },
+  "sourcesStable": true,
+  "protocolSha256": "9ca92d14fceea5b847d75175e8edc4f51837eb920d1d35b5361929a5387accf0",
+  "versions": {
+    "smac": "2.4.1",
+    "ConfigSpace": "1.2.1",
+    "scikit-learn": "1.7.2",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3"
+  },
+  "upstreamSourceSha256": {
+    "facade": "83c013ddaffac06ba6bcc12e5da7aa8dd9ba38e393ba112d06e14da936b504f9",
+    "intensifier": "b83ea184007c02946fac865bcf9121ab4105df0cc1f4d50c0ba4aa993e72a942"
+  },
+  "physics": {
+    "backend": "mujoco-wasm",
+    "version": "3.7.0",
+    "asset": "assets/cartpole.xml",
+    "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
+    "stepCalls": 0,
+    "cachedModels": 0,
+    "integrator": "Euler",
+    "physicsDt": 0.005,
+    "controlDt": 0.02
+  },
+  "fit": {
+    "source": "stationary-measurements",
+    "samples": 512,
+    "mean": [
+      0.17966702471915566,
+      0.02989665484398374
+    ],
+    "covariance": [
+      [
+        0.0038184080967448926,
+        8.828842812681364e-05
+      ],
+      [
+        8.828842812681364e-05,
+        0.0006114458873465743
+      ]
+    ],
+    "Rdiag": [
+      0.0038184080967448926,
+      0.0006114458873465743
+    ],
+    "standardDeviation": [
+      0.06179326902458627,
+      0.024727431879323303
+    ],
+    "channelCorrelation": 0.057780806517891574,
+    "lagOne": [
+      -0.0013514023116897522,
+      -0.019422302611464926
+    ],
+    "usable": true,
+    "warnings": [],
+    "covarianceUnits": [
+      [
+        "m^2",
+        "m*rad"
+      ],
+      [
+        "m*rad",
+        "rad^2"
+      ]
+    ],
+    "biasIdentified": false,
+    "scope": "Repeatability around an unknown constant in a stationary fixture. Diagnostic screens are not proof of stationarity/whiteness. No Q_e, constant bias, dynamics or delay is identified."
+  },
+  "campaigns": [
+    {
+      "method": "grid_budget",
+      "optimizerSeed": 17011,
+      "campaign": "grid_budget-17011",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 68.6877088260062,
+      "tunerSeconds": 0.006228267004189547,
+      "searchWallSeconds": 71.27654369100128,
+      "validationRollouts": 9,
+      "validationWallSeconds": 5.9889785519990255,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 6.918539768999835,
+          "tunerSeconds": 0.006151303001388442,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 15.173347462001402,
+          "tunerSeconds": 0.00617134200365399,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 42.92031132299962,
+          "tunerSeconds": 0.006198723000125028,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 71.27651153900115,
+          "tunerSeconds": 0.006228267004189547,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 40
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 40
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009318426,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":40,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 2.0263224320005975,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_full",
+      "optimizerSeed": 17011,
+      "campaign": "random_full-17011",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 43.13797364298807,
+      "tunerSeconds": 0.03357033399515785,
+      "searchWallSeconds": 45.64311423000072,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.9685993530001724,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "ConfigSpace log-uniform random",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.15830041800109,
+          "tunerSeconds": 0.006018313999447855,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 13.127775709001071,
+          "tunerSeconds": 0.015304464999644551,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 32.72911184900113,
+          "tunerSeconds": 0.024813104995700996,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 45.643087951999405,
+          "tunerSeconds": 0.03357033399515785,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2462764800923832,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7970852660000673,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_racing",
+      "optimizerSeed": 17011,
+      "campaign": "random_racing-17011",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 58.20619854798497,
+      "tunerSeconds": 31.930421881017537,
+      "searchWallSeconds": 92.82357454900011,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.670039190999887,
+      "uniqueConfigurations": 86,
+      "fullyEvaluatedConfigurations": 8,
+      "allocationCounts": {
+        "3": 8,
+        "1": 72,
+        "2": 6
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 5,
+          "Random Search": 91
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.0034828779117,
+            "process": 1.1586484841372
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.806189864999396,
+          "tunerSeconds": 0.07745935199818632,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 20.270287891000407,
+          "tunerSeconds": 4.044707199007462,
+          "fullyEvaluatedConfigurations": 5,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 49.15108839599998,
+          "tunerSeconds": 16.013104849009324,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.2726539710793499,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.0034828779117,
+            "process": 1.1586484841372
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 92.81459937299951,
+          "tunerSeconds": 31.930421881017537,
+          "fullyEvaluatedConfigurations": 8,
+          "bestCertifiedScore": 0.2726539710793499,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.0034828779117,
+            "process": 1.1586484841372
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0034828779117,
+          "process": 1.1586484841372
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0034828779117,
+              "process": 1.1586484841372
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24612917168981116,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0034828779117,\"observer\":\"ekf\",\"process\":1.1586484841372}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.828304485999979,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "smac_racing",
+      "optimizerSeed": 17011,
+      "campaign": "smac_racing-17011",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 41.24247849400854,
+      "tunerSeconds": 32.95785852897643,
+      "searchWallSeconds": 76.80004542200004,
+      "validationRollouts": 9,
+      "validationWallSeconds": 2.830426817999978,
+      "uniqueConfigurations": 78,
+      "fullyEvaluatedConfigurations": 10,
+      "allocationCounts": {
+        "3": 10,
+        "1": 58,
+        "2": 10
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 5,
+          "Random Search": 48,
+          "Acquisition Function Maximizer: Local Search": 43
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "kf",
+            "effort": 1.2465632066659,
+            "process": 1.3714188510626
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.708178524999312,
+          "tunerSeconds": 0.04474357499748294,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 25.571454463999544,
+          "tunerSeconds": 9.105558604984253,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 50.65067212000031,
+          "tunerSeconds": 20.30624777497178,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 76.79360298400024,
+          "tunerSeconds": 32.95785852897643,
+          "fullyEvaluatedConfigurations": 10,
+          "bestCertifiedScore": 0.27245599174354623,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "kf",
+            "effort": 1.2465632066659,
+            "process": 1.3714188510626
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.2465632066659,
+          "process": 1.3714188510626
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.2465632066659,
+              "process": 1.3714188510626
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24756737026046283,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.2465632066659,\"observer\":\"kf\",\"process\":1.3714188510626}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.8664907009988383,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "grid_budget",
+      "optimizerSeed": 17021,
+      "campaign": "grid_budget-17021",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 68.41603355499683,
+      "tunerSeconds": 0.003160205997119192,
+      "searchWallSeconds": 71.12799241999892,
+      "validationRollouts": 9,
+      "validationWallSeconds": 5.026725857000201,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 6.5621907290005765,
+          "tunerSeconds": 0.003076417999182013,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 22.6477019569993,
+          "tunerSeconds": 0.003099089997704141,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 47.75736101599978,
+          "tunerSeconds": 0.003130116998363519,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 71.12796856599925,
+          "tunerSeconds": 0.003160205997119192,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 40
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 40
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009318426,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":40,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.675051911999617,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_full",
+      "optimizerSeed": 17021,
+      "campaign": "random_full-17021",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 50.15622841999357,
+      "tunerSeconds": 0.027377823002098012,
+      "searchWallSeconds": 52.68126476799989,
+      "validationRollouts": 9,
+      "validationWallSeconds": 5.449150850001388,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "ConfigSpace log-uniform random",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.789885137000965,
+          "tunerSeconds": 0.0023099390000425046,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 16.250706176000676,
+          "tunerSeconds": 0.009070290998351993,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 34.859087122000346,
+          "tunerSeconds": 0.017932218997884775,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27287312999774915,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "kf",
+            "effort": 1.5560070029774,
+            "process": 1.9523786507609,
+            "horizon": 40
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 52.681242396000016,
+          "tunerSeconds": 0.027377823002098012,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27287312999774915,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "kf",
+            "effort": 1.5560070029774,
+            "process": 1.9523786507609,
+            "horizon": 40
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "kf",
+          "effort": 1.5560070029774,
+          "process": 1.9523786507609,
+          "horizon": 40
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "kf",
+              "effort": 1.5560070029774,
+              "process": 1.9523786507609,
+              "horizon": 40
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24979033232652784,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.5560070029774,\"horizon\":40,\"observer\":\"kf\",\"process\":1.9523786507609}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7924999850001768,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_racing",
+      "optimizerSeed": 17021,
+      "campaign": "random_racing-17021",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 43.1300800409972,
+      "tunerSeconds": 33.97043267599656,
+      "searchWallSeconds": 79.69547296000019,
+      "validationRollouts": 9,
+      "validationWallSeconds": 1.4215524480005115,
+      "uniqueConfigurations": 89,
+      "fullyEvaluatedConfigurations": 7,
+      "allocationCounts": {
+        "3": 7,
+        "1": 77,
+        "2": 5
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Random Search": 92
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.1856692669615,
+            "process": 1.2161132576371
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.179651993999869,
+          "tunerSeconds": 0.06717127299998538,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 21.2777561719995,
+          "tunerSeconds": 6.013233037001555,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 47.649146060999556,
+          "tunerSeconds": 17.043627186998492,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 79.68961798899909,
+          "tunerSeconds": 33.97043267599656,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.2724727987605496,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.1856692669615,
+            "process": 1.2161132576371
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.1856692669615,
+          "process": 1.2161132576371
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.6484655672511,
+          "process": 1.6151689765557
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.1856692669615,
+              "process": 1.2161132576371
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24711314519431307,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.1856692669615,\"observer\":\"ekf\",\"process\":1.2161132576371}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.6484655672511,
+              "process": 1.6151689765557
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.25013957809151105,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.6484655672511,\"observer\":\"kf\",\"process\":1.6151689765557}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7220783419979853,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "smac_racing",
+      "optimizerSeed": 17021,
+      "campaign": "smac_racing-17021",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 58.982826484001635,
+      "tunerSeconds": 47.75938985299399,
+      "searchWallSeconds": 109.71668813699944,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.790353578000577,
+      "uniqueConfigurations": 86,
+      "fullyEvaluatedConfigurations": 9,
+      "allocationCounts": {
+        "3": 9,
+        "1": 73,
+        "2": 4
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Acquisition Function Maximizer: Local Search": 48,
+          "Random Search": 44
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.4337127417746,
+            "process": 1.6886885250404
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.242978360000052,
+          "tunerSeconds": 0.03757961900191731,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 24.93310382299933,
+          "tunerSeconds": 6.497083301006569,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 65.55742885700056,
+          "tunerSeconds": 24.961360269993747,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.272411520192545,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.4337127417746,
+            "process": 1.6886885250404
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 109.71026472199992,
+          "tunerSeconds": 47.75938985299399,
+          "fullyEvaluatedConfigurations": 9,
+          "bestCertifiedScore": 0.272411520192545,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.4337127417746,
+            "process": 1.6886885250404
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.4337127417746,
+          "process": 1.6886885250404
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.4337127417746,
+              "process": 1.6886885250404
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24865441121428278,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.4337127417746,\"observer\":\"ekf\",\"process\":1.6886885250404}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.759160500998405,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "grid_budget",
+      "optimizerSeed": 17027,
+      "campaign": "grid_budget-17027",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 55.09026169000026,
+      "tunerSeconds": 0.003626084000643459,
+      "searchWallSeconds": 57.52207927000018,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.1000882600001205,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.906042997999975,
+          "tunerSeconds": 0.0035534010003175354,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 14.530936183000449,
+          "tunerSeconds": 0.003570011996998801,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 33.202706550000585,
+          "tunerSeconds": 0.0035969719974673353,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 57.52205626000068,
+          "tunerSeconds": 0.003626084000643459,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2462764800923832,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.768722606000665,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_full",
+      "optimizerSeed": 17027,
+      "campaign": "random_full-17027",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 55.02689816100428,
+      "tunerSeconds": 0.024315751010362874,
+      "searchWallSeconds": 57.66306788699876,
+      "validationRollouts": 9,
+      "validationWallSeconds": 4.681780837001497,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "ConfigSpace log-uniform random",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.670286545999261,
+          "tunerSeconds": 0.0015280030002031708,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 17.9882673359989,
+          "tunerSeconds": 0.007703852003032807,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 47.349960789999386,
+          "tunerSeconds": 0.01580030400691612,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 57.6630467949999,
+          "tunerSeconds": 0.024315751010362874,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.05226961565,
+          "process": 1.3400482834541,
+          "horizon": 20
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.05226961565,
+              "process": 1.3400482834541,
+              "horizon": 20
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2465009740817359,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.05226961565,\"horizon\":20,\"observer\":\"ekf\",\"process\":1.3400482834541}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.6951199359973543,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_racing",
+      "optimizerSeed": 17027,
+      "campaign": "random_racing-17027",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 41.43737194500682,
+      "tunerSeconds": 23.2324993000002,
+      "searchWallSeconds": 66.87948822600083,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.745422439998947,
+      "uniqueConfigurations": 88,
+      "fullyEvaluatedConfigurations": 6,
+      "allocationCounts": {
+        "3": 6,
+        "1": 74,
+        "2": 8
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Random Search": 92
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.24582795599963,
+          "tunerSeconds": 0.05314190999706625,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 22.698164557999917,
+          "tunerSeconds": 5.0338042009952915,
+          "fullyEvaluatedConfigurations": 5,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 44.34221379200062,
+          "tunerSeconds": 13.69280029300171,
+          "fullyEvaluatedConfigurations": 5,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 66.87329017100092,
+          "tunerSeconds": 23.2324993000002,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27259109004134235,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.05226961565,
+            "process": 1.3400482834541,
+            "horizon": 20
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.05226961565,
+          "process": 1.3400482834541,
+          "horizon": 20
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.05226961565,
+              "process": 1.3400482834541,
+              "horizon": 20
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2465009740817359,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.05226961565,\"horizon\":20,\"observer\":\"ekf\",\"process\":1.3400482834541}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.78216495399829,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "smac_racing",
+      "optimizerSeed": 17027,
+      "campaign": "smac_racing-17027",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 42.35241437501827,
+      "tunerSeconds": 33.68096511398471,
+      "searchWallSeconds": 78.44374538299962,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.2997778370008746,
+      "uniqueConfigurations": 79,
+      "fullyEvaluatedConfigurations": 11,
+      "allocationCounts": {
+        "3": 11,
+        "1": 61,
+        "2": 7
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Random Search": 40,
+          "Acquisition Function Maximizer: Local Search": 52
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2484550728669,
+            "process": 1.4534180028659
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.651333509000324,
+          "tunerSeconds": 0.03351573099644156,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 18.9098531489999,
+          "tunerSeconds": 5.415815954995196,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27232164198778536,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2484550728669,
+            "process": 1.4534180028659
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 44.77605567399951,
+          "tunerSeconds": 15.919131048987765,
+          "fullyEvaluatedConfigurations": 9,
+          "bestCertifiedScore": 0.27232164198778536,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2484550728669,
+            "process": 1.4534180028659
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 78.43798507999963,
+          "tunerSeconds": 33.68096511398471,
+          "fullyEvaluatedConfigurations": 11,
+          "bestCertifiedScore": 0.27232164198778536,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2484550728669,
+            "process": 1.4534180028659
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.2484550728669,
+          "process": 1.4534180028659
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.7214651173457,
+          "process": 1.6367712331066,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.2484550728669,
+              "process": 1.4534180028659
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24746125356068824,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.2484550728669,\"observer\":\"ekf\",\"process\":1.4534180028659}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.7214651173457,
+              "process": 1.6367712331066,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.25048884774839986,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.7214651173457,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.6367712331066}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7033701390028,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "grid_budget",
+      "optimizerSeed": 17033,
+      "campaign": "grid_budget-17033",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 59.15939032399183,
+      "tunerSeconds": 0.0019423360008659074,
+      "searchWallSeconds": 61.62481393999951,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.7480899170004705,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.981725731999177,
+          "tunerSeconds": 0.0018563020003057318,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 18.20727357999931,
+          "tunerSeconds": 0.0018750170020211954,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 42.709330329000295,
+          "tunerSeconds": 0.001907981000840664,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 61.62479346100008,
+          "tunerSeconds": 0.0019423360008659074,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 20
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 20
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009225026,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":20,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7970678620004037,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_full",
+      "optimizerSeed": 17033,
+      "campaign": "random_full-17033",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 53.47217381500741,
+      "tunerSeconds": 0.03112654699543782,
+      "searchWallSeconds": 56.11689549199946,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.604078260999813,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "ConfigSpace log-uniform random",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.740749277998475,
+          "tunerSeconds": 0.001480507999076508,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 21.635365350999564,
+          "tunerSeconds": 0.007462232999387197,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 34.989064714998676,
+          "tunerSeconds": 0.018052392999379663,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 56.11683586899926,
+          "tunerSeconds": 0.03112654699543782,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2462764800923832,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7192971929980558,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_racing",
+      "optimizerSeed": 17033,
+      "campaign": "random_racing-17033",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 49.469682738985284,
+      "tunerSeconds": 28.451403993993154,
+      "searchWallSeconds": 80.35321107300115,
+      "validationRollouts": 9,
+      "validationWallSeconds": 2.7808450869997614,
+      "uniqueConfigurations": 89,
+      "fullyEvaluatedConfigurations": 8,
+      "allocationCounts": {
+        "3": 8,
+        "1": 78,
+        "2": 3
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Random Search": 92
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.328654842000105,
+          "tunerSeconds": 0.043953391001195996,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 23.110351070001343,
+          "tunerSeconds": 5.8304554499936785,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 51.738577952000924,
+          "tunerSeconds": 15.939115989991478,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 80.34685374900073,
+          "tunerSeconds": 28.451403993993154,
+          "fullyEvaluatedConfigurations": 8,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2462764800923832,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.8719564549974166,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "smac_racing",
+      "optimizerSeed": 17033,
+      "campaign": "smac_racing-17033",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 53.953210565003246,
+      "tunerSeconds": 43.815503460999025,
+      "searchWallSeconds": 100.3310084650002,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.9090677819986013,
+      "uniqueConfigurations": 85,
+      "fullyEvaluatedConfigurations": 8,
+      "allocationCounts": {
+        "3": 8,
+        "1": 70,
+        "2": 7
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 4,
+          "Random Search": 36,
+          "Acquisition Function Maximizer: Local Search": 56
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.1701736014854,
+            "process": 1.2701282968755
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.295875307001552,
+          "tunerSeconds": 0.05439651099732146,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 18.928676338000514,
+          "tunerSeconds": 4.885387419992185,
+          "fullyEvaluatedConfigurations": 5,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 47.72325741900022,
+          "tunerSeconds": 16.972924314995907,
+          "fullyEvaluatedConfigurations": 8,
+          "bestCertifiedScore": 0.272392753387136,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.1701736014854,
+            "process": 1.2701282968755
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 100.31447010900047,
+          "tunerSeconds": 43.815503460999025,
+          "fullyEvaluatedConfigurations": 8,
+          "bestCertifiedScore": 0.272392753387136,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.1701736014854,
+            "process": 1.2701282968755
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.1701736014854,
+          "process": 1.2701282968755
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.1701736014854,
+              "process": 1.2701282968755
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24697268839933817,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.1701736014854,\"observer\":\"ekf\",\"process\":1.2701282968755}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7637557909984025,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "grid_budget",
+      "optimizerSeed": 17041,
+      "campaign": "grid_budget-17041",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 54.003613749997385,
+      "tunerSeconds": 0.0023801740044291364,
+      "searchWallSeconds": 56.292806272000234,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.6498287499998696,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.660647962000439,
+          "tunerSeconds": 0.0023137609987315955,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 13.996292222998818,
+          "tunerSeconds": 0.0023268489985639462,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 34.059980191999784,
+          "tunerSeconds": 0.0023534240026492625,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 56.2927770339993,
+          "tunerSeconds": 0.0023801740044291364,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 20
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 20
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009225026,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":20,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.8614728780012229,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_full",
+      "optimizerSeed": 17041,
+      "campaign": "random_full-17041",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 42.734249784001804,
+      "tunerSeconds": 0.024695628993868013,
+      "searchWallSeconds": 45.06392613200114,
+      "validationRollouts": 9,
+      "validationWallSeconds": 2.925502799000242,
+      "uniqueConfigurations": 36,
+      "fullyEvaluatedConfigurations": 36,
+      "allocationCounts": {
+        "3": 36
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "ConfigSpace log-uniform random",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.797247231001165,
+          "tunerSeconds": 0.0015381989996967604,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 17.679091944000902,
+          "tunerSeconds": 0.008876681000401732,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 30.994631429000947,
+          "tunerSeconds": 0.016606818997388473,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27283442324755613,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2456690301967,
+            "process": 1.1268665344018
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 45.063904419999744,
+          "tunerSeconds": 0.024695628993868013,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27283442324755613,
+          "bestCertifiedConfiguration": {
+            "controller": "lqr",
+            "observer": "ekf",
+            "effort": 1.2456690301967,
+            "process": 1.1268665344018
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.2456690301967,
+          "process": 1.1268665344018
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.2456690301967,
+              "process": 1.1268665344018
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24778468910212073,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.2456690301967,\"observer\":\"ekf\",\"process\":1.1268665344018}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.852886430999206,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "random_racing",
+      "optimizerSeed": 17041,
+      "campaign": "random_racing-17041",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 37.63534211098704,
+      "tunerSeconds": 22.933934486009093,
+      "searchWallSeconds": 62.841317267000704,
+      "validationRollouts": 9,
+      "validationWallSeconds": 3.9216399890010507,
+      "uniqueConfigurations": 82,
+      "fullyEvaluatedConfigurations": 11,
+      "allocationCounts": {
+        "3": 11,
+        "1": 67,
+        "2": 4
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 6,
+          "Random Search": 90
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.1683145213719,
+            "process": 1.6787077960594,
+            "horizon": 20
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.547900281000693,
+          "tunerSeconds": 0.051433680002446636,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 18.842297863999192,
+          "tunerSeconds": 3.2577047330050846,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 42.4311046290004,
+          "tunerSeconds": 11.40639132501019,
+          "fullyEvaluatedConfigurations": 7,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 62.835608319999665,
+          "tunerSeconds": 22.933934486009093,
+          "fullyEvaluatedConfigurations": 11,
+          "bestCertifiedScore": 0.2729007286984122,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.1683145213719,
+            "process": 1.6787077960594,
+            "horizon": 20
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.1683145213719,
+          "process": 1.6787077960594,
+          "horizon": 20
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.1683145213719,
+              "process": 1.6787077960594,
+              "horizon": 20
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24770393476091898,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.1683145213719,\"horizon\":20,\"observer\":\"ekf\",\"process\":1.6787077960594}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.7456030349967477,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "smac_racing",
+      "optimizerSeed": 17041,
+      "campaign": "smac_racing-17041",
+      "searchBudget": 108,
+      "actualSearchRollouts": 108,
+      "actualSearchSteps": 64800,
+      "searchEvaluationSeconds": 41.398178402994745,
+      "tunerSeconds": 32.37475759800691,
+      "searchWallSeconds": 76.04820112299967,
+      "validationRollouts": 9,
+      "validationWallSeconds": 2.814741629999844,
+      "uniqueConfigurations": 88,
+      "fullyEvaluatedConfigurations": 8,
+      "allocationCounts": {
+        "3": 8,
+        "1": 76,
+        "2": 4
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "facade": "AlgorithmConfigurationFacade",
+        "model": "RandomForest",
+        "intensifier": "Intensifier",
+        "modelModule": "smac.model.random_forest.random_forest",
+        "modelSourceSha256": "05e754fa1dd05b592edf71a4a572cba4860208993745ff0029fa4a48d3a611f5",
+        "originCounts": {
+          "Initial Design: Sobol": 6,
+          "Acquisition Function Maximizer: Local Search": 49,
+          "Random Search": 41
+        },
+        "runhistoryFinished": 108,
+        "smacIncumbents": [
+          {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        ]
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 4.348943238999709,
+          "tunerSeconds": 0.03285970800425275,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 20.19094383099946,
+          "tunerSeconds": 4.87466966500142,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 51.20720052999968,
+          "tunerSeconds": 20.782060194002042,
+          "fullyEvaluatedConfigurations": 6,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 76.04347373900055,
+          "tunerSeconds": 32.37475759800691,
+          "fullyEvaluatedConfigurations": 8,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.2462764800923832,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 1.9295069799991325,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    },
+    {
+      "method": "grid_exhaustive",
+      "optimizerSeed": 17011,
+      "campaign": "grid_exhaustive-17011",
+      "searchBudget": 216,
+      "actualSearchRollouts": 216,
+      "actualSearchSteps": 129600,
+      "searchEvaluationSeconds": 111.96283897503054,
+      "tunerSeconds": 0.002386733980529243,
+      "searchWallSeconds": 116.570382797001,
+      "validationRollouts": 9,
+      "validationWallSeconds": 5.6545697070032475,
+      "uniqueConfigurations": 72,
+      "fullyEvaluatedConfigurations": 72,
+      "allocationCounts": {
+        "3": 72
+      },
+      "duplicateAsks": 0,
+      "engine": {
+        "sampler": "fixed logarithmic grid in randomized order",
+        "fullEvaluationPerCandidate": true
+      },
+      "checkpoints": [
+        {
+          "rollouts": 12,
+          "wallSeconds": 5.9381422649985325,
+          "tunerSeconds": 0.0022370759998011636,
+          "fullyEvaluatedConfigurations": 4,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 36,
+          "wallSeconds": 14.303822771998966,
+          "tunerSeconds": 0.002256141997349914,
+          "fullyEvaluatedConfigurations": 12,
+          "bestCertifiedScore": 0.27297109904010985,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 30
+          }
+        },
+        {
+          "rollouts": 72,
+          "wallSeconds": 38.93344953799897,
+          "tunerSeconds": 0.002280467997479718,
+          "fullyEvaluatedConfigurations": 24,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        },
+        {
+          "rollouts": 108,
+          "wallSeconds": 64.21689033199982,
+          "tunerSeconds": 0.002307326994923642,
+          "fullyEvaluatedConfigurations": 36,
+          "bestCertifiedScore": 0.27297109903869127,
+          "bestCertifiedConfiguration": {
+            "controller": "hard_mpc",
+            "observer": "ekf",
+            "effort": 1.0,
+            "process": 1.0,
+            "horizon": 40
+          }
+        }
+      ],
+      "shortlist": [
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 40
+        },
+        {
+          "controller": "hard_mpc",
+          "observer": "ekf",
+          "effort": 1.0,
+          "process": 1.0,
+          "horizon": 30
+        },
+        {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      ],
+      "selection": {
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        },
+        "hardFailures": 0,
+        "taskFailures": 0,
+        "score": 0.24646371509591933,
+        "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}",
+        "eligible": true,
+        "groups": [
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 40
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009318426,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":40,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "hard_mpc",
+              "observer": "ekf",
+              "effort": 1.0,
+              "process": 1.0,
+              "horizon": 30
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24627648009239303,
+            "key": "{\"controller\":\"hard_mpc\",\"effort\":1.0,\"horizon\":30,\"observer\":\"ekf\",\"process\":1.0}"
+          },
+          {
+            "configuration": {
+              "controller": "lqr",
+              "observer": "kf",
+              "effort": 1.0,
+              "process": 1.0
+            },
+            "hardFailures": 0,
+            "taskFailures": 0,
+            "score": 0.24646371509591933,
+            "key": "{\"controller\":\"lqr\",\"effort\":1.0,\"observer\":\"kf\",\"process\":1.0}"
+          }
+        ],
+        "testUsedForSelection": false,
+        "scope": "Validation policy within searched configurations; not a global optimum"
+      },
+      "lockedBeforeTest": true,
+      "testWallSeconds": 2.0913792439969257,
+      "primaryTaskSuccesses": 12,
+      "boundaryTaskSuccesses": 4,
+      "primaryMeanTaskScore": 0.2508881300548215
+    }
+  ],
+  "pairedStatistics": [
+    {
+      "method": "random_full",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 0.8189242096341912,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    },
+    {
+      "method": "random_racing",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 1.2011335951276387,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    },
+    {
+      "method": "smac_racing",
+      "comparison": "paired grid_budget with same optimizer seed/common fixed test panel",
+      "pairs": [
+        {
+          "seed": 17011,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17021,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17027,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17033,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        },
+        {
+          "seed": 17041,
+          "relativeTaskDifference": 0.0,
+          "pairedTaskSuccessDifference": 0
+        }
+      ],
+      "meanRelativeTaskDifference": 0.0,
+      "conditionalPairedBootstrap95": [
+        0.0,
+        0.0
+      ],
+      "meanSearchWallRatio": 1.3925536721032352,
+      "scope": "optimizer-seed-level mean on a fixed common test panel; 600 serial frames are never independent replicates. Conditional pilot intervals, not universal superiority or failure-probability certification."
+    }
+  ],
+  "freshTestLock": {
+    "recommendations": [
+      {
+        "campaign": "grid_budget-17011",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_full-17011",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_racing-17011",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "smac_racing-17011",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "grid_budget-17021",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_full-17021",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_racing-17021",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "smac_racing-17021",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "grid_budget-17027",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_full-17027",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_racing-17027",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "smac_racing-17027",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "grid_budget-17033",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_full-17033",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_racing-17033",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "smac_racing-17033",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "grid_budget-17041",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_full-17041",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "random_racing-17041",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "smac_racing-17041",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      },
+      {
+        "campaign": "grid_exhaustive-17011",
+        "configuration": {
+          "controller": "lqr",
+          "observer": "kf",
+          "effort": 1.0,
+          "process": 1.0
+        }
+      }
+    ],
+    "testEvaluations": 0,
+    "selectionComplete": true
+  },
+  "sumMeasuredCampaignSeconds": 1633.5461965759914,
+  "actualEvaluations": 2943,
+  "experimentValid": true,
+  "defaultPromoted": false,
+  "hardware": "NOT_EVALUATED",
+  "execution": "Same frozen algorithms executed in bounded seed-sized CLI batches because remote jobs cap at 600 seconds. No evaluator cache across methods. Exact-source completed campaigns can be resumed. All searches/validation complete before final holdout.",
+  "developmentAttempts": "Separate pre-holdout smoke exposed non-JSON internal RF bounds. A monolithic run was cancelled before any test after confirming the remote job cap; its partial logs are retained outside this final benchmark and not treated as independent final repeats. No search domain, score, seed or threshold was changed.",
+  "scope": [
+    "Actual SMAC3 random-forest EI + its standard Intensifier; random_racing sets proposal randomization to1 in the same infrastructure.",
+    "Conditional horizon exists only for MPC. Same effort/process domain, fixed rollout length, same physical task/command gates.",
+    "Same 108 search calls including12 shared baseline calls; validation/test calls and costs separate. No incomplete training candidate can be recommended.",
+    "Additional grid216 is finite reference, not a continuous optimum. Randomized grid ordering is repeated for matched search budgets.",
+    "Ordinal loss preserves full-three-instance failure/task/score ranking under verified bounds; partial racing estimates are not full-set certificates.",
+    "Five optimizer seeds on a fixed common test panel: conditional pilot inference, not universal speedup, safety or a rare-failure guarantee.",
+    "Known training/validation templates are development information; new test seeds do not establish a new physical domain."
+  ]
+}

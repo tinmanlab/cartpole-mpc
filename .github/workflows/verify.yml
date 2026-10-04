@@ -65,3 +65,8 @@ jobs:
           npm run validate:design
           python tests/test_design_reference.py
           python tests/test_design_browser.py
+
+      - name: Recorded sequential-tuner evidence and offline-results UI
+        run: |
+          python tests/test_tuning_receipt.py
+          python tests/test_tuning_browser.py
