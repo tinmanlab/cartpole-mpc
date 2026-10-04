@@ -16,7 +16,9 @@ try{for await(const line of lines){
   const q=JSON.parse(line);let out;
   if(q.op==='info')out={physics:backend.diagnostics(),fit,taskManifestSha256:hash(fs.readFileSync(p.taskManifest)),steps:m.steps,actualCalls};
   else if(q.op==='lock'){
-   if(locked)throw Error('Already locked');if(!Array.isArray(q.configurations)||!q.configurations.length)throw Error('Empty lock');
+   if(locked)throw Error('Already locked');if(!Array.isArray(q.configurations))throw Error('Invalid lock');
+   // An empty Set is an immutable no-recommendation lock, not an unlocked state.
+   // It denies all later training/validation and every test configuration.
    locked=new Set(q.configurations.map(c=>JSON.stringify(Object.entries(c).sort())));out={locked:true,configurations:locked.size};
   }else if(q.op==='evaluate'){
    const c=q.configuration;if(!c||Object.keys(c).some(k=>!['controller','observer','effort','process','horizon'].includes(k)))throw Error('Invalid configuration fields');

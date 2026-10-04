@@ -15,6 +15,7 @@ from smac.intensifier.intensifier import Intensifier
 from smac.random_design.probability_design import ProbabilityRandomDesign
 from smac.acquisition.maximizer.local_and_random_search import LocalAndSortedRandomSearch
 from smac.runhistory.dataclasses import TrialInfo,TrialValue
+from tuning_finalization import summarize_test,complete_no_result,reuse_completed_no_result
 ROOT=Path(__file__).resolve().parents[1]
 PROTOCOL_HASH='9ca92d14fceea5b847d75175e8edc4f51837eb920d1d35b5361929a5387accf0'
 
@@ -228,9 +229,12 @@ def main():
     p,m=load_protocol()
     if any(md.version(k)!=v for k,v in [('smac',p['smac']['version']),('ConfigSpace',p['smac']['configspaceVersion'])]):raise RuntimeError('Unverified optional tuner versions')
     out_dir=ROOT/('test-results/sequential-smoke' if args.smoke else 'test-results/sequential-tuning');out_dir.mkdir(parents=True,exist_ok=True)
+    files=['scripts/sequential_tuning.py','scripts/tuning_bridge.mjs','scripts/tuning_finalization.py','src/design_study.js','src/engine.js','src/plant.js','src/qp.js','src/mujoco_backend.mjs','assets/cartpole.xml','tests/fixtures/sequential_tuning.json','tests/fixtures/design_study.json']
+    hashes={f:sha(ROOT/f) for f in files}
+    report_path=ROOT/('test-results/sequential_smoke.json' if args.smoke else 'evidence/sequential_tuning.json')
+    if reuse_completed_no_result(out_dir,report_path,hashes):return
     if (out_dir/'campaign-started.json').exists():raise RuntimeError('An existing campaign must be reconciled; do not silently overwrite evidence')
-    files=['scripts/sequential_tuning.py','scripts/tuning_bridge.mjs','src/design_study.js','src/engine.js','src/plant.js','src/qp.js','src/mujoco_backend.mjs','assets/cartpole.xml','tests/fixtures/sequential_tuning.json','tests/fixtures/design_study.json']
-    hashes={f:sha(ROOT/f) for f in files};start=time.perf_counter();started={'sourceSha256':hashes,'pid':os.getpid(),'mode':'smoke' if args.smoke else 'frozen-full'}
+    start=time.perf_counter();started={'sourceSha256':hashes,'pid':os.getpid(),'mode':'smoke' if args.smoke else 'frozen-full'}
     (out_dir/'campaign-started.json').write_text(json.dumps(started,indent=2))
     campaigns=[]
     with PlantBridge(ROOT) as bridge:
@@ -244,18 +248,18 @@ def main():
                     c=do_campaign(p,m,method,seed,log,ROOT,out_dir,budget=24 if args.smoke else None);campaigns.append(c)
                     (ROOT/'test-results/tuner-progress.json').write_text(json.dumps({'completedCampaigns':len(campaigns),'last':c['campaign'],'total':len(seeds)*4,'testEvaluations':0}))
             if not args.smoke:campaigns.append(do_campaign(p,m,'grid_exhaustive',p['optimizerSeeds'][0],log,ROOT,out_dir,budget=p['grid']['exhaustiveRollouts']))
-            # Lock all recommendations BEFORE opening the new test panel.
             locks=[c['selection']['configuration'] for c in campaigns if c['selection']['configuration'] is not None]
-            lock_receipt={'recommendations':[{ 'campaign':c['campaign'],'configuration':c['selection']['configuration']} for c in campaigns],'testEvaluations':0,'selectionComplete':True}
+            lock_receipt={'recommendations':[{'campaign':c['campaign'],'configuration':c['selection']['configuration']} for c in campaigns],'testEvaluations':0,'selectionComplete':True}
             (out_dir/'recommendations-locked.json').write_text(json.dumps(lock_receipt,indent=2))
             bridge.lock(locks)
+            panel=[] if args.smoke else test_cases(p,m)
             for c in campaigns:
                 cfg=c['selection']['configuration'];teststart=time.perf_counter()
                 if cfg is not None:
-                    for test in ([] if args.smoke else test_cases(p,m)):
+                    for test in panel:
                         row=log.evaluate(cfg,test['id'],'test',c['campaign']);row['group']=test['group'];c['testRows'].append(row)
                 c['testWallSeconds']=time.perf_counter()-teststart
-                c['primaryTaskSuccesses']=sum(r['taskPassed'] for r in c['testRows'] if r['group']=='primary');c['boundaryTaskSuccesses']=sum(r['taskPassed'] for r in c['testRows'] if r['group']=='boundary')
+                c.update(summarize_test(c,panel,skipped=args.smoke))
                 (out_dir/(c['campaign']+'.json')).write_text(json.dumps(c,indent=2,allow_nan=False)+'\n')
         finally:log.close()
         info=bridge.info
@@ -265,11 +269,12 @@ def main():
     report={'schema':'cartpole-sequential-tuning/v1','mode':started['mode'],'sourceSha256':hashes,'sourcesStable':stable,'protocolSha256':PROTOCOL_HASH,
         'versions':{k:md.version(k) for k in ['smac','ConfigSpace','scikit-learn','numpy','scipy']},'upstreamSourceSha256':{k:sha(Path(v)) for k,v in sources.items()},
         'physics':info['physics'],'fit':info['fit'],'campaigns':summaries,'pairedStatistics':[] if args.smoke else paired_statistics(campaigns,p),
-        'freshTestLock':lock_receipt,'totalWallSeconds':time.perf_counter()-start,'actualEvaluations':log.count,'rawReceipt':'test-results/sequential-tuning/raw-evaluations.jsonl.gz',
+        'freshTestLock':lock_receipt,'totalWallSeconds':time.perf_counter()-start,'actualEvaluations':log.count,'actualTestEvaluations':sum(c['actualTestEvaluations'] for c in campaigns),'rawReceipt':'test-results/sequential-tuning/raw-evaluations.jsonl.gz',
         'experimentValid':stable,'defaultPromoted':False,'hardware':'NOT_EVALUATED',
-        'scope':['Actual SMAC3 random-forest EI with standard Intensifier. Random-racing changes only acquisition randomization to probability1; it still uses SMAC infrastructure.','Every search call is a full 600-step task or an explicit rejection/failure. No rollout-length fidelity. No cross-method cache.','Equal 108-call search cap, common initial12 calls. Certification uses fully evaluated configurations only; later validation/test calls and wall time are reported separately.','Grid216 is a finite extra reference, not a continuous-domain optimum. Grid_budget randomly orders that grid, with shared baselines first.','Training and validation are previously known development templates. Fresh test seeds are not new physics. All selections lock before any test.','Five optimizer seeds on one task: pilot statistical evidence, not a universal SOTA speed/quality claim. Failure counts and full-duration score remain separate.','Ordinal scalar feedback exactly preserves full-three-instance failure-first ranking under checked score bounds; partial racing averages are not full certificates.']}
-    (ROOT/('test-results/sequential_smoke.json' if args.smoke else 'evidence/sequential_tuning.json')).write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
-    print(json.dumps({'actualEvaluations':log.count,'summaries':[(c['campaign'],c['primaryTaskSuccesses'],c['selection'].get('score')) for c in campaigns],'statistics':report['pairedStatistics'],'valid':stable},indent=2))
+        'scope':['Actual SMAC3 random-forest EI with standard Intensifier. Random-racing changes only acquisition randomization to probability1; it still uses SMAC infrastructure.','Every search call is a full 600-step task or an explicit rejection/failure. No rollout-length fidelity. No cross-method cache.','Equal 108-call search cap, common initial12 calls. Certification uses fully evaluated configurations only; later validation/test calls and wall time are reported separately.','Grid216 is a finite extra reference, not a continuous-domain optimum. Grid_budget randomly orders that grid, with shared baselines first.','Training and validation are previously known development templates. Fresh test seeds are not new physics. All selections lock before any test.','Five optimizer seeds on one task: pilot statistical evidence, not a universal SOTA speed/quality claim. Failure counts and full-duration score remain separate.','Ordinal scalar feedback exactly preserves full-three-instance failure-first ranking under checked score bounds; partial racing averages are not full certificates.','No admissible recommendation is a completed result with zero tests and unavailable task statistics, not 0/12 successful trials.']}
+    report_path.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     if not stable:raise RuntimeError('Source changed during evaluation')
+    complete_no_result(out_dir,report_path,report)
+    print(json.dumps({'actualEvaluations':log.count,'testEvaluations':report['actualTestEvaluations'],'summaries':[(c['campaign'],c['primaryTaskSuccesses'],c['selection'].get('score')) for c in campaigns],'statistics':report['pairedStatistics'],'valid':stable},indent=2))
 
 if __name__=='__main__':main()

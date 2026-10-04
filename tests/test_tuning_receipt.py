@@ -1,12 +1,28 @@
-"""Fast committed-receipt/source contract, NOT a rerun of native SMAC benchmarks."""
+"""Verify the historical benchmark at its recorded source, not a fresh rerun.
+F1 changes finalization only. Numeric/search definitions must remain AST-identical;
+all other benchmark inputs must still match current files. No evidence is rehashed
+to imply the old 2,943 runs were performed on new code.
+"""
 from pathlib import Path
-import json,hashlib
+import ast,json,hashlib,subprocess
 ROOT=Path(__file__).resolve().parents[1]
+RECORDED_COMMIT='15df4437667e3497f13ec28345ddc722dcadcfc4'
+FINALIZATION_PATHS={'scripts/sequential_tuning.py','scripts/run_tuning_campaign.py','scripts/tuning_bridge.mjs'}
 r=json.loads((ROOT/'evidence/sequential_tuning.json').read_text());p=json.loads((ROOT/'tests/fixtures/sequential_tuning.json').read_text());v=json.loads((ROOT/'evidence/sequential_tuning_reference.json').read_text())
 sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
 assert r['experimentValid'] and r['sourcesStable'] and r['mode']=='frozen-full'
 assert r['protocolSha256']==sha(ROOT/'tests/fixtures/sequential_tuning.json')
-assert all(sha(ROOT/f)==h for f,h in r['sourceSha256'].items())
+for path,digest in r['sourceSha256'].items():
+    if sha(ROOT/path)==digest:continue
+    assert path in FINALIZATION_PATHS,'Unreviewed change to historical benchmark input: '+path
+    original=subprocess.check_output(['git','show',RECORDED_COMMIT+':'+path],cwd=ROOT)
+    assert hashlib.sha256(original).hexdigest()==digest,'Wrong historical source: '+path
+    if path=='scripts/sequential_tuning.py':
+        def definitions(text):
+            return {n.name:ast.dump(n,include_attributes=False) for n in ast.parse(text).body if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name!='main'}
+        assert definitions(original)==definitions((ROOT/path).read_text()),'Search/scoring/selection changed, not only finalization'
+# Recorded outcomes are immutable; CI does not rewrite this result for the fix.
+assert (ROOT/'evidence/sequential_tuning.json').read_bytes()==subprocess.check_output(['git','show',RECORDED_COMMIT+':evidence/sequential_tuning.json'],cwd=ROOT)
 assert r['versions']['smac']==p['smac']['version'] and r['versions']['ConfigSpace']==p['smac']['configspaceVersion']
 assert v['passed'] and v['evidenceSha256']==sha(ROOT/'evidence/sequential_tuning.json')
 assert len(r['campaigns'])==21
@@ -28,4 +44,4 @@ for c in r['campaigns']:
 assert actual==r['actualEvaluations']==v['independentlyCheckedRollouts']
 assert r['freshTestLock']['testEvaluations']==0 and len(r['freshTestLock']['recommendations'])==21
 assert r['defaultPromoted'] is False and r['hardware']=='NOT_EVALUATED'
-print('Stored tuning receipt/source/budget/conditional-space contracts PASS; actual optimizer execution is documented in the offline reference.')
+print('Historical tuning receipt/budget/search-identity contracts PASS; F1 current execution is checked separately.')
