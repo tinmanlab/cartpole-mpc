@@ -10,6 +10,16 @@ The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `asset
 
 See [runtime, assets and failure contracts](docs/MUJOCO_WASM_RUNTIME.md) for exact versions, masses/inertias, model scope, upstream code reuse and verification commands.
 
+## Terminal cost: explicit comparison
+
+For **Linear MPC** or **Constrained MPC · hard rail**, the **Terminal cost** selector compares **Original · diagonal** with **Riccati · full matrix**. Original remains the default. Riccati retains the coupled tail-cost matrix, checks convergence and residuals, and applies the same choice to live traces, probes and comparison rows. Other controller families do not inherit this option. See [controller semantics](docs/CONTROLLERS.md#terminal-cost-selection) and [the frozen 40-condition validation](docs/VALIDATION.md#frozen-terminal-cost-validation). This adds no solver dependency and does not constitute a hardware safety guarantee.
+
+## Read the evidence, not just the animation
+
+All 28 lessons disclose **implemented / analogue / paper / concept** scope and link their sources. Reading a topic does not switch the live experiment. The actual controller/observer and the Truth/oracle exception are visible. `DONE` means only completion inside a tested envelope, not goal achievement or hardware safety.
+
+Position tracking RMSE and per-component estimation RMSE are separate. Physical quantities use labelled plot scales; mixed-unit legacy aggregates are not shown as controller scores. Reduced CoM plans no longer synthesize uncomputed pole-angle forecasts, and a cost decrease is not labelled optimizer convergence. See [proposal corrections and visual contracts](docs/IMPLEMENTATION_BOUNDARIES.md#educational-and-visualization-contract).
+
 ## Start here
 
 The entire lab uses one control loop:
@@ -29,33 +39,23 @@ The entire lab uses one control loop:
 
 Change only one block and watch what changes in the same live simulation and graphs.
 
-### Controller path
+### Controller and observer choices
 
-    PID
-     ↓ add model + cost
-    LQR
-     ↓ add finite horizon
-    Linear MPC
-     ├─ uncertainty ensemble → Scenario-risk MPC
-     ↓ relinearize each tick
-    LTV / SQP-RTI bridge
-     ├─ reduced model → Centroidal-style MPC
-     └─ nonlinear OCP → Full NMPC
+These are independent design axes, not universal upgrade ladders:
 
-    PPO is the parallel learned-policy path:
-    online optimization ↔ offline-trained policy
+    Feedback design:       PID / LQR / learned policy
+    Prediction model:      LTI / LTV / nonlinear
+    Model order:           reduced / full
+    Constraints:           input / state / contact; hard / soft
+    Transcription:         single shooting / multiple shooting / collocation
+    Numerical method:      QP / SQP / iLQR / IPM
+    Execution strategy:    tolerance / iteration budget / RTI phases
 
-### Observer path
+    Recursive estimation:  KF / EKF / sigma-point UKF
+    Error geometry:        Euclidean / wrapped angle / invariant
+    Window optimization:   linear or nonlinear MHE when useful
 
-    raw sensor
-       ↓ model + uncertainty
-    Kalman Filter
-       ↓ nonlinear Euclidean dynamics
-    EKF
-     ├─ recent-window optimization → MHE
-     └─ suitable Lie-group / group-affine structure
-       ↓
-    InEKF branch
+The browser LTV approximation uses one iLQR-style update, not a reproduction of constrained SQP-RTI. The SO(2) runtime wraps angles; it is not Hartley's contact-aided InEKF. MHE is optional, and a newer method is not automatically better.
 
 Then learned information can enter at different points:
 
@@ -65,19 +65,19 @@ Then learned information can enter at different points:
 | Youm / NMN | learned velocity measurement |
 | InNKF | posterior state residual |
 | CoCo-InEKF | contact-candidate velocity/process covariance |
-| FOCUS | continuous FK reliability + observation/process-noise modulation |
+| FOCUS | learned FK reliability and observation fusion (abstract verified; local heuristic differs) |
 
 ## What is actually implemented?
 
 | Runtime mode | What runs in this repo |
 |---|---|
-| PID | live cascaded feedback controller |
+| PID | coupled PID/PD-style feedback controller |
 | LQR | Riccati state-feedback controller |
 | Linear MPC | N=30 input-box QP solved by pinned upstream quadprog |
 | Constrained MPC | same QP plus explicit world-position rail constraints; invalid/infeasible plans rejected |
 | Scenario-risk MPC | N=30 shared-input finite-model ensemble objective; mean + worst-case risk term |
-| Centroidal-style MPC | N=32 reduced horizontal CoM planner + downstream full-state stabilizer |
-| LTV MPC / RTI bridge | one warm-started successive-linearization update per tick |
+| Centroidal-style MPC | N=32 real [c,c_dot] plan + LQR; no invented full-state forecast |
+| LTV approximation | one iLQR-style local update per tick; optimality not verified |
 | Full nonlinear NMPC | N=30 nonlinear rollout, per-stage Jacobians, backward quadratic solve, bounded line search, warm start |
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
@@ -92,7 +92,7 @@ The distinction between **implementation**, **architecture analogue**, and **pap
 
 ## Why two MPC pages?
 
-The distinction comes directly from the model-based humanoid stacks reviewed in tinmanlab/figure.
+A historical pinned humanoid comparator motivated this analogy; its particular state/input choices are not the definition of every centroidal/full-order controller.
 
 ### Centroidal MPC
 
@@ -145,8 +145,8 @@ Useful lessons:
 - [LQR](https://tinmanlab.github.io/cartpole-mpc/#lqr)
 - [Linear MPC](https://tinmanlab.github.io/cartpole-mpc/#linear_mpc)
 - [Scenario-risk MPC](https://tinmanlab.github.io/cartpole-mpc/#robust_mpc)
-- [State-constrained MPC](https://tinmanlab.github.io/cartpole-mpc/#state_mpc)
-- [LTV / SQP-RTI bridge](https://tinmanlab.github.io/cartpole-mpc/#ltv_mpc)
+- [Soft penalty versus hard rail](https://tinmanlab.github.io/cartpole-mpc/#state_mpc)
+- [LTV one-update analogue](https://tinmanlab.github.io/cartpole-mpc/#ltv_mpc)
 - [Centroidal-style MPC](https://tinmanlab.github.io/cartpole-mpc/#centroidal_mpc)
 - [Full nonlinear NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc)
 - [Robust / stochastic MPC](https://tinmanlab.github.io/cartpole-mpc/#robust_mpc)
@@ -186,13 +186,13 @@ For development:
 Do not learn every acronym at once.
 
 1. **PID → LQR**: feedback versus model-derived feedback.
-2. **LQR → Linear MPC**: why a horizon and constraints change the problem.
-3. **Linear MPC → LTV/SQP-RTI → Centroidal / Full NMPC**: fixed linearization, successive relinearization, reduced order, and nonlinear OCP.
+2. **LQR and Linear MPC**: finite-horizon LQR exists too; compare the chosen cost, constraints and receding execution.
+3. **Model and solver axes**: compare fixed/time-varying/nonlinear models, reduced/full order and solver/execution strategies separately.
 4. **Raw → KF → EKF**: use Sensor noise first, then switch to **Estimator nonlinear bench** with LQR fixed to isolate nonlinear prediction.
 5. **EKF → invariant filtering branch**: use the +179°/-179° SO(2) micro-bench to see why error geometry matters; InEKF is not a universal replacement for EKF.
 6. **Lin / Youm / InNKF / CoCo / FOCUS**: compare *where* learning enters—contact events, measurements, output residuals, process covariance, or observation reliability. This is a taxonomy, not a chronological ranking.
-7. **EKF/InEKF → MHE**: recursive filtering versus windowed constrained estimation.
-8. **Commissioning**: identify the model, calibrate Q_e/R_e, tune Q_c/R_c, then reject candidates that fail held-out validation/test.
+7. **Recursive filters versus MHE**: optional windowed optimization, with or without constraints.
+8. **Commissioning**: identify the model, calibrate Q_e/R_e, tune Q_c/R_c, validate candidates on declared sets; reusing test outcomes for choices makes them development evidence.
 9. Combine controller and observer under sensor, model, actuator/latency, bias, glitch, and push stress.
 
 More detail:
@@ -224,7 +224,7 @@ The original review documented a 3/4 strict first-action parity failure in the h
 
 The repo ships fixed-seed numerical evidence under `evidence/`. Timing values are host-dependent; they are not deterministic or hard-real-time guarantees.
 
-Representative fixed checks from the audited implementation:
+Representative checks are scoped to their recorded revision/configuration, not timeless performance numbers:
 
 - truth-state evaluation is timestamp aligned, so the Truth observer has exactly zero estimation RMSE,
 - the LQR gain matches an independent SciPy discrete-Riccati solution to below 2e-7 max absolute error,
@@ -232,7 +232,7 @@ Representative fixed checks from the audited implementation:
 - Linear MPC and the reduced outer MPC solve explicit input-box-constrained horizon problems,
 - Full NMPC exposes a 30-step nonlinear horizon and bounded iLQR-style iterations,
 - raw finite-difference velocity estimation fails under the fixed high-noise probe where KF remains stable,
-- the targeted LQR-fixed estimator nonlinear bench gives about 0.0080 KF RMSE versus 0.00323 EKF RMSE across five fixed seeds,
+- the targeted LQR-fixed nonlinear bench compares estimator behavior under a fixed setup; legacy mixed-unit scores are not physical tracking error or general KF/EKF rankings,
 - the SO(2) regression demonstrates that +179 deg and -179 deg differ by 2 deg, not 358 deg,
 - scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
 - learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims,
@@ -272,7 +272,7 @@ The repo now includes a slow offline commissioning lane in addition to the brows
     → held-out validation/test gate
     → combined sim2real stress
 
-The receipt records both accepted and rejected candidates according to the actual held-out scores. These decisions are recomputed rather than forcing a named method to win. Inspect `evidence/commissioning.json` for the current numerical outcomes and its exact source/model provenance.
+The receipt records both accepted and rejected candidates according to the actual held-out scores. These decisions are recomputed rather than forcing a named method to win. Inspect `evidence/commissioning.json` for its recorded numerical outcomes and exact source/model provenance; a later documentation change does not regenerate that campaign.
 
 This is intentional. A tuner result is not a controller until it passes held-out admission.
 

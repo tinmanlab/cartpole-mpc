@@ -1,5 +1,7 @@
 # Sim2Real diagnosis: isolate the failure before changing the controller
 
+> HISTORICAL snapshot at its stated revision/configuration. Numeric results and prior implementation descriptions below are preserved as evidence, not current runtime claims. Current semantics are owned by IMPLEMENTATION_BOUNDARIES.md, MODEL_HIERARCHY.md, CONTROLLERS.md, OBSERVERS.md and MUJOCO_WASM_RUNTIME.md.
+
 A simulation-to-real failure is not a single problem called "reality gap".
 
 The purpose of this repository is to keep the failure axes separable enough that a complex robot project can ask:

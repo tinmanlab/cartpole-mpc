@@ -1,0 +1,157 @@
+{
+  "schema": "cartpole-education-correctness/v1",
+  "baseCommit": "b0a45c8616e60617a4c50325ec259353173de475",
+  "scope": "Educational claims, diagnostics and visualization; no physics, solver library or controller-default replacement",
+  "sourceSha256": {
+    "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
+    "src/app.js": "1d8d5527d107003e216c3ded1ca6374a056c809be7a6468507db0117c96b6e09",
+    "src/topics.js": "20122cb318c5ee0c58d8cd91b0237692f1512e27078bdcfdd2beaac0152f6d47",
+    "src/shell.html": "acc34ee9094a3a557317ffb5fe3e9e47b623c955bf59d6f6752d082861f05cf6",
+    "src/styles.css": "13a15c31bf6c2b752e866099a1e67ee23d5544848f48b89dfbf060c49e887a85",
+    "index.html": "d02d237c0d603f9664dfc5537dc76f82941b325b9d7681f5de5792654f374427",
+    "package.json": "0ee50b8ee44b8596dab20b645fa496f5768e4a6d42b44e642a11f5d98d4e214d",
+    "tests/test_education.mjs": "623d8fd992055056bae196af5a70c910569641317b785d396ef795d840e5198c",
+    "tests/test_browser.py": "37bfbe926a538890173136d1dfe5c7190e965e4efdf41e2c856bd090e7b76733",
+    "docs/ALGORITHM_AUDIT.md": "454163e02e2bdea415ad6f0b00191d442f56cae8b17e292e5b606dbf98510e09",
+    "docs/ARCHITECTURE.md": "68f4aa424f1686eabd205b5838cc780e665eb8b6d8b7124af1b21514e067d7cc",
+    "docs/COMMISSIONING.md": "c7b1ada4c812de2a936f9e43a0ce06660e8a638aac19bc44d80e098c42fbab2a",
+    "docs/CONTROLLERS.md": "4d092deb40f7e2d4b6a6e7f1a9efdd6e352cde97e2edff57b9a184038cd67179",
+    "docs/COVERAGE_MATRIX.md": "0c686020cfe6f1c5c1589728a7360bfbfc39aa33f984cfdf81c7c9895188f708",
+    "docs/EXPERIMENT_DESIGN.md": "523f6484777d78fe2119f8afed5aac65bc652cd21afad3a00cf3cf29925aab53",
+    "docs/FIGURE_TRANSFER.md": "5b5bf161975ea922a63fe5eb7432088abe1ad158046ed771688e19060bc1e34c",
+    "docs/IMPLEMENTATION_BOUNDARIES.md": "4f05a9fb656627a620bd4d2bfa8aaff9c21726c718f50bb2169d13b57c08057a",
+    "docs/MODEL_HIERARCHY.md": "efca40fd7adcd2b2fbbced4db3fc9b5a7c368734df30ecd6e4bdfa0b6264e936",
+    "docs/MUJOCO_WASM_RUNTIME.md": "ed7454d48d8cb347036d28ac4d2749510f1f0cfacc493d32611ad06104845002",
+    "docs/OBSERVERS.md": "9abb23ff3c2c4ce8719461e0ef4691da5deef09456b8bc5f7a7bcbed275bf15b",
+    "docs/REFERENCE_MAP.md": "5576020207e9f8b5569aaa744a6587e78ca14200ca22bdf3d9a13f4fff3ee10b",
+    "docs/ROBOT_SCALE_CHECKLIST.md": "a017899abc7fd64882b68e3adc9611c49719a163b8efb9e69b0787c842ef4fb4",
+    "docs/SIM2REAL_CORRECTNESS_REVIEW_2026-10-04.md": "12616fdafff77b233935cd5aa7a985d24c4e2911b721581acb3bf13eef354429",
+    "docs/SIM2REAL_DIAGNOSIS.md": "cd1544a68f272b733f8bf11022d72e7d0ffee85da68b439251fecabd67d982f6",
+    "docs/THEORY_FAILURE_MAP.md": "08b572c5c6a5a97043726df4c6f7ba77b2aa4a5dc17f4079ef21b386a1ca516d",
+    "docs/TUNING_METHODS.md": "adc9b07c10fdc4bc61ceea9b0bb9e66c3d42f13a037e97eed18ba5b1d5dd856b",
+    "docs/VALIDATION.md": "a0dd7d2dd458805a826e9c1397bd31ee58cf03eab598a2a7a548744fa71637e2",
+    "README.md": "9c3d618caabf4448f96ea5e5b3ce020d5f29a68ed4096240d4bc72ba50449745",
+    "THIRD_PARTY_NOTICES.md": "6bb3f5bbfba338c1b25828b2bca36de2c6df8fef13d1b616415745c3c4f71015",
+    "tests/fixtures/education_controls.json": "cb75a4c60458a9054503f1b46e99a683f3e780e9e1de331646766854ec0f8bd6"
+  },
+  "commands": [
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_terminal_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:terminal",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "browserRecheckedAfterHeaderChange": true,
+  "lessonCount": 28,
+  "reviewedDocCount": 18,
+  "contractTests": [
+    {
+      "name": "all lessons disclose implementation scope and sources",
+      "passed": true
+    },
+    {
+      "name": "local approximate optimizer does not claim convergence",
+      "passed": true
+    },
+    {
+      "name": "reduced plan does not fabricate a four-state trajectory",
+      "passed": true
+    },
+    {
+      "name": "per-component estimation error is separate from tracking",
+      "passed": true
+    },
+    {
+      "name": "scenario teaching matches actual model count and local solver",
+      "passed": true
+    },
+    {
+      "name": "theoretical branches are not renamed local reproductions",
+      "passed": true
+    },
+    {
+      "name": "diagnostic corrections preserve sampled control outputs",
+      "passed": true
+    }
+  ],
+  "fixes": [
+    "Separate model/transcription/numerical method/execution strategy; local LTV is not constrained SQP-RTI",
+    "Convergence is not cost-decrease; preserve separate updateAccepted and null unverified convergence",
+    "Remove uncomputed four-state CoM ghosts; retain true reduced plan",
+    "Separate componentwise estimation error and position tracking, physical units and unavailable diagnostics",
+    "Correct actual UKF H-projection, MHE window/arrival/process-noise/covariance scope and five-model ensemble",
+    "Disclose Truth/oracle input, simulation noise covariance and offline ID supervision",
+    "Remove compulsory MHE/Safe BO/multiple-shooting and only-hard-constraints-are-MPC generalizations",
+    "Separate paper explanation/analogue/implemented scope and source links on all topics",
+    "Qualify repeated test reuse and dated benchmark receipts; preserve historical snapshots",
+    "Remove unverified paper-specific architecture/scale/acceptance details; distinguish abstract and full-text verification"
+  ],
+  "baselineComparison": {
+    "pairedConditions": 40,
+    "executions": 80,
+    "allPhysicalOutcomesAppliedStepsFinalStatesUnchanged": true,
+    "primaryRiccatiCompleted": 24,
+    "boundaryRiccatiCompleted": 16,
+    "manifestSha256": "23594cd723f706ddc881bc84717b5d28cc17370508502a11debcd7662b847742",
+    "controlSequenceFixture": "tests/fixtures/education_controls.json",
+    "controllersWithActionRegression": 5,
+    "stepsPerController": 12
+  },
+  "browser": {
+    "all28TopicsVisited": true,
+    "topicReadDoesNotSwitchRuntime": true,
+    "scopeLinksAndMathLineBreaks": true,
+    "physicalQuantityMetadata": true,
+    "noSyntheticReducedPrediction": true,
+    "pageErrors": [],
+    "webmcpShim": "only callback-registration page; normal UI separately tested without shim"
+  },
+  "remaining": [
+    "Measured-data-only identification/calibration",
+    "Asynchronous acquisition/arrival and delayed fusion",
+    "Hardware sensor-to-actuator timing and protection/recovery domain",
+    "General constrained NMHE/process-noise optimization",
+    "Target-specific contact/actuator models and validated terminal invariant sets"
+  ],
+  "hardwareAdmission": "NOT_EVALUATED",
+  "independentApproval": false,
+  "defaultChanged": false,
+  "mergeDeployment": "Not implied by this implementation receipt",
+  "evidenceNotes": [
+    "Default numerical source outputs remain unchanged in the repeated frozen 80-run test and the sampled five-controller sequence check.",
+    "Tests do not mechanically prove every sentence; source review and exact implementation inspection were also used.",
+    "FOCUS and ContEst details beyond their verified primary abstracts were not asserted.",
+    "Earlier commissioning/audit receipts remain historical at their own recorded hashes."
+  ]
+}

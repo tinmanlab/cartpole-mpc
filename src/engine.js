@@ -26,9 +26,9 @@ const ControlLab = (() => {
   const inv2=M=>{const d=M[0][0]*M[1][1]-M[0][1]*M[1][0];if(Math.abs(d)<1e-12)throw Error('singular 2x2');return [[M[1][1]/d,-M[0][1]/d],[-M[1][0]/d,M[0][0]/d]];};
   const cloneM=A=>A.map(r=>r.slice());
   function outer(a,b){return a.map(x=>b.map(y=>x*y));}
-  function choleskyPSD(A){
+  function choleskyPSD(A,allowJitter=true){
     const n=A.length;
-    for(const jitter of [0,1e-12,1e-10,1e-8,1e-6]){
+    for(const jitter of (allowJitter?[0,1e-12,1e-10,1e-8,1e-6]:[0])){
       const L=zeros(n,n);let ok=true;
       for(let i=0;i<n&&ok;i++)for(let j=0;j<=i;j++){
         let v=A[i][j]+(i===j?jitter:0);
@@ -86,6 +86,27 @@ const ControlLab = (() => {
     }
     const BtP=mul(T(B),P);K=scale(mul(BtP,A),1/(R+mul(BtP,B)[0][0]));
     return {P,K,iterations,converged};
+  }
+  // Reuse the existing Riccati iteration; validate its result without covariance jitter.
+  // This is a local nominal tail cost, not a terminal invariant set or a safety proof.
+  function riccatiTerminal(A,B,Q,R,{maxIter=2000}={}){
+    const matrix=(M,r,c)=>Array.isArray(M)&&M.length===r&&M.every(row=>Array.isArray(row)&&row.length===c&&row.every(Number.isFinite));
+    if(!matrix(A,4,4)||!matrix(B,4,1)||!matrix(Q,4,4)||!Number.isFinite(R)||R<=0)throw Error('Invalid Riccati model or positive cost weights');
+    if(!Number.isInteger(maxIter)||maxIter<1||maxIter>2000)throw Error('Invalid Riccati iteration limit');
+    if(maxAbsDiff(Q,T(Q))>1e-10)throw Error('Riccati state cost must be symmetric');
+    choleskyPSD(Q,false);
+    const result=dare(A,B,Q,R,maxIter);
+    if(!result.converged||!matrix(result.P,4,4))throw Error('Riccati terminal computation did not converge');
+    const norm=M=>Math.max(...M.map(row=>row.reduce((sum,v)=>sum+Math.abs(v),0)));
+    const symmetryError=maxAbsDiff(result.P,T(result.P)),denom=Math.max(1,norm(result.P));
+    if(symmetryError/denom>1e-10)throw Error('Riccati terminal symmetry check failed');
+    const P=scale(add(result.P,T(result.P)),.5); // round-off only; never diagonalize or jitter.
+    choleskyPSD(P,false);
+    const BtP=mul(T(B),P),K=scale(mul(BtP,A),1/(R+mul(BtP,B)[0][0]));
+    const residual=sub(add(Q,sub(mul(mul(T(A),P),A),mul(mul(mul(T(A),P),B),K))),P);
+    const normalizedResidual=norm(residual)/Math.max(1,norm(P));
+    if(!Number.isFinite(normalizedResidual)||normalizedResidual>1e-9)throw Error('Riccati terminal residual check failed');
+    return {P,info:Object.freeze({kind:'dare',source:'nominal-discrete-riccati',converged:true,iterations:result.iterations,normalizedResidual,symmetryError,positiveDefinite:true,scope:'local nominal cost; no invariant terminal set or safety guarantee'})};
   }
   function nominalParams(spec){return {mc:spec.mc,mp:spec.mp,l:spec.l,gain:1,tau:0,delay:0,friction:0,bias:0,pushAmp:0,pushDuration:0,pushOffset:1e9,pushPeriod:1e9,pushSign:1,noise:[0,0,0,0],thetaBias:0,maxForce:spec.force,actuator:'ideal'};}
   function nonlinearStepSubsteps(state,u,spec=PlantRef.DEFAULT_SPEC,params=null,substeps=4){
@@ -212,11 +233,21 @@ const ControlLab = (() => {
   class LinearMPCController{
     constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
       const m=linearModel(spec);this.A=m.A;this.B=m.B;this.limit=spec.force;this.N=opts.N||30;this.positionLimit=opts.positionLimit??null;
-      this.Q=diag(opts.Qdiag||[2,.45,68,3.5]);this.Qf=diag(opts.Qfdiag||[8,1.5,110,7]);this.R=opts.R??.14;
+      this.Q=diag(opts.Qdiag||[2,.45,68,3.5]);this.R=opts.R??.14;
+      const terminal=opts.terminalCost??'original';
+      if(!['original','dare'].includes(terminal))throw Error('Unknown terminal cost option');
+      if(terminal==='dare'&&opts.Qfdiag!==undefined)throw Error('Conflicting terminal cost and Qfdiag');
+      if(terminal==='dare'){
+        const result=riccatiTerminal(this.A,this.B,this.Q,this.R);this.Qf=result.P;this.terminalInfo=result.info;
+      }else{
+        this.Qf=diag(opts.Qfdiag||[8,1.5,110,7]);
+        this.terminalInfo=Object.freeze({kind:'original',source:'configured-diagonal',converged:null,iterations:null,normalizedResidual:null,positiveDefinite:null,scope:'configured terminal penalty; no Riccati convergence claim'});
+      }
       this.U=Array(this.N).fill(0);this.name=this.positionLimit?'Constrained MPC · upstream QP':'Linear MPC';this.lastSolveMs=0;this.lastIterations=0;
     }
     reset(){this.U.fill(0);this.lastPrediction=[];this.lastControls=[];this.lastIterations=0;}
     act(x,goal=0){
+      if(!Array.isArray(x)||x.length!==4||!x.every(Number.isFinite)||!Number.isFinite(goal))throw Error('Invalid MPC state or goal');
       const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
       const sol=solveBoxLinearMpc(this.A,this.B,this.Q,this.R,this.Qf,x0,this.U,this.limit,100,this.positionLimit?{positionLimit:this.positionLimit,goal}:null);
       const out=sol.U[0];this.U=sol.U.slice(1).concat(sol.U.at(-1));
@@ -299,7 +330,7 @@ const ControlLab = (() => {
     }
     act(x,goal=0){
       const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
-      let U=this.U.slice(),cur=constrainedLinearCost(this.A,this.B,x0,U,this.Q,this.R,this.Qf,this.bound),iterations=0,step=.5;
+      let U=this.U.slice(),cur=constrainedLinearCost(this.A,this.B,x0,U,this.Q,this.R,this.Qf,this.bound),iterations=0,step=.5;const initialCost=cur.J;
       for(let it=0;it<100;it++){
         const g=constrainedLinearGradient(this.A,this.B,cur.X,U,this.Q,this.R,this.Qf,this.bound);let accepted=false;
         for(let bt=0;bt<14;bt++){
@@ -309,7 +340,7 @@ const ControlLab = (() => {
         iterations++;if(!accepted)break;
       }
       const out=U[0];this.U=U.slice(1).concat(U.at(-1));this.lastPrediction=cur.X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();
-      this.lastCost=cur.J;this.lastIterations=iterations;this.lastConverged=true;this.lastPredictedStateViolation=Math.max(0,...cur.X.map(q=>Math.abs(q[0])-this.bound.hard));
+      this.lastCost=cur.J;this.lastIterations=iterations;this.lastConverged=null;this.lastUpdateAccepted=cur.J<initialCost;this.lastTermination='bounded-search; optimality-not-verified';this.lastPredictedStateViolation=Math.max(0,...cur.X.map(q=>Math.abs(q[0]+goal)-this.bound.hard));
       this.lastSolveMs=clock.now()-t0;return out;
     }
   }
@@ -320,7 +351,7 @@ const ControlLab = (() => {
       this.A=[[1,DT],[0,1]];this.B=[[.5*DT*DT/this.mass],[DT/this.mass]];
       this.Q=diag([14,2.2]);this.Qf=diag([28,5]);this.R=.045;this.U=Array(this.N).fill(0);
       const inner=new LQRController(spec);this.innerK=inner.K.slice();this.lookahead=12;
-      this.name='Centroidal-style reduced MPC';this.lastSolveMs=0;this.lastIterations=0;
+      this.name='Reduced CoM planner + LQR';this.predictionSpace='reduced-com';this.lastSolveMs=0;this.lastIterations=0;
     }
     reset(){this.U.fill(0);this.lastPredictionReduced=[];this.lastPrediction=[];this.lastControls=[];this.lastReference=[0,0];this.lastIterations=0;}
     reducedState(x,goal){const c=x[0]+this.alpha*Math.sin(x[2]),cd=x[1]+this.alpha*Math.cos(x[2])*x[3];return [c-goal,cd];}
@@ -331,7 +362,7 @@ const ControlLab = (() => {
       const look=sol.X[Math.min(this.lookahead,sol.X.length-1)],xRef=look[0]+goal,vRef=look[1];
       const e=[x[0]-xRef,x[1]-vRef,wrap(x[2]),x[3]],u=clamp(-dot(this.innerK,e),-this.limit,this.limit);
       this.lastPlannerForce=plannerForce;this.lastReference=[xRef,vRef];this.lastControls=sol.U.slice();this.lastPredictionReduced=sol.X.map(z=>[z[0]+goal,z[1]]);
-      this.lastPrediction=sol.X.map((z,k)=>{const a=Math.min(1,k/Math.max(1,this.lookahead)),th=x[2]*(1-a),om=x[3]*(1-a);return [z[0]+goal,z[1],th,om];});
+      this.lastPrediction=[];this.predictionSpace='reduced-com'; // No θ/ω forecast exists in this planner.
       this.lastCost=sol.J;this.lastIterations=sol.iterations;this.lastConverged=sol.converged;this.lastSolver=sol.solver;this.lastKktResidual=sol.kktResidual;this.lastPrimalResidual=sol.primalResidual;this.lastStateConstrained=sol.stateConstrained;this.lastSolveMs=clock.now()-t0;return u;
     }
   }
@@ -398,7 +429,7 @@ const ControlLab = (() => {
     constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
       super(spec);this.N=opts.N||30;this.U=Array(this.N).fill(0);
       this.Q=diag(opts.Qdiag||[6,.8,76,4]);this.Qf=diag(opts.Qfdiag||[18,2.4,120,8]);this.R=opts.R??.12;
-      this.reg=opts.reg??1e-4;this.name='LTV MPC · one-step SQP/RTI bridge';
+      this.reg=opts.reg??1e-4;this.name='LTV approximation · one iLQR update';
     }
     act(x,goal=0){
       const clock=typeof performance!=='undefined'?performance:Date,t0=clock.now(),x0=[x[0]-goal,x[1],wrap(x[2]),x[3]];
@@ -418,7 +449,7 @@ const ControlLab = (() => {
       if(accepted){U=bestU;X=bestX;best=bestCost;}
       const out=clamp(U[0],-this.limit,this.limit);this.U=U.slice(1).concat(U.at(-1));
       this.lastPrediction=X.map(q=>[q[0]+goal,q[1],q[2],q[3]]);this.lastControls=U.slice();this.lastCost=best;
-      this.lastIterations=1;this.lastConverged=accepted;this.lastSolveMs=clock.now()-t0;return out;
+      this.lastIterations=1;this.lastConverged=null;this.lastUpdateAccepted=accepted;this.lastTermination='one-local-update; optimality-not-verified';this.lastSolveMs=clock.now()-t0;return out;
     }
   }
 
@@ -443,7 +474,7 @@ const ControlLab = (() => {
     step(y,u){const before=this.x.slice(),F=numericJacobian(before,u,this.spec);this.x=nonlinearStep(before,u,this.spec);this.P=add(mul(mul(F,this.P),T(F)),this.Q);return this.update(y);}
   }
   class SO2Observer extends EKFObserver{
-    constructor(spec,opts){super(spec,opts);this.name='SO(2) invariant-error bridge';this.wrapInnovation=true;}
+    constructor(spec,opts){super(spec,opts);this.name='SO(2) wrapped-angle EKF';this.wrapInnovation=true;}
   }
   class RawObserver{
     constructor(){this.name='Raw sensor';this.prev=null;this.x=[0,0,0,0];this.P=null;}
@@ -566,14 +597,14 @@ const ControlLab = (() => {
     outputCovariance(){return null;}
   }
 
-  function makeController(name,spec,actor,opts={}){if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec,opts);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec,opts);if(name==='hard_mpc')return new LinearMPCController(spec,{...opts,positionLimit:opts.positionLimit??2.4});if(name==='scenario_mpc')return new ScenarioMPCController(spec,opts);if(name==='state_mpc')return new StateAwareLinearMPCController(spec,opts);if(name==='ltv_mpc')return new LTVMPCController(spec,opts);if(name==='supervised_nmpc')return new SupervisedNMPCController(spec,opts);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
+  function makeController(name,spec,actor,opts={}){if(opts.terminalCost!==undefined&&!['mpc','linear_mpc','hard_mpc'].includes(name))throw Error('Unsupported terminal cost option for '+name);if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec,opts);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec,opts);if(name==='hard_mpc')return new LinearMPCController(spec,{...opts,positionLimit:opts.positionLimit??2.4});if(name==='scenario_mpc')return new ScenarioMPCController(spec,opts);if(name==='state_mpc')return new StateAwareLinearMPCController(spec,opts);if(name==='ltv_mpc')return new LTVMPCController(spec,opts);if(name==='supervised_nmpc')return new SupervisedNMPCController(spec,opts);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
   function makeObserver(name,spec,opts={}){if(name==='truth')return new TruthObserver();if(name==='raw')return new RawObserver();if(name==='kf')return new KFObserver(spec,opts);if(name==='ekf')return new EKFObserver(spec,opts);if(name==='so2')return new SO2Observer(spec,opts);if(name==='ukf')return new UKFObserver(spec,opts);if(name==='mhe')return new ShootingMHEObserver(spec,opts);if(name==='residual')return new ResidualObserver(spec,opts);if(name==='adaptive')return new AdaptiveRObserver(spec,opts);throw Error('unknown observer');}
   function runEpisode({controller='lqr',observer='kf',scenario='nominal',seed=1,steps=500,goal=0,actor=null,residualModel=null,controllerOpts={},observerOpts={},pushAt=120,pushForce=3,initialState=null}={}){
     const plant=new LabPlant({seed,scenario});if(initialState)plant.reset(initialState);const ctl=makeController(controller,plant.spec,actor,controllerOpts);
     const baseR=plant.measurementVariance().map(v=>v*(observerOpts.RScale??1)),obs=makeObserver(observer,plant.spec,{...observerOpts,model:residualModel,R:observerOpts.R||baseR});
     plant.goal=goal;const y0=plant.sensor();obs.reset(y0,plant.s);ctl.reset();
     let xh=obs.outputX?obs.outputX.slice():obs.x.slice(),se=0,ae=0,maxAngle=0,maxPosition=0,failed=false,solveMs=0,solveN=0,iterSum=0,solveTimes=[],sumU2=0,maxU=0,sumActErr2=0;
-    const trace=[];
+    const trace=[],seByState=[0,0,0,0];let trackingSE=0;
     for(let k=0;k<steps;k++){
       const uu=ctl.act(xh,goal);sumU2+=uu*uu;maxU=Math.max(maxU,Math.abs(uu));
       if(Number.isFinite(ctl.lastSolveMs)){solveMs+=ctl.lastSolveMs;solveN++;solveTimes.push(ctl.lastSolveMs);iterSum+=(ctl.lastIterations??0);}
@@ -581,17 +612,18 @@ const ControlLab = (() => {
       const out=plant.step(uu),y=plant.sensor();sumActErr2+=(uu-(out.appliedCommand??uu))**2;
       xh=obs.step(plant.sensorMeta.fresh?y:null,uu,out.state);
       const err=out.state.map((v,i)=>i===2?wrap(v-xh[i]):v-xh[i]);
+      err.forEach((v,i)=>seByState[i]+=v*v);trackingSE+=(out.state[0]-goal)**2;
       se+=err.reduce((ss,v)=>ss+v*v,0);ae+=Math.abs(out.state[2]);maxAngle=Math.max(maxAngle,Math.abs(out.state[2]));maxPosition=Math.max(maxPosition,Math.abs(out.state[0]));
       const Pout=obs.outputCovariance?obs.outputCovariance():obs.P;
-      trace.push({k,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()??null,measurementUsed:obs.last?.measurementUsed??plant.sensorMeta.fresh,
+      trace.push({k,terminalCost:ctl.terminalInfo?.kind??null,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()??null,measurementUsed:obs.last?.measurementUsed??plant.sensorMeta.fresh,
         P:Pout?cloneM(Pout):null,baseP:obs.P?cloneM(obs.P):null,S:obs.last?.S?cloneM(obs.last.S):null,reliability:obs.last?.reliability?.slice?.()||null,observerIterations:obs.last?.iterations??0,observerCost:obs.last?.cost??0,observerWindow:obs.last?.window??0,external:out.external,appliedCommand:out.appliedCommand??uu,forceLimit:out.forceLimit??plant.spec.force,thermalState:out.thermalState??0,sensorFresh:plant.sensorMeta?.fresh??true,sensorFault:plant.sensorMeta?.fault??null});
       if(out.failed){failed=true;break;}
     }
     const sortedSolve=solveTimes.slice().sort((a,b)=>a-b),p95SolveMs=sortedSolve.length?sortedSolve[Math.min(sortedSolve.length-1,Math.ceil(.95*sortedSolve.length)-1)]:0;
     const deadlineMs=DT*1000,deadlineMisses=solveTimes.filter(v=>v>deadlineMs).length;
-    return {controller,observer,scenario,physics:physicsInfo(),informationProvenance:{measurementCovariance:observerOpts.R?'provided':'injected-noise-oracle',runtimeState:observer==='truth'?'simulation-truth':'sensor-estimate',predictionModel:'nominal-model'},steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
+    return {controller,observer,scenario,estimationRmseByState:seByState.map(v=>Math.sqrt(v/Math.max(1,trace.length))),positionTrackingRmse:Math.sqrt(trackingSE/Math.max(1,trace.length)),stateUnits:['m','m/s','rad','rad/s'],legacyRmseScope:'mixed-units; not a controller score',terminalCost:ctl.terminalInfo??null,physics:physicsInfo(),informationProvenance:{measurementCovariance:observerOpts.R?'provided':'injected-noise-oracle',runtimeState:observer==='truth'?'simulation-truth':'sensor-estimate',predictionModel:'nominal-model'},steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
   }
 
-  return {DT,setPhysicsBackend,physicsInfo,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,nonlinearStepSubsteps,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,SupervisedNMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,UKFObserver,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
+  return {DT,setPhysicsBackend,physicsInfo,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,riccatiTerminal,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,nonlinearStepSubsteps,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,SupervisedNMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,UKFObserver,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
 })();
 if(typeof module!=='undefined')module.exports=ControlLab;

@@ -100,7 +100,7 @@ Core idea:
 - enforce positive-definite covariance constraints,
 - validate on quadrupedal and bipedal/legged platforms and real hardware.
 
-This is a better Figure reference for Q_e/R_e + kinematic calibration than hand tuning.
+This is a relevant covariance/kinematic calibration reference; benefit over another method must be measured for the actual data and estimator. Conference placement is not asserted here.
 
 ## Online covariance adaptation
 
@@ -120,6 +120,8 @@ Use online adaptation around a calibrated estimator. It does not make offline ca
 
 ### ContEst
 
+Verification level: official indexed abstract recovered; full text and code were not independently reproduced in this audit. A failed page fetch alone does not establish that a paper is nonexistent.
+
 Paper:
 - https://arxiv.org/abs/2609.36090
 
@@ -129,7 +131,7 @@ Core idea:
 - approximate EKF-MPC extension for nonlinear constrained systems.
 
 Important limitation for humanoids:
-- the paper itself notes scaling and approximation limits in the nonlinear information-state formulation,
+- nonlinear extension and detailed scalability/guarantee claims need a full-text and implementation check before adoption,
 - therefore use it as a research direction after staged commissioning, not as a reason to collapse every Figure subsystem into one optimizer.
 
 ## Invariant and learned legged estimation lineage
@@ -147,7 +149,7 @@ Important limitation for humanoids:
 - FOCUS:
   https://arxiv.org/abs/2609.02222
 
-These papers modify different interfaces. Do not group them under one generic "learned observer" label.
+These papers modify different interfaces. FOCUS is verified at official abstract level here; full-text network widths, thresholds and scale formulas were not rechecked and were removed from the active lesson. CoCo/InNKF and EKF+MHE were inspected at original HTML text level. No cited robot/network benchmark is locally reproduced merely by listing the source.
 
 ## Native dynamics / geometry
 
@@ -159,3 +161,14 @@ For a humanoid:
 - OCP: OCS2/acados as appropriate.
 
 The CartPole repository owns the **commissioning logic and diagnostic questions**, not the production humanoid solver.
+
+## General teaching references and scope
+
+- LQR and finite-horizon/local nonlinear use: https://underactuated.mit.edu/lqr.html
+- OCP formulation, RTI phases, soft constraints and MHE examples: https://docs.acados.org/features/
+- Convex input/state-constrained MPC: https://osqp.org/docs/examples/mpc.html
+- KF reference implementation: https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html
+- PPO original method: https://arxiv.org/abs/1707.06347
+- EKF+MHE paper: https://arxiv.org/html/2405.20567v1
+
+Research capabilities, a local optional reproduction and a browser-deployed implementation are separate states. Pinocchio is dynamics/kinematics/derivatives software, not an OCP optimizer. Native acados/HPIPM experiments in a separate unmerged research change do not make the deployed browser run acados. See each source's actual inspected content rather than treating paper titles, author conclusions or prior assistant reports as universal guarantees.

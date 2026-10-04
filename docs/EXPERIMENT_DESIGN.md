@@ -131,3 +131,11 @@ Replace CartPole-specific quantities with:
 
 The test design stays the same:
 one assumption per diagnostic arm, then combined held-out admission.
+
+## Units, selection effects and interpretation
+
+The truth-scoring rule applies to non-oracle admission arms. Explicit oracle diagnostic arms feed truth to the controller and must be labelled. The current simulated R_e calibration also uses injected-noise knowledge. No hardware-ready information contract follows from a realistic-looking plant.
+
+Use positionTrackingRmse for position-reference tracking and estimationRmseByState for [m,m/s,rad,rad/s] errors. Historical rmseState is a mixed-unit estimator aggregate, not physical position error or a controller score. DONE is envelope completion, not target achievement or certified safety. Per-quantity plot scales are independently labelled; visually equal amplitudes across bands do not imply equal physical magnitudes.
+
+For early termination, preserve the failure outcome and compare common prefixes or both-completed full durations with exclusions. A set reused for design/admission is no longer untouched final-test data. Chi-square assumptions, gauge rank and serial dependence matter for NIS/NEES. A finite deterministic grid is not an independent random sample proving a rare-failure bound.

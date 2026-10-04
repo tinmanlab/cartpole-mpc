@@ -7,7 +7,7 @@
     "build": "python3 scripts/build.py",
     "check:build": "python3 scripts/build.py --check",
     "check:js": "node --check src/qp.js && node --check src/mujoco_backend.mjs && node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/commissioning.js && node --check src/topics.js && node --check src/app.js",
-    "test": "node tests/test_engine.js && node tests/test_math.js && node tests/test_commissioning.js && node tests/test_diagnosis.js && node tests/test_commissioning_contracts.js && node tests/test_runtime_contracts.js",
+    "test": "node tests/test_engine.js && node tests/test_math.js && node tests/test_commissioning.js && node tests/test_diagnosis.js && node tests/test_commissioning_contracts.js && node tests/test_runtime_contracts.js && node tests/test_terminal.mjs && node tests/test_education.mjs",
     "train:residual": "node scripts/train_residual.js",
     "check": "npm run check:assets && npm run check:js && npm run check:build && npm test",
     "commission": "node scripts/run_commissioning.js && node scripts/diagnose_commissioning.js",
@@ -17,7 +17,9 @@
     "check:assets": "python3 scripts/vendor_runtime.py --check",
     "test:wasm": "node tests/test_mujoco_wasm.mjs",
     "test:wasm-native": ".venv-native/bin/python tests/test_wasm_native.py",
-    "test:browser": "python3 tests/test_browser.py"
+    "test:browser": "python3 tests/test_browser.py",
+    "test:terminal": "node tests/test_terminal.mjs",
+    "validate:terminal": "node scripts/validate_terminal.mjs"
   },
   "dependencies": {
     "@mujoco/mujoco": "3.7.0",

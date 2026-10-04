@@ -1,5 +1,7 @@
 {
-  "schema": "cartpole-browser-wasm/v1",
+  "educationScopesAndUnitsPassed": true,
+  "noSyntheticReducedPrediction": true,
+  "schema": "cartpole-browser-wasm/v2",
   "physics": {
     "backend": "mujoco-wasm",
     "version": "3.7.0",
@@ -12,12 +14,16 @@
     "controlDt": 0.02
   },
   "solver": {
+    "predictionSpace": "nominal-full-state",
+    "predictionAppliesTo": "nominal-plan",
+    "updateAccepted": null,
+    "termination": null,
     "implementation": "quadprog-goldfarb-idnani",
     "kktResidual": 4.440892098500626e-15,
     "primalResidual": 0,
     "stateConstrained": false,
     "converged": true,
-    "solveMs": 1,
+    "solveMs": 0.6000000238418579,
     "iterations": 1,
     "horizon": 30,
     "cost": 0.481777268141887
@@ -33,12 +39,15 @@
   "browserQpParityPassed": true,
   "invalidCommandStoppedBeforePlant": true,
   "missingWasmFailClosed": true,
+  "terminalOptionActualBrowserPassed": true,
+  "terminalConstructorFailureStopped": true,
+  "terminalProbeAndComparisonPassed": true,
   "comparisonRejectionIsolated": true,
   "timing": {
     "sourceStateTime": 1.18,
     "postStateTime": 1.2,
-    "solveToApplyMs": 0.5999999940395355,
-    "computeMs": 0.7000000178813934,
+    "solveToApplyMs": 0.4000000059604645,
+    "computeMs": 0.5999999940395355,
     "deadlineMs": 20,
     "missedComputeDeadline": false,
     "scope": "synchronous simulated loop; not hardware timing"

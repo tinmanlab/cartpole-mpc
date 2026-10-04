@@ -49,7 +49,7 @@ Hard constraints constrain the **prediction using the estimated state and nomina
 
 A non-finite command or solver exception stops the simulation before applying that invalid input. A failed plant envelope stops further stepping. The UI shows FAULT and requires reset; it does not label a zero-force guess as a safe hardware policy. Missing runtime assets keep controls disabled rather than switching engines.
 
-Live state and trace expose source/post-step simulation times, solve-to-application compute time, total synchronous step compute time and missed compute deadlines. These are browser-host measurements in a synchronously stepped simulation. Sensor transport to physical hardware, arbitrary out-of-order sensor fusion, stale hardware commands and hard-real-time scheduling remain unverified. `D08_REALTIME` remains measured-only, not an end-to-end safety certificate.
+Live state and trace expose source/post-step simulation times, solve-to-application compute time, total synchronous step compute time and missed compute deadlines. These are browser-host measurements in a synchronously stepped simulation. Sensor transport to physical hardware, arbitrary out-of-order sensor fusion, stale hardware commands and hard-real-time scheduling remain unverified. `D08_REALTIME` distinguishes measured-only/investigation from end-to-end admission; consult the exact receipt rather than treating this document as live status.
 
 The default hard-rail controller also has a separate mixed/latency/sim2real/glitch stress grid in `evidence/mujoco_wasm.json`. Completed trials, state-envelope failures and infeasible-QP rejections are distinct outcomes. The grid is not required to pretend that all disturbances are recoverable. The comparison UI preserves each rejected solver as a `REJECT` cell and yields between cells; one failed candidate no longer discards the entire comparison.
 
@@ -91,3 +91,5 @@ Hardware admission remains **NOT_EVALUATED**. Estimator noise/model calibration 
 - MuJoCo model/integration conventions: https://mujoco.readthedocs.io/en/stable/computation/index.html
 - quadprog upstream: https://github.com/albertosantini/quadprog
 - Independent OSQP MPC formulation: https://osqp.org/docs/examples/mpc.html
+
+The reduced CoM controller now renders only its real reduced prediction. Supervisor overlays label the primary plan when a backup is applied. The educational UI separates units, estimation error and reference tracking; these display/diagnostic corrections do not claim a new plant or controller safety proof.

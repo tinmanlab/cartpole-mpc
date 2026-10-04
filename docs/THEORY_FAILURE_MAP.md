@@ -79,13 +79,13 @@ For a humanoid, "we use NMPC" is incomplete unless it also states:
       linear Gaussian
 
     EKF / ESKF
-      nonlinear Euclidean error with local Jacobians
+      nonlinear prediction with local error-coordinate Jacobians; error geometry is a separate choice
 
     InEKF
       invariant error when Lie-group/group-affine structure is useful
 
     UKF / sigma-point
-      nonlinear propagation without explicit Jacobians, at higher sample cost
+      multiple-point nonlinear propagation without explicit Jacobians; measured cost depends on the model
 
     MHE / NMHE
       recent-window optimization, useful for explicit constraints and parameter/state coupling
@@ -127,4 +127,8 @@ Do not call domain randomization "robust MPC". It is an experiment/training dist
     → safe residual tuning
     → runtime adaptation and fault handling
 
-This order is more important than any particular optimizer.
+This is an iterative diagnostic template, not a universally required ordering or algorithm list.
+
+## Limits of diagnosis labels
+
+An observed symptom need not identify a unique cause. Successful local rank/fit tests do not establish nonlinear global observability, identifiability or recovery. Numerical rejection, solver-reported infeasibility and a true plant-envelope violation are separate observations; a nonlinear solver failure does not prove global infeasibility. The local soft band is goal-relative while hard rail is world-relative. Improving one metric does not justify changing this distinction or declaring safety.

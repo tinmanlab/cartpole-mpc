@@ -10,11 +10,11 @@ Legend:
 | Area | Status | CartPole coverage | Complex-robot path |
 |---|---|---|---|
 | MuJoCo WASM plant / MJCF | EXECUTABLE | official pinned runtime, one canonical explicit-inertia MJCF, native replay and geometry checks | robot-specific validated MJCF and declared full simulator state |
-| PID / low-level feedback | EXECUTABLE | cascaded feedback | joint torque/position feedback |
+| PID / low-level feedback | EXECUTABLE | coupled feedback | joint torque/position feedback |
 | LQR | EXECUTABLE | discrete shared-plant Jacobian | local linear controller/terminal model |
 | linear constrained MPC | EXECUTABLE | input-box constrained horizon | sparse QP MPC |
 | linear state constraints | EXECUTABLE | hard world-rail QP plus separately labelled soft-penalty comparison | nonlinear path/contact constraints remain a native OCP task |
-| LTV / successive linearization | BRIDGE | one RTI-style update/tick | SQP-RTI / multiple shooting |
+| LTV / successive linearization | BRIDGE | one iLQR-style update/tick, not constrained SQP-RTI | SQP-RTI / multiple shooting |
 | reduced-order MPC | BRIDGE | CoM planner + lower layer | centroidal momentum/contact-wrench MPC |
 | nonlinear MPC | EXECUTABLE | 4-state single-shooting iLQR-style | sparse full-order NMPC |
 | robust/stochastic MPC | BRIDGE | executable finite-model scenario-risk MPC + taxonomy; no formal robustness guarantee | tube/min-max/scenario/chance MPC |
@@ -23,11 +23,11 @@ Legend:
 | terminal invariant set | CONCEPT | not implemented | task-specific MPC stability design |
 | recursive KF | EXECUTABLE | linear KF | sensor-specific KF/ESKF |
 | EKF | EXECUTABLE | nonlinear mean/Jacobian | floating-base nonlinear filter |
-| UKF | EXECUTABLE | sigma-point nonlinear Gaussian filter | Jacobian-free nonlinear Gaussian filtering when justified |
+| UKF | EXECUTABLE | sigma-point prediction + local linear-H update | Jacobian-free nonlinear Gaussian filtering when justified |
 | invariant EKF | BRIDGE | SO(2) error geometry only | SO(3)/SE(3)/SE_2(3) InEKF |
-| MHE | BRIDGE | nonlinear single-shooting window | constrained sparse MHE/NMHE |
+| MHE | BRIDGE | 8-transition deterministic shooting; no calibrated output P | constrained sparse MHE/NMHE |
 | factor graph / smoothing | CONCEPT | not implemented | VIO/VILO/factor graph when needed |
-| estimator consistency | EXECUTABLE offline | NIS/NEES commissioning metric | statistical calibration over held-out data |
+| estimator consistency | EXECUTABLE offline | heuristic NIS/NEES diagnostics; assumptions not certified | statistical calibration over held-out data |
 | adaptive covariance | BRIDGE | innovation-based observation R | residual/contact-reliability adaptation |
 | learned residual estimator | BRIDGE | output-only residual MLP | InNKF-style learned correction if justified |
 | learned contact/reliability | CONCEPT | Lin/Youm/CoCo/FOCUS pages | robot-specific learned measurement authority |
@@ -37,7 +37,7 @@ Legend:
 | controller tuning | EXECUTABLE offline | LQR CEM + structured Linear-MPC horizon/cost search with held-out accept/reject gates | DiffTune/BO/Safe BO as appropriate |
 | control-estimation co-design | BRIDGE | low-dimensional closed-loop CEM co-tuning + held-out gate | ContEst/differentiable/bilevel co-design when tractable |
 | model validity envelope | EXECUTABLE offline | fixed-angle sweep across LQR/Linear/State-aware/LTV/Full-NMPC | robot-specific operating-envelope evidence |
-| train/validation/test split | EXECUTABLE | disjoint conditions/seeds + accept/reject gate | mandatory deployment evidence |
+| train/validation/test split | EXECUTABLE | disjoint conditions/seeds + accept/reject gate; reused test becomes development data | deployment evaluation matched to its sampling assumptions |
 | sensor noise / bias / outlier | EXECUTABLE | white noise, bias random walk, deterministic glitch | measured sensor models + robust update |
 | colored noise / packet faults | EXECUTABLE | AR(1) colored noise, dropout metadata with prediction-only assimilation, stuck sensor + fault metadata | timestamp-aware fault detection, colored-noise/robust sensor model |
 | actuator lag/gain | EXECUTABLE | isolated first-order lag/gain scenario + combined stack | identified motor/drive model |
@@ -68,3 +68,7 @@ For reuse in Figure or another robot, require:
 6. explicit claim boundaries.
 
 The CartPole lab should stay small enough that every executable item can be audited numerically.
+
+## Visible educational scope
+
+All 28 lessons have explicit source and implementation labels. Realized scope is shown separately from the live controller/observer. Per-component error units, genuine reduced-only predictions, missing covariance and unverified optimizer convergence are visible rather than inferred from an attractive diagram or a green DONE cell.

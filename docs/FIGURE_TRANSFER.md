@@ -1,5 +1,7 @@
 # Figure transfer map
 
+> HISTORICAL project-comparator context, not independently refreshed Figure repository status or the architecture of every humanoid. Exact source-specific state/input choices below are examples, not universal definitions.
+
 Purpose: use CartPole as a small commissioning laboratory, then replace each educational implementation with the native authority appropriate for a floating-base multi-contact robot.
 
 This document does **not** assert that the local Figure checkout is current upstream state. The mapping below is anchored to the locally verified Figure evidence dated 2026-09-29 through 2026-10-01.
@@ -24,7 +26,7 @@ and replace each implementation with a robot-scale native implementation.
 |---|---|---|
 | nonlinear plant | floating-base rigid-body + contact plant | MuJoCo / robot descriptor |
 | fixed LTI model | one equilibrium/contact-mode linearization | analytical/AD rigid-body derivatives |
-| LTV / RTI bridge | relinearize along current trajectory/contact mode | OCS2/acados SQP-RTI |
+| One-update LTV analogue | relinearize along current trajectory/contact mode | OCS2/acados SQP-RTI |
 | Full NMPC | full-order floating-base OCP | OCS2 full-order / acados + Pinocchio |
 | centroidal-style MPC | centroidal momentum/contact-wrench OCP | OCS2 centroidal stack |
 | soft cart bound | joint/contact/collision/path constraints | native OCP constraints |
@@ -36,11 +38,11 @@ and replace each implementation with a robot-scale native implementation.
 | Adaptive-R bridge | contact/FK reliability covariance | residual adaptation / FOCUS / CoCo where evidence supports it |
 | system ID | link inertia, kinematic, actuator and latency ID | physically constrained SysID + actuator repo |
 | CEM calibration | covariance/kinematics calibration | bilevel / likelihood / offline calibration |
-| black-box gain tuning | residual hardware feedback gain tuning | Safe BO after a safe seed exists |
+| black-box gain tuning | residual hardware feedback gain tuning | Safe BO when its safe-seed/confidence assumptions and protections hold |
 | sim2real scenario | real-signal, actuator, timing, contact and model mismatch brackets | Figure evidence harness |
 | advanced failure injection | colored noise, stale/stuck sensors, jitter, torque-speed, thermal derating, discretization | measured telemetry + actuator/timing/native sensor models |
 
-## Current Figure evidence this should address
+## Historical Figure evidence motivating the research
 
 ### State-estimation boundary
 

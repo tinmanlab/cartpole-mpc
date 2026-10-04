@@ -94,7 +94,7 @@ For legged/humanoid systems:
 - [ ] Recovery behavior is tested outside nominal tracking.
 - [ ] Estimator-in-loop behavior is tested.
 
-Model hierarchy:
+Model choices (not a required upgrade sequence):
 
     fixed LTI
     → LTV / successive linearization
@@ -141,7 +141,7 @@ Possible higher-level tools include:
 - reachability/viability analysis,
 - runtime monitors.
 
-These are not implemented in CartPole-MPC and must not be inferred from it.
+A heuristic primary-plan monitor/LQR switch is implemented, but certified CBF, reachability and hardware interlock behavior are not. The heuristic is not their substitute.
 
 ## I. MPC/NMPC numerical health
 
@@ -162,7 +162,7 @@ For humanoids, use native sparse solver diagnostics from OCS2/acados rather than
 
 ## J. Identification and tuning
 
-Order:
+Suggested iterative starting order, with task-dependent omissions and feedback:
 
     model/actuator/latency ID
     → estimator calibration
@@ -216,3 +216,9 @@ Never skip directly from step 2 to step 9 and then tune until it works.
 - [ ] Integration timestep/integrator convergence is checked before gain retuning.
 - [ ] UKF/MHE/factor-graph alternatives are selected because of structural need, not algorithm novelty.
 - [ ] Joint control-estimation tuning is attempted only after model/estimator/controller blocks have independent evidence.
+
+## Interpretation boundary
+
+This checklist asks robot-specific questions; unchecked entries are not features implemented by CartPole. Linear controllability/observability rank is local and does not prove constrained global reachability or contact-state identifiability. No-slip, rigid contact and sensor independence are assumptions to test, not generic truths. A Riccati tail cost alone is not an invariant terminal set; solver success and simulated pause are not physical safety/stop guarantees. Pinocchio supplies dynamics/derivatives rather than OCP optimization. Safe BO, MHE and multiple shooting are conditional choices, not compulsory upgrades.
+
+Remaining substantive work includes measured-data-only calibration, true asynchronous timestamp/fusion and end-to-end execution validation, identified actuator/contact models, and platform-specific verified recovery/protection. Educational wording corrections do not close these engineering gates.

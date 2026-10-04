@@ -1,200 +1,90 @@
-# Observers and learned estimator lineage
+# Observers: model, information, uncertainty and comparison
 
-The sequence on this page is a map of modeling ideas, not a claim that each item is a universal upgrade over the previous one.
+The lesson order is not a universal performance ranking. Controller costs Q_c/R_c/P_f and estimator Q_e/R_e/P have distinct meanings. The UI names both the lesson's scope and the actual running configuration.
 
-## Discrete-time contract used by the lab
+## Time, information and missing data
 
-The live loop is timestamp-aligned as:
+The simulated loop is x_hat_k -> u_cmd_k -> plant x_(k+1) -> y_(k+1) -> x_hat_(k+1). This post-step row alignment is not an asynchronous acquisition/arrival timestamp implementation. Delayed and out-of-sequence fusion remain separate tasks.
 
-    x_hat_k
-       ↓ controller
-      u_k
-       ↓ plant
-    x_(k+1)
-       ↓ sensor
-    y_(k+1)
-       ↓ observer predict/update using u_k
-    x_hat_(k+1)
+The estimator receives requested command, not privileged realized actuator force. Lag/gain/delay therefore create unknown-input error. In normal observer modes the controller receives an estimate. **Truth/oracle is an exception: it feeds simulator truth to the controller.** Its zero error/P is not a calibrated sensor or hardware confidence interval.
 
-Truth, measurement, and estimate stored in one trace row therefore refer to the same post-step time.
+Scenario R_e is initialized from injected simulation variance; offline ID/training can also use truth. This is disclosed simulation knowledge, not sensor-only calibration. Known dropout triggers prediction-only updates, not repeated assimilation of a held packet. A delivered frozen sensor is a different fault.
 
-## Raw
+Raw differences use the elapsed interval between valid measurements. For independent equal-variance errors, velocity-noise variance is 2*sigma²/dt²; temporal correlations alter this expression. No calibrated output P is claimed.
 
-The raw baseline measures position and angle and differentiates them:
+## KF and EKF
 
-    v_hat ~= (p_k - p_(k-1)) / dt
-    omega_hat ~= wrap(theta_k - theta_(k-1)) / dt
+The standard discrete linear, independent-noise equations are:
 
-This exposes noise amplification immediately. No calibrated covariance P is claimed for this finite-difference output.
+    x_minus = A x_plus + B u
+    P_minus = A P_plus Aᵀ + Q_e
+    innovation = y - H x_minus
+    S = H P_minus Hᵀ + R_e
+    K = P_minus Hᵀ S⁻¹
+    x_plus = x_minus + K innovation
+    P_plus = (I-KH) P_minus (I-KH)ᵀ + K R_e Kᵀ
 
-## Kalman Filter
+Correct Gaussian prior/noise and linear modeling give a conditional-mean/covariance interpretation. Under appropriate second-moment assumptions without Gaussianity, a linear minimum-variance claim is narrower. Correlated noise needs modified equations. Joseph form improves numerical handling, not a wrong physical model. Cross covariance couples position/angle corrections into velocities; it does not make an unobservable state observable.
 
-The KF uses the upright discrete linearization of the same shared plant transition.
-
-    x_hat_minus = A x_hat_plus + B u
-    P_minus = A P_plus A^T + Q
-
-    residual = y - H x_hat_minus
-    K = P_minus H^T (H P_minus H^T + R)^-1
-    x_hat_plus = x_hat_minus + K residual
-
-Definitions:
-- P: covariance of the current state-estimation error under the filter model,
-- Q: configured process/model uncertainty,
-- R: measurement-noise covariance.
-
-For the Gaussian-noise scenarios in this lab, R is initialized from the actual injected measurement standard deviations for that scenario. Q remains a deliberately tuned educational process covariance; it is not claimed to be identified from hardware data.
-
-The covariance correction uses the Joseph form:
-
-    P_plus = (I-KH) P_minus (I-KH)^T + K R K^T
-
-which is more numerically robust than the shorthand (I-KH)P.
-
-## EKF
-
-The EKF keeps the Kalman update structure but propagates the mean through nonlinear dynamics:
-
-    x_hat_minus = f(x_hat_plus, u)
-    F = df/dx at the current estimate
-    P_minus = F P_plus F^T + Q
-
-The runtime uses a central-difference Jacobian of the same nonlinear 20 ms plant transition.
+EKF propagates its mean through the nominal nonlinear MuJoCo transition and covariance through a numerical Jacobian. The actual measurement is linear selection H=[p,theta]; a general nonlinear measurement h needs its own Jacobian/error coordinates. The base EKF keeps an unwrapped measurement residual for comparison. The SO(2) mode wraps that residual and posterior angle. Ordinary EKFs can wrap angles: this alone does not implement a Lie-group invariant filter.
 
 ## UKF
 
-The Unscented Kalman Filter keeps a Gaussian belief but does not propagate its mean/covariance with one local Jacobian. It builds deterministic sigma points from P, propagates each point through the same nonlinear plant, and recombines them.
+Deterministic sigma points propagate through the nonlinear transition and are recombined, with circular angular means. They are not random Monte Carlo samples. A nonlinear mapping generally does not preserve Gaussianity; one local mean/covariance is an approximation, not an exact posterior or a universal upgrade over EKF.
 
-    x,P -> sigma points chi_i
-    chi_i_minus = f(chi_i,u)
-    weighted mean/covariance -> x_minus,P_minus
-    measurement sigma points -> S,K -> correction
+For THIS position/angle sensor in its local chart, the measurement update projects the complete predicted P including additive Q_e:
 
-The CartPole implementation treats pole angle with circular means and wrapped residuals. In the current smooth 4-state benchmark UKF and EKF are nearly identical, which is an expected result for this regime, not evidence that one method dominates.
+    P_xz = P_minus Hᵀ
+    S = H P_minus Hᵀ + R_e
 
-UKF still assumes a single Gaussian belief. Hybrid contact ambiguity, multimodal pose hypotheses, hard outliers, and long-window constraints are structural problems that may require a different estimator family.
+No measurement sigma-point transform is executed here. Using only pre-Q propagated points would omit process noise in S/P_xz. General nonlinear h requires a consistently reconstructed or augmented sigma-point formulation. Wide circular or multimodal beliefs remain outside a single local-covariance description.
 
-## Invariant filtering bridge
+## MHE
 
-InEKF is not simply "EKF but newer."
+MHE is a separate windowed estimation design, not a mandatory successor to EKF/InEKF. It can be linear or nonlinear; hard constraints are optional formulation choices. An arrival cost summarizes earlier information.
 
-When the state and dynamics have suitable Lie-group / group-affine structure, an invariant error can yield error dynamics with useful autonomy/log-linear structure and improved consistency/convergence properties.
+The local deterministic shooting example uses eight transitions, **0.16 s**, and optimizes only four components of the oldest state. Its correlated EKF arrival prior is approximate; the prior's measurement is not counted again. There is no optimized process-noise sequence, hard state constraint or calibrated MHE output covariance. Base EKF P is not that missing output covariance. A window-fit residual is post-fit, not the prefit innovation used by standard NIS.
 
-The CartPole runtime can honestly demonstrate only the SO(2) angle-error issue:
+The cited EKF+MHE paper reports an orientation/velocity split using OSQP at 200 Hz with a 0.1 s window. These are that experiment's choices, not this browser's speed or a universal MHE configuration.
 
-    angle residual = wrap(theta_measurement - theta_estimate)
+## Invariant and learned branches
 
-That mode is therefore named an SO(2) error bridge, not a CartPole InEKF implementation.
+| Reference | Interface studied | Local scope |
+|---|---|---|
+| Hartley contact-aided InEKF | invariant error and IMU/contact kinematics | wrapped-angle EKF analogue only |
+| Lin | learned contact events | paper explanation, no classifier reproduction |
+| Youm NMN | learned contact/velocity measurements | paper explanation, no robot/network reproduction |
+| InNKF | temporal compensation of invariant posterior | output-only residual MLP around SO(2)-aware EKF |
+| CoCo-InEKF | contact-candidate process covariance | paper explanation; no contact-state implementation |
+| FOCUS | FK observation reliability and velocity fusion | narrower innovation-based R_e heuristic |
 
-The Hartley contact-aided InEKF instead operates on a floating-base Lie-group state containing orientation, velocity, position, and active contact positions, fusing IMU propagation with leg forward-kinematics observations. Global translation and yaw remain unobservable without additional absolute information.
+Invariant-error benefits require the relevant group-affine/symmetry assumptions; bias/contact errors complicate them. Without absolute information, the cited contact-inertial model retains global translation/yaw gauge. These are not properties of every possible invariant filter.
 
-## Lin et al. — learned contact events
+Residual output is not fed back into base EKF, but the controller uses it, so feedback through the plant still exists. Base P is not corrected-output P. Offline residual fit does not prove closed-loop benefit.
 
-For the Mini Cheetah implementation in the paper:
-- each synchronized frame contains 54 values: joint position/velocity, IMU acceleration/angular velocity, and foot position/velocity from kinematics,
-- the network consumes a 150-frame history,
-- two Conv1D blocks plus three fully connected layers classify the 16 possible four-leg contact configurations,
-- the class is decoded into per-leg binary contact events,
-- contact positions are added to or removed from the contact-aided InEKF state accordingly.
+CoCo's L Lᵀ ensures positive semidefiniteness, not strict positivity or calibration automatically. No direct contact labels does not mean no state-ground-truth supervision: its reported state-error training uses simulated state information.
 
-So "learned binary contact" describes the downstream event semantics, not a network with one independent binary output per foot in that experiment.
+FOCUS was verified at official abstract level in this review. Detailed widths/thresholds/scale equations were not independently rechecked and are not prescribed. Adaptive-R chooses R_e from the same innovation; classical fixed-noise KF optimality and exact chi-square coverage do not transfer unchanged. Learned pseudo-measurements sharing sensors with the prior can also be correlated with it.
 
-## Youm / Neural Measurement Network
+## Statistics and physical units
 
-The NMN is a GRU-MLP using:
+NIS uses prefit innovation/S; NEES uses same-time state error/P. Under correctly modeled Gaussian assumptions, the quadratic forms have chi-square laws in their effective nonsingular coordinates. For singular covariance/gauge, state the tested rank/coordinates and treatment rather than using an ordinary inverse silently. Serial samples are not automatically independent trials.
 
-    [acceleration, angular velocity, joint position,
-     joint velocity, previous desired joint position]
+Check bias, whiteness, coverage and repeated trials; an average near the nominal dimension is insufficient. For nonlinear/adaptive filters these are diagnostics unless stronger assumptions are justified. Missing covariance/statistics remain unavailable, not perfect scores.
 
-It predicts:
-- per-foot contact probabilities,
-- body-frame linear velocity.
+`estimationRmseByState` reports [p,v,theta,omega] in [m,m/s,rad,rad/s]. `positionTrackingRmse` compares true position with the reference. Legacy `rmseState` sums heterogeneous units and is retained only for historical compatibility, not a controller ranking. Plots label quantity-specific scales; the UI no longer forms a mixed-unit innovation norm.
 
-The contact probability gates the leg-kinematics measurement. The learned body velocity is formulated as a right-invariant IEKF measurement.
+Continuous noise spectral density is not discrete Q_e. For continuous linear dynamics, Q_d is the integral of exp(A*t) G Q_cont Gᵀ exp(Aᵀ*t) over the sample interval. Changing dt generally changes Q_d. Persistent bias and model mismatch may require augmented states/identification, not arbitrary covariance inflation.
 
-The reported network uses GRU hidden size 128 and MLP layers [256, 128]. In hardware inference the outputs are low-pass filtered; contact is thresholded at 0.5, and the learned velocity measurement is conditionally suppressed at very low speed to limit bias-induced drift.
+## Primary references
 
-## InNKF
+- KF: https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html
+- Hartley: https://arxiv.org/abs/1904.09251
+- Lin: https://proceedings.mlr.press/v164/lin22b.html
+- Youm: https://arxiv.org/abs/2402.00366
+- InNKF: https://arxiv.org/html/2503.00344v1
+- EKF+MHE: https://arxiv.org/html/2405.20567v1
+- CoCo: https://arxiv.org/html/2605.15122v1
+- FOCUS (abstract-level verification): https://arxiv.org/abs/2609.02222
 
-InNKF keeps the model-based InEKF and adds an output compensation stage.
-
-The paper's neural compensator:
-- consumes a 50-step / 0.1 s history at 500 Hz,
-- uses a TCN with hidden sizes [128, 128, 128, 256, 256],
-- predicts 9 tangent-space coefficients,
-- maps them through the se_2(3) generators and exponential map into an SE_2(3) error element,
-- corrects the updated InEKF base state.
-
-Conceptually:
-
-    InEKF posterior X_bar_plus
-            ↓
-    neural error E_hat
-            ↓
-    X_bar_plusplus = E_hat^-1 X_bar_plus
-
-Critical authority boundary: the compensated X_bar_plusplus is the final output and is not fed back into the base InEKF state.
-
-The CartPole runtime follows that authority boundary. Its small residual MLP corrects only the reported output; the base EKF continues independently.
-
-The base EKF covariance P is not claimed to be the covariance of the neural-corrected output.
-
-## CoCo-InEKF
-
-CoCo-InEKF does not merely inflate a measurement R.
-
-Its differentiable InEKF permanently maintains predefined contact-candidate positions in the state. A neural contact module predicts a body-frame contact-candidate velocity/process covariance for each point.
-
-For each 3-D candidate, the network predicts six lower-triangular entries:
-
-    L_i
-    Sigma_Ci = L_i L_i^T
-
-which guarantees a symmetric positive-semidefinite covariance.
-
-That covariance enters the contact-position process model, continuously expressing confidence from firm/stationary through directional slip to uncertain/no-contact behavior.
-
-Because CartPole has no persistent foot/contact-candidate states, this repo provides a theory page for CoCo and does not pretend that the Adaptive-R mode is a CoCo implementation.
-
-## FOCUS
-
-FOCUS asks:
-
-    "How reliable is this foot's FK-derived body-velocity observation right now?"
-
-rather than only:
-
-    "Is the foot in contact?"
-
-The paper predicts continuous per-foot reliability weights from a causal Transformer using a 50-frame history of sensor-only proprioception:
-
-    [IMU acceleration, IMU angular velocity,
-     lower-limb joint position, joint velocity]
-
-The reliability affects both the velocity observation and its covariance. In simplified notation:
-
-    R_vel,i = R_vel,0 [1 + (1-w_i) S_vel]
-    tau_i = clip(w_i / w_sat, 0, 1)
-    z_v,i = (1-tau_i) v_IMU,pred + tau_i v_FK,i
-
-The paper also modulates foot-position/height observation covariance and foot-state process noise.
-
-The CartPole Adaptive-R mode is intentionally narrower:
-- it uses an innovation-based outlier score, not a learned Transformer,
-- it changes the position/angle observation R,
-- it does not have feet, FK velocity blending, or foot-state process noise.
-
-Because R is chosen from the same innovation being processed, this mode is a heuristic robustification, not the classical fixed-noise Kalman filter. Its P should be read as the covariance propagated under that adaptive heuristic, not as a hardware-calibrated uncertainty guarantee.
-
-It is therefore a FOCUS-style observation-reliability bridge, not a reproduction of FOCUS.
-
-## What to compare in this lab
-
-Useful comparisons:
-- Raw vs KF under sensor noise: differentiation noise versus model-based fusion.
-- KF vs EKF with **Estimator nonlinear bench** and LQR fixed: the pole starts at 0.5 rad with very low sensor noise and no external push. In the fixed five-seed check, KF state RMSE is about 0.0080 and EKF about 0.00323. This bench is not a controller ranking.
-- EKF vs SO(2) bridge with the angle-wrap micro-bench: +179 deg and -179 deg are 2 deg apart on SO(2), while an unwrapped Euclidean residual is about -358 deg.
-- KF/EKF vs Adaptive-R under a measurement glitch: outlier down-weighting.
-- Base EKF vs residual output: offline residual fit versus closed-loop control benefit.
-
-Do not infer paper superiority from these CartPole results.
+Paper-specific network sizes and old benchmark numbers are not current general facts. Dated receipts keep their recorded source/configuration; use fresh tests for current implementation outcomes.

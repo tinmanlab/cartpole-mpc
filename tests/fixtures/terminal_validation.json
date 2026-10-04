@@ -1,0 +1,874 @@
+{
+  "schema": "cartpole-terminal-prospective-manifest/v1",
+  "baseCommit": "9b5a0b0b13b315799b75ee966a00ea7a7b2324d5",
+  "purpose": "Validate fixed original versus full Riccati terminal; no tuning against these cases",
+  "controlDt": 0.02,
+  "controller": "hard_mpc",
+  "observer": "ekf",
+  "N": 30,
+  "Qdiag": [
+    2,
+    0.45,
+    68,
+    3.5
+  ],
+  "R": 0.14,
+  "originalQfdiag": [
+    8,
+    1.5,
+    110,
+    7
+  ],
+  "numericalTolerances": {
+    "matrixMaxAbsoluteError": 1e-06,
+    "normalizedDareResidual": 1e-09,
+    "firstActionError": 0.001,
+    "relativeCost": 0.0001,
+    "kktResidual": 1e-07,
+    "primalResidual": 1e-08
+  },
+  "admission": {
+    "primaryCandidateOnlyFailures": 0,
+    "minimumBothCompletedPairs": 1,
+    "bothCompletedTrackingMseRatioMax": 0.9,
+    "boundaryCandidateOnlyFailuresBlockBlanketDefault": true
+  },
+  "cases": [
+    {
+      "id": "primary-nominal-1103",
+      "set": "primary",
+      "scenario": "nominal",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-nominal-1109",
+      "set": "primary",
+      "scenario": "nominal",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-nominal-1117",
+      "set": "primary",
+      "scenario": "nominal",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-nominal-1123",
+      "set": "primary",
+      "scenario": "nominal",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sensor-1103",
+      "set": "primary",
+      "scenario": "sensor",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sensor-1109",
+      "set": "primary",
+      "scenario": "sensor",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sensor-1117",
+      "set": "primary",
+      "scenario": "sensor",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sensor-1123",
+      "set": "primary",
+      "scenario": "sensor",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-model-1103",
+      "set": "primary",
+      "scenario": "model",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-model-1109",
+      "set": "primary",
+      "scenario": "model",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-model-1117",
+      "set": "primary",
+      "scenario": "model",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-model-1123",
+      "set": "primary",
+      "scenario": "model",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-mixed-1103",
+      "set": "primary",
+      "scenario": "mixed",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-mixed-1109",
+      "set": "primary",
+      "scenario": "mixed",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-mixed-1117",
+      "set": "primary",
+      "scenario": "mixed",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-mixed-1123",
+      "set": "primary",
+      "scenario": "mixed",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-latency-1103",
+      "set": "primary",
+      "scenario": "latency",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-latency-1109",
+      "set": "primary",
+      "scenario": "latency",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-latency-1117",
+      "set": "primary",
+      "scenario": "latency",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-latency-1123",
+      "set": "primary",
+      "scenario": "latency",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sim2real-1103",
+      "set": "primary",
+      "scenario": "sim2real",
+      "seed": 1103,
+      "steps": 1200,
+      "initialState": [
+        0.15,
+        0,
+        0.06,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sim2real-1109",
+      "set": "primary",
+      "scenario": "sim2real",
+      "seed": 1109,
+      "steps": 1200,
+      "initialState": [
+        -0.15,
+        0,
+        -0.06,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sim2real-1117",
+      "set": "primary",
+      "scenario": "sim2real",
+      "seed": 1117,
+      "steps": 1200,
+      "initialState": [
+        0.3,
+        0,
+        0.12,
+        0
+      ],
+      "goal": -1,
+      "goalChange": {
+        "step": 600,
+        "value": 0.5
+      },
+      "push": {
+        "step": 250,
+        "force": 3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "primary-sim2real-1123",
+      "set": "primary",
+      "scenario": "sim2real",
+      "seed": 1123,
+      "steps": 1200,
+      "initialState": [
+        -0.3,
+        0,
+        -0.12,
+        0
+      ],
+      "goal": 1,
+      "goalChange": {
+        "step": 600,
+        "value": -0.5
+      },
+      "push": {
+        "step": 250,
+        "force": -3,
+        "duration": 10
+      }
+    },
+    {
+      "id": "boundary-colored-2203",
+      "set": "boundary",
+      "scenario": "colored",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-colored-2213",
+      "set": "boundary",
+      "scenario": "colored",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-dropout-2203",
+      "set": "boundary",
+      "scenario": "dropout",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-dropout-2213",
+      "set": "boundary",
+      "scenario": "dropout",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-stuck-2203",
+      "set": "boundary",
+      "scenario": "stuck",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-stuck-2213",
+      "set": "boundary",
+      "scenario": "stuck",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-jitter-2203",
+      "set": "boundary",
+      "scenario": "jitter",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-jitter-2213",
+      "set": "boundary",
+      "scenario": "jitter",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-torque_speed-2203",
+      "set": "boundary",
+      "scenario": "torque_speed",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-torque_speed-2213",
+      "set": "boundary",
+      "scenario": "torque_speed",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-thermal-2203",
+      "set": "boundary",
+      "scenario": "thermal",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-thermal-2213",
+      "set": "boundary",
+      "scenario": "thermal",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-glitch-2203",
+      "set": "boundary",
+      "scenario": "glitch",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-glitch-2213",
+      "set": "boundary",
+      "scenario": "glitch",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-nonlinear-2203",
+      "set": "boundary",
+      "scenario": "nonlinear",
+      "seed": 2203,
+      "steps": 1500,
+      "initialState": [
+        0.2,
+        0,
+        0.25,
+        0
+      ],
+      "goal": 0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": -5,
+        "duration": 15
+      }
+    },
+    {
+      "id": "boundary-nonlinear-2213",
+      "set": "boundary",
+      "scenario": "nonlinear",
+      "seed": 2213,
+      "steps": 1500,
+      "initialState": [
+        -0.2,
+        0,
+        -0.25,
+        0
+      ],
+      "goal": -0.5,
+      "goalChange": null,
+      "push": {
+        "step": 250,
+        "force": 5,
+        "duration": 15
+      }
+    }
+  ]
+}
