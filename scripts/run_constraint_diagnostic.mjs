@@ -6,7 +6,7 @@ const require=createRequire(import.meta.url),L=require('../src/engine'),D=requir
 const protocolPath='tests/fixtures/constraint_diagnostic.json',protocol=JSON.parse(fs.readFileSync(protocolPath));
 const m=JSON.parse(fs.readFileSync(protocol.baseTask));D.validateManifest(m);
 if(protocol.steps!==m.steps||protocol.cases.length!==5)throw Error('Unexpected frozen diagnostic scope');
-const files=[protocolPath,protocol.baseTask,'scripts/run_constraint_diagnostic.mjs','src/design_study.js','src/calibration_lab.js','src/engine.js','src/qp.js','src/plant.js','src/mujoco_backend.mjs','assets/cartpole.xml'];
+const files=[protocolPath,protocol.baseTask,'scripts/run_constraint_diagnostic.mjs','tests/test_constraint_diagnostic.py','scripts/constraint_diagnostic_report.py','tests/osqp_condensed_reference.py','src/design_study.js','src/calibration_lab.js','src/engine.js','src/qp.js','src/plant.js','src/mujoco_backend.mjs','assets/cartpole.xml'];
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 const sourceSha256=Object.fromEntries(files.map(p=>[p,sha(p)]));
 const b=await createMujocoBackend();L.setPhysicsBackend(b);
@@ -42,14 +42,40 @@ try{
    // reset uses sensor p/theta and zeros for velocities. Do not draw a second sensor
    // sample (which would change RNG history), and do not initialize from true velocity.
    const initialMeasurement=[initial.estimate[0],initial.estimate[2]];
-   while(!run.done)run.step();const result=run.result();
+   const {plant,observer}=run.components(),snapshots=[],freshness=[];
+   const capture=kind=>{const q=run.snapshot();return {kind,time:q.steps*L.DT,appliedSteps:q.steps,
+    measurement:plant.lastSensor.slice(),fresh:plant.sensorMeta.fresh,estimate:q.estimate.slice(),P:observer.P.map(a=>a.slice()),
+    truth:q.truth.slice(),goal:test.goal,caseId:test.id,pairId:pair.id,candidateId:baseline.id,design:q.design,rejectionReason:null};};
+   snapshots.push(capture('initial'));
+   while(!run.done){
+    const before=capture('first-rejected');run.step();
+    if(run.snapshot().steps>before.appliedSteps)freshness.push(plant.sensorMeta.fresh);
+    if(run.snapshot().outcome==='solver-rejected'){before.rejectionReason=run.result().reason;snapshots.push(before);}
+   }
+   const result=run.result();
+   // Independent offline replay: no physical run steps or sensor draws.
+   // EKF uses its unchanged nominal model evaluations, never evaluator truth.
+   for(const snap of snapshots){
+    const replay=L.makeObserver(pair.observer,plant.spec,{Q:result.design.Qe,R:result.design.Re});
+    replay.reset(initialMeasurement);replay.P=L.diag(result.design.P0);
+    for(const row of result.trace.slice(0,snap.appliedSteps))replay.step(freshness[row.k]?row.nextMeasurement:null,row.command);
+    const cold=L.makeObserver(pair.observer,plant.spec,{Q:result.design.Qe,R:result.design.Re});
+    cold.reset(snap.measurement);cold.P=L.diag(result.design.P0);
+    snap.replay={estimate:replay.x.slice(),P:replay.P.map(a=>a.slice())};
+    snap.cold={estimate:cold.x.slice(),P:cold.P.map(a=>a.slice())};
+    snap.positionDiagnostic={mean:snap.estimate[0],assumedTwoSigma:2*Math.sqrt(snap.P[0][0]),
+     interval:[snap.estimate[0]-2*Math.sqrt(snap.P[0][0]),snap.estimate[0]+2*Math.sqrt(snap.P[0][0])],error:snap.estimate[0]-snap.truth[0],
+     scope:'assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage'};
+    if(pair.controller==='hard_mpc')snap.plans=Object.fromEntries(['continuous','cold','truth'].map(kind=>[kind,
+     plan(m,{...test,initialState:kind==='truth'?snap.truth:kind==='cold'?snap.cold.estimate:snap.estimate},pair,baseline,fit,plant.spec)]));
+   }
    const residual=[0,0,0,0];
    for(const row of result.trace){
     const predicted=world(L.mv(result.design.A,errors(row.truth,row.goal)).map((v,i)=>v+result.design.B[i][0]*row.command),row.goal);
     row.nextTruth.forEach((v,i)=>{const error=i===2?L.wrap(v-predicted[i]):v-predicted[i];residual[i]=Math.max(residual[i],Math.abs(error));});
    }
-   runs.push({...result,initialEstimate:initial.estimate,initialMeasurement,
-    maxOneStepPredictionResidual:residual,predictionResidualUnits:['m','m/s','rad','rad/s'],
+   runs.push({...result,snapshots,measurementFreshness:freshness,predictionResidualSamples:result.trace.length,initialEstimate:initial.estimate,initialMeasurement,
+    maxOneStepPredictionResidual:result.trace.length?residual:null,predictionResidualUnits:['m','m/s','rad','rad/s'],
     residualScope:'true-state evaluation of nominal commanded-input prediction; combines linearization, model and input-realization mismatch, not observer error',
     actualRailViolated:result.trace.some(q=>Math.abs(q.nextTruth[0])>m.task.railLimit_m),
     initialEstimatedOutsideRail:Math.abs(initial.estimate[0])>m.task.railLimit_m});
@@ -63,7 +89,7 @@ try{
   probes:probes.map(p=>({caseId:p.caseId,lqrMaxNominalPosition:p.lqr.maxWorldPosition,mpcAccepted:p.mpc.accepted,mpcRailActive:p.mpc.railActive,mpcMaxNominalPosition:p.mpc.maxWorldPosition??null,reason:p.mpc.reason??null})),
   runs:runs.map(r=>({caseId:r.caseId,pairId:r.pairId,outcome:r.outcome,reason:r.reason,steps:r.appliedSteps,taskPassed:r.taskPassed,score:r.fullScore,trackingRmse:r.positionTrackingRmse,
    predictedRailActiveSamples:r.predictedRailActiveSamples,actualRailViolated:r.actualRailViolated,initialEstimatedOutsideRail:r.initialEstimatedOutsideRail,initialEstimate:r.initialEstimate,
-   maxOneStepPredictionResidual:r.maxOneStepPredictionResidual})),
+   predictionResidualSamples:r.predictionResidualSamples,maxOneStepPredictionResidual:r.maxOneStepPredictionResidual})),
   defaultsChanged:false,claimBoundary:protocol.claimBoundary};
  const report={schema:'cartpole-constraint-diagnostic/v1',sourceSha256,protocolSha256:sha(protocolPath),physics:b.diagnostics(),fit,probes,runs,summary,experimentValid:valid,defaultsChanged:false};
  fs.mkdirSync('test-results',{recursive:true});fs.writeFileSync('test-results/constraint_diagnostic_full.json',JSON.stringify(report)+'\n');

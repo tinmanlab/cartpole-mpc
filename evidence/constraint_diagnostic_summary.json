@@ -1,0 +1,3593 @@
+{
+  "schema": "cartpole-constraint-diagnostic-summary/v1",
+  "protocolSha256": "831d95588e02c51ee66bc67a9f1125f57cbe5a6fb842f4f3457da6865285d8e9",
+  "counts": {
+    "cases": 5,
+    "sensorBasedRuns": 20,
+    "completed": 4,
+    "taskPassed": 4,
+    "exactStatePlansAccepted": 5,
+    "exactStatePlansRailActive": 4,
+    "sensorMpcRailActiveSamples": 16
+  },
+  "probes": [
+    {
+      "caseId": "interior",
+      "lqrMaxNominalPosition": 0.09412020806041374,
+      "mpcAccepted": true,
+      "mpcRailActive": false,
+      "mpcMaxNominalPosition": 0.09412020806041704,
+      "reason": null
+    },
+    {
+      "caseId": "right-near-rail",
+      "lqrMaxNominalPosition": 2.6821207488272014,
+      "mpcAccepted": true,
+      "mpcRailActive": true,
+      "mpcMaxNominalPosition": 2.400000000000003,
+      "reason": null
+    },
+    {
+      "caseId": "left-near-rail",
+      "lqrMaxNominalPosition": 2.6821207488272014,
+      "mpcAccepted": true,
+      "mpcRailActive": true,
+      "mpcMaxNominalPosition": 2.4000000000000035,
+      "reason": null
+    },
+    {
+      "caseId": "right-model-error",
+      "lqrMaxNominalPosition": 2.6821207488272014,
+      "mpcAccepted": true,
+      "mpcRailActive": true,
+      "mpcMaxNominalPosition": 2.400000000000003,
+      "reason": null
+    },
+    {
+      "caseId": "left-model-error",
+      "lqrMaxNominalPosition": 2.6821207488272014,
+      "mpcAccepted": true,
+      "mpcRailActive": true,
+      "mpcMaxNominalPosition": 2.4000000000000035,
+      "reason": null
+    }
+  ],
+  "runs": [
+    {
+      "caseId": "interior",
+      "pairId": "lqr-kf",
+      "outcome": "completed",
+      "reason": null,
+      "steps": 600,
+      "taskPassed": true,
+      "score": 0.1806107625322289,
+      "trackingRmse": 0.09156549306718872,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "predictionResidualSamples": 600,
+      "maxOneStepPredictionResidual": [
+        1.8593259680267649e-06,
+        0.00014657951252944335,
+        2.3457691035441708e-05,
+        0.0018607974385507764
+      ]
+    },
+    {
+      "caseId": "interior",
+      "pairId": "lqr-ekf",
+      "outcome": "completed",
+      "reason": null,
+      "steps": 600,
+      "taskPassed": true,
+      "score": 0.17959363845622833,
+      "trackingRmse": 0.0912693139460776,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "predictionResidualSamples": 600,
+      "maxOneStepPredictionResidual": [
+        1.8630128321740769e-06,
+        0.00014681725723436623,
+        2.3514496624812975e-05,
+        0.0018649295862009918
+      ]
+    },
+    {
+      "caseId": "interior",
+      "pairId": "mpc-kf",
+      "outcome": "completed",
+      "reason": null,
+      "steps": 600,
+      "taskPassed": true,
+      "score": 0.18061076253220976,
+      "trackingRmse": 0.09156549306717529,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "predictionResidualSamples": 600,
+      "maxOneStepPredictionResidual": [
+        1.8593259680926844e-06,
+        0.00014657951252960988,
+        2.3457691035441708e-05,
+        0.0018607974385521087
+      ]
+    },
+    {
+      "caseId": "interior",
+      "pairId": "mpc-ekf",
+      "outcome": "completed",
+      "reason": null,
+      "steps": 600,
+      "taskPassed": true,
+      "score": 0.17959363845453133,
+      "trackingRmse": 0.09126931394565384,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "predictionResidualSamples": 600,
+      "maxOneStepPredictionResidual": [
+        1.8630128321116268e-06,
+        0.0001468172572262061,
+        2.3514496623577852e-05,
+        0.0018649295860979076
+      ]
+    },
+    {
+      "caseId": "right-near-rail",
+      "pairId": "lqr-kf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.32126118200362686,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        1.6953034718270032e-06,
+        0.00013426998335419604,
+        2.1201838323062216e-05,
+        0.0016862115869455963
+      ]
+    },
+    {
+      "caseId": "right-near-rail",
+      "pairId": "lqr-ekf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3212754108786286,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        1.6953034718270032e-06,
+        0.00013426998335419604,
+        2.1201838323062216e-05,
+        0.0016862115869455963
+      ]
+    },
+    {
+      "caseId": "right-near-rail",
+      "pairId": "mpc-kf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 3,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3098206416554356,
+      "predictedRailActiveSamples": 3,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "predictionResidualSamples": 3,
+      "maxOneStepPredictionResidual": [
+        2.2768842229403674e-06,
+        0.00017986671026248846,
+        2.8135121527703144e-05,
+        0.0022340845733660464
+      ]
+    },
+    {
+      "caseId": "right-near-rail",
+      "pairId": "mpc-ekf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 3,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3098206416554356,
+      "predictedRailActiveSamples": 3,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "predictionResidualSamples": 3,
+      "maxOneStepPredictionResidual": [
+        2.2768842229403674e-06,
+        0.00017986671026248846,
+        2.8135121527703144e-05,
+        0.0022340845733660464
+      ]
+    },
+    {
+      "caseId": "left-near-rail",
+      "pairId": "lqr-kf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3193875919686813,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        1.890844683050119e-06,
+        0.00014739852985068413,
+        2.428565487191947e-05,
+        0.0019147816910410898
+      ]
+    },
+    {
+      "caseId": "left-near-rail",
+      "pairId": "lqr-ekf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3194057054781438,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        1.8970995454559159e-06,
+        0.0001478812860616907,
+        2.4361146471113537e-05,
+        0.0019206955850006313
+      ]
+    },
+    {
+      "caseId": "left-near-rail",
+      "pairId": "mpc-kf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 2,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3039190098979826,
+      "predictedRailActiveSamples": 2,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "predictionResidualSamples": 2,
+      "maxOneStepPredictionResidual": [
+        2.0294010076860047e-06,
+        0.00015770716377583316,
+        2.6135111168001934e-05,
+        0.0020571613778163633
+      ]
+    },
+    {
+      "caseId": "left-near-rail",
+      "pairId": "mpc-ekf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 2,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3039190098979826,
+      "predictedRailActiveSamples": 2,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "predictionResidualSamples": 2,
+      "maxOneStepPredictionResidual": [
+        2.0294010076860047e-06,
+        0.00015770716377583316,
+        2.6135111168001934e-05,
+        0.0020571613778163633
+      ]
+    },
+    {
+      "caseId": "right-model-error",
+      "pairId": "lqr-kf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 6,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3239760548974583,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": true,
+      "initialEstimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "predictionResidualSamples": 6,
+      "maxOneStepPredictionResidual": [
+        0.0004230039667367791,
+        0.03388401765689497,
+        0.0009280916615819618,
+        0.07435317875210495
+      ]
+    },
+    {
+      "caseId": "right-model-error",
+      "pairId": "lqr-ekf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 6,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3239953006250177,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": true,
+      "initialEstimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "predictionResidualSamples": 6,
+      "maxOneStepPredictionResidual": [
+        0.0004228417643910021,
+        0.033871032392171485,
+        0.0009277082851448515,
+        0.07432256680276278
+      ]
+    },
+    {
+      "caseId": "right-model-error",
+      "pairId": "mpc-kf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: initial state outside physical rail",
+      "steps": 0,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": null,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": true,
+      "initialEstimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "predictionResidualSamples": 0,
+      "maxOneStepPredictionResidual": null
+    },
+    {
+      "caseId": "right-model-error",
+      "pairId": "mpc-ekf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: initial state outside physical rail",
+      "steps": 0,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": null,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": true,
+      "initialEstimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "predictionResidualSamples": 0,
+      "maxOneStepPredictionResidual": null
+    },
+    {
+      "caseId": "left-model-error",
+      "pairId": "lqr-kf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.31834353381472286,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        0.0003414463685911251,
+        0.02735077675832953,
+        0.0007366884424787612,
+        0.059015154179539286
+      ]
+    },
+    {
+      "caseId": "left-model-error",
+      "pairId": "lqr-ekf",
+      "outcome": "envelope-failure",
+      "reason": "physical rail or angle envelope",
+      "steps": 5,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3183527021363873,
+      "predictedRailActiveSamples": 0,
+      "actualRailViolated": true,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "predictionResidualSamples": 5,
+      "maxOneStepPredictionResidual": [
+        0.00034216379911100603,
+        0.027408242696949858,
+        0.0007383739322120303,
+        0.05915012870976072
+      ]
+    },
+    {
+      "caseId": "left-model-error",
+      "pairId": "mpc-kf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 4,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3152418149655954,
+      "predictedRailActiveSamples": 3,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "predictionResidualSamples": 4,
+      "maxOneStepPredictionResidual": [
+        0.00048475274270032287,
+        0.038830550732419034,
+        0.0010685484334465867,
+        0.08560618060813874
+      ]
+    },
+    {
+      "caseId": "left-model-error",
+      "pairId": "mpc-ekf",
+      "outcome": "solver-rejected",
+      "reason": "QP rejected: constraints are inconsistent, no solution!",
+      "steps": 4,
+      "taskPassed": false,
+      "score": null,
+      "trackingRmse": 0.3152418149655954,
+      "predictedRailActiveSamples": 3,
+      "actualRailViolated": false,
+      "initialEstimatedOutsideRail": false,
+      "initialEstimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "predictionResidualSamples": 4,
+      "maxOneStepPredictionResidual": [
+        0.00048475274270032287,
+        0.038830550732419034,
+        0.0010685484334465867,
+        0.08560618060813874
+      ]
+    }
+  ],
+  "defaultsChanged": false,
+  "claimBoundary": "No global ranking, new optimum, robust safety or hardware admission. Planning feasibility, estimator error, actual envelope failure and task achievement are separate outcomes.",
+  "sourceSha256": {
+    "tests/fixtures/constraint_diagnostic.json": "831d95588e02c51ee66bc67a9f1125f57cbe5a6fb842f4f3457da6865285d8e9",
+    "tests/fixtures/design_study.json": "1cc2de2d8d72fa151a5b5e5aa9ef2659c5f9783d7aff6ea2d56ea791b5e79445",
+    "scripts/run_constraint_diagnostic.mjs": "f4703fa5522bb39c19fb2d953c847dd39ec8808519b3919b5d6b02f021061690",
+    "tests/test_constraint_diagnostic.py": "6304aa1931d4ab48d7ac593491b0b30732cfcb3a1fafff90ee91c93a111a07c9",
+    "scripts/constraint_diagnostic_report.py": "24d1065310210702abc908e8085c01f1ac10c8ff7db19b03d3cc9bcf2a895f20",
+    "tests/osqp_condensed_reference.py": "3182ed9b975bdfd479bb03a92546e8ed66136edaa2eca2c8d59bd6d8c0047d8d",
+    "src/design_study.js": "2a8a7d38a03e98ff017e4bfeef430b4d636bf01cdd5c105891a6effdd5bf02bb",
+    "src/calibration_lab.js": "6292666d655dc6a995de433e31e5203b0c291a944223b8ae517274a0ff5a6221",
+    "src/engine.js": "516cb2ad4cf66f1a823c26c515cd237c45c5f4858b992aa6b3ff80bbbdfc10b3",
+    "src/qp.js": "521c56220a2816e41114f008de22a89cec5175f34e6e6c57ed80c07e533f472a",
+    "src/plant.js": "671d502bbac9e03c83e1372246c1abafc0b7851a03ee2408c548bac39faec34d",
+    "src/mujoco_backend.mjs": "f7aea47b45e6ec0a0372e94e166e813d0a5429f8ea6193672539fedf001f0444",
+    "assets/cartpole.xml": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e"
+  },
+  "nativeProbeChecks": [
+    {
+      "caseId": "interior",
+      "browserAccepted": true,
+      "nativeAccepted": true,
+      "nativeStatus": "solved",
+      "sameProblemCompared": true,
+      "firstActionError": 3.700595385680572e-12,
+      "relativeCostError": 4.043509171213411e-16,
+      "nativeCategory": "accepted",
+      "browserReason": null,
+      "browserFirstAction": 1.3165696183904172,
+      "browserCost": 17.572427949925356,
+      "nativeFirstAction": 1.3165696183867166,
+      "nativeCost": 17.57242794992535,
+      "nativeIterations": 75
+    },
+    {
+      "caseId": "right-near-rail",
+      "browserAccepted": true,
+      "nativeAccepted": true,
+      "nativeStatus": "solved",
+      "sameProblemCompared": true,
+      "firstActionError": 1.7763568394002505e-15,
+      "relativeCostError": 1.1553582006299295e-14,
+      "nativeCategory": "accepted",
+      "browserReason": null,
+      "browserFirstAction": 10,
+      "browserCost": 7950.691381164815,
+      "nativeFirstAction": 10.000000000000002,
+      "nativeCost": 7950.6913811649065,
+      "nativeIterations": 1475
+    },
+    {
+      "caseId": "left-near-rail",
+      "browserAccepted": true,
+      "nativeAccepted": true,
+      "nativeStatus": "solved",
+      "sameProblemCompared": true,
+      "firstActionError": 1.7763568394002505e-15,
+      "relativeCostError": 1.2239933412614105e-14,
+      "nativeCategory": "accepted",
+      "browserReason": null,
+      "browserFirstAction": -10,
+      "browserCost": 7950.691381164809,
+      "nativeFirstAction": -10.000000000000002,
+      "nativeCost": 7950.6913811649065,
+      "nativeIterations": 1475
+    },
+    {
+      "caseId": "right-model-error",
+      "browserAccepted": true,
+      "nativeAccepted": true,
+      "nativeStatus": "solved",
+      "sameProblemCompared": true,
+      "firstActionError": 1.7763568394002505e-15,
+      "relativeCostError": 1.1553582006299295e-14,
+      "nativeCategory": "accepted",
+      "browserReason": null,
+      "browserFirstAction": 10,
+      "browserCost": 7950.691381164815,
+      "nativeFirstAction": 10.000000000000002,
+      "nativeCost": 7950.6913811649065,
+      "nativeIterations": 1475
+    },
+    {
+      "caseId": "left-model-error",
+      "browserAccepted": true,
+      "nativeAccepted": true,
+      "nativeStatus": "solved",
+      "sameProblemCompared": true,
+      "firstActionError": 1.7763568394002505e-15,
+      "relativeCostError": 1.2239933412614105e-14,
+      "nativeCategory": "accepted",
+      "browserReason": null,
+      "browserFirstAction": -10,
+      "browserCost": 7950.691381164809,
+      "nativeFirstAction": -10.000000000000002,
+      "nativeCost": 7950.6913811649065,
+      "nativeIterations": 1475
+    }
+  ],
+  "initializationChecks": [
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        0.030894607066194766,
+        0.04779743481196141
+      ],
+      "fresh": true,
+      "estimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        0,
+        0,
+        0.05,
+        0
+      ],
+      "goal": 0.3,
+      "caseId": "interior",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          0.030894607066194766,
+          0,
+          0.04779743481196141,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          0.030894607066194766,
+          0,
+          0.04779743481196141,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 0.030894607066194766,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -0.6015609249674811,
+          0.6633501390998706
+        ],
+        "error": 0.030894607066194766,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.901545753137725e-12,
+          "relativeCostError": 6.269805807438831e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3488163768284898,
+          "browserCost": 14.165963779074984,
+          "nativeFirstAction": 1.3488163768245882,
+          "nativeCost": 14.165963779074993,
+          "nativeIterations": 75
+        },
+        "cold": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.901545753137725e-12,
+          "relativeCostError": 6.269805807438831e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3488163768284898,
+          "browserCost": 14.165963779074984,
+          "nativeFirstAction": 1.3488163768245882,
+          "nativeCost": 14.165963779074993,
+          "nativeIterations": 75
+        },
+        "truth": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.700595385680572e-12,
+          "relativeCostError": 4.043509171213411e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3165696183904172,
+          "browserCost": 17.572427949925356,
+          "nativeFirstAction": 1.3165696183867166,
+          "nativeCost": 17.57242794992535,
+          "nativeIterations": 75
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        0.030894607066194766,
+        0.04779743481196141
+      ],
+      "fresh": true,
+      "estimate": [
+        0.030894607066194766,
+        0,
+        0.04779743481196141,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        0,
+        0,
+        0.05,
+        0
+      ],
+      "goal": 0.3,
+      "caseId": "interior",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          0.030894607066194766,
+          0,
+          0.04779743481196141,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          0.030894607066194766,
+          0,
+          0.04779743481196141,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 0.030894607066194766,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -0.6015609249674811,
+          0.6633501390998706
+        ],
+        "error": 0.030894607066194766,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.901545753137725e-12,
+          "relativeCostError": 6.269805807438831e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3488163768284898,
+          "browserCost": 14.165963779074984,
+          "nativeFirstAction": 1.3488163768245882,
+          "nativeCost": 14.165963779074993,
+          "nativeIterations": 75
+        },
+        "cold": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.901545753137725e-12,
+          "relativeCostError": 6.269805807438831e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3488163768284898,
+          "browserCost": 14.165963779074984,
+          "nativeFirstAction": 1.3488163768245882,
+          "nativeCost": 14.165963779074993,
+          "nativeIterations": 75
+        },
+        "truth": {
+          "caseId": "interior",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.700595385680572e-12,
+          "relativeCostError": 4.043509171213411e-16,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 1.3165696183904172,
+          "browserCost": 17.572427949925356,
+          "nativeFirstAction": 1.3165696183867166,
+          "nativeCost": 17.57242794992535,
+          "nativeIterations": 75
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        2.2744942573716687,
+        0.11423996303608079
+      ],
+      "fresh": true,
+      "estimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        2.35,
+        0.3,
+        0.12,
+        -0.05
+      ],
+      "goal": 2.05,
+      "caseId": "right-near-rail",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          2.2744942573716687,
+          0,
+          0.11423996303608079,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.2744942573716687,
+          0,
+          0.11423996303608079,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.2744942573716687,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          1.6420387253379927,
+          2.9069497894053447
+        ],
+        "error": -0.07550574262833143,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 2.6815169855609893e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 116.59027536200335,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 116.59027536200304,
+          "nativeIterations": 825
+        },
+        "cold": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 2.6815169855609893e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 116.59027536200335,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 116.59027536200304,
+          "nativeIterations": 825
+        },
+        "truth": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.1553582006299295e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 7950.691381164815,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.06,
+      "appliedSteps": 3,
+      "measurement": [
+        2.405001650212585,
+        0.06558703596949031
+      ],
+      "fresh": true,
+      "estimate": [
+        2.378090046709378,
+        0.9134999732350314,
+        0.07947154659796776,
+        -1.079920074731569
+      ],
+      "P": [
+        [
+          0.0016086535519560558,
+          0.016707980531930303,
+          -2.7982334692717586e-08,
+          4.051498038643367e-06
+        ],
+        [
+          0.01670798053193031,
+          0.8219267608112626,
+          -4.0069912014545565e-06,
+          0.0001705127417541884
+        ],
+        [
+          -2.798233469271757e-08,
+          -4.0069912014545565e-06,
+          0.00038091089368923577,
+          0.008552580998530138
+        ],
+        [
+          4.051498038643368e-06,
+          0.00017051274175418845,
+          0.008552580998530138,
+          0.4371587361304028
+        ]
+      ],
+      "truth": [
+        2.3868479574162635,
+        0.8801663349118126,
+        0.09220503577598338,
+        -0.8171015830683255
+      ],
+      "goal": 2.05,
+      "caseId": "right-near-rail",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          2.378090046709378,
+          0.9134999732350314,
+          0.07947154659796776,
+          -1.079920074731569
+        ],
+        "P": [
+          [
+            0.0016086535519560558,
+            0.016707980531930303,
+            -2.7982334692717586e-08,
+            4.051498038643367e-06
+          ],
+          [
+            0.01670798053193031,
+            0.8219267608112626,
+            -4.0069912014545565e-06,
+            0.0001705127417541884
+          ],
+          [
+            -2.798233469271757e-08,
+            -4.0069912014545565e-06,
+            0.00038091089368923577,
+            0.008552580998530138
+          ],
+          [
+            4.051498038643368e-06,
+            0.00017051274175418845,
+            0.008552580998530138,
+            0.4371587361304028
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.405001650212585,
+          0,
+          0.06558703596949031,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.378090046709378,
+        "assumedTwoSigma": 0.08021604707179371,
+        "interval": [
+          2.2978739996375843,
+          2.4583060937811716
+        ],
+        "error": -0.008757910706885585,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 175
+        },
+        "cold": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 175
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        2.2744942573716687,
+        0.11423996303608079
+      ],
+      "fresh": true,
+      "estimate": [
+        2.2744942573716687,
+        0,
+        0.11423996303608079,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        2.35,
+        0.3,
+        0.12,
+        -0.05
+      ],
+      "goal": 2.05,
+      "caseId": "right-near-rail",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          2.2744942573716687,
+          0,
+          0.11423996303608079,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.2744942573716687,
+          0,
+          0.11423996303608079,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.2744942573716687,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          1.6420387253379927,
+          2.9069497894053447
+        ],
+        "error": -0.07550574262833143,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 2.6815169855609893e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 116.59027536200335,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 116.59027536200304,
+          "nativeIterations": 825
+        },
+        "cold": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 2.6815169855609893e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 116.59027536200335,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 116.59027536200304,
+          "nativeIterations": 825
+        },
+        "truth": {
+          "caseId": "right-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.1553582006299295e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 7950.691381164815,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.06,
+      "appliedSteps": 3,
+      "measurement": [
+        2.405001650212585,
+        0.06558703596949031
+      ],
+      "fresh": true,
+      "estimate": [
+        2.378084877550354,
+        0.9132042474083774,
+        0.07950798211580344,
+        -1.0767773872468922
+      ],
+      "P": [
+        [
+          0.0016086535775407488,
+          0.016707981939108114,
+          -4.9322308168179684e-08,
+          3.971954940096602e-06
+        ],
+        [
+          0.01670798193910811,
+          0.8219268524012835,
+          -6.050567472294419e-06,
+          0.00013432298219136826
+        ],
+        [
+          -4.9322308168179664e-08,
+          -6.05056747229442e-06,
+          0.0003810260629493514,
+          0.008558083965119494
+        ],
+        [
+          3.971954940096604e-06,
+          0.00013432298219136834,
+          0.008558083965119492,
+          0.4369350517314581
+        ]
+      ],
+      "truth": [
+        2.3868479574162635,
+        0.8801663349118126,
+        0.09220503577598338,
+        -0.8171015830683255
+      ],
+      "goal": 2.05,
+      "caseId": "right-near-rail",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          2.378084877550354,
+          0.9132042474083774,
+          0.07950798211580344,
+          -1.0767773872468922
+        ],
+        "P": [
+          [
+            0.0016086535775407488,
+            0.016707981939108114,
+            -4.9322308168179684e-08,
+            3.971954940096602e-06
+          ],
+          [
+            0.01670798193910811,
+            0.8219268524012835,
+            -6.050567472294419e-06,
+            0.00013432298219136826
+          ],
+          [
+            -4.9322308168179664e-08,
+            -6.05056747229442e-06,
+            0.0003810260629493514,
+            0.008558083965119494
+          ],
+          [
+            3.971954940096604e-06,
+            0.00013432298219136834,
+            0.008558083965119492,
+            0.4369350517314581
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.405001650212585,
+          0,
+          0.06558703596949031,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.378084877550354,
+        "assumedTwoSigma": 0.08021604770968833,
+        "interval": [
+          2.2978688298406658,
+          2.4583009252600423
+        ],
+        "error": -0.008763079865909518,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 200
+        },
+        "cold": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "right-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 175
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        -2.257740677267684,
+        -0.09813137656200406
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        -2.35,
+        -0.3,
+        -0.12,
+        0.05
+      ],
+      "goal": -2.05,
+      "caseId": "left-near-rail",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          -2.257740677267684,
+          0,
+          -0.09813137656200406,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.257740677267684,
+          0,
+          -0.09813137656200406,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.257740677267684,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -2.89019620930136,
+          -1.6252851452340078
+        ],
+        "error": 0.0922593227323163,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.8178882277861703e-10,
+          "relativeCostError": 2.4918472745901155e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -7.425795597684853,
+          "browserCost": 68.4352762391805,
+          "nativeFirstAction": -7.425795597303064,
+          "nativeCost": 68.43527623918067,
+          "nativeIterations": 325
+        },
+        "cold": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.8178882277861703e-10,
+          "relativeCostError": 2.4918472745901155e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -7.425795597684853,
+          "browserCost": 68.4352762391805,
+          "nativeFirstAction": -7.425795597303064,
+          "nativeCost": 68.43527623918067,
+          "nativeIterations": 325
+        },
+        "truth": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.2239933412614105e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -10,
+          "browserCost": 7950.691381164809,
+          "nativeFirstAction": -10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.04,
+      "appliedSteps": 2,
+      "measurement": [
+        -2.4045287943278884,
+        -0.09310125233448639
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.3949974837597785,
+        -0.41175263228578335,
+        -0.1101719948643002,
+        0.9660667857109726
+      ],
+      "P": [
+        [
+          0.0019833798021912387,
+          0.00994590950506941,
+          -4.163720714981914e-08,
+          2.553436438289223e-06
+        ],
+        [
+          0.009945909505069413,
+          0.9462558527043085,
+          -5.76217996368449e-06,
+          0.0002369314661328823
+        ],
+        [
+          -4.163720714981914e-08,
+          -5.76217996368449e-06,
+          0.0003853504174033261,
+          0.007574203719533544
+        ],
+        [
+          2.553436438289224e-06,
+          0.00023693146613288236,
+          0.0075742037195335446,
+          0.7420981698990643
+        ]
+      ],
+      "truth": [
+        -2.3690655991964857,
+        -0.6363817322954838,
+        -0.10903365877380912,
+        0.48271553045137816
+      ],
+      "goal": -2.05,
+      "caseId": "left-near-rail",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          -2.3949974837597785,
+          -0.41175263228578335,
+          -0.1101719948643002,
+          0.9660667857109726
+        ],
+        "P": [
+          [
+            0.0019833798021912387,
+            0.00994590950506941,
+            -4.163720714981914e-08,
+            2.553436438289223e-06
+          ],
+          [
+            0.009945909505069413,
+            0.9462558527043085,
+            -5.76217996368449e-06,
+            0.0002369314661328823
+          ],
+          [
+            -4.163720714981914e-08,
+            -5.76217996368449e-06,
+            0.0003853504174033261,
+            0.007574203719533544
+          ],
+          [
+            2.553436438289224e-06,
+            0.00023693146613288236,
+            0.0075742037195335446,
+            0.7420981698990643
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.4045287943278884,
+          0,
+          -0.09310125233448639,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.3949974837597785,
+        "assumedTwoSigma": 0.0890703048651174,
+        "interval": [
+          -2.484067788624896,
+          -2.305927178894661
+        ],
+        "error": -0.025931884563292762,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "left-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 75
+        },
+        "cold": {
+          "caseId": "left-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.1213252548714081e-14,
+          "relativeCostError": 4.517815653631881e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 0.49897341617164,
+          "browserCost": 10870.898164305598,
+          "nativeFirstAction": 0.49897341617162877,
+          "nativeCost": 10870.898164305647,
+          "nativeIterations": 2525
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        -2.257740677267684,
+        -0.09813137656200406
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.257740677267684,
+        0,
+        -0.09813137656200406,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        -2.35,
+        -0.3,
+        -0.12,
+        0.05
+      ],
+      "goal": -2.05,
+      "caseId": "left-near-rail",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          -2.257740677267684,
+          0,
+          -0.09813137656200406,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.257740677267684,
+          0,
+          -0.09813137656200406,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.257740677267684,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -2.89019620930136,
+          -1.6252851452340078
+        ],
+        "error": 0.0922593227323163,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.8178882277861703e-10,
+          "relativeCostError": 2.4918472745901155e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -7.425795597684853,
+          "browserCost": 68.4352762391805,
+          "nativeFirstAction": -7.425795597303064,
+          "nativeCost": 68.43527623918067,
+          "nativeIterations": 325
+        },
+        "cold": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 3.8178882277861703e-10,
+          "relativeCostError": 2.4918472745901155e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -7.425795597684853,
+          "browserCost": 68.4352762391805,
+          "nativeFirstAction": -7.425795597303064,
+          "nativeCost": 68.43527623918067,
+          "nativeIterations": 325
+        },
+        "truth": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.2239933412614105e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -10,
+          "browserCost": 7950.691381164809,
+          "nativeFirstAction": -10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.04,
+      "appliedSteps": 2,
+      "measurement": [
+        -2.4045287943278884,
+        -0.09310125233448639
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.394995071691815,
+        -0.4114727289035384,
+        -0.11019126343747504,
+        0.962524482213325
+      ],
+      "P": [
+        [
+          0.001983379808000609,
+          0.009945910140769999,
+          -5.2797328514065426e-08,
+          2.5421457439617684e-06
+        ],
+        [
+          0.009945910140769995,
+          0.9462559276720863,
+          -7.4678114006313146e-06,
+          0.00021125508449159317
+        ],
+        [
+          -5.2797328514065426e-08,
+          -7.467811400631313e-06,
+          0.0003855079758141178,
+          0.007584688636895665
+        ],
+        [
+          2.5421457439617693e-06,
+          0.00021125508449159317,
+          0.007584688636895666,
+          0.7416340816469748
+        ]
+      ],
+      "truth": [
+        -2.3690655991964857,
+        -0.6363817322954838,
+        -0.10903365877380912,
+        0.48271553045137816
+      ],
+      "goal": -2.05,
+      "caseId": "left-near-rail",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          -2.394995071691815,
+          -0.4114727289035384,
+          -0.11019126343747504,
+          0.962524482213325
+        ],
+        "P": [
+          [
+            0.001983379808000609,
+            0.009945910140769999,
+            -5.2797328514065426e-08,
+            2.5421457439617684e-06
+          ],
+          [
+            0.009945910140769995,
+            0.9462559276720863,
+            -7.4678114006313146e-06,
+            0.00021125508449159317
+          ],
+          [
+            -5.2797328514065426e-08,
+            -7.467811400631313e-06,
+            0.0003855079758141178,
+            0.007584688636895665
+          ],
+          [
+            2.5421457439617693e-06,
+            0.00021125508449159317,
+            0.007584688636895666,
+            0.7416340816469748
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.4045287943278884,
+          0,
+          -0.09310125233448639,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.394995071691815,
+        "assumedTwoSigma": 0.089070304995562,
+        "interval": [
+          -2.484065376687377,
+          -2.305924766696253
+        ],
+        "error": -0.025929472495329176,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "left-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 375
+        },
+        "cold": {
+          "caseId": "left-near-rail",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "left-near-rail",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.1213252548714081e-14,
+          "relativeCostError": 4.517815653631881e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 0.49897341617164,
+          "browserCost": 10870.898164305598,
+          "nativeFirstAction": 0.49897341617162877,
+          "nativeCost": 10870.898164305647,
+          "nativeIterations": 2525
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        2.42764734952207,
+        0.11206321925851122
+      ],
+      "fresh": true,
+      "estimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        2.35,
+        0.3,
+        0.12,
+        -0.05
+      ],
+      "goal": 2.05,
+      "caseId": "right-model-error",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: initial state outside physical rail",
+      "replay": {
+        "estimate": [
+          2.42764734952207,
+          0,
+          0.11206321925851122,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.42764734952207,
+          0,
+          0.11206321925851122,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.42764734952207,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          1.7951918174883938,
+          3.060102881555746
+        ],
+        "error": 0.07764734952206975,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial",
+        "first-rejected"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "right-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "cold": {
+          "caseId": "right-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "right-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.1553582006299295e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 7950.691381164815,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        2.42764734952207,
+        0.11206321925851122
+      ],
+      "fresh": true,
+      "estimate": [
+        2.42764734952207,
+        0,
+        0.11206321925851122,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        2.35,
+        0.3,
+        0.12,
+        -0.05
+      ],
+      "goal": 2.05,
+      "caseId": "right-model-error",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: initial state outside physical rail",
+      "replay": {
+        "estimate": [
+          2.42764734952207,
+          0,
+          0.11206321925851122,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          2.42764734952207,
+          0,
+          0.11206321925851122,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": 2.42764734952207,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          1.7951918174883938,
+          3.060102881555746
+        ],
+        "error": 0.07764734952206975,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial",
+        "first-rejected"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "right-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "cold": {
+          "caseId": "right-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "right-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.1553582006299295e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": 10,
+          "browserCost": 7950.691381164815,
+          "nativeFirstAction": 10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        -2.310829189999435,
+        -0.08075309562712178
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        -2.35,
+        -0.3,
+        -0.12,
+        0.05
+      ],
+      "goal": -2.05,
+      "caseId": "left-model-error",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          -2.310829189999435,
+          0,
+          -0.08075309562712178,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.310829189999435,
+          0,
+          -0.08075309562712178,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.310829189999435,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -2.943284722033111,
+          -1.6783736579657589
+        ],
+        "error": 0.039170810000565215,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 2.1784885007036792e-10,
+          "relativeCostError": 1.4289822248030737e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -9.951967059481026,
+          "browserCost": 79.55790894269748,
+          "nativeFirstAction": -9.951967059263177,
+          "nativeCost": 79.55790894269737,
+          "nativeIterations": 1500
+        },
+        "cold": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 2.1784885007036792e-10,
+          "relativeCostError": 1.4289822248030737e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -9.951967059481026,
+          "browserCost": 79.55790894269748,
+          "nativeFirstAction": -9.951967059263177,
+          "nativeCost": 79.55790894269737,
+          "nativeIterations": 1500
+        },
+        "truth": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.2239933412614105e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -10,
+          "browserCost": 7950.691381164809,
+          "nativeFirstAction": -10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.08,
+      "appliedSteps": 4,
+      "measurement": [
+        -2.451381162635314,
+        -0.04110251741301044
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.386136196495302,
+        -0.8393638932426792,
+        -0.058426367095552836,
+        1.0922677331685062
+      ],
+      "P": [
+        [
+          0.0015558541917017762,
+          0.019640588831705882,
+          -1.7477837828209765e-08,
+          3.7551985408632687e-06
+        ],
+        [
+          0.019640588831705892,
+          0.6534324964042955,
+          -4.001628359883049e-06,
+          8.405792070331801e-05
+        ],
+        [
+          -1.747783782820976e-08,
+          -4.001628359883048e-06,
+          0.0003677848576819143,
+          0.006995272864357017
+        ],
+        [
+          3.755198540863269e-06,
+          8.405792070331804e-05,
+          0.006995272864357018,
+          0.24785625696748614
+        ]
+      ],
+      "truth": [
+        -2.3982870754774015,
+        -0.7570904832729636,
+        -0.08947507464253406,
+        0.5308806393584236
+      ],
+      "goal": -2.05,
+      "caseId": "left-model-error",
+      "pairId": "mpc-kf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          -2.386136196495302,
+          -0.8393638932426792,
+          -0.058426367095552836,
+          1.0922677331685062
+        ],
+        "P": [
+          [
+            0.0015558541917017762,
+            0.019640588831705882,
+            -1.7477837828209765e-08,
+            3.7551985408632687e-06
+          ],
+          [
+            0.019640588831705892,
+            0.6534324964042955,
+            -4.001628359883049e-06,
+            8.405792070331801e-05
+          ],
+          [
+            -1.747783782820976e-08,
+            -4.001628359883048e-06,
+            0.0003677848576819143,
+            0.006995272864357017
+          ],
+          [
+            3.755198540863269e-06,
+            8.405792070331804e-05,
+            0.006995272864357018,
+            0.24785625696748614
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.451381162635314,
+          0,
+          -0.04110251741301044,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.386136196495302,
+        "assumedTwoSigma": 0.0788886352195746,
+        "interval": [
+          -2.4650248317148766,
+          -2.307247561275727
+        ],
+        "error": 0.012150878982099655,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "97957a261b68ac45ce8d5fdb7147ae18b8e57b82394c19965fc38d3e3b77cd89",
+      "checks": {
+        "continuous": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 100
+        },
+        "cold": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 100
+        }
+      }
+    },
+    {
+      "kind": "initial",
+      "time": 0,
+      "appliedSteps": 0,
+      "measurement": [
+        -2.310829189999435,
+        -0.08075309562712178
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.310829189999435,
+        0,
+        -0.08075309562712178,
+        0
+      ],
+      "P": [
+        [
+          0.1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0.04,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "truth": [
+        -2.35,
+        -0.3,
+        -0.12,
+        0.05
+      ],
+      "goal": -2.05,
+      "caseId": "left-model-error",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": null,
+      "replay": {
+        "estimate": [
+          -2.310829189999435,
+          0,
+          -0.08075309562712178,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.310829189999435,
+          0,
+          -0.08075309562712178,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.310829189999435,
+        "assumedTwoSigma": 0.6324555320336759,
+        "interval": [
+          -2.943284722033111,
+          -1.6783736579657589
+        ],
+        "error": 0.039170810000565215,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "initial"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 2.1784885007036792e-10,
+          "relativeCostError": 1.4289822248030737e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -9.951967059481026,
+          "browserCost": 79.55790894269748,
+          "nativeFirstAction": -9.951967059263177,
+          "nativeCost": 79.55790894269737,
+          "nativeIterations": 1500
+        },
+        "cold": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 2.1784885007036792e-10,
+          "relativeCostError": 1.4289822248030737e-15,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -9.951967059481026,
+          "browserCost": 79.55790894269748,
+          "nativeFirstAction": -9.951967059263177,
+          "nativeCost": 79.55790894269737,
+          "nativeIterations": 1500
+        },
+        "truth": {
+          "caseId": "left-model-error",
+          "browserAccepted": true,
+          "nativeAccepted": true,
+          "nativeStatus": "solved",
+          "sameProblemCompared": true,
+          "firstActionError": 1.7763568394002505e-15,
+          "relativeCostError": 1.2239933412614105e-14,
+          "nativeCategory": "accepted",
+          "browserReason": null,
+          "browserFirstAction": -10,
+          "browserCost": 7950.691381164809,
+          "nativeFirstAction": -10.000000000000002,
+          "nativeCost": 7950.6913811649065,
+          "nativeIterations": 1475
+        }
+      }
+    },
+    {
+      "kind": "first-rejected",
+      "time": 0.08,
+      "appliedSteps": 4,
+      "measurement": [
+        -2.451390406749058,
+        -0.04109051157438245
+      ],
+      "fresh": true,
+      "estimate": [
+        -2.3861410974530073,
+        -0.8401220454892048,
+        -0.058448645031515284,
+        1.0917275134749371
+      ],
+      "P": [
+        [
+          0.001555854218793009,
+          0.01964058974947341,
+          -4.3251812796112604e-08,
+          3.4296020152215723e-06
+        ],
+        [
+          0.019640589749473414,
+          0.6534325396955204,
+          -5.60895390294258e-06,
+          4.8479421505798074e-05
+        ],
+        [
+          -4.3251812796112604e-08,
+          -5.608953902942578e-06,
+          0.00036784317517987437,
+          0.006995882382718963
+        ],
+        [
+          3.429602015221573e-06,
+          4.847942150579817e-05,
+          0.0069958823827189634,
+          0.2477393839548493
+        ]
+      ],
+      "truth": [
+        -2.3982963195911453,
+        -0.757829822586978,
+        -0.08946306880390606,
+        0.5318412915419765
+      ],
+      "goal": -2.05,
+      "caseId": "left-model-error",
+      "pairId": "mpc-ekf",
+      "candidateId": "r1-q1",
+      "rejectionReason": "QP rejected: constraints are inconsistent, no solution!",
+      "replay": {
+        "estimate": [
+          -2.3861410974530073,
+          -0.8401220454892048,
+          -0.058448645031515284,
+          1.0917275134749371
+        ],
+        "P": [
+          [
+            0.001555854218793009,
+            0.01964058974947341,
+            -4.3251812796112604e-08,
+            3.4296020152215723e-06
+          ],
+          [
+            0.019640589749473414,
+            0.6534325396955204,
+            -5.60895390294258e-06,
+            4.8479421505798074e-05
+          ],
+          [
+            -4.3251812796112604e-08,
+            -5.608953902942578e-06,
+            0.00036784317517987437,
+            0.006995882382718963
+          ],
+          [
+            3.429602015221573e-06,
+            4.847942150579817e-05,
+            0.0069958823827189634,
+            0.2477393839548493
+          ]
+        ]
+      },
+      "cold": {
+        "estimate": [
+          -2.451390406749058,
+          0,
+          -0.04109051157438245,
+          0
+        ],
+        "P": [
+          [
+            0.1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0.04,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "positionDiagnostic": {
+        "mean": -2.3861410974530073,
+        "assumedTwoSigma": 0.07888863590639679,
+        "interval": [
+          -2.4650297333594042,
+          -2.3072524615466103
+        ],
+        "error": 0.012155222138138022,
+        "scope": "assumed covariance only; evaluator-only error; no calibrated risk or simultaneous coverage"
+      },
+      "kinds": [
+        "first-rejected"
+      ],
+      "designSha256": "06015fc6b5dc169466c8866e24d2f0dee5b2d9f111e8126f64f75596d9ac42fd",
+      "checks": {
+        "continuous": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 100
+        },
+        "cold": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "invalid_or_infeasible_initial_state",
+          "sameProblemCompared": false,
+          "nativeCategory": "initial-state-outside",
+          "browserReason": "QP rejected: initial state outside physical rail",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": null
+        },
+        "truth": {
+          "caseId": "left-model-error",
+          "browserAccepted": false,
+          "nativeAccepted": false,
+          "nativeStatus": "primal infeasible",
+          "sameProblemCompared": false,
+          "nativeCategory": "solver-declared infeasible",
+          "browserReason": "QP rejected: constraints are inconsistent, no solution!",
+          "browserFirstAction": null,
+          "browserCost": null,
+          "nativeFirstAction": null,
+          "nativeCost": null,
+          "nativeIterations": 100
+        }
+      }
+    }
+  ],
+  "numericalAndInformationChecksPassed": true,
+  "interpretation": "Offline initialization ablation, not executed warm-up. Truth is evaluator-only; solver rejection is not plant impossibility.",
+  "receiptSha256": "c94ffbdb072b805a4bbe2ae0f75c983ecb3b03678693ada6581c20eafdbaa04f"
+}
