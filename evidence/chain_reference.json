@@ -15,7 +15,7 @@
         "action": -0.17614039446976298,
         "status": "solved",
         "iterations": 825,
-        "hostMs": 4.160693992162123,
+        "hostMs": 5.733119003707543,
         "primalViolation": 8.457382303486146e-12,
         "normalizedStationarity": 1.103125722367109e-12,
         "cost": 1.4412797856794484
@@ -61,7 +61,7 @@
         "action": 0.13099920691303457,
         "status": "solved",
         "iterations": 2800,
-        "hostMs": 28.473446000134572,
+        "hostMs": 38.8168939971365,
         "primalViolation": 3.9067912380530764e-11,
         "normalizedStationarity": 4.06431588031957e-12,
         "cost": 1.616947347320304
@@ -107,7 +107,7 @@
         "action": 0.042966775549558606,
         "status": "solved",
         "iterations": 11400,
-        "hostMs": 182.82403002376668,
+        "hostMs": 236.18555499706417,
         "primalViolation": 1.7590060050551405e-11,
         "normalizedStationarity": 1.264912682877935e-13,
         "cost": 1.6534945210511753
@@ -153,7 +153,7 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 501.21343100909144
+        "hostMs": 595.9953739948105
       },
       "matchingBrowserProbe": {
         "accepted": true,
@@ -195,7 +195,7 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 651.2461889942642
+        "hostMs": 855.0757790217176
       },
       "matchingBrowserProbe": {
         "accepted": false,
@@ -234,7 +234,7 @@
         "action": null,
         "status": "maximum iterations reached",
         "iterations": 20000,
-        "hostMs": 815.3143080126029
+        "hostMs": 1020.6814440025482
       },
       "matchingBrowserProbe": {
         "accepted": false,

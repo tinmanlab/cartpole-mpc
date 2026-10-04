@@ -1,0 +1,40 @@
+{
+  "schema": "cartpole-chain-ekf-reference/v1",
+  "rows": [
+    {
+      "poles": 1,
+      "nativePredictionError": 0.0,
+      "nativeJacobianError": 7.432610082958035e-12,
+      "meanMaxError": 0.0,
+      "covarianceMaxError": 1.3552527156068805e-20,
+      "innovationCovarianceMaxError": 3.2311742677852644e-27,
+      "nisError": 0.0,
+      "posteriorMinEigenvalue": 3.4259615180177305e-08,
+      "passed": true
+    },
+    {
+      "poles": 3,
+      "nativePredictionError": 1.6940658945086007e-21,
+      "nativeJacobianError": 4.753091253917319e-10,
+      "meanMaxError": 2.168404344971009e-19,
+      "covarianceMaxError": 1.3552527156068805e-20,
+      "innovationCovarianceMaxError": 5.293955920339377e-23,
+      "nisError": 0.0,
+      "posteriorMinEigenvalue": 3.423611467501903e-08,
+      "passed": true
+    },
+    {
+      "poles": 6,
+      "nativePredictionError": 3.469446951953614e-18,
+      "nativeJacobianError": 3.1933469202272136e-09,
+      "meanMaxError": 3.469446951953614e-18,
+      "covarianceMaxError": 2.710505431213761e-20,
+      "innovationCovarianceMaxError": 5.293955920339377e-23,
+      "nisError": 2.7755575615628914e-17,
+      "posteriorMinEigenvalue": 3.417156443212494e-08,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "Numerical update correctness, not calibrated real-world consistency or dominance over stationary KF"
+}

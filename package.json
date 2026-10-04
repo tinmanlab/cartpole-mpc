@@ -6,7 +6,7 @@
   "scripts": {
     "build": "python3 scripts/build.py",
     "check:build": "python3 scripts/build.py --check",
-    "check:js": "node --check src/qp.js && node --check src/mujoco_backend.mjs && node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/commissioning.js && node --check src/topics.js && node --check src/app.js && node --check src/chain_backend.mjs && node --check src/chain_control.mjs && node --check src/chain_app.mjs",
+    "check:js": "node --check src/qp.js && node --check src/mujoco_backend.mjs && node --check src/bam_params.js && node --check src/plant.js && node --check src/engine.js && node --check src/commissioning.js && node --check src/topics.js && node --check src/app.js && node --check src/chain_backend.mjs && node --check src/chain_control.mjs && node --check src/chain_app.mjs && node --check src/chain_preconditioned.mjs && node --check src/chain_observer.mjs",
     "test": "node tests/test_engine.js && node tests/test_math.js && node tests/test_commissioning.js && node tests/test_diagnosis.js && node tests/test_commissioning_contracts.js && node tests/test_runtime_contracts.js && node tests/test_terminal.mjs && node tests/test_education.mjs",
     "train:residual": "node scripts/train_residual.js",
     "check": "npm run check:assets && npm run check:js && npm run check:build && npm test",
@@ -20,7 +20,7 @@
     "test:browser": "python3 tests/test_browser.py",
     "test:terminal": "node tests/test_terminal.mjs",
     "validate:terminal": "node scripts/validate_terminal.mjs",
-    "test:chain": "node tests/test_chain_contracts.mjs && node tests/test_chain_wasm.mjs",
+    "test:chain": "node tests/test_chain_contracts.mjs && node tests/test_chain_wasm.mjs && node tests/test_chain_preconditioned.mjs && node tests/test_chain_ekf.mjs",
     "validate:chain": "node scripts/validate_chain.mjs",
     "test:chain-browser": "python3 tests/test_chain_browser.py"
   },

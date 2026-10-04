@@ -4,6 +4,8 @@
   "N2MpcEncoderLoop": true,
   "N3N4LqrEncoderLoop": true,
   "N8FailClosed": true,
+  "N4PrestabilizedEkf": true,
+  "noiseToForceDisclosure": true,
   "pageErrors": [],
   "passed": true,
   "publicDeployed": false

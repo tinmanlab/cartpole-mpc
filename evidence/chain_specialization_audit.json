@@ -1,0 +1,306 @@
+{
+  "schema": "cartpole-chain-specialization-audit/v1",
+  "baseCommit": "32462cbb2ff63418a622ec8b716ec8fdb694fbef",
+  "scope": "Exact pre-stabilized QP coordinates, actual N-dimensional EKF and bounded output-feedback diagnosis. Same MuJoCo assets, costs, constraints, profiles, sensor-noise assumptions and defaults.",
+  "sourceSha256": {
+    "src/chain_preconditioned.mjs": "c6eb04e2567029af59827c5077f607831a6e484119640235ac07f43721def487",
+    "src/chain_observer.mjs": "2d4d3d263af837d7645acd823e85488ee229357344011fd8388207fb16d97a6e",
+    "src/chain_control.mjs": "d76682fecb6239465b58792f8d05bfbe989b72fa3f1fda58e5a637923616b4d5",
+    "src/chain_app.mjs": "59908ac3809a2811a22a74d8ea9ae7125d85d3e23a9b89200184490f52ff10f6",
+    "chain.html": "442be9e9901eccf39f7048d0617b190df536a0446e8ff778f02239c62eb34c2d",
+    "scripts/validate_chain.mjs": "e070d3f81808f1a3787740d6ebf12a4c5804c91ce46a9e10120ce9dbc0c31267",
+    "scripts/diagnose_chain_output_feedback.py": "b7c625baf12ffcd3b0b39a57d6980ffd8be29865ba3c98582b1599991b2aaff7",
+    "scripts/diagnose_chain_feasibility.py": "ef30505ff1fea0edd90448f437f2f07a2270f7479b537918e162ae982dae30e6",
+    "tests/test_chain_preconditioned.mjs": "189ccb4e07de9c659192498e414b2154a6bd9fade22e9e328efe648e144613c3",
+    "tests/test_chain_preconditioned_reference.py": "2366247dcf2dab871e185a28c56dd4b61a8eb9bf69148e4f0c8c388361a4464c",
+    "tests/test_chain_ekf.mjs": "e718a7da6715586e00f4f778e85ab689321981ef2e097d05000093889d27d78e",
+    "tests/test_chain_ekf_reference.py": "ec0d29187acbed514455bbf164ad60bb218c3e53d3edde8610744973793e5e4a",
+    "tests/test_chain_contracts.mjs": "d18fa696428aeb773d07ff8d8e51807a1a53f48c7cfbba9a72c85f7fa3a072b6",
+    "tests/test_chain_browser.py": "b44345489228633a203122391e6acfde468aa1b9421ca9852f9d6eab0380e780",
+    "docs/N_PENDULUM.md": "b574e01b26e5ad6ca8683c936b0018f720806363488080a53463e2f718719621",
+    "package.json": "9e29b89ac2187e28a1969053c474e2d19c2536670f0a9df8d90b56317ac52f2d",
+    ".github/workflows/verify.yml": "74ed48b30caaa9f5f8191ece96878fec8771d53542427a79aa047ebdf52c92ae",
+    "assets/chains/profiles.json": "b4d6cdf2560eecc30613a15743b2c7ae4135649985687b0dff7954062e3f5237",
+    "tests/fixtures/chain_validation.json": "4c60df15a0dc654df2af8b60b1057b13b6b294ec86f6696aecd78bee613bf28d"
+  },
+  "commands": [
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check:js",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:chain",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_chain_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_chain_preconditioned_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_chain_ekf_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python scripts/diagnose_chain_output_feedback.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python scripts/diagnose_chain_feasibility.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run validate:chain",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/validate_chain.mjs --prestabilized",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/validate_chain.mjs --prestabilized --ekf",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_chain_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "verificationSequence": "The initial comprehensive local gate passed. A further fail-first test caught reference error being mistaken for world position inside the cost-identity diagnostic. Corrected only that diagnostic coordinate check and reran all affected numerical, observation, closed-loop and browser tests. A separate feasibility-only diagnostic was then executed with verified nominal witness/outside-rail/invalid-state checks.",
+  "baseline96PhysicalResultsUnchanged": true,
+  "requestedConfigurationCounts": {
+    "baseline": 96,
+    "sameCasesPrestabilized": 48,
+    "sameCasesPrestabilizedEkf": 24
+  },
+  "newMatchedSummary": [
+    {
+      "poles": 1,
+      "nx": 4,
+      "designAvailable": true,
+      "completed": 6,
+      "taskPassed": 6,
+      "trials": 6,
+      "rejections": 0
+    },
+    {
+      "poles": 2,
+      "nx": 6,
+      "designAvailable": true,
+      "completed": 4,
+      "taskPassed": 4,
+      "trials": 6,
+      "rejections": 2
+    },
+    {
+      "poles": 3,
+      "nx": 8,
+      "designAvailable": true,
+      "completed": 3,
+      "taskPassed": 3,
+      "trials": 6,
+      "rejections": 3
+    },
+    {
+      "poles": 4,
+      "nx": 10,
+      "designAvailable": true,
+      "completed": 2,
+      "taskPassed": 2,
+      "trials": 6,
+      "rejections": 4
+    },
+    {
+      "poles": 5,
+      "nx": 12,
+      "designAvailable": true,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 6,
+      "rejections": 6
+    },
+    {
+      "poles": 6,
+      "nx": 14,
+      "designAvailable": true,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 6,
+      "rejections": 6
+    },
+    {
+      "poles": 7,
+      "nx": 16,
+      "designAvailable": false,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 6,
+      "rejections": 6
+    },
+    {
+      "poles": 8,
+      "nx": 18,
+      "designAvailable": false,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 6,
+      "rejections": 6
+    }
+  ],
+  "ekfMatchedSummary": [
+    {
+      "poles": 1,
+      "nx": 4,
+      "designAvailable": true,
+      "completed": 3,
+      "taskPassed": 3,
+      "trials": 3,
+      "rejections": 0
+    },
+    {
+      "poles": 2,
+      "nx": 6,
+      "designAvailable": true,
+      "completed": 2,
+      "taskPassed": 2,
+      "trials": 3,
+      "rejections": 1
+    },
+    {
+      "poles": 3,
+      "nx": 8,
+      "designAvailable": true,
+      "completed": 1,
+      "taskPassed": 1,
+      "trials": 3,
+      "rejections": 2
+    },
+    {
+      "poles": 4,
+      "nx": 10,
+      "designAvailable": true,
+      "completed": 1,
+      "taskPassed": 1,
+      "trials": 3,
+      "rejections": 2
+    },
+    {
+      "poles": 5,
+      "nx": 12,
+      "designAvailable": true,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 3,
+      "rejections": 3
+    },
+    {
+      "poles": 6,
+      "nx": 14,
+      "designAvailable": true,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 3,
+      "rejections": 3
+    },
+    {
+      "poles": 7,
+      "nx": 16,
+      "designAvailable": false,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 3,
+      "rejections": 3
+    },
+    {
+      "poles": 8,
+      "nx": 18,
+      "designAvailable": false,
+      "completed": 0,
+      "taskPassed": 0,
+      "trials": 3,
+      "rejections": 3
+    }
+  ],
+  "nativeQpComparison": {
+    "cases": 8,
+    "activeInputAndRailIncluded": true,
+    "maxFirstActionError_N": 2.872452276037052e-12,
+    "maxRelativeCostError": 8.456556497216849e-15,
+    "maximumPhysicalViolation": 1.7763568394002505e-15,
+    "passed": true
+  },
+  "ekfReference": {
+    "cases": 3,
+    "passed": true,
+    "nativeNonlinearPredictionAndJacobianChecked": true
+  },
+  "noiseDiagnosisScope": "LQR + stationary KF, ideal unsaturated linear model, white measurement noise only; not the actual clipped MPC force distribution or failure probability",
+  "noiseToForceSigma_N": {
+    "1": 0.027367627281199573,
+    "2": 0.11826148138480029,
+    "3": 0.37410480089078485,
+    "4": 1.3158802537107466,
+    "5": 5.312920759284962,
+    "6": 22.856204277578396
+  },
+  "feasibilityWitnesses": {
+    "tested": 18,
+    "verified": 16,
+    "infeasibilityReported": 2,
+    "appliedToPlant": false,
+    "scope": "Feasibility-only LP for the same fixed linear horizon, input bound and cart rail. No angle or terminal-region constraint exists in that original QP, so a witness may predict large angles. Neither nonlinear validity, stability, tracking success nor optimality follows. An unverified LP result is not a global physical impossibility proof."
+  },
+  "browser": {
+    "schema": "cartpole-chain-browser/v1",
+    "actualWasm": true,
+    "N2MpcEncoderLoop": true,
+    "N3N4LqrEncoderLoop": true,
+    "N8FailClosed": true,
+    "N4PrestabilizedEkf": true,
+    "noiseToForceDisclosure": true,
+    "pageErrors": [],
+    "passed": true,
+    "publicDeployed": false
+  },
+  "implemented": [
+    "optional exact pre-stabilized QP coordinate transcription using unchanged quadprog",
+    "dimension-aware nonlinear EKF with actual MuJoCo prediction/Jacobian and Joseph covariance",
+    "scope-labelled browser options and physical-unit estimation/effort/timing diagnostics"
+  ],
+  "analysisOnly": [
+    "joint output-feedback noise amplification and linear Lyapunov covariance",
+    "one-sample input-delay spectra with equation checks",
+    "nominal LQR ellipsoid bound, not installed MPC terminal set",
+    "feasibility-only HiGHS witnesses, not controller actions"
+  ],
+  "notClaimed": [
+    "all N solved or global swing-up",
+    "new numerical optimizer or dependency",
+    "N-dimensional MHE/UKF/PPO/nonlinear MPC",
+    "tuned/calibrated real sensor covariance",
+    "robust nonlinear recovery/terminal invariant set",
+    "hardware or real-time deadline guarantee",
+    "independent approval, merge, deployment or default promotion"
+  ],
+  "residualMetricCaveat": "KKT residuals depend on decision coordinates. Transformed absolute thresholds are unchanged numerically, original direct solver is unmodified, reconstructed physical bounds/dynamics and original normalized stationarity are independently checked.",
+  "evidenceFiles": [
+    "chain_preconditioned_reference.json",
+    "chain_preconditioned_validation.json",
+    "chain_ekf_reference.json",
+    "chain_ekf_validation.json",
+    "chain_output_feedback_diagnosis.json",
+    "chain_feasibility_diagnosis.json",
+    "chain_browser.json"
+  ]
+}

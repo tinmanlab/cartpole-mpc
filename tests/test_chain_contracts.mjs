@@ -5,7 +5,7 @@ const p=JSON.parse(fs.readFileSync('assets/chains/profiles.json','utf8')).profil
 const b=await createChainBackend(fs.readFileSync(p.asset,'utf8'),2);
 try{
  const x=[.1,...relativeAngles([.01,-.02]),0,0,0];assert.deepEqual(absoluteAngles(x,2).map(v=>+v.toFixed(8)),[.01,-.02]);
- for(const opts of [{controller:'ppo'},{observer:'ekf'},{initialState:[0,0,0,0]}])assert.throws(()=>createChainTrial(b,p,opts));
+ for(const opts of [{controller:'ppo'},{observer:'mhe'},{initialState:[0,0,0,0]}])assert.throws(()=>createChainTrial(b,p,opts));
  assert.throws(()=>createChainTrial(b,{...p,assetSha256:'invalid'}),/identity/);
  assert.throws(()=>createChainTrial(b,{...p,designAvailable:false,reason:'test rejection'}),/Design rejected/);
  const t=createChainTrial(b,p,{initialState:x});const before=t.snapshot();

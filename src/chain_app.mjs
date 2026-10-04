@@ -2,7 +2,7 @@ import {createChainBackend} from './chain_backend.mjs';
 import {createChainTrial,relativeAngles,absoluteAngles} from './chain_control.mjs';
 const $=id=>document.getElementById(id);
 const get=async path=>{const r=await fetch(path);if(!r.ok)throw Error(path+' HTTP '+r.status);return r.json();};
-let profiles,manifest,evidence,backend=null,trial=null,profile=null,initial=null,status='loading',reason=null,ready=false,playing=false,epoch=0,tail=[];
+let profiles,manifest,evidence,noiseDiagnosis,backend=null,trial=null,profile=null,initial=null,status='loading',reason=null,ready=false,playing=false,epoch=0,tail=[];
 const state=()=>{
  const s=trial?trial.snapshot():{truth:initial??[],estimate:initial??[],steps:0,goal:manifest?.cases.find(c=>c.name===$('preset').value)?.goal??0,observer:$('observer').value,controller:$('controller').value};
  return {...s,poles:profile?.poles,status,reason,physics:backend?.diagnostics(),geometry:backend&&s.truth.length?backend.geometry(s.truth):null,
@@ -39,6 +39,8 @@ async function configure(){
   if(!profile.designAvailable){status='design-rejected';reason=profile.reason;}
   else{trial=createChainTrial(backend,profile,{controller:$('controller').value,observer:$('observer').value,seed:test.seed,goal:test.goal,initialState:initial,noise:manifest.encoderSigma});status='paused';}
   $('detail').textContent='DARE condition number: '+profile.dareCondition.toExponential(2)+'\nnormalized residual: '+profile.dareNormalizedResidual.toExponential(2)+'\n판정: '+(profile.designAvailable?'국소 설계 허용 · 실제 시험 결과는 별도':'수치 설계 거부 · 물리적 불가능성 판정 아님')+'\n전체 링크: '+profile.modelMetadata.heightAbovePivot+' m / '+profile.modelMetadata.totalMass.toFixed(1)+' kg';
+  const diagnostic=noiseDiagnosis.rows.find(r=>r.poles===profile.poles);
+  $('outputFeedback').textContent=diagnostic?.noiseAnalysisNumericallyVerified?'기준 LQR + stationary KF의 선형 비포화 분석: sensor noise → force σ ≈ '+diagnostic.stationaryUnsaturatedForceSigma_N.toFixed(3)+' N / actuator 제한 ±10 N. 이는 실제 포화·비선형계의 실패확률이 아니라 사용 가능한 제어 여유를 점검하는 값입니다.':'이 차원은 설계 미승인: 잡음 기반 제어여유 판정도 미적용입니다.';
   ready=true;draw();
  }catch(e){if(token===epoch){playing=false;ready=true;status='error';reason=String(e.message);$('status').textContent='ERROR · '+reason;}}
 }
@@ -54,7 +56,7 @@ function step(){
 }
 window.chainLab={get ready(){return ready;},getState:state,run(count){if(!Number.isInteger(count)||count<0||count>600)throw Error('step count must be an integer from 0 to 600');playing=false;for(let i=0;i<count;i++)step();draw();return state();}};
 try{
- [profiles,manifest,evidence]=await Promise.all([get('assets/chains/profiles.json').then(x=>x.profiles),get('tests/fixtures/chain_validation.json'),get('evidence/chain_validation.json')]);
+ [profiles,manifest,evidence,noiseDiagnosis]=await Promise.all([get('assets/chains/profiles.json').then(x=>x.profiles),get('tests/fixtures/chain_validation.json'),get('evidence/chain_validation.json'),get('evidence/chain_output_feedback_diagnosis.json')]);
  $('outcomes').innerHTML=evidence.summary.map(r=>'<tr><td>'+r.poles+'</td><td>'+r.nx+'</td><td>'+(r.designAvailable?r.completed+' / '+r.trials:'설계 거부')+'</td><td>'+(r.designAvailable?r.taskPassed+' / '+r.trials:'미실행')+'</td></tr>').join('');
  for(const id of ['poles','controller','observer','preset'])$(id).addEventListener('change',configure);
  $('reset').onclick=configure;$('step').onclick=()=>{playing=false;status='paused';step();draw();};$('run').onclick=()=>window.chainLab.run(600);

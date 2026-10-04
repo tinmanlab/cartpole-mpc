@@ -14,6 +14,7 @@ try:
     response=page.goto(f'http://127.0.0.1:{server.server_port}/chain.html',wait_until='networkidle')
     assert response.status==200,'N-chain page missing'
     page.wait_for_function('window.chainLab?.ready')
+    assert page.locator('#controller option[value=mpc_pre]').count()==1, 'Missing stabilized solver option'
     snap=page.evaluate('window.chainLab.run(600)')
     assert snap['poles']==2 and snap['steps']==600 and snap['status']=='completed',snap
     assert len(snap['truth'])==6 and snap['physics']['backend']=='mujoco-wasm'
@@ -21,6 +22,11 @@ try:
     for n in ['3','4']:
         page.select_option('#poles',n);page.select_option('#controller','lqr');page.wait_for_function('window.chainLab.ready')
         snap=page.evaluate('window.chainLab.run(600)');assert snap['steps']==600 and snap['status']=='completed',snap
+    page.select_option('#controller','mpc_pre');page.select_option('#observer','ekf');page.wait_for_function('window.chainLab.ready')
+    improved=page.evaluate('window.chainLab.run(600)')
+    assert improved['poles']==4 and improved['status']=='completed' and improved['taskPassed'],improved
+    assert improved['observerDiagnostics']['nis']>=0 and len(improved['estimate'])==10
+    assert 'N' in page.locator('#outputFeedback').inner_text()
     page.select_option('#poles','8');page.wait_for_function('window.chainLab.ready')
     snap=page.evaluate('window.chainLab.getState()');assert snap['status']=='design-rejected' and snap['steps']==0
     assert len(snap['geometry']['links'])==8
@@ -30,6 +36,6 @@ try:
     page.screenshot(path=str(ROOT/'evidence/chain_browser.png'),full_page=True)
     assert page.evaluate('document.documentElement.scrollWidth-innerWidth')<=1
     assert not errors,errors
-    out={'schema':'cartpole-chain-browser/v1','actualWasm':True,'N2MpcEncoderLoop':True,'N3N4LqrEncoderLoop':True,'N8FailClosed':True,'pageErrors':errors,'passed':True,'publicDeployed':False}
+    out={'schema':'cartpole-chain-browser/v1','actualWasm':True,'N2MpcEncoderLoop':True,'N3N4LqrEncoderLoop':True,'N8FailClosed':True,'N4PrestabilizedEkf':True,'noiseToForceDisclosure':True,'pageErrors':errors,'passed':True,'publicDeployed':False}
     (ROOT/'evidence/chain_browser.json').write_text(json.dumps(out,indent=2)+'\n');browser.close();print(json.dumps(out))
 finally:server.shutdown()
