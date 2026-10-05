@@ -1,0 +1,96 @@
+{
+  "schema": "wheelbot-configured-metadata/v1",
+  "totalMassKg": 1.1991500000000002,
+  "baseInertiaKgM2": [
+    0.007616666666666667,
+    0.006510416666666667,
+    0.0037104166666666674
+  ],
+  "motorTorqueLimitsNm": [
+    16,
+    16,
+    1.7
+  ],
+  "configuration": {
+    "schema": "wheelbot-contact-design/v1",
+    "base": {
+      "massKg": 1,
+      "sizeM": [
+        0.125,
+        0.17,
+        0.25
+      ]
+    },
+    "upper": {
+      "massKg": 0.056,
+      "lengthM": 0.25,
+      "radiusM": 0.011
+    },
+    "lower": {
+      "massKg": 0.056,
+      "lengthM": 0.25,
+      "radiusM": 0.011
+    },
+    "wheel": {
+      "massKg": 0.08715,
+      "radiusM": 0.05,
+      "widthM": 0.04
+    },
+    "motor": {
+      "torqueLimitNm": [
+        16,
+        16,
+        1.7
+      ],
+      "dampingNms": 0.015,
+      "armatureKgM2": 0.0002,
+      "hipRangeRad": [
+        -1.26,
+        1.26
+      ],
+      "kneeRangeRad": [
+        -2.51,
+        2.51
+      ]
+    },
+    "contact": {
+      "enabled": true,
+      "friction": 1,
+      "timeConstantS": 0.01,
+      "dampingRatio": 1
+    },
+    "obstacle": {
+      "enabled": true,
+      "centerM": [
+        0.65,
+        0,
+        0.1
+      ],
+      "sizeM": [
+        0.16,
+        0.5,
+        0.2
+      ]
+    }
+  },
+  "initialState": [
+    0,
+    0.5443855389680211,
+    0,
+    0.15,
+    -0.3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "fullBodyContact": true,
+  "collisionExclusion": "MuJoCo parent-child filter only; world contacts and nonadjacent self-contact enabled",
+  "actuatorScope": "Ideal torque ceiling, viscous joint damping and reflected rotor inertia; no thermal, torque-speed, delay or compliance model",
+  "controllerProfileValid": false,
+  "assetSha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+  "configurationSha256": "1deeb9ba4609bc1d987daacff281377f8e7c9005361ad6ce9dc79c7ccfc0871d"
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "wheelbot-jump-protocol/v1",
+  "asset": "assets/wheelbot/wheelbot.xml",
+  "baselineProfile": "assets/wheelbot/profile.json",
+  "durationSeconds": 4,
+  "controlDt": 0.01,
+  "physicsDt": 0.002,
+  "actuatorLimitsNm": [
+    16,
+    16,
+    1.7
+  ],
+  "referenceDesign": {
+    "standSeconds": 0.15,
+    "crouchHipRad": 0.8,
+    "crouchSeconds": 0.65,
+    "extensionSeconds": 0.22,
+    "jointKp": 120,
+    "jointKd": 22,
+    "positionToPitch": -0.5,
+    "velocityWeightSeconds": 0.5
+  },
+  "tracker": "Finite-horizon time-varying LQR plus time-varying linear KF around a native nonlinear motor-generated jump reference; not contact NMPC or global recovery.",
+  "measurementChannels": [
+    "x",
+    "z",
+    "pitch",
+    "hip",
+    "knee"
+  ],
+  "target": {
+    "comApexAboveInitialM": 0.01,
+    "wheelClearanceM": 0.005,
+    "continuousFlightSeconds": 0.03,
+    "settleSeconds": 0.5,
+    "positionErrorM": 0.015,
+    "pitchErrorRad": 0.025,
+    "hipErrorRad": 0.03,
+    "kneeErrorRad": 0.03
+  },
+  "envelope": {
+    "positionMagnitudeM": 1,
+    "pitchErrorRad": 0.6,
+    "minimumRootZM": 0.12,
+    "minimumNonadjacentSeparationM": 0
+  },
+  "scope": "Known nominal physical jump with new measurement-noise seeds; no injected external force, pose reset, hardware authority or solution of the separate 40N recovery task. Reference generation may use true state offline; runtime controller receives only estimated state.",
+  "developmentSeeds": [
+    701,
+    709,
+    719
+  ],
+  "assessmentSeeds": [
+    809,
+    821,
+    823
+  ],
+  "derivativePolicy": {
+    "perturbations": [
+      1e-07,
+      1e-08
+    ],
+    "rejectIfSelectedPlusMinusContactSequencesDiffer": true,
+    "scope": "Branch-consistent local finite differences; not a guarantee the noisy trajectory stays on the nominal branch"
+  },
+  "trackerCostSource": "Existing recovery profile Q/R and terminalP; no retuning on assessment noise"
+}

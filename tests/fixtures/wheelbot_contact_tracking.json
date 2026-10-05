@@ -1,0 +1,63 @@
+{
+  "schema": "wheelbot-contact-tracking-protocol/v1",
+  "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+  "duration_s": 0.5,
+  "physics_dt_s": 0.002,
+  "reference_source": "tests/fixtures/wheelbot_contact_inverse.json",
+  "reference_rotation_rad": 0.08,
+  "reference_ramp_s": 0.4,
+  "final_window_s": 0.1,
+  "maximum_final_angle_error_rad": 0.02,
+  "maximum_final_pitch_speed_rad_s": 0.1,
+  "maximum_rotation_overshoot_rad": 0.02,
+  "minimum_hip_edge_rise_m": 0.005,
+  "maximum_joint_excursion_rad": 0.05,
+  "maximum_penetration_m": 0.02,
+  "signs": [
+    -1,
+    1
+  ],
+  "changed_numerical_budget": "The 200-iteration budget belongs only to historical offline inverse reference generation. The current online trajectory tracker has no solver or iteration budget.",
+  "scope": "Current native fast trajectory tracking with exact simulator state, locked deterministic assessment cases (not holdout), no hardware, observer or terminal standup claim.",
+  "variants": [
+    {
+      "name": "nominal",
+      "index": 3,
+      "offset": 0
+    },
+    {
+      "name": "hip_plus",
+      "index": 3,
+      "offset": 0.005
+    },
+    {
+      "name": "hip_minus",
+      "index": 3,
+      "offset": -0.005
+    },
+    {
+      "name": "body_rate_plus",
+      "index": 8,
+      "offset": 0.01
+    },
+    {
+      "name": "body_rate_minus",
+      "index": 8,
+      "offset": -0.01
+    }
+  ],
+  "design": {
+    "epsilons": [
+      1e-06,
+      1e-07
+    ],
+    "terminal": "Q",
+    "costs": "unchanged contact_profile Q/R",
+    "weight_variants": 0,
+    "branch_policy": "compare ordered contact geom pairs and constraint states against nominal at both epsilon sizes; use smaller epsilon, report every mismatch",
+    "state": "exact native simulation state, no observer",
+    "reset": "internal MjData reset each command; physical qpos/qvel continuous",
+    "assessment": "locked before design/evaluation; these deterministic values only"
+  },
+  "selected_derivative_admission": "Every selected 1e-7 column must stay on its nominal contact/constraint branch; coarse nominal-branch consistency <0.1 or exact-column 1e-7/1e-8 nominal-branch consistency <0.1. Original coarse failure retained; no global differentiability or contact-change stability guarantee."
+}

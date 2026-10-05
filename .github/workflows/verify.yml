@@ -33,3 +33,22 @@ jobs:
         run: python tests/test_wasm_native.py
       - name: Real browser network, solver and failure paths
         run: npm run test:browser
+      - name: Wheelbot portable native, WASM and browser release gates
+        run: |
+          python -m py_compile tests/test_wheelbot_release_browser.py
+          python tests/test_wheelbot_release_routes.py
+          python tests/export_wheelbot_tracking_reference.py
+          node tests/test_wheelbot_contact_tracking_wasm.mjs
+          node tests/test_wheelbot_configuration.mjs
+          node tests/test_wheelbot_contact.mjs
+          python tests/test_wheelbot_contact_reference.py
+          python tests/test_wheelbot_release_browser.py
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence
+          path: |
+            test-results/
+            evidence/*.json
+            evidence/*.png

@@ -1,0 +1,17 @@
+# Wheelbot lab
+
+[Open wheelbot simulation](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html), or return to the [CartPole lab](../index.html). Both use the repository's pinned official MuJoCo 3.7.0 WASM; no CDN is required.
+
+Start with **Start**, **Step**, local LQR/KF or torque-constrained linear MPC/KF and the 0.03 m goal. **Reset & jump** runs a four-second motor trajectory with scheduled feedback and a KF. The pulse buttons run the model-specific assessed horizontal disturbance. These tasks use the original wheel-only-contact benchmark XML and matching profiles.
+
+For the default fallen-state experiment, click **Try contact lift · apply default full-contact model**, then **Reset & lift/hold · left** or **right**. The first button explicitly replaces the active model with defaults; the second explicitly initializes the declared fallen state. The 250 commands each advance exactly one 2 ms physics step: 0.5 seconds of approximately 20 mm hip-edge lift/hold, not full get-up. Feedback uses exact simulator state and frozen scheduled gains, with no online optimizer, observer or hardware timing claim. The declared perturbations are deterministic assessment cases, not unseen holdouts.
+
+The **Robot design** editor changes base/link dimensions, masses, actuator limits, damping, inertia and contact parameters. Press **Apply physical model** to compile the actual XML. Editing fields alone does not change active physics. Falls and obstacle trials continue through body contact. Changed XML disables old standing/lift profiles and benchmark jump/pulse controls. **Restore verified benchmark** returns to the original model. The active model hash and profile validity are visible above the editor.
+
+Advanced redesign uses configuration/MJCF export and import of an independently designed controller profile bound to the exact XML hash. This release includes the default built profiles, not the offline optimization research pipeline. A future observer for the contact tracker would require separate validation.
+
+The primitive planar model derives selected geometry, masses and effort limits from the pinned Upkie description. The [source record](../assets/wheelbot/source/provenance.json), [original URDF](../assets/wheelbot/source/upkie.urdf) and [Apache-2.0 license](../assets/wheelbot/source/LICENSE) are included. It is a single-side sagittal simplification with assumed primitive inertias and omitted motor assemblies, not a full Upkie or hardware twin. The source record describes the original benchmark; the full-contact derivative enables body/link collisions and is described by [its metadata](../assets/wheelbot/contact_model.metadata.json).
+
+Native replay reads only the versioned model, cost, protocol and frozen profile. The historical trace digest inside the profile is provenance, not a required local file. Run `python tests/export_wheelbot_tracking_reference.py`, then `node tests/test_wheelbot_contact_tracking_wasm.mjs` to compare all 20 cases and 5,000 steps against fresh native MuJoCo. CI additionally runs contact parity and the real browser release suite, saving JSON and screenshots. Passing these model tests does not establish full get-up, arbitrary-impact robustness or hardware performance.
+
+The engine is reusable, but this release provides a model-specific planar wheelbot adapter—not an arbitrary-robot importer or registered WebMCP tool interface. Other kinematic structures require their own validated state, actuator, sensor and controller mapping.

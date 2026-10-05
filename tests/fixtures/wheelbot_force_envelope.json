@@ -1,0 +1,34 @@
+{
+  "schema": "wheelbot-force-envelope-protocol/v1",
+  "profile": "assets/wheelbot/recovery_profile.json",
+  "asset": "assets/wheelbot/wheelbot.xml",
+  "historicalCases": "tests/fixtures/wheelbot_cases.json",
+  "controlDt": 0.01,
+  "steps": 300,
+  "pulseStart": 100,
+  "pulseSteps": 20,
+  "forcePoint": "world-horizontal at torso/hip origin, not torso COM",
+  "amplitudesN": [1, 2, 3, 4, 6, 8, 12, 20, 40],
+  "directions": [-1, 1],
+  "controllers": ["lqr_kf", "mpc_kf"],
+  "screenSeeds": [401, 409, 419],
+  "assessmentSeeds": [901, 907, 911, 919, 929],
+  "normalScope": "Local grounded recovery, no wheel-contact loss. This is a declared teaching task, not every physically recoverable disturbance.",
+  "selection": {
+    "method": "Largest contiguous all-pass prefix of the fixed amplitude screen; normal amplitude is 80 percent of its upper tested point, rounded downward to 0.1 N.",
+    "amplitudeMarginFraction": 0.8,
+    "resolutionN": 0.1,
+    "requiresBothDirectionsAndControllers": true,
+    "zeroForceBaselineMustPass": true,
+    "testCanRejectNotReselect": true
+  },
+  "task": {
+    "tailSteps": 50,
+    "positionToleranceM": 0.015,
+    "pitchToleranceRad": 0.025,
+    "failure": {"positionMagnitudeM": 1, "pitchErrorRad": 0.6, "minimumZM": 0.12},
+    "normalRequiresContact": true
+  },
+  "stressN": 40,
+  "claimBoundary": "Existing 40N/0.2s and original 3N/0.1s receipts are retained. Adjusting the force creates a new operating task; it does not solve or erase the old 40N failure. New noise seeds on the same physical model, not hardware or physical OOD."
+}

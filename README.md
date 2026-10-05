@@ -4,6 +4,8 @@
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
+[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). Try standing with local MPC/KF, a planned jump, or edit masses, links and actuator limits for full-body falls and obstacles. **Try contact lift** applies the default full-contact model, then left/right runs a 0.5 s exact-state lift/hold. Full get-up is not implemented; the fast tracker uses a frozen offline plan and simulator state, not new online MPC. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
+
 ![MuJoCo WASM control/observer lab](evidence/mujoco_wasm_browser.png)
 
 The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `assets/cartpole.xml`. The default is **hard-rail constrained MPC + EKF**. Canvas displays a 2D projection of the compiled MJCF geometry; it is not a separate physics engine. The screenshot is a real browser run. Older GIF/WebM files under `media/` are historical recordings of the earlier JavaScript physics implementation, not evidence of this runtime.
