@@ -1,55 +1,31 @@
-# External force: an assessed operating task, not a universal disturbance bound
+# Normal operation of the small-robot learning model
 
-The teaching task now distinguishes a normal local-recovery pulse from a deliberate failure-boundary test. This is an explicit change to the external challenge, not a claimed controller improvement on the old 40 N test. The historical `tests/fixtures/wheelbot_cases.json`, its 3 N × 0.1 s and 40 N × 0.2 s cases, physics asset, recovery gains and sensor noise remain unchanged.
+The requested tasks are static balance, 3 cm position regulation, a light recoverable push, and the already verified planned jump. The simulated primitive mass is **1.19915 kg**, excluding motor assemblies and electronics. Ideal torque actuation and source-derived limits (hip/knee/wheel ±16/16/1.7 N·m), contact and sensing are engineering assumptions, not a validated real robot.
 
-## What was adjusted
+The normal push remains **±0.8 N for 0.2 s at the explicit hip origin**, using the existing recovery profile. It is a conservative **model-specific nominal setting**, not a measured touch-force distribution, physical maximum, or hardware capacity claim. The owner supplied no hardware loads. **40 N was introduced by the assistant, not requested by the owner.** It is archived research only: no normal UI option, mandatory recovery goal, release blocker, or fresh optimization target.
 
-The new long-pulse task uses a 0.2 s world-horizontal force at the torso/hip origin, beginning at sample 100 of the same 300-sample, 10 ms experiment. Both signs and both existing controller/observer combinations (LQR/KF and MPC/KF) are tested. Position and pitch targets remain 15 mm and 0.025 rad during the final 0.5 s, with the original 1 m / 0.6 rad / 0.12 m physical envelope. The **normal** task additionally requires continuous wheel contact; this is a declared local operating condition, not the definition of every physically possible recovery.
+## Declared assumptions and evaluated performance
 
-The model weighs approximately 11.76 N (mass 1.19915 kg). A 40 N, 0.2 s pulse is about 3.40 times the model weight and has a commanded impulse of 8 N s. These are scale comparisons, not proofs of dynamic infeasibility. The force acts approximately 0.125 m below torso COM at the reference posture, so its initial pitch moment about that COM is approximately -5 N m. Moving the point to COM would be another task and was not done.
+Before any new regression evidence, we declare these low-speed test-design sanity budgets: horizontal acceleration scale `|F|/m <= 0.1g` and free-impulse speed scale `|F|dt/m <= 0.15 m/s`. They are engineering assumptions, not standards, physical proofs, or new controller pass limits. At the retained setting, the scales are approximately **0.068g and 0.133 m/s**, with impulse **0.16 N·s**. They are scale estimates, not predicted constrained-contact accelerations or measured velocities.
 
-## Screen, lock, then independent noise assessment
+The value 0.8 N was historically success-selected: the archived amplitude screen passed all rows at 1 N, then applied a declared 20% reduction. We retain that provenance rather than claiming the value came from real-world force data. Its 20 frozen conditions comprise both signs, LQR/KF and MPC/KF, and seeds 901/907/911/919/929. All 20 historically met the grounded recovery task. Replaying them is regression, not a new independent holdout or a safety probability estimate.
 
-`tests/fixtures/wheelbot_force_envelope.json` fixes the amplitude grid [1,2,3,4,6,8,12,20,40] N, both directions, both controllers and three screening seeds before the experiment. A zero-force baseline is included. Each amplitude has 12 declared condition rows; paired controllers/signs are not independent random samples.
+The frozen protocol applies the pulse starting at sample 100 for 20 samples in a 300-sample trial, at 10 ms per sample. Existing final-50-sample limits remain 15 mm position and 0.025 rad pitch; normal recovery requires continuous wheel contact. Existing physical envelopes, gains, sensors, mass and torque limits are unchanged. Position regulation and planned jumping retain their existing task contracts. None establishes arbitrary-impact recovery or hardware transfer.
 
-| 0.2 s pulse magnitude | Full-duration completion / 12 | Grounded recovery target / 12 |
-|---|---:|---:|
-| 0 N | 12 | 12 |
-| 1 N | 12 | 12 |
-| 2 N | 12 | 2 |
-| 3 N | 12 | 0 |
-| 4 N | 6 | 0 |
-| 6 N | 0 | 0 |
-| 8 N | 0 | 0 |
-| 12 N | 0 | 0 |
-| 20 N | 0 | 0 |
-| 40 N | 0 | 0 |
+## Normal UI and routine verification
 
-The selection rule takes the largest *contiguous all-pass prefix* of the grid, then selects 80 percent of its upper point, rounded downward to 0.1 N. It cannot skip over a failed amplitude. This selects **0.8 N × 0.2 s**, from the 1 N all-pass screening point. The 20 percent amplitude reduction is a declared engineering margin, not a statistical safety guarantee or a globally optimal force.
+The signed reset-and-pulse buttons explicitly reset to equilibrium and run only the normal setting. Public `prepareForce` rejects other levels before changing state. Reset restores standing settings. Jump remains a separate planned motor-only trajectory with no external boost or mid-flight reset. When wheel contact is zero, the unchanged kinematic diagnostic is labelled airborne surface velocity, not ground slip.
 
-The force was locked before seeds 901/907/911/919/929 were opened. At 0.8 N, all 20 sign/controller/noise conditions completed and met the grounded recovery task. The separately retained 40 N stress conditions all failed (0/20). There were 160 total evaluations including screening and both assessments. No controller gain, force point, episode duration, sensor noise or pass threshold was retuned after the assessment.
+Routine CI replays only the frozen 20-condition normal force regression:
 
-The selected pulse is 0.16 N s and approximately 6.8 percent of the model's weight. It is intentionally conservative for this particular long-pulse, rapid-settling task. It is not a statement that forces above 0.8 N are physically unrecoverable. The original 3 N × 0.1 s recovery result remains valid in its own shorter-pulse task; force magnitude alone cannot define task equivalence.
-
-## Independent verification
-
-`tests/test_wheelbot_force_reference.py` reconstructs the actual pulse timing/sign/impulse, every KF mean, original LQR action, native one-step physics, contact counts, final-window metrics, screen selection and separate admission. It checks 160 executions / 31,668 applied control samples. Recorded maximum native/WASM state component disagreement is approximately 1.23e-12 and KF mean disagreement 1.03e-13. These validate implementation arithmetic, not model-to-hardware accuracy.
-
-The zero-force rows and paired controller/sign comparisons share inputs, so 160 is not a count of 160 independent safety trials. Five new noise realizations on a fixed physical model do not establish a rare-failure probability, an invariant region or physical out-of-distribution performance. All observed failures remain in `evidence/wheelbot_force_envelope.json`.
-
-## Using the shared wheelbot view
-
-`wheelbot.html` offers an assessed local pulse and the separate 40 N stress pulse, plus signed reset-and-pulse buttons. Starting one explicitly resets to the declared equilibrium, uses the existing recovery profile with the selected LQR/KF or MPC/KF controller, and stops at completion or physical failure. The actual force, duration, point, applied impulse and target outcome are displayed. It does not covertly push during a normal standing or jump trial. Reset restores the user's standing settings.
-
-A mismatched or unapproved force receipt disables only the pulse feature. It is checked against the exact loaded recovery-profile and protocol hashes, and its selection/admission is reconstructed. This is accidental data-consistency validation, not a security signature.
-
-Reproduce with the pinned native environment:
-
-```
-node scripts/validate_wheelbot_force.mjs
-node tests/test_wheelbot_force_contract.mjs
-python tests/test_wheelbot_force_reference.py
-python tests/test_wheelbot_force_browser.py
+```sh
+node tests/test_wheelbot_operating_scope.mjs
+node scripts/validate_wheelbot_force.mjs --operating-only
+python tests/test_wheelbot_force_reference.py --operating-only
 ```
 
-The browser test belongs in the authorized CI environment, not a socket-denied developer sandbox. Current deployment/merge state belongs to GitHub, not this methodology note. A successful planned jump is a different experiment and does not turn the historical 40 N failure into a pass.
+The runner binds the historical receipt, existing protocol, profile and XML identities; it writes `evidence/wheelbot_force_operating_validation.json` and new raw results under `test-results/`. The independent native checker reconstructs every step, force impulse, KF mean, contact and task outcome. Browser test code runs in normal authorized CI only; local HTTP/socket execution remains prohibited. Stale receipt checks disable only the pulse feature.
+
+## Archived research provenance
+
+[Original 160-evaluation receipt](../evidence/wheelbot_force_envelope.json) and [original native receipt](../evidence/wheelbot_force_reference.json) remain unchanged. They retain the screen and failed 40 N cases without reinterpretation. The no-flag runner and native checker remain explicit manual research commands; they regenerate historical output paths and are not routine CI requirements. Some older software regression commands still execute historical 40 N cases to verify recorded failure behavior. That does not make recovery from 40 N an owner requirement or a release gate.

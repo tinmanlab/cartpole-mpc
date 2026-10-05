@@ -15,24 +15,32 @@ try:
     page.wait_for_function('window.wheelbotLab?.ready',timeout=60000)
     report=json.loads((ROOT/'evidence/wheelbot_force_envelope.json').read_text())
     assert not page.locator('#force-left').is_disabled() and not page.locator('#force-right').is_disabled()
-    assert str(report['normal']['amplitudeN']) in page.locator('#force-level option[value=normal]').inner_text()
+    assert str(report['normal']['amplitudeN']) in page.locator('#force-level').inner_text()
     for mode in ('lqr_kf','mpc_kf'):
         page.evaluate('(mode)=>window.wheelbotLab.configureMode(mode)',mode)
-        for direction in (-1,1):
-            start=page.evaluate('(direction)=>window.wheelbotLab.prepareForce(direction,"normal",901)',direction)
-            assert start['forceActive'] and not start['jumpActive'] and not start['playing'] and start['steps']==0
-            end=page.evaluate('window.wheelbotLab.run(300)')
-            assert end['steps']==300 and end['done'] and end['forceResult']['normalPassed']
-            expected=next(r for r in report['assessment'] if r['mode']==mode and r['seed']==901 and r['direction']==direction)
-            assert max(abs(a-b)for a,b in zip(end['truth'],expected['final']))<1e-7
-            assert abs(end['forceResult']['appliedSignedImpulseNs']-direction*.2*report['normal']['amplitudeN'])<1e-12
-            count=end['physics']['steps'];assert page.evaluate('window.wheelbotLab.run(20).physics.steps')==count
+        for seed in (901,907,911,919,929):
+            for direction in (-1,1):
+                start=page.evaluate('([direction,seed])=>window.wheelbotLab.prepareForce(direction,"normal",seed)',[direction,seed])
+                assert start['forceActive'] and not start['jumpActive'] and not start['playing'] and start['steps']==0
+                end=page.evaluate('window.wheelbotLab.run(300)')
+                assert end['steps']==300 and end['done'] and end['forceResult']['normalPassed']
+                expected=next(r for r in report['assessment'] if r['mode']==mode and r['seed']==seed and r['direction']==direction)
+                assert max(abs(a-b)for a,b in zip(end['truth'],expected['final']))<1e-7
+                assert abs(end['forceResult']['appliedSignedImpulseNs']-direction*.2*report['normal']['amplitudeN'])<1e-12
+                count=end['physics']['steps'];assert page.evaluate('window.wheelbotLab.run(20).physics.steps')==count
     page.screenshot(path=str(ROOT/'evidence/wheelbot_force_normal.png'),full_page=True)
-    # Stress remains available and is reported as a failure, not a new normal pass.
-    page.evaluate('window.wheelbotLab.prepareForce(1,"stress",901)')
-    stress=page.evaluate('window.wheelbotLab.run(300)')
-    assert stress['forceResult']['amplitudeN']==40 and not stress['forceResult']['normalPassed']
-    assert 'STRESS' in page.locator('#force-status').inner_text() and 'target not met' in page.locator('#force-status').inner_text()
+    assert page.locator('#force-level option').count()==0
+    assert '40 N' not in page.locator('body').inner_text()
+    # Public rejection must preserve the whole simulation state, including steps.
+    rejected=page.evaluate("""() => {
+      const lab=window.wheelbotLab;
+      return ['stress','40',40,NaN,null,''].map(level=>{
+        const before=JSON.stringify(lab.getState()); let error='';
+        try { lab.prepareForce(1,level); } catch(e) { error=e.message; }
+        return {error,unchanged:before===JSON.stringify(lab.getState())};
+      });
+    }""")
+    assert all('normal' in row['error'] and row['unchanged'] for row in rejected)
     page.click('#reset');reset=page.evaluate('window.wheelbotLab.getState()')
     assert not reset['forceActive'] and reset['steps']==0 and not page.locator('#mode').is_disabled()
     # Actual button path includes bounded scheduler execution of all300steps.
@@ -47,6 +55,6 @@ try:
     assert 'unavailable' in page.locator('#force-status').inner_text()
     standing=page.evaluate('window.wheelbotLab.run(20)');assert standing['steps']==20 and not standing['failed']
     assert not errors,errors
-    out={'schema':'wheelbot-force-browser/v1','passed':True,'actualWasm':True,'bothDirectionsControllersMatchNumericAssessment':True,'durationAndImpulseVerified':True,'stressRetainsFailure':True,'expiredTrialDoesNotAdvance':True,'resetRestoresStanding':True,'actualButtonRuns300Steps':True,'staleReceiptPreservesStanding':True,'pageErrors':errors,'deployed':False}
+    out={'schema':'wheelbot-force-browser/v1','passed':True,'actualWasm':True,'bothDirectionsControllersMatchNumericAssessment':True,'durationAndImpulseVerified':True,'unsupportedForceRejectedWithoutStateChange':True,'expiredTrialDoesNotAdvance':True,'resetRestoresStanding':True,'actualButtonRuns300Steps':True,'staleReceiptPreservesStanding':True,'pageErrors':errors,'deployed':False}
     (ROOT/'evidence/wheelbot_force_browser.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out));browser.close()
 finally:server.shutdown()

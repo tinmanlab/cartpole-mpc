@@ -3,15 +3,24 @@ The new challenge is not re-labelled as a solution of the historical 40N task.
 """
 from pathlib import Path
 import hashlib,json
+import sys
 import numpy as np
 import mujoco
 ROOT=Path(__file__).resolve().parents[1]
 read=lambda f:json.loads((ROOT/f).read_text())
 sha=lambda f:hashlib.sha256((ROOT/f).read_bytes()).hexdigest()
-c=read('tests/fixtures/wheelbot_force_envelope.json');p=read(c['profile']);r=read('evidence/wheelbot_force_envelope.json');raw=read('test-results/wheelbot_force_raw.json')
-assert all(sha(path)==digest for path,digest in r['sourceSha256'].items())
-assert raw['sourceSha256']==r['sourceSha256']
-assert r['evaluationCount']==len(raw['rows'])==160 and r['lockAtEvaluation']==120
+c=read('tests/fixtures/wheelbot_force_envelope.json');p=read(c['profile']);operating='--operating-only' in sys.argv
+historical=read('evidence/wheelbot_force_envelope.json')
+if operating:
+ assert sha('evidence/wheelbot_force_envelope.json')=='7c0e03faef84b62bca4f920f7099eb82f411264567debd33dce9d5f67f1bc2d2'
+ r=historical;raw=read('test-results/wheelbot_force_operating_raw.json')
+ assert raw['historicalReceiptSha256']==sha('evidence/wheelbot_force_envelope.json')
+ assert raw['sourceSha256']==historical['sourceSha256']
+else:
+ r=historical;raw=read('test-results/wheelbot_force_raw.json')
+ assert raw['sourceSha256']==r['sourceSha256']
+ assert r['evaluationCount']==len(raw['rows'])==160 and r['lockAtEvaluation']==120
+assert all(sha(path)==digest for path,digest in historical['sourceSha256'].items())
 assert not set(c['screenSeeds'])&set(c['assessmentSeeds'])
 A,B,K,L=[np.array(p[k]) for k in ['A','B','K','L']];indices=p['controlledIndices'];ref=np.r_[p['qref'],np.zeros(6)];rr=ref[indices];u0=np.array(p['uref']);limits=np.array(p['limitsNm'])
 m=mujoco.MjModel.from_xml_path(str(ROOT/c['asset']));d=mujoco.MjData(m);wheel=mujoco.mj_name2id(m,mujoco.mjtObj.mjOBJ_GEOM,'wheel_visual')
@@ -53,6 +62,16 @@ for run in raw['rows']:
  checked.append({**{k:run[k] for k in ['amplitudeN','mode','seed','direction','phase']},'normalPassed':normal,'completed':completed,'taskPassed':passed})
 assert max_native<1e-8,max_native
 assert max_filter<1e-8,max_filter
+if operating:
+ assert len(checked)==20 and all(z['phase']=='operating' and z['amplitudeN']==.8 for z in checked)
+ assert {z['mode'] for z in checked}==set(c['controllers'])
+ assert {z['seed'] for z in checked}==set(c['assessmentSeeds'])
+ assert {z['direction'] for z in checked}==set(c['directions'])
+ assert len({key(z) for z in checked})==20
+ assert all(z['normalPassed'] for z in checked)
+ assert all(z['steps']==c['steps'] and abs(z['appliedSignedImpulseNs']-z['direction']*.8*c['pulseSteps']*c['controlDt'])<1e-12 for z in raw['rows'])
+ report={'schema':'wheelbot-force-operating-validation/v1','passed':True,'historicalReceiptSha256':raw['historicalReceiptSha256'],'protocolSha256':sha('tests/fixtures/wheelbot_force_envelope.json'),'profileSha256':sha(c['profile']),'assetSha256':sha(c['asset']),'scriptSha256':sha('tests/test_wheelbot_force_reference.py'),'trials':len(checked),'frames':frame_count,'maximumNativeOneStepError':max_native,'maximumKfMeanError':max_filter,'amplitudeN':.8,'durationSeconds':c['pulseSteps']*c['controlDt'],'impulseNs':.8*c['pulseSteps']*c['controlDt'],'normalPassed':sum(z['normalPassed'] for z in checked),'identities':checked,'selectionRun':False,'stressRun':False,'scope':'Model-specific operating assumption; not hardware proof.'}
+ (ROOT/'evidence/wheelbot_force_operating_validation.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2));sys.exit(0)
 screen=[z for z in checked if z['phase']=='screen'];assert len(screen)==120
 assert len({key(z)for z in screen})==120
 assert all(z['normalPassed']for z in screen if z['amplitudeN']==0)

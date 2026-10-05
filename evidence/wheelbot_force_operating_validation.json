@@ -1,0 +1,222 @@
+{
+  "schema": "wheelbot-force-operating-validation/v1",
+  "passed": true,
+  "historicalReceiptSha256": "7c0e03faef84b62bca4f920f7099eb82f411264567debd33dce9d5f67f1bc2d2",
+  "protocolSha256": "9caef31823a80211822123adb53a1cf8eb3db8a8d6ba36d304a59bf2c6e30d45",
+  "profileSha256": "493cb5828e478efa3458da4e6a480054c0927a0f67e878b432d562a3641b9cbe",
+  "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "scriptSha256": "25f969a9af37896e5f1604b2e685f84cbfe3e553302ef20ec4d97efb976c087b",
+  "trials": 20,
+  "frames": 6000,
+  "maximumNativeOneStepError": 7.549516567451064e-14,
+  "maximumKfMeanError": 9.416079027602109e-14,
+  "amplitudeN": 0.8,
+  "durationSeconds": 0.2,
+  "impulseNs": 0.16,
+  "normalPassed": 20,
+  "identities": [
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 901,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 901,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 907,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 907,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 911,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 911,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 919,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 919,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 929,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "lqr_kf",
+      "seed": 929,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 901,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 901,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 907,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 907,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 911,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 911,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 919,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 919,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 929,
+      "direction": -1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    },
+    {
+      "amplitudeN": 0.8,
+      "mode": "mpc_kf",
+      "seed": 929,
+      "direction": 1,
+      "phase": "operating",
+      "normalPassed": true,
+      "completed": true,
+      "taskPassed": true
+    }
+  ],
+  "selectionRun": false,
+  "stressRun": false,
+  "scope": "Model-specific operating assumption; not hardware proof."
+}

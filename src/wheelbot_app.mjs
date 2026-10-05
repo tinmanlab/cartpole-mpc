@@ -75,7 +75,7 @@ function render() {
   $('solver').textContent = jumpActive ? 'Jump feedback · time-varying LQR + scheduled KF; offline nonlinear reference, no online QP' : last.solver === undefined ? 'Solver · —' : `Solver · accepted · ${last.solver} · KKT residual ${metric(last.kktResidual)} · primal residual ${metric(last.primalResidual)} · solve ${metric(last.solveMs)} ms · planned bound-active ${Boolean(last.forecastConstraintActive)}`;
   $('timing').textContent = `Timing · simulated step 10 ms; last MPC solve ${metric(last.solveMs)} ms. Wall catch-up dropped ${(droppedWallSeconds*1000).toFixed(1)} ms; physics steps are never skipped. No hard real-time guarantee.`;
   const contact = s.last?.contact ?? backend.contact(x);
-  $('contact').textContent = `Contact · wheel contacts: ${contact.wheelContacts ?? contact.count ?? 0} · slip [m/s]: ${Number(contact.slip ?? 0).toFixed(4)} m/s · step ${s.steps ?? 0} · ${s.failed ? 'failure flagged' : 'running state valid'}`;
+  $('contact').textContent = `Contact · wheel contacts: ${contact.wheelContacts ?? contact.count ?? 0} · ${(contact.wheelContacts ?? contact.count ?? 0) === 0 ? 'airborne surface velocity' : 'slip'} [m/s]: ${Number(contact.slip ?? 0).toFixed(4)} m/s · step ${s.steps ?? 0} · ${s.failed ? 'failure flagged' : 'running state valid'}`;
   if (jumpActive) {
     const result = s.jumpResult;
     const phase = last.geometry?.wheelContacts === 0 ? 'FLIGHT' : s.steps < 15 ? 'STAND' : s.steps < 80 ? 'CROUCH' : s.steps < 110 ? 'THRUST / CONTACT' : 'LAND / SETTLE';
@@ -83,8 +83,8 @@ function render() {
   }
   if(forceActive){
     const recipe=s.forceTask,result=s.forceResult;
-    const label=recipe.amplitudeN===forceOperating.amplitudeN?'ASSESSED LOCAL':'STRESS · outside normal scope';
-    $('force-status').textContent=`${label} · ${recipe.direction*recipe.amplitudeN} N for ${(recipe.durationSeconds*1000).toFixed(0)} ms at hip origin · step ${s.steps}/300 · impulse applied ${result.appliedSignedImpulseNs.toFixed(3)} N s · ${s.done?(result.normalPassed?'grounded recovery target met':result.taskPassed?'tracking met, contact scope not met':'target not met'):'evaluating'} · controller ${s.mode}, recovery design. Original 40 N failure is not reclassified.`;
+    const label='MODEL-SPECIFIC LOCAL';
+    $('force-status').textContent=`${label} · ${recipe.direction*recipe.amplitudeN} N for ${(recipe.durationSeconds*1000).toFixed(0)} ms at hip origin · step ${s.steps}/300 · impulse applied ${result.appliedSignedImpulseNs.toFixed(3)} N s · ${s.done?(result.normalPassed?'grounded recovery target met':result.taskPassed?'tracking met, contact scope not met':'target not met'):'evaluating'} · controller ${s.mode}, recovery design. Local model task; hardware unverified.`;
   }
   if (ready && (trial || poseOnly) && !statusLocked) $('status').textContent = `${playing ? 'RUNNING' : poseOnly ? 'POSE PROBE · physics paused' : 'PAUSED'} · ${s.steps ?? 0} steps · MuJoCo WASM ${backend.diagnostics().version}`;
   $('play').textContent = playing ? 'Pause' : 'Start';
@@ -116,9 +116,9 @@ function renderDesignInfo() {
 }
 function configure() {
   jumpActive = false; jumpInitialTelemetry = null; forceActive=false;
-  if(forceOperating){$('force-level').disabled=false;$('force-left').disabled=false;$('force-right').disabled=false;$('force-status').textContent=`Assessed local pulse ±${forceOperating.amplitudeN} N × ${forceOperating.durationSeconds}s, at hip origin. ${forceOperating.impulseNs.toFixed(3)} N s; ${(forceOperating.forceToWeight*100).toFixed(1)}% of model weight. Both directions/controller modes tested;40N is a separate failure-boundary demonstration.`;}
+  if(forceOperating){$('force-left').disabled=false;$('force-right').disabled=false;$('force-status').textContent=`Assessed local pulse ±${forceOperating.amplitudeN} N × ${forceOperating.durationSeconds}s, at hip origin. ${forceOperating.impulseNs.toFixed(3)} N s; ${(forceOperating.forceToWeight*100).toFixed(1)}% of model weight. Both directions/controller modes tested. Model-specific setting; hardware unverified.`;}
   for (const id of ['mode', 'design', 'goal', 'pose', 'local']) $(id).disabled = false;
-  if (jumpProfile) $('jump-status').textContent = 'Jump ready · explicit Reset & jump starts the verified four-second plan; no external boost or 40 N recovery claim.';
+  if (jumpProfile) $('jump-status').textContent = 'Jump ready · explicit Reset & jump starts the verified four-second plan; no external boost; local model task, hardware unverified.';
   renderDesignInfo();
   playing = false; accumulated = 0; droppedWallSeconds = 0; poseOnly = false; statusLocked = false;
   try { trial = makeTrial(); viewState = trial.snapshot().truth; say('Validated · paused at profile equilibrium'); }
@@ -141,11 +141,12 @@ function prepareJump(seed = 809) {
   say('Jump prepared at declared initial posture · paused'); render(); return state();
 }
 function prepareForce(direction=1,level='normal',seed=901){
+  if(level!=='normal')throw Error('Only the normal model-specific pulse is supported');
   if(!ready||!forceProtocol||!forceOperating||!profiles.recovery)throw Error('Assessed force task unavailable');
-  if(![-1,1].includes(direction)||!['normal','stress'].includes(level))throw Error('Invalid force direction/level');
+  if(![-1,1].includes(direction))throw Error('Invalid force direction: expected -1 or 1');
   const mode=$('mode').value;
   if(!forceProtocol.controllers.includes(mode))throw Error('Pulse assessment supports LQR/KF or MPC/KF, not passive mode');
-  const amplitudeN=level==='normal'?forceOperating.amplitudeN:forceProtocol.stressN;
+  const amplitudeN=forceOperating.amplitudeN;
   const next=createForceTrial(backend,profiles.recovery,forceProtocol,{amplitudeN,direction,mode,seed});
   playing=false;accumulated=0;droppedWallSeconds=0;poseOnly=false;statusLocked=false;jumpActive=false;jumpInitialTelemetry=null;
   trial=next;forceActive=true;viewState=trial.snapshot().truth;
@@ -254,7 +255,7 @@ try {
     if(!profiles.recovery)throw Error('Recovery profile unavailable');
     const admitted=validateForceReceipt(protocolFetched.profile,receipt,{assetSha256:next.assetSha256,profileSha256:profileHashes.recovery,protocolSha256:protocolFetched.sha256});
     forceProtocol=protocolFetched.profile;forceOperating=admitted;
-    $('force-level').querySelector('option[value=normal]').textContent=`Local ±${admitted.amplitudeN} N × ${admitted.durationSeconds}s · assessed`;
+    $('force-level').textContent=`Local ±${admitted.amplitudeN} N × ${admitted.durationSeconds}s · assessed`;
   }catch(error){$('force-status').textContent=`Pulse task unavailable · ${error.message}. Standing and valid jump remain available.`;}
   ready = true;
   $('play').disabled = $('step').disabled = $('reset').disabled = $('pose').disabled = $('local').disabled = false;
@@ -263,7 +264,7 @@ try {
   $('step').onclick = () => { if (!trial) return; playing = false; tickOnce(); };
   $('reset').onclick = configure;
   $('jump').onclick = () => { try { prepareJump(); playing = true; render(); } catch (error) { say(`JUMP REJECTED · ${error.message}`, true); } };
-  for(const [id,direction] of [['force-left',-1],['force-right',1]])$(id).onclick=()=>{try{prepareForce(direction,$('force-level').value);playing=true;render();}catch(error){playing=false;say(`PULSE REJECTED · ${error.message}`,true);}};
+  for(const [id,direction] of [['force-left',-1],['force-right',1]])$(id).onclick=()=>{try{prepareForce(direction,'normal');playing=true;render();}catch(error){playing=false;say(`PULSE REJECTED · ${error.message}`,true);}};
   $('pose').onclick = () => { playing = false; statusLocked = false; trial = null; poseOnly = true; viewState = qrefState(); viewState[3] += 0.12; viewState[4] -= 0.10; render(); };
   $('local').onclick = () => { playing = false; statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = configure;

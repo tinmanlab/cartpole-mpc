@@ -94,9 +94,10 @@ jobs:
           node tests/test_wheelbot_jump.mjs assets/wheelbot/jump_profile.json test-results/jump_final_wasm
           python tests/test_wheelbot_jump_reference.py
           python tests/test_wheelbot_jump_browser.py
-          node scripts/validate_wheelbot_force.mjs
+          node scripts/validate_wheelbot_force.mjs --operating-only
           node tests/test_wheelbot_force_contract.mjs
-          python tests/test_wheelbot_force_reference.py
+          node tests/test_wheelbot_operating_scope.mjs
+          python tests/test_wheelbot_force_reference.py --operating-only
           python tests/test_wheelbot_force_browser.py
       - name: Preserve wheelbot browser verification
         if: success()
@@ -122,6 +123,8 @@ jobs:
             evidence/wheelbot_disturbance_semantics.json
             evidence/wheelbot_force_envelope.json
             evidence/wheelbot_force_reference.json
+            evidence/wheelbot_force_operating_validation.json
+            test-results/wheelbot_force_operating_raw.json
             evidence/wheelbot_force_browser.json
             evidence/wheelbot_force_normal.png
           if-no-files-found: error

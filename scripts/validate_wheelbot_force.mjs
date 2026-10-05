@@ -10,6 +10,26 @@ validateForceProtocol(protocol);
 const sources=[path,protocol.profile,protocol.asset,protocol.historicalCases,'src/wheelbot_control.mjs','src/wheelbot_backend.mjs','src/wheelbot_mpc.mjs','src/wheelbot_disturbance.mjs'];
 const sourceSha256=Object.fromEntries(sources.map(f=>[f,sha(f)]));
 const p=JSON.parse(fs.readFileSync(protocol.profile)),backend=await createWheelbotBackend(fs.readFileSync(protocol.asset,'utf8'));
+if(process.argv.includes('--operating-only')){
+ const historicalPath='evidence/wheelbot_force_envelope.json',historical=JSON.parse(fs.readFileSync(historicalPath));
+ try{
+  assert.equal(sha(historicalPath),'7c0e03faef84b62bca4f920f7099eb82f411264567debd33dce9d5f67f1bc2d2','Frozen historical receipt changed');
+  assert.equal(historical.schema,'wheelbot-force-envelope/v1');
+  assert.deepEqual(historical.sourceSha256,sourceSha256);
+  assert.equal(historical.protocolSha256,sourceSha256[path]);assert.equal(historical.profileSha256,sourceSha256[protocol.profile]);assert.equal(historical.assetSha256,sourceSha256[protocol.asset]);
+  assert.equal(historical.selection.normalAmplitudeN,.8);assert.equal(historical.admission.accepted,true);assert.equal(historical.admission.actualCases,20);
+  const rows=[];
+  for(const mode of protocol.controllers)for(const seed of protocol.assessmentSeeds)for(const direction of protocol.directions){
+   const trial=createForceTrial(backend,p,protocol,{amplitudeN:.8,direction,mode,seed});
+   while(!trial.snapshot().done)trial.step();
+   const result=trial.result();rows.push({...result,phase:'operating',trace:trial.history.map(s=>({steps:s.steps,truth:s.truth,estimate:s.estimate,u:s.last.u,measurement:s.last.measurement,externalX:s.last.externalX,contact:s.last.contact,failed:s.failed}))});
+  }
+  assert.equal(rows.length,20);
+  fs.writeFileSync('test-results/wheelbot_force_operating_raw.json',JSON.stringify({historicalReceiptSha256:sha(historicalPath),sourceSha256,rows})+'\n');
+  console.log(JSON.stringify({mode:'operating-only',amplitudeN:.8,trials:rows.length,steps:rows.reduce((n,r)=>n+r.steps,0)}));
+ }finally{backend.dispose();}
+ process.exit(0);
+}
 const raw=[],screen=[],assessment=[],stress=[];let evaluationCount=0;
 function execute(amplitudeN,direction,mode,seed,phase){
  const trial=createForceTrial(backend,p,protocol,{amplitudeN,direction,mode,seed});

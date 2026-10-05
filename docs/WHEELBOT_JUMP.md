@@ -3,8 +3,7 @@
 This experiment uses the canonical nonlinear MuJoCo wheelbot: six coordinates,
 three motor torques (hip, knee, wheel), 2 ms physics and 10 ms control. It extends
 the SISO CartPole teaching context to coupled MIMO actuation; CartPole success
-is not evidence for this plant. The original physical fixture and its
-out-of-distribution behavior are unknown. There is no hardware validation.
+is not evidence for this plant. The 1.19915 kg primitive model excludes motor assemblies and electronics; ideal torque actuation and source-derived limits are engineering assumptions. There is no hardware validation. The learning scope is static balance, 3 cm position regulation, a model-specific ±0.8 N × 0.2 s hip-point push, and this verified planned jump.
 
 The offline generator constructs a nonlinear motor trajectory using true state.
 Runtime tracking is finite-horizon time-varying LQR with a scheduled linear
@@ -72,4 +71,4 @@ and original model SHA-256
 The profile binds baseline, protocol and generator hashes; it does not contain
 a recovery-source hash. Native verification recomputes gains from the current
 recovery source, but adding an explicit source binding requires coordinated
-profile regeneration. The separate 40 N recovery task remains open.
+profile regeneration. The assistant-introduced 40 N experiment is archived, not an owner requirement or release blocker; see [normal-operation scope](WHEELBOT_FORCE_ENVELOPE.md).
