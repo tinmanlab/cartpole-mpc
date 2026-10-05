@@ -11,7 +11,7 @@ try{
  assert.equal(b.nx,12);assert.equal(b.nu,3);validateWheelbotProfile(b,p);
  assert.throws(()=>validateWheelbotProfile(b,{...p,assetSha256:'stale'}),/hash mismatch/);
  assert.throws(()=>validateWheelbotProfile(b,{...p,K:[[0]]}),/dimensions/);
- assert.throws(()=>createWheelbotTrial(b,p,{mode:'mpc'}),/NOT_YET_SUPPORTED/);
+ assert.throws(()=>createWheelbotTrial(b,p,{mode:'nmpc'}),/NOT_YET_SUPPORTED/);
  const x=[...p.qref,0,0,0,0,0,0],g=b.geometry(x);
  assert(Math.abs(g.hip[1])+Math.abs(g.knee[1])+Math.abs(g.wheel[1])<1e-12);
  assert(Math.abs(Math.hypot(...g.hip.map((v,i)=>v-g.knee[i]))-.25)<1e-10);

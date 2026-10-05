@@ -1,0 +1,167 @@
+{
+  "schema": "wheelbot-response-design/v2",
+  "correction": "Prior global-monotonicity rejection was a conservative policy, not mathematical impossibility. Brent requires continuity and a sign bracket; the requested maximum-absolute tail metric is bracketed.",
+  "method": "scipy.optimize.brentq in log10 factor, fixed bracket [0,4]",
+  "equation": "max_{k=250..300} |[(A-B K(10^z))^k (-0.03 unit_x)]_x| - 0.01 = 0",
+  "scope": "model-based one-parameter design, not nonlinear/controller optimality; no nonlinear data read",
+  "sourceProfile": "assets/wheelbot/profile.json",
+  "sourceProfileSha256": "d54d98ec5b18d89bdf4043a408ea49d7636edcb9c29301b88f446cda9a968e77",
+  "modelSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "designScriptSha256": "1544aa61dc0c5c7c41e871f982ddef6b56370f335d3812ca5eb87d46094e3205",
+  "log10Bracket": [
+    0,
+    4
+  ],
+  "endpointResiduals_m": [
+    0.012808336263254819,
+    -0.009996947052671578
+  ],
+  "accepted": true,
+  "rootEdge": false,
+  "failure": null,
+  "rootLog10Factor": 1.205510909270279,
+  "rootFactor": 16.051325777553803,
+  "rootResidual_m": 3.157023253930191e-14,
+  "predictedTailError_m": 0.01000000000003157,
+  "predictedTailErrors_m": [
+    0.01000000000003157,
+    0.009942725300023157,
+    0.009885773282477424,
+    0.00982914229794061,
+    0.009772830700084622,
+    0.009716836845881958,
+    0.009661159095773926,
+    0.00960579581383236,
+    0.00955074536791501,
+    0.009496006129814822,
+    0.009441576475403269,
+    0.00938745478476795,
+    0.009333639442344577,
+    0.009280128837043568,
+    0.009226921362371392,
+    0.009174015416546808,
+    0.009121409402612203,
+    0.00906910172854013,
+    0.00901709080733522,
+    0.008965375057131603,
+    0.008913952901285983,
+    0.0088628227684665,
+    0.008811983092737508,
+    0.00876143231364038,
+    0.008711168876270523,
+    0.00866119123135064,
+    0.008611497835300418,
+    0.00856208715030273,
+    0.008512957644366478,
+    0.008464107791386163,
+    0.00841553607119829,
+    0.008367240969634732,
+    0.008319220978573126,
+    0.008271474595984402,
+    0.00822400032597755,
+    0.008176796678841695,
+    0.008129862171085578,
+    0.008083195325474536,
+    0.008036794671065054,
+    0.007990658743236956,
+    0.007944786083723336,
+    0.007899175240638292,
+    0.00785382476850254,
+    0.007808733228266969,
+    0.007763899187334226,
+    0.0077193212195783645,
+    0.00767499790536266,
+    0.0076309278315556265,
+    0.007587109591545314,
+    0.0075435417852519225,
+    0.007500223019138815
+  ],
+  "targetAttainedWithinTolerance": true,
+  "targetNumericalTolerance_m": 1e-10,
+  "brentFunctionCalls": 10,
+  "brentIterations": 9,
+  "dareNormalizedResidual": 1.3941961507873248e-13,
+  "closedLoopRadius": 0.9942520066622546,
+  "responseProfileSha256": "dec4b023f8f54fe8d9de8871104002554b26126e9d7464de8949e9fb3dcbe11d",
+  "evaluations": [
+    {
+      "log10Factor": 0.0,
+      "factor": 1.0,
+      "tailError_m": 0.02280833626325482,
+      "residual_m": 0.012808336263254819
+    },
+    {
+      "log10Factor": 4.0,
+      "factor": 10000.0,
+      "tailError_m": 3.0529473284223863e-06,
+      "residual_m": -0.009996947052671578
+    },
+    {
+      "log10Factor": 0.0,
+      "factor": 1.0,
+      "tailError_m": 0.02280833626325482,
+      "residual_m": 0.012808336263254819
+    },
+    {
+      "log10Factor": 4.0,
+      "factor": 10000.0,
+      "tailError_m": 3.0529473284223863e-06,
+      "residual_m": -0.009996947052671578
+    },
+    {
+      "log10Factor": 2.2465559556210266,
+      "factor": 176.4233058170445,
+      "tailError_m": 0.00045785967542679487,
+      "residual_m": -0.009542140324573206
+    },
+    {
+      "log10Factor": 1.1232779778105133,
+      "factor": 13.282443518308087,
+      "tailError_m": 0.011052476774496908,
+      "residual_m": 0.0010524767744969077
+    },
+    {
+      "log10Factor": 1.2348652085612293,
+      "factor": 17.17375284799273,
+      "tailError_m": 0.009625333250573763,
+      "residual_m": -0.0003746667494262373
+    },
+    {
+      "log10Factor": 1.205570309819778,
+      "factor": 16.053521344890196,
+      "tailError_m": 0.00999924087659619,
+      "residual_m": -7.591234038109573e-07
+    },
+    {
+      "log10Factor": 1.2055108769190677,
+      "factor": 16.05132458186785,
+      "tailError_m": 0.010000000413439973,
+      "residual_m": 4.1343997322917936e-10
+    },
+    {
+      "log10Factor": 1.205510909270279,
+      "factor": 16.051325777553803,
+      "tailError_m": 0.01000000000003157,
+      "residual_m": 3.157023253930191e-14
+    },
+    {
+      "log10Factor": 1.2055109092727494,
+      "factor": 16.05132577764511,
+      "tailError_m": 0.009999999999994128,
+      "residual_m": -5.872038966181492e-15
+    },
+    {
+      "log10Factor": 1.2055109092716467,
+      "factor": 16.051325777604355,
+      "tailError_m": 0.009999999999966574,
+      "residual_m": -3.3426386658597096e-14
+    },
+    {
+      "log10Factor": 1.205510909270279,
+      "factor": 16.051325777553803,
+      "tailError_m": 0.01000000000003157,
+      "residual_m": 3.157023253930191e-14
+    }
+  ],
+  "actualFunctionEvaluations": 13
+}

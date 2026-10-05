@@ -1,0 +1,215 @@
+{
+  "schema": "wheelbot-mimo-final-review/v1",
+  "baseCommit": "a328f754641e6c5236f1d2db5059a2b1f4085199",
+  "sourceSha256": {
+    "src/wheelbot_mpc.mjs": "41ca7be08c1ea5e86a6e41ab7b8f27284c1aebcf9c93b3ea9229105b1bd20572",
+    "src/wheelbot_control.mjs": "9f96d02b9cd8f869bcbcb1318986c90d494499d601909061053f63fcd77853c5",
+    "src/wheelbot_app.mjs": "888aa37e897252c644100ad22ddf438644f6f5e2765794c887ada1c19567cc0f",
+    "wheelbot.html": "431ede7c141a31c36d76bf3736c03f7a439a60c1bb54c89c8afd9a2bf8490860",
+    "scripts/design_wheelbot_response.py": "1544aa61dc0c5c7c41e871f982ddef6b56370f335d3812ca5eb87d46094e3205",
+    "scripts/validate_wheelbot_mpc.mjs": "f38591ea5f76c619fa380b9e008255fa5f5f331d5427070bef856a53e62cb665",
+    "tests/test_wheelbot_mpc.mjs": "34a870b6aae6c5e6ef77405c7fc5cfc35b9b3694222534aa833c337b9062dcfd",
+    "tests/test_wheelbot_profile_binding.mjs": "23dda1d786545dc26bdcfc476eb1be31270afd7e38d58edefb1b85f32c156f41",
+    "tests/test_wheelbot_mpc_reference.py": "1bc83dea577a886c9ecc36c563485a68d767e220a8aee5b59f4cee460da9ea88",
+    "tests/test_wheelbot_response_reference.py": "72dd51dc23661851c85a51be4259dd49d6b725eff2d0a7d921f066c00e01c2a3",
+    "tests/test_wheelbot_browser.py": "8a77bf115c02dbd63b474e5e5fdfb7ecd37e5e7bd1a3005fa224a7847f72f1ef",
+    "tests/test_wheelbot_wasm.mjs": "120f7586b59ce5138e42bcbe3bf11831ddf47307e48f825f3dba72c8f5126101",
+    "tests/fixtures/wheelbot_mpc_validation.json": "61f2d73553fa59ed0904309503024b36b4c5aa5e3f1c6fb37e994735dd15952c",
+    "tests/fixtures/wheelbot_cases.json": "151c669cfd79f9cf4f2d4c8fd3994e1eeb28839552e6679c88f16795608c05cf",
+    "assets/wheelbot/profile.json": "d54d98ec5b18d89bdf4043a408ea49d7636edcb9c29301b88f446cda9a968e77",
+    "assets/wheelbot/response_profile.json": "dec4b023f8f54fe8d9de8871104002554b26126e9d7464de8949e9fb3dcbe11d",
+    "assets/wheelbot/wheelbot.xml": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+    "docs/WHEELBOT_2D.md": "095d4611af3fcc11e7fe604839a13ecb283bc82420051e6c532b7f7ce13ef70c",
+    "package.json": "616810acbb86bd7a86056e93a2830b0ee528b94ddcfb5f47a2bfd2a44bd7e53a",
+    ".github/workflows/verify.yml": "9cbafab32f8c2fe6262c91d2455c9774c59c788971712c6828320344797a288b"
+  },
+  "scope": "Three-input linear MPC and one model-based response design on the unchanged planar wheel-leg asset. Existing open-source quadprog/OSQP/SciPy used; no new optimizer/physical plant/observer.",
+  "recovery": "Interrupted work already contained implemented MIMO MPC, response profile, fixed comparisons and numerical gates. Original durable jobs were reconciled (completed/timed-out/cancelled); no unknown task was blindly repeated. Fresh final tests rerun as regression, not another optimization campaign.",
+  "reviewFix": "Response fetched by the browser is now bound to the actual loaded raw baseline SHA256 and all unchanged model/observer/noise/trim fields. Real missing-validator regression failed before correction; valid response and 11 malformed variants passed afterwards. Test coverage includes fetched-source mismatch and noise mutation with baseline availability preserved, executed by normal CI.",
+  "formulation": {
+    "stateDimension": 11,
+    "inputs": 3,
+    "horizon": 20,
+    "decisionDimension": 60,
+    "controlDt": 0.01,
+    "coordinateChange": "du=-K e+v, complete original objective retained",
+    "torqueBoundsNm": [
+      16,
+      16,
+      1.7
+    ],
+    "nonzeroFeedforwardRetained": true,
+    "implementedConstraints": "actual motor torques only",
+    "notImplementedConstraints": [
+      "state/contact/friction/robust constraints"
+    ],
+    "gates": {
+      "KKT": 1e-07,
+      "primal": 1e-08,
+      "dynamicsAndTorque": 1e-08,
+      "originalUnitStationarity": 1e-07
+    }
+  },
+  "responseDesign": {
+    "method": "scipy.optimize.brentq in log10 factor, fixed bracket [0,4]",
+    "factor": 16.051325777553803,
+    "originalQx": 2.0,
+    "designedQx": 32.102651555107606,
+    "nominalMaxPositionErrorM": 0.01000000000003157,
+    "nominalTargetM": 0.01,
+    "taskToleranceM": 0.015,
+    "rootResidualM": 3.157023253930191e-14,
+    "source": "model matrices only; not noise/trial scores",
+    "unchanged": "A/B,Rc,trim,KF gain,Qe,Re,noise,physical model,episode length and task limits"
+  },
+  "comparisons": [
+    {
+      "profile": "baseline",
+      "controller": "lqr_kf",
+      "trials": 12,
+      "completed": 9,
+      "taskPassed": 3,
+      "qpRejected": 0,
+      "physicalEnvelopeFailure": 3,
+      "forecastActiveSamples": 0,
+      "appliedTorqueLimitSamples": 0,
+      "maxSameEstimateLqrDifferenceNm": 0,
+      "positionTaskTailErrorsM": [
+        0.024365726674300127,
+        0.022291565075517855,
+        0.022880215492392032
+      ],
+      "maxSolverHostMs": null
+    },
+    {
+      "profile": "baseline",
+      "controller": "mpc_kf",
+      "trials": 12,
+      "completed": 9,
+      "taskPassed": 3,
+      "qpRejected": 0,
+      "physicalEnvelopeFailure": 3,
+      "forecastActiveSamples": 0,
+      "appliedTorqueLimitSamples": 0,
+      "maxSameEstimateLqrDifferenceNm": 4.852507284880403e-13,
+      "positionTaskTailErrorsM": [
+        0.024365726674310507,
+        0.02229156507552836,
+        0.02288021549240277
+      ],
+      "maxSolverHostMs": 63.43030700000236
+    },
+    {
+      "profile": "response",
+      "controller": "lqr_kf",
+      "trials": 12,
+      "completed": 9,
+      "taskPassed": 6,
+      "qpRejected": 0,
+      "physicalEnvelopeFailure": 3,
+      "forecastActiveSamples": 0,
+      "appliedTorqueLimitSamples": 0,
+      "maxSameEstimateLqrDifferenceNm": 0,
+      "positionTaskTailErrorsM": [
+        0.010486299247797967,
+        0.009847512435720816,
+        0.010523750837811152
+      ],
+      "maxSolverHostMs": null
+    },
+    {
+      "profile": "response",
+      "controller": "mpc_kf",
+      "trials": 12,
+      "completed": 9,
+      "taskPassed": 6,
+      "qpRejected": 0,
+      "physicalEnvelopeFailure": 3,
+      "forecastActiveSamples": 0,
+      "appliedTorqueLimitSamples": 0,
+      "maxSameEstimateLqrDifferenceNm": 8.728850975359137e-13,
+      "positionTaskTailErrorsM": [
+        0.010486299247785588,
+        0.009847512435713853,
+        0.010523750837805185
+      ],
+      "maxSolverHostMs": 135.82951799999864
+    }
+  ],
+  "originalCaseRegressionTrials": 24,
+  "responseComparisonTrials": 48,
+  "responseAppliedTransitions": 12060,
+  "heldoutBoundary": "Seeds101/211/307 were observed for baseline verification before response root finalization; model design did not consume them, but this is development comparison on known physical cases, not a pristine final holdout or OOD test.",
+  "nativeVerification": {
+    "sameProblemCases": 9,
+    "maxStateDiscrepancy": 9.193856342903928e-09,
+    "maxTorqueDiscrepancyNm": 1.6483259202004774e-09,
+    "maxRelativeObjectiveDiscrepancy": 2.132160918702666e-10,
+    "fullOffDiagonalRc": true,
+    "activeAndInactiveTorqueCases": true,
+    "rawComparisonRecomputed": 48
+  },
+  "originalBaselinePhysicalOutcomesUnchanged": true,
+  "protectedModelAlgorithmDependenciesUnchanged": true,
+  "freshCommands": [
+    {
+      "command": "node tests/test_wheelbot_profile_binding.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wheelbot",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wheelbot:mpc",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_mpc_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/validate_wheelbot_mpc.mjs --new-seeds --response",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_response_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "localBrowser": "not rerun; original delegated socket prohibition retained. Exact-head normal GitHub CI owns browser execution and screenshot proof.",
+  "notClaimed": [
+    "MPC causes the response performance improvement: both controllers improve from Qx design",
+    "globally optimal parameter or a verified robust recovery region",
+    "nonlinear MPC or contact/friction constrained plan",
+    "real-time guarantee; 10ms is simulated control interval",
+    "new calibrated estimator or IMU/encoder-only localization",
+    "independent approval, hardware authority, merge or public deployment"
+  ],
+  "defaultChanged": false,
+  "receipts": [
+    "wheelbot_mpc_regression.json",
+    "wheelbot_response_design.json",
+    "wheelbot_mpc_response_validation.json",
+    "wheelbot_mpc_reference.json",
+    "wheelbot_mpc_response_reference.json",
+    "wheelbot_mpc_active_comparison.json",
+    "wheelbot_mpc_large_state_rejection.json"
+  ]
+}

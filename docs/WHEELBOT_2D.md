@@ -20,15 +20,15 @@ The controlled state removes only wheel absolute phase: full-state indices `[0,1
 
 Offline Python uses native MuJoCo finite differences, SciPy least-squares trim and discrete Riccati solutions. The profile binds gains, matrices, qref and uref to the XML SHA256. The browser validates model mappings, profile dimensions/hash and design acceptance before enabling simulation. It runs WASM, not Python. The initial state uses genuine trim qref; the initial filter receives noisy position measurements and zero velocity prior.
 
-The only browser feedback mode is local saturated LQR plus stationary linear KF. The filter predicts deviations with A/B and applied torque, then corrects using noisy x/z localization, torso orientation, hip and knee measurements. True velocities are never sensor inputs. External x/z localization is an explicit teaching channel: this is not an IMU-and-encoders-only feasibility claim. A wheel encoder cannot establish absolute x under slip. Passive zero-torque dynamics are available for comparison. The displayed reference is local and the controller is not a swing-up or global recovery policy.
+The browser feedback modes are local saturated LQR or three-input torque-constrained linear MPC, each using the same stationary linear KF. The filter predicts deviations with A/B and applied torque, then corrects using noisy x/z localization, torso orientation, hip and knee measurements. True velocities are never sensor inputs. External x/z localization is an explicit teaching channel: this is not an IMU-and-encoders-only feasibility claim. A wheel encoder cannot establish absolute x under slip. Passive zero-torque dynamics are available for comparison. The displayed reference is local and the controller is not a swing-up or global recovery policy.
 
 ## Explicit algorithm boundary
 
-Browser MIMO MPC: **NOT_YET_SUPPORTED**. `src/engine.js` / `src/qp.js` and existing CartPole algorithms are unchanged. The historical `solveBoxLinearMpc` condenses only the first B column; it must not receive the three-input plant. A focused test demonstrates that boundary and the wheelbot adapter rejects an MPC request visibly. No quadprog/OSQP MIMO parity claim is made. No EKF is implemented or advertised.
+Browser MIMO MPC is implemented by the separate `src/wheelbot_mpc.mjs` adapter. `src/engine.js` / `src/qp.js` and existing CartPole algorithms remain unchanged: their historical first-B-column behavior is still tested and is never used for wheelbot. Unknown `nmpc` mode is rejected. Independent sparse OSQP arithmetic checks cover the new three-input adapter. No EKF is implemented or advertised.
 
 ## Reproduction and evidence
 
-Use the existing native Python environment (MuJoCo 3.7.0, SciPy 1.15.3). Run the model generator, offline design script, `tests/test_wheelbot_reference.py`, `npm run test:wheelbot`, and `python3 tests/test_wheelbot_browser.py`. Serve the repository over HTTP and open `wheelbot.html`; it remains paused after validation. `npm run check` still verifies the original lab.
+Use the existing native Python environment (MuJoCo 3.7.0, SciPy 1.15.3). For the original model run the generator and offline design script, then `npm run test:wheelbot` before `python tests/test_wheelbot_reference.py` (the native test consumes the exported WASM replay). Actual HTTP behavior is checked by `python tests/test_wheelbot_browser.py` in the existing permitted CI environment. Serve the repository over HTTP and open `wheelbot.html`; it remains paused after validation. `npm run check` still verifies the original lab.
 
 The fixed case manifest is `tests/fixtures/wheelbot_cases.json`: local balance, position regulation, small push and large boundary push, each with three seeds. Completion and task success are distinct. Final 50 samples must meet 15 mm position and 0.025 rad pitch thresholds. Failures are recorded, not retuned away. Read `evidence/wheelbot_validation.json` and native/browser receipts for measured outcomes. These finite cases do not certify robust stability or hardware transfer.
 
@@ -47,6 +47,118 @@ python tests/test_wheelbot_reference.py
 
 Raw Node states, inputs, estimates, measurements and contact diagnostics are exported to `test-results/wheelbot_wasm_reference.json`; compact receipts are in `evidence/wheelbot_validation.json` and `evidence/wheelbot_native_reference.json`. The nonlinear finite-difference derivative check is independent of `mjd_transitionFD` composition; NumPy verifies the JS controller and KF mean equations from the same supplied inputs. The fixed test cases and gains were not searched or retuned to improve the score.
 
-Measured fixed-case outcomes (three seeds each): local balance completed/passed 3/3; position completed 3/3 and passed 0/3; small push completed 3/3 and passed 0/3; boundary push completed/passed 0/3, with failure at step 105 after four contact-loss samples in each seed. Position convergence is too slow for the fixed 3-second threshold; no tuning search was performed. See `evidence/wheelbot_commands.json` for exact command exits and explicit not-run checks. Browser MPC, EKF, native MIMO MPC probes, closed-loop mass-mismatch campaigns and hardware validation remain unsupported or not run.
+Measured fixed-case outcomes (three seeds each): local balance completed/passed 3/3; position completed 3/3 and passed 0/3; small push completed 3/3 and passed 0/3; boundary push completed/passed 0/3, with failure at step 105 after four contact-loss samples in each seed. Position convergence is too slow for the fixed 3-second threshold; no tuning search was performed. See `evidence/wheelbot_commands.json` for exact command exits and explicit not-run checks. These are historical baseline outcomes. The new MPC and native sparse-QP checks are described below. EKF, closed-loop mass-mismatch campaigns and hardware validation remain unsupported or not run.
 
 Review correction: errors are reported per state/measurement channel with physical units, not as a single mixed-unit score. The native reference reconstructs every task/step/contact/saturation count from raw traces. The 2D camera follows the torso, with world-position ticks; wheel slip uses m/s and all 11 estimated states are displayed. Browser assertions require 20 actual valid physics steps, not merely any partial number below 20.
+
+## Three-input local linear MPC
+
+`src/wheelbot_mpc.mjs` transcribes the standard finite-horizon state/input
+problem to pinned MIT quadprog 1.6.1. It uses every B column and full Qc (the
+profile's `Q`), Rc (`R`), and Riccati terminal P. N=20 is 0.2 seconds, with
+60 decision entries. The original SISO adapter and plant are unchanged.
+The exact coordinate change du=-K e+v retains all finite-precision cost terms;
+fixed matrices are cached only in each controller instance. The conditioning
+receipt compares this transcription with direct condensing.
+
+Bounds apply to actual hip/knee/wheel torque: -limit-uref <= du <= limit-uref.
+World-x reference translation is checked both through A[:,0]=unit_x and a
+translated nonlinear plant step. Wheel phase remains omitted. There are no
+state, contact, or friction constraints: this is neither contact NMPC nor
+robust MPC. Riccati terminal P makes inactive-constraint MPC agree with the
+same LQR design; changing controller labels does not improve that design.
+Qc/Rc are control preferences; existing Qe/Re and noisy localization/KF inputs
+remain noise assumptions, with no auto-calibration claim.
+
+The adapter rejects bad dimensions, nonfinite data, model/limit mismatch,
+solver failures, KKT/complementarity over 1e-7, primal or original physical
+bound/dynamics defects over 1e-8, and original-unit stationarity over 1e-7.
+Rejected solutions never advance the trial; no clipped-solution fallback is
+used. Very large offline constructed states can fail these strict numerical
+gates. Constructed active-bound tests are algebra checks, not achievable plant
+initial conditions.
+
+Independent validation assembles the full sparse state/input QP in SciPy and
+OSQP, without importing the JS condensed Hessian. It checks N=1 and N=20,
+inactive and all-three-input active bounds, full off-diagonal Rc, trajectories,
+objectives and actual first commands. See `tests/fixtures/wheelbot_mpc_validation.json`.
+The formulation follows the [official OSQP MPC example](https://osqp.org/docs/examples/mpc.html)
+and the [quadprog convention](https://github.com/albertosantini/quadprog)
+(.5 v'Hv-d'v, inequality columns C'v>=b; pinned runtime is one-indexed).
+
+Original 4-case × 3-seed regression: both baseline LQR/KF and MPC/KF complete
+9/12 and meet 3/12 tasks, with zero QP rejections. The three physical envelope
+failures remain in evidence. Existing baseline final states are checked for
+exact numeric equality. New seeds 101,211,307 use the same four physical cases;
+they are independent noise seeds, not new physical OOD. Receipts separate
+completion, task success, QP rejection, physical envelope failure, contact loss,
+saturation, physical-unit estimation RMSE, tail errors, per-motor torque/slew,
+and host timing. Host timing is not a real-time promise.
+
+Browser tests exercise actual LQR and MPC numerical loops, shared estimator
+initialization, reset and rejection paths, and preserve the screenshot step.
+Local browser execution was prohibited by the sandbox task; GitHub CI must
+supply that verification. No browser performance claim is made.
+
+## Model-response design correction
+
+The earlier global-monotonicity rejection was a conservative policy, not
+mathematical impossibility. Brent's method needs continuity and a sign bracket,
+not global monotonicity. The specified maximum absolute error over samples
+250..300 is bracketed on log10(Qx multiplier) in [0,4]. Model-only SciPy DARE
+and Brent evaluation returned multiplier 16.0513257776, with maximum error
+0.01000000000003 m for the 0.03 m full-state step. The residual is within the
+recorded 1e-10 m numerical tolerance. Thirteen actual model evaluations include
+ten Brent function calls. Exact source, script and response-profile hashes,
+endpoint residuals, root diagnostics and tail prediction are in
+`evidence/wheelbot_response_design.json`.
+
+`assets/wheelbot/response_profile.json` changes only Qc[0,0], P, K and associated
+control-design diagnostics/metadata. A/B, Rc, trim, KF gain, Qe/Re, sensor noise,
+physical model, torque limits, task thresholds and episode lengths are unchanged.
+This is model-based one-parameter design, not nonlinear/controller optimality.
+The explicit UI selector starts at baseline; neither MPC nor the response
+profile is promoted by default.
+
+The response choice was locked before its nonlinear evaluations. Seeds
+101,211,307 had previously been run for baseline-only evidence; they were not
+read by the model-design script or used for weight adjustment. The same physical
+cases are reused, so this is independent noise, not physical OOD. The original
+24-run regression receipt is retained unchanged. The new 48-run comparison is
+in `evidence/wheelbot_mpc_response_validation.json`; raw fixed traces are retained
+in ignored `test-results/wheelbot_mpc_response_traces.json` and independently
+recomputed with NumPy/SciPy.
+
+Each baseline controller completes 9/12 and meets 3/12 tasks; each response
+controller completes 9/12 and meets 6/12. All three position cases now meet the
+unchanged task tolerance; small push and boundary push still fail the task.
+Each group retains three physical-envelope failures and 12 contact-loss samples.
+The initial comparison had zero QP rejections or applied-torque saturation
+samples. Horizon-wide bound activity and same-estimate action differences are
+now measured separately; see the current machine receipt rather than inferring
+constraint inactivity from applied commands alone. Separate offline
+constructed probes exercise all three bounds and compare constrained actions;
+they are not evidence of physically reachable initial conditions. The larger
+constructed state remains a recorded numerical rejection at unchanged gates.
+
+One recorded development pass measured 0.30–0.34 ms per LQR step and 4.33 ms per MPC step, with a maximum MPC solve of 35.05 ms. Regeneration changes host timings. The 10 ms control interval is simulated time, not a measured worst-case execution guarantee; current timings are in the machine receipt.
+
+### Final review boundaries
+
+The nonlinear assessment seeds 101/211/307 were not used by the model-only response-design function. Their baseline runs were nevertheless observed during adapter verification before the corrected response root was finalized; they are development comparison data, not a strictly unopened final holdout. All reused task cases are regression cases. A fresh uncertainty/hardware claim requires separately reserved assessment.
+
+Reporting distinguishes the applied first torque reaching a bound from any torque bound active anywhere in the MPC horizon. Absence of a saturated applied input alone does not establish absence of active predicted constraints. Same-estimate LQR/MPC differences cover every executed sample, not only saturation events. Zero executed samples have unavailable/null error/timing extrema; unexpected implementation exceptions abort the experiment instead of being mislabeled a QP rejection. An unsupported UI mode request pauses and clears the active trial.
+
+Reproduce the added comparison after the baseline model/profile are available:
+
+```
+python scripts/design_wheelbot_response.py
+npm run test:wheelbot:mpc
+python tests/test_wheelbot_mpc_reference.py
+node scripts/validate_wheelbot_mpc.mjs --new-seeds --response
+python tests/test_wheelbot_response_reference.py
+```
+
+The response model is optional and selected explicitly; it is not written over the baseline profile. The generated response function reproduces only a nominal model target. Nonlinear sensor-in-the-loop assessment is the separate comparison above, with its observed seed-reuse limitations.
+
+Optional response profiles are checked against the exact raw-byte SHA-256 of the baseline fetched by the page. The loader independently checks the declared one-variable Qx change and unchanged model, observer, noise, trim and limits. A stale source hash or changed noise/observer field disables only the response option; baseline operation remains available. This is accidental stale-data validation, not a security signature or independent stability certificate.

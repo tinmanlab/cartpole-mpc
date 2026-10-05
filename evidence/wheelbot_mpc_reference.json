@@ -1,0 +1,87 @@
+{
+  "schema": "wheelbot-mpc-independent-reference/v1",
+  "rows": [
+    {
+      "name": "inactive",
+      "N": 1,
+      "stateError": 1.440210522021812e-09,
+      "torqueErrorNm": 9.111704891030109e-11,
+      "objectiveRelativeError": 8.88029263838852e-11,
+      "activeInputBound": false,
+      "osqpIterations": 350
+    },
+    {
+      "name": "constructed_active",
+      "N": 1,
+      "stateError": 5.709210881832405e-12,
+      "torqueErrorNm": 4.547473508864641e-13,
+      "objectiveRelativeError": 4.961274671318924e-14,
+      "activeInputBound": true,
+      "osqpIterations": 150
+    },
+    {
+      "name": "inactive",
+      "N": 20,
+      "stateError": 2.3570076654322314e-09,
+      "torqueErrorNm": 1.5763404177891044e-10,
+      "objectiveRelativeError": 1.4627966313284294e-10,
+      "activeInputBound": false,
+      "osqpIterations": 3925
+    },
+    {
+      "name": "constructed_active",
+      "N": 20,
+      "stateError": 9.193856342903928e-09,
+      "torqueErrorNm": 1.5843895084799442e-09,
+      "objectiveRelativeError": 1.7093924931876064e-11,
+      "activeInputBound": true,
+      "osqpIterations": 250
+    },
+    {
+      "name": "off_diagonal_R",
+      "N": 20,
+      "stateError": 1.636435431606742e-10,
+      "torqueErrorNm": 1.0937764582941156e-11,
+      "objectiveRelativeError": 2.132160918702666e-10,
+      "activeInputBound": false,
+      "osqpIterations": 2600
+    },
+    {
+      "name": "response_inactive",
+      "N": 1,
+      "stateError": 1.740595050037097e-09,
+      "torqueErrorNm": 1.1118218910637079e-10,
+      "objectiveRelativeError": 9.33691770817549e-11,
+      "activeInputBound": false,
+      "osqpIterations": 375
+    },
+    {
+      "name": "response_constructed_active",
+      "N": 1,
+      "stateError": 2.2248869413488137e-13,
+      "torqueErrorNm": 1.1901590823981678e-13,
+      "objectiveRelativeError": 5.962309400314787e-15,
+      "activeInputBound": true,
+      "osqpIterations": 150
+    },
+    {
+      "name": "response_inactive",
+      "N": 20,
+      "stateError": 2.559390194570299e-09,
+      "torqueErrorNm": 1.716669935543369e-10,
+      "objectiveRelativeError": 1.4069981947107194e-10,
+      "activeInputBound": false,
+      "osqpIterations": 3850
+    },
+    {
+      "name": "response_constructed_active",
+      "N": 20,
+      "stateError": 9.142201662371008e-09,
+      "torqueErrorNm": 1.6483259202004774e-09,
+      "objectiveRelativeError": 1.855297934090654e-11,
+      "activeInputBound": true,
+      "osqpIterations": 250
+    }
+  ],
+  "passed": true
+}

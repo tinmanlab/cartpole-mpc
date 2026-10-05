@@ -79,6 +79,10 @@ jobs:
       - name: Bounded planar wheelbot numerical and browser checks
         run: |
           npm run test:wheelbot
+          npm run test:wheelbot:mpc
+          python tests/test_wheelbot_mpc_reference.py
+          node scripts/validate_wheelbot_mpc.mjs --new-seeds --response
+          python tests/test_wheelbot_response_reference.py
           python tests/test_wheelbot_reference.py
           python tests/test_wheelbot_browser.py
       - name: Preserve wheelbot browser verification
@@ -91,5 +95,8 @@ jobs:
             evidence/wheelbot_browser.json
             evidence/wheelbot_validation.json
             evidence/wheelbot_native_reference.json
+            evidence/wheelbot_mpc_reference.json
+            evidence/wheelbot_mpc_response_validation.json
+            evidence/wheelbot_response_design.json
           if-no-files-found: error
           retention-days: 7

@@ -1,0 +1,10 @@
+{
+  "schema": "wheelbot-response-independent-reference/v1",
+  "trials": 48,
+  "responseMultiplier": 16.051325777553803,
+  "responseMaxErrorM": 0.010000000000585707,
+  "rootResidualM": 5.857068302583812e-13,
+  "normalizedDareResidual": 1.3941961507873248e-13,
+  "closedLoopRadius": 0.9942520066622546,
+  "passed": true
+}

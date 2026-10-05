@@ -1,10 +1,10 @@
 import {createWheelbotBackend} from './wheelbot_backend.mjs';
-import {createWheelbotTrial, validateWheelbotProfile} from './wheelbot_control.mjs';
+import {createWheelbotTrial, validateWheelbotProfile, validateWheelbotResponseProfile} from './wheelbot_control.mjs';
 
 const $ = id => document.getElementById(id);
 const names = ['x', 'z', 'pitch', 'hip', 'knee', 'wheel'];
 const actuators = ['hip', 'knee', 'wheel'];
-let backend = null, profile = null, trial = null, viewState = null;
+let backend = null, profile = null, profiles = {}, trial = null, viewState = null;
 let ready = false, playing = false, poseOnly = false, statusLocked = false;
 let frameTime = 0, accumulated = 0;
 
@@ -12,6 +12,15 @@ const getJson = async path => {
   const response = await fetch(path);
   if (!response.ok) throw Error(`${path} HTTP ${response.status}`);
   return response.json();
+};
+// Preserve the exact baseline bytes for derived-profile identity checks.
+const getBaseline = async path => {
+  const response=await fetch(path);
+  if(!response.ok)throw Error(`${path} HTTP ${response.status}`);
+  const text=await response.text();
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+  const sha256=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');
+  return {profile:JSON.parse(text),sha256};
 };
 const qrefState = () => [...profile.qref, 0, 0, 0, 0, 0, 0];
 function say(message, bad = false) {
@@ -21,7 +30,7 @@ function say(message, bad = false) {
 }
 function state() {
   const s = trial ? trial.snapshot() : {truth: viewState, estimate: null, steps: 0, last: null, failed: false};
-  return {...s, truth12: s.truth, physics: backend?.diagnostics()};
+  return {...s, playing, truth12: s.truth, physics: backend?.diagnostics()};
 }
 function render() {
   if (!backend || !viewState) return;
@@ -55,6 +64,11 @@ function render() {
   $('estimate').innerHTML = estimateNames.map((name, i) => `<tr><td>${name}</td><td>${s.estimate?.[i] === undefined ? '—' : s.estimate[i].toFixed(4)}</td></tr>`).join('');
   const u = s.last?.u ?? [0, 0, 0], requested = s.last?.requested ?? u, saturated = s.last?.saturated ?? false;
   $('torques').innerHTML = actuators.map((n, i) => `<tr><td>${n}</td><td>${Number(u[i] ?? 0).toFixed(3)}${saturated ? ' · SAT' : ''}</td><td>request ${(requested[i] ?? 0).toFixed(3)}</td></tr>`).join('');
+  const last = s.last ?? {};
+  const solver = last.solver ?? '—';
+  const metric = (value, digits = 2) => Number.isFinite(value) ? value.toExponential(digits) : '—';
+  const diagnostics = last.solver === undefined ? 'Solver · —' : `Solver · accepted · ${solver} · KKT residual ${metric(last.kktResidual)} · primal residual ${metric(last.primalResidual)} · solve ${metric(last.solveMs)} ms · planned bound-active ${Boolean(last.forecastConstraintActive)}`;
+  $('solver').textContent = diagnostics;
   const contact = s.last?.contact ?? backend.contact(x);
   $('contact').textContent = `Contact · wheel contacts: ${contact.wheelContacts ?? contact.count ?? 0} · slip [m/s]: ${Number(contact.slip ?? 0).toFixed(4)} m/s · step ${s.steps ?? 0} · ${s.failed ? 'failure flagged' : 'running state valid'}`;
   if (ready && (trial || poseOnly) && !statusLocked) {
@@ -64,7 +78,8 @@ function render() {
 }
 function makeTrial(initial = qrefState()) {
   const mode = $('mode').value;
-  if (mode === 'mpc') throw Error('Linear MPC is NOT_YET_SUPPORTED: existing CartPole MPC is single-input; wheelbot has three actuators.');
+  if (mode === 'nmpc') throw Error('NMPC is NOT_YET_SUPPORTED for this wheelbot experiment.');
+  if (!['lqr_kf', 'mpc_kf', 'passive'].includes(mode)) throw Error(`Controller mode is not supported: ${mode || '(empty)'}.`);
   if (mode === 'lqr_kf' && profile.designAvailable !== true) throw Error(`LQR/KF design rejected: ${profile.reason ?? 'profile is not approved'}`);
   return createWheelbotTrial(backend, profile, {seed: 17, goal: Number($('goal').value), initialState: initial, mode});
 }
@@ -73,6 +88,10 @@ function configure() {
   try { trial = makeTrial(); viewState = trial.snapshot().truth; say('Validated · paused at profile equilibrium'); }
   catch (error) { trial = null; say(`MODE REJECTED · ${error.message}`, true); }
   render();
+}
+function designMetadata() {
+  const selected = $('design').value;
+  return {selection: selected, ...(profiles[selected]?.responseDesign ?? {source: 'Original baseline profile'})};
 }
 function tick() {
   if (!playing || !trial) return;
@@ -95,7 +114,24 @@ function animate(time) {
 window.wheelbotLab = {
   get ready() { return ready; },
   getState: state,
-  configureMode(mode) { $('mode').value = mode; configure(); return {status: $('status').textContent, accepted: Boolean(trial)}; },
+  getDesign: designMetadata,
+  selectDesign(selection) {
+    if (!profiles[selection]) return {accepted: false, selection: $('design').value};
+    $('design').value = selection;
+    profile = profiles[selection];
+    configure();
+    return {accepted: Boolean(trial), ...designMetadata()};
+  },
+  configureMode(mode) {
+    const option = [...$('mode').options].find(item => item.value === mode && !item.disabled);
+    if (!option) {
+      playing = false; viewState = trial?.snapshot().truth ?? viewState; trial = null;
+      const message = mode === 'nmpc' ? 'NMPC is NOT_YET_SUPPORTED for this wheelbot experiment.' : `Controller mode is not supported: ${mode}.`;
+      say(`MODE REJECTED · ${message}`, true);
+      return {status: $('status').textContent, accepted: false, mode: $('mode').value};
+    }
+    $('mode').value = mode; configure(); return {status: $('status').textContent, accepted: Boolean(trial), mode: $('mode').value};
+  },
   run(count) {
     if (!Number.isInteger(count) || count < 0 || count > 2000) throw Error('count must be an integer from 0 to 2000');
     playing = false; for (let i = 0; i < count && trial; i++) { const s = trial.step(0); viewState = s.truth; if (s.failed) { say('Plant failure reported by trial', true); break; } } render(); return state();
@@ -103,19 +139,37 @@ window.wheelbotLab = {
 };
 
 try {
-  const [p, xml] = await Promise.all([getJson('assets/wheelbot/profile.json'), fetch('assets/wheelbot/wheelbot.xml').then(r => { if (!r.ok) throw Error(`wheelbot.xml HTTP ${r.status}`); return r.text(); })]);
+  const [baseline, xml] = await Promise.all([getBaseline('assets/wheelbot/profile.json'), fetch('assets/wheelbot/wheelbot.xml').then(r => { if (!r.ok) throw Error(`wheelbot.xml HTTP ${r.status}`); return r.text(); })]);
+  const p=baseline.profile;
   const next = await createWheelbotBackend(xml);
   if (next.assetSha256 !== p.assetSha256) { next.dispose(); throw Error('Profile/XML SHA-256 mismatch'); }
   const checked = validateWheelbotProfile(next, p);
   if (checked === false || checked?.valid === false) { next.dispose(); throw Error(checked.reason ?? 'Profile validation rejected'); }
-  backend = next; profile = p; viewState = qrefState(); ready = true;
+  backend = next; profile = p; profiles.baseline = p; viewState = qrefState();
+  try {
+    const responseProfile = await getJson('assets/wheelbot/response_profile.json');
+    const responseChecked = validateWheelbotResponseProfile(next, p, responseProfile, baseline.sha256);
+    if (responseChecked === false || responseChecked?.valid === false) throw Error(responseChecked.reason ?? 'Response profile validation rejected');
+    if (responseProfile.responseDesign?.changedPreference !== 'Qc[0,0] only') throw Error('Response profile does not declare the Qc[0,0]-only design');
+    profiles.response = responseProfile;
+  } catch (error) {
+    $('design').querySelector('option[value="response"]').disabled = true;
+    $('design-info').textContent = `Response design unavailable · ${error.message}`;
+  }
+  ready = true;
   $('play').disabled = $('step').disabled = $('reset').disabled = $('pose').disabled = $('local').disabled = false;
+  $('design').disabled = false;
+  if (profiles.response) {
+    const metadata = profiles.response.responseDesign;
+    $('design-info').textContent = `Baseline profile · original control and noise settings. Response profile · model-designed ${metadata.changedPreference}; factor ${metadata.factor}×. Source profile SHA-256 ${metadata.sourceProfileSha256}; method ${metadata.method}. Plant, input penalty, estimator, and measurement noise retain baseline settings.`;
+  }
   $('play').onclick = () => { if (!trial) { configure(); if (!trial) return; } playing = !playing; render(); };
   $('step').onclick = () => { if (!trial) return; playing = false; tickOnce(); };
   $('reset').onclick = configure;
   $('pose').onclick = () => { playing = false; statusLocked = false; trial = null; poseOnly = true; viewState = qrefState(); viewState[3] += 0.12; viewState[4] -= 0.10; render(); };
   $('local').onclick = () => { playing = false; statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = configure;
+  $('design').onchange = () => { profile = profiles[$('design').value] ?? profiles.baseline; configure(); };
   configure(); requestAnimationFrame(animate);
 } catch (error) {
   ready = false; say(`MODEL / PROFILE REJECTED · ${error.message}`, true);

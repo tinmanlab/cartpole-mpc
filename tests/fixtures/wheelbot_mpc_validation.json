@@ -1,0 +1,47 @@
+{
+  "schema": "wheelbot-mpc-protocol/v1",
+  "baseline": "assets/wheelbot/profile.json",
+  "modelSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "horizon": 20,
+  "controlDt": 0.01,
+  "regressionCases": "tests/fixtures/wheelbot_cases.json",
+  "regressionSeeds": [
+    1,
+    17,
+    43
+  ],
+  "newNoiseSeeds": [
+    101,
+    211,
+    307
+  ],
+  "newSeedsScope": "same physical cases, not physical OOD",
+  "gates": {
+    "kkt": 1e-07,
+    "primal": 1e-08,
+    "physicalBounds": 1e-08,
+    "dynamics": 1e-08,
+    "originalStationarity": 1e-07
+  },
+  "referenceTolerances": {
+    "stateAbsolute": 2e-06,
+    "torqueNm": 0.0002,
+    "objectiveRelative": 2e-06
+  },
+  "responseDesign": {
+    "factor": "Qc[0,0] only",
+    "multiplierRange": [
+      1,
+      10000
+    ],
+    "stepM": 0.03,
+    "tailSamples": [
+      250,
+      300
+    ],
+    "maxAbsoluteErrorM": 0.01,
+    "selection": "nominal linear full-state prediction only; brentq sign bracket in log10 factor [0,4], continuity required, global monotonicity not required"
+  },
+  "constraints": "three actual motor torques only; no state, contact or friction constraints",
+  "failures": "retain rejection, physical envelope failure, contact loss and saturation separately"
+}

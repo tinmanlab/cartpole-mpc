@@ -1,3 +1,4 @@
+import {createWheelbotMPC} from './wheelbot_mpc.mjs';
 import {CONTROLLED_INDICES} from './wheelbot_backend.mjs';
 // Same matrix-vector/KF equations as the CartPole teaching code, with an explicit
 // 11-dimensional local state. The original four-state observer is not reused.
@@ -5,6 +6,7 @@ const mv=(A,x)=>A.map(r=>r.reduce((s,v,j)=>s+v*x[j],0));
 const valid=(x,n)=>Array.isArray(x)&&x.length===n&&x.every(Number.isFinite);
 const matrix=(a,n,m)=>Array.isArray(a)&&a.length===n&&a.every(r=>valid(r,m));
 export function validateWheelbotProfile(b,p){
+ if(!b||!p||typeof p!=='object')throw Error('Invalid profile/backend');
  if(p.assetSha256!==b.assetSha256)throw Error('Asset/profile hash mismatch');
  if(![p.trimQaccInf,p.dareNormalizedResidual,p.closedLoopRadius,p.observerErrorRadius].every(Number.isFinite)||p.trimQaccInf>1e-7||p.dareNormalizedResidual>1e-8||p.closedLoopRadius>=1||p.observerErrorRadius>=1)throw Error('Profile numerical design gates rejected');
  if(!p.designAvailable)throw Error('Design rejected: '+(p.reason??'unverified'));
@@ -30,8 +32,9 @@ export function lqrTorque(p,estimate,goal,limits){
 }
 export function createWheelbotTrial(backend,p,{seed=1,goal=0,initialState=[...p.qref,0,0,0,0,0,0],mode='lqr_kf'}={}){
  validateWheelbotProfile(backend,p);
- if(!['lqr_kf','passive'].includes(mode))throw Error('NOT_YET_SUPPORTED: '+mode);
+ if(!['lqr_kf','mpc_kf','passive'].includes(mode))throw Error('NOT_YET_SUPPORTED: '+mode);
  if(!valid(initialState,12)||!Number.isFinite(goal))throw Error('Invalid trial initial state/goal');
+ const mpc=mode==='mpc_kf'?createWheelbotMPC(p,backend.limits):null;
  let rng=seed>>>0;
  const uniform=()=>{rng=(Math.imul(1664525,rng)+1013904223)>>>0;return (rng+.5)/4294967296;};
  const noise=()=>Math.sqrt(-2*Math.log(uniform()))*Math.cos(2*Math.PI*uniform());
@@ -40,10 +43,30 @@ export function createWheelbotTrial(backend,p,{seed=1,goal=0,initialState=[...p.
  const snapshot=()=>({truth:truth.slice(),estimate:estimate.slice(),steps,goal,mode,last,failed,estimateIndices:CONTROLLED_INDICES});
  return {snapshot,step(externalX=0){
   if(failed)throw Error('Trial already failed');
-  const action=mode==='passive'?{u:[0,0,0],requested:[0,0,0],saturated:false}:lqrTorque(p,estimate,goal,backend.limits);
+  const action=mode==='passive'?{u:[0,0,0],requested:[0,0,0],saturated:false}:mpc?mpc.solve(estimate,goal):lqrTorque(p,estimate,goal,backend.limits);
+  if(!valid(action.u,3)||action.u.some((v,i)=>Math.abs(v)>backend.limits[i]+1e-8))throw Error('Invalid controller command');
   truth=backend.step(truth,action.u,externalX);const measurement=measure(truth);
   estimate=observerUpdate(p,estimate,action.u,measurement);steps++;
   failed=!truth.every(Number.isFinite)||Math.abs(truth[0]-p.qref[0])>1||Math.abs(truth[2]-p.qref[2])>.6||truth[1]<.12;
   last={...action,measurement,contact:backend.contact(truth),externalX};return snapshot();
  }};
+}
+
+// Check the optional one-variable design against the exact baseline bytes loaded
+// by the page. This is stale/mismatched-data detection, not a trust signature.
+export function validateWheelbotResponseProfile(backend,baseline,response,baselineSha256){
+ if(typeof baselineSha256!=='string'||!/^[0-9a-f]{64}$/.test(baselineSha256))throw Error('Invalid baseline hash');
+ validateWheelbotProfile(backend,baseline);validateWheelbotProfile(backend,response);
+ const d=response.responseDesign;
+ if(!d||d.sourceProfileSha256!==baselineSha256||d.changedPreference!=='Qc[0,0] only'||!Number.isFinite(d.factor)||d.factor<=0)throw Error('Response design does not match the loaded baseline');
+ if(!matrix(response.Q,11,11)||!matrix(response.P,11,11)||!matrix(baseline.Q,11,11))throw Error('Invalid response cost dimensions');
+ const allowed=new Set(['Q','P','K','dareNormalizedResidual','closedLoopRadius','responseDesign']);
+ for(const key of new Set([...Object.keys(baseline),...Object.keys(response)])){
+  if(!allowed.has(key)&&JSON.stringify(response[key])!==JSON.stringify(baseline[key]))throw Error('Response changed baseline field: '+key);
+ }
+ for(let i=0;i<11;i++)for(let j=0;j<11;j++){
+  const expected=baseline.Q[i][j]*(i===0&&j===0?d.factor:1);
+  if(!Number.isFinite(expected)||Math.abs(response.Q[i][j]-expected)>1e-12*Math.max(1,Math.abs(expected)))throw Error('Response cost is not the declared Qx-only change');
+ }
+ return true;
 }
