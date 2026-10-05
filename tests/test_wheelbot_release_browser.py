@@ -4,6 +4,12 @@ import argparse, functools, hashlib, http.server, json, threading
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'test-results/wheelbot-browser'; OUT.mkdir(parents=True,exist_ok=True)
+def json_response_handler(payload):
+    # Playwright may pass both Route and Request; keep response data separate.
+    def handler(route, request=None):
+        route.fulfill(body=payload,content_type='application/json')
+    return handler
+
 ap=argparse.ArgumentParser(); ap.add_argument('--url',help='Full public wheelbot.html URL; starts no server'); args=ap.parse_args()
 server=None
 if not args.url:
@@ -83,7 +89,7 @@ try:
         for filename,field,value,button in [('contact_tracking_profile.json','steps',249,'physical-track-left'),('jump_profile.json','baselineSha256','bad','jump')]:
             bad=json.loads((ROOT/'assets/wheelbot'/filename).read_text()); bad[field]=value
             pattern='**/'+filename
-            page.route(pattern,lambda route,body=json.dumps(bad):route.fulfill(body=body,content_type='application/json'))
+            page.route(pattern,json_response_handler(json.dumps(bad)))
             page.reload(wait_until='networkidle'); page.wait_for_function('window.wheelbotLab?.ready && window.wheelbotLab.getDesignEditor()')
             assert run(20)['steps']==20
             if filename.startswith('contact'):
