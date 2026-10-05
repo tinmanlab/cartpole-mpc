@@ -12,7 +12,7 @@
     "tests/test_wheelbot_profile_binding.mjs": "23dda1d786545dc26bdcfc476eb1be31270afd7e38d58edefb1b85f32c156f41",
     "tests/test_wheelbot_mpc_reference.py": "1bc83dea577a886c9ecc36c563485a68d767e220a8aee5b59f4cee460da9ea88",
     "tests/test_wheelbot_response_reference.py": "72dd51dc23661851c85a51be4259dd49d6b725eff2d0a7d921f066c00e01c2a3",
-    "tests/test_wheelbot_browser.py": "8a77bf115c02dbd63b474e5e5fdfb7ecd37e5e7bd1a3005fa224a7847f72f1ef",
+    "tests/test_wheelbot_browser.py": "e2a364ba2d62a4483b66daa220684ca78f0703ddf5942dc3db899425e16fd2c7",
     "tests/test_wheelbot_wasm.mjs": "120f7586b59ce5138e42bcbe3bf11831ddf47307e48f825f3dba72c8f5126101",
     "tests/fixtures/wheelbot_mpc_validation.json": "61f2d73553fa59ed0904309503024b36b4c5aa5e3f1c6fb37e994735dd15952c",
     "tests/fixtures/wheelbot_cases.json": "151c669cfd79f9cf4f2d4c8fd3994e1eeb28839552e6679c88f16795608c05cf",
@@ -211,5 +211,13 @@
     "wheelbot_mpc_response_reference.json",
     "wheelbot_mpc_active_comparison.json",
     "wheelbot_mpc_large_state_rejection.json"
-  ]
+  ],
+  "browserReviewCorrection": {
+    "priorHead": "75902b69e60c3442c67bb3ccea23263633f783c4",
+    "run": 37249356246,
+    "status": "failure in malformed fetched response option assertion; all numerical and earlier browser suites passed",
+    "correction": "Playwright passes route and request. Changed injected test mutation to keyword-only after an isolated wrapper reproduction confirmed positional overwrite; require route actually served and report exact DOM/profile metadata on failure. No assertion, model, gain, trial or numerical tolerance weakened.",
+    "localChecks": "route wrapper regression, pure profile binding, Python compilation passed; no HTTP browser attempt",
+    "finalBrowserOutcome": "requires subsequent exact-head CI"
+  }
 }

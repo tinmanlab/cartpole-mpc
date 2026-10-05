@@ -54,17 +54,23 @@ try:
         # Fetched response metadata must match the bytes actually loaded, not
         # merely carry the same XML hash or assert a Qx-only change.
         for mutation in ('source-hash', 'observer-noise'):
-            def invalid_response(route, mutation=mutation):
+            served=[]
+            # Playwright supplies (route, request). Keep the frozen mutation
+            # keyword-only so Request cannot replace it.
+            def invalid_response(route, *, mutation=mutation):
                 bad=json.loads(json.dumps(response_profile))
                 if mutation=='source-hash':
                     bad['responseDesign']['sourceProfileSha256']='0'*64
                 else:
                     bad['measurementSigma'][0]*=2
+                served.append({'mutation':mutation,'url':route.request.url,'source':bad['responseDesign']['sourceProfileSha256'],'noise':bad['measurementSigma'][0]})
                 route.fulfill(status=200,content_type='application/json',body=json.dumps(bad))
             page.route('**/assets/wheelbot/response_profile.json',invalid_response)
             page.reload(wait_until='networkidle')
             page.wait_for_function('window.wheelbotLab?.ready',timeout=30000)
-            assert page.locator('#design option[value=response]').is_disabled()
+            assert served and all(x['mutation']==mutation for x in served), {'routeNotExercised':mutation,'served':served}
+            diagnostics=page.evaluate("() => ({ready:window.wheelbotLab.ready,optionDisabled:document.querySelector('#design option[value=response]').disabled,info:document.querySelector('#design-info').textContent,status:document.querySelector('#status').textContent,design:window.wheelbotLab.getDesign()})")
+            assert page.locator('#design option[value=response]').is_disabled(), {'mutation':mutation,'served':served,'browser':diagnostics}
             assert 'unavailable' in page.locator('#design-info').inner_text().lower()
             baseline_run=page.evaluate('window.wheelbotLab.run(20)')
             assert baseline_run['steps']==20 and not baseline_run['failed']
