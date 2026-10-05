@@ -46,3 +46,11 @@ Their source is not bundled here except for the CartPole plant lineage noted abo
 - The local MPC transcription and residual checks are not claimed to be upstream code. OSQP is used separately as an independent numerical reference.
 
 `vendor/manifest.json`, `package-lock.json` and `scripts/vendor_runtime.py --check` provide exact artifact/source identity. No upstream endorsement or hardware safety certification is implied.
+
+## Upkie-derived wheelbot teaching model
+
+Selected geometry, masses and motor effort limits derive from `upkie/upkie_description`
+at `94735fbe6137276a41de0ff4cc04d2e533fa9e33`. The original URDF and Apache-2.0
+license are retained in `assets/wheelbot/source/`, with exact hashes and parameter
+attribution in `provenance.json`. The local MJCF is a modified, single-side planar
+primitive model with assumed inertias and contact settings; no meshes are copied.

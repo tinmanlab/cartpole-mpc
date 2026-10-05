@@ -1,0 +1,48 @@
+<mujoco model="planar-wheelbot-full-contact-configured">
+  <compiler angle="radian" inertiafromgeom="false" />
+  <option timestep="0.002" integrator="Euler" gravity="0 0 -9.81" cone="elliptic" impratio="10" />
+  <size njmax="1000" nconmax="100" />
+  <default>
+    <joint damping="0" armature="0" limited="false" />
+    <geom condim="3" friction="1 0.01 0.001" solref="0.01 1" solimp="0.95 0.99 0.001" />
+    <motor ctrllimited="true" />
+  </default>
+  <worldbody>
+    <light pos="0 -2 3" dir="0 1 -1" diffuse="0.8 0.8 0.8" />
+    <geom name="floor" type="plane" pos="0 0 0" size="5 2 0.1" rgba="0.25 0.28 0.31 1" />
+    <geom name="obstacle" type="box" pos="0.65 0 0.1" size="0.08 0.25 0.1" rgba="0.65 0.45 0.23 1" contype="1" conaffinity="1"/>
+    <body name="torso" pos="0 0 0">
+      <joint name="x" type="slide" axis="1 0 0" />
+      <joint name="z" type="slide" axis="0 0 1" />
+      <joint name="pitch" type="hinge" axis="0 1 0" />
+      <inertial pos="0 0 0.125" mass="1" diaginertia="0.007616666666666667 0.006510416666666667 0.0037104166666666674" />
+      <geom name="torso_visual" type="box" pos="0 0 0.125" size="0.0625 0.085 0.125" mass="0" rgba="0.92 0.94 0.97 1" contype="1" conaffinity="1" />
+      <site name="hip_site" pos="0 0 0" size="0.012" rgba="1 0.1 0.1 1" />
+      <body name="upper_link" pos="0 0 0">
+        <joint name="hip" type="hinge" axis="0 1 0" damping="0.015" armature="0.0002" range="-1.26 1.26" limited="true" />
+        <inertial pos="0 0 -0.125" mass="0.056" diaginertia="0.0002933606666666667 0.0002933606666666667 0.000003388" />
+        <geom name="upper_link_visual" type="cylinder" pos="0 0 -0.125" size="0.011 0.125" mass="0" rgba="0.18 0.42 0.88 1" contype="1" conaffinity="1" />
+        <body name="lower_link" pos="0 0 -0.25">
+          <joint name="knee" type="hinge" axis="0 1 0" damping="0.015" armature="0.0002" range="-2.51 2.51" limited="true" />
+          <inertial pos="0 0 -0.125" mass="0.056" diaginertia="0.0002933606666666667 0.0002933606666666667 0.000003388" />
+          <geom name="lower_link_visual" type="cylinder" pos="0 0 -0.125" size="0.011 0.125" mass="0" rgba="0.18 0.42 0.88 1" contype="1" conaffinity="1" />
+          <site name="knee_site" pos="0 0 0" size="0.01" rgba="1 0.1 0.1 1" />
+          <body name="wheel_body" pos="0 0 -0.25">
+            <joint name="wheel" type="hinge" axis="0 1 0" damping="0.015" armature="0.0002" />
+            <inertial pos="0 0 0" mass="0.08715" diaginertia="0.00006608875000000002 0.00010893750000000001 0.00006608875000000002" />
+            <geom name="wheel_visual" type="cylinder" size="0.05 0.02" quat="0.7071067811865476 0.7071067811865475 0 0" mass="0" rgba="0.12 0.72 0.34 1" contype="1" conaffinity="1" />
+            <site name="wheel_site" pos="0 0 0" size="0.008" rgba="0.1 0.9 0.3 1" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="hip_motor" joint="hip" gear="1" ctrlrange="-16 16" forcelimited="true" forcerange="-16 16" />
+    <motor name="knee_motor" joint="knee" gear="1" ctrlrange="-16 16" forcelimited="true" forcerange="-16 16" />
+    <motor name="wheel_motor" joint="wheel" gear="1" ctrlrange="-1.7 1.7" forcelimited="true" forcerange="-1.7 1.7" />
+  </actuator>
+  <keyframe>
+    <key name="home" qpos="0 0.5443855389680211 0 0.15 -0.3 0" />
+  </keyframe>
+</mujoco>

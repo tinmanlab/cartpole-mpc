@@ -1,0 +1,29 @@
+{
+  "repository": "https://github.com/upkie/upkie_description",
+  "commit": "94735fbe6137276a41de0ff4cc04d2e533fa9e33",
+  "urdfSha256": "d15965215067276203599a850e5c7ebb319ed6815506f0a2721dae78abac2483",
+  "license": "Apache-2.0; original LICENSE copied; no meshes copied",
+  "licenseSha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+  "sourceParameters": {
+    "torso": "link torso visual/geometry/box size and inertial/mass; 0.125 0.17 0.25 m and 1 kg",
+    "rods": "left_femur visual/geometry/cylinder radius,length and inertial/mass; radius .012 m,length .25 m,mass .056 kg; tibia matches",
+    "tire": "left_wheel_tire collision/geometry/cylinder radius,length and inertial/mass; radius .05 m,width .04 m,mass .08715 kg",
+    "limits": "left_hip/left_knee/left_wheel joint/limit effort; 16,16,1.7 Nm"
+  },
+  "declaredAssumptions": [
+    "single-side planar serial decomposition",
+    "uniform solid primitive mass distributions; upstream tensors not reused or certified",
+    "motor housings/rotor assemblies, electronics and cables omitted",
+    "joint damping .015 Nm s/rad and armature .0002 kg m^2; root zero damping/armature",
+    "floor sliding friction 1, contact solref .01 1, solimp .95 .99 .001",
+    "torso and rod collisions disabled; stop at local envelope failure",
+    "Euler .002 s, five substeps per control sample",
+    "display home hip .15 knee -.3; dynamically solved trim separately",
+    "external noisy x/z localization, orientation and hip/knee sensors; KF covariance and LQR weights are assumed"
+  ],
+  "inertiaFormulas": {
+    "box": "Ixx=m*(dy^2+dz^2)/12 cyclic",
+    "cylinder": "Iaxial=m*r^2/2; Itransverse=m*(3*r^2+length^2)/12"
+  },
+  "simplification": "primitive single-side sagittal derivative, not full Upkie or hardware twin"
+}

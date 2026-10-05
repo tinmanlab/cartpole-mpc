@@ -1,0 +1,10 @@
+{
+  "schema": "wheelbot-contact-design/v1",
+  "base": {"massKg": 1, "sizeM": [0.125,0.17,0.25]},
+  "upper": {"massKg": 0.056, "lengthM": 0.25, "radiusM": 0.011},
+  "lower": {"massKg": 0.056, "lengthM": 0.25, "radiusM": 0.011},
+  "wheel": {"massKg": 0.08715, "radiusM": 0.05, "widthM": 0.04},
+  "motor": {"torqueLimitNm": [16,16,1.7], "dampingNms": 0.015, "armatureKgM2": 0.0002, "hipRangeRad": [-1.26,1.26], "kneeRangeRad": [-2.51,2.51]},
+  "contact": {"enabled": true, "friction": 1, "timeConstantS": 0.01, "dampingRatio": 1},
+  "obstacle": {"enabled": true, "centerM": [0.65,0,0.10], "sizeM": [0.16,0.5,0.2]}
+}
