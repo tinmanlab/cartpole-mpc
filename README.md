@@ -349,3 +349,7 @@ See [third-party notices](THIRD_PARTY_NOTICES.md).
 This is a teaching and research prototype, not a production robot controller.
 
 The CartPole versions preserve the **control/estimation structure** needed to understand the algorithms, but they do not reproduce humanoid multi-contact dynamics, hardware state estimation, actuator limits, safety behavior, or OCS2 solver equivalence.
+
+### Wheelbot live default
+
+The wheelbot page opens with a compact ellipsoid body and a controlled 63° knee-flexed posture. The hip axis is 20 mm from the declared base COM; mass/inertia, trim, LQR and KF are regenerated for that model. Move −3 cm / Center / +3 cm without resetting state. The KF uses five noisy pose channels and an explicitly simulated wheel encoder-rate channel. The viewport stays visible while settings are open, with live target/state plots and measured pacing. Select **Reference · standing / jump** for the preserved older MPC, jump, pulse and contact-lift profiles; these are not transplanted onto the redesigned body. See [model, sensing and validation boundaries](docs/WHEELBOT_LAB.md).

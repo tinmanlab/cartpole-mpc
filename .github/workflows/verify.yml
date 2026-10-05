@@ -33,6 +33,12 @@ jobs:
         run: python tests/test_wasm_native.py
       - name: Real browser network, solver and failure paths
         run: npm run test:browser
+      - name: Compact wheelbot model, live control and pacing
+        run: |
+          python tests/test_wheelbot_live_model.py
+          node tests/test_wheelbot_live_runtime.mjs
+          node tests/test_wheelbot_live_parity.mjs
+          python tests/test_wheelbot_live_browser.py
       - name: Wheelbot portable native, WASM and browser release gates
         run: |
           python -m py_compile tests/test_wheelbot_release_browser.py

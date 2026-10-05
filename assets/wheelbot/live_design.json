@@ -1,0 +1,77 @@
+{
+  "schema": "wheelbot-live-design/v1",
+  "modelSha256": "17fec38c99f4ba42c99052570e8951b35cb4d041543ef47761baff91c4a50382",
+  "profileSha256": "ac38ca546e68c56b33a85ed71eb28fa4d8f6d064b2138f7381b1c3c957ee0383",
+  "modelMetadata": {
+    "baseGeometryType": "ellipsoid",
+    "baseHalfSizeM": [
+      0.085,
+      0.07,
+      0.075
+    ],
+    "baseSizeM": [
+      0.17,
+      0.14,
+      0.15
+    ],
+    "bodyCOMLocalM": [
+      0.0,
+      0.0,
+      0.02
+    ],
+    "hipPivotLocalM": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "hipToBodyCOMDistanceM": 0.02,
+    "postureAnglesDeg": {
+      "hip": 31.51267873219528,
+      "knee": -63.02535746439056,
+      "kneeFlexion": 63.02535746439056
+    },
+    "massAssumptions": "1 kg lumped body/drive assembly + two 0.056 kg rods + 0.08715 kg wheel/tire; not hardware identified",
+    "baseInertiaKgM2": [
+      0.002105,
+      0.0025700000000000002,
+      0.0024250000000000005
+    ],
+    "fullBodyContact": true,
+    "collisionExclusion": "Standard MuJoCo parent-child filter only",
+    "designChoice": "Hip near COM is a bounded compact-base choice, not a universal stability theorem",
+    "torsoMassKg": 1.0,
+    "eachLinkMassKg": 0.056,
+    "wheelTireMassKg": 0.08715,
+    "totalMassKg": 1.1991500000000002,
+    "linkLengthM": 0.25,
+    "wheelRadiusM": 0.05,
+    "derivedFrom": "Original source-derived Upkie/sketch leg and tire dimensions/masses; new rounded base is an engineering assumption, with 1 kg lumped body/drive assembly and no identified motor assemblies or remote transmission"
+  },
+  "defaultMode": "lqr_kf",
+  "controlDt": 0.01,
+  "substeps": 5,
+  "acceptance": {
+    "durationS": 10.0,
+    "finalWindowS": 2.0,
+    "pitchErrorRad": 0.08,
+    "jointErrorRad": 0.1,
+    "positionErrorM": 0.02,
+    "velocityComponentMax": 0.3,
+    "jointLimitExcursionRad": 0.02,
+    "penetrationM": 0.005
+  },
+  "seeds": [
+    1,
+    7,
+    42,
+    2026
+  ],
+  "goalsM": [
+    0.0,
+    0.03,
+    -0.03
+  ],
+  "goalSwitchTimeS": 2.0,
+  "goalRampRequired": false,
+  "scope": "Local crouched balance and small live commands only; no get-up, hardware or calibrated robustness claim"
+}
