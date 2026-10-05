@@ -41,13 +41,18 @@ try:
             digest=hashlib.sha256(response.body()).hexdigest(); assert digest==hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),path
             report['assetHashes'][path]=digest
         select_reference()
+        assert page.locator('.pipeline span').all_text_contents()==['Five noisy position channels','KF state estimate','LQR feedback','MuJoCo wheel-contact benchmark']
         original=state(); baseline=run(20); assert baseline['steps']==20; save('baseline',baseline)
         page.select_option('#mode','mpc_kf'); page.select_option('#goal','0.03')
         standing=run(300); assert standing['steps']==300 and abs(standing['truth'][0]-.03)<.02
+        assert page.locator('.pipeline span').nth(2).inner_text()=='Local MPC feedback'
         save('standing_mpc_goal',standing); snap('standing')
         page.click('#reset'); page.select_option('#mode','lqr_kf')
         page.evaluate('window.wheelbotLab.prepareJump(809)'); flight=run(100)
-        assert flight['last']['geometry']['wheelContacts']==0; snap('jump_airborne')
+        assert flight['last']['geometry']['wheelContacts']==0
+        assert 'free/airborne surface velocity—not ground slip' in page.locator('#contact').inner_text()
+        assert page.locator('.pipeline span').nth(2).inner_text()=='Scheduled TVLQR feedback'
+        snap('jump_airborne')
         jump=run(300); assert jump['steps']==400 and jump['jumpResult']['passed'] and jump['jumpResult']['externalForceIsZero']; save('jump',jump)
         assert run(10)['physics']['steps']==jump['physics']['steps']
         page.click('#reset')
@@ -64,6 +69,8 @@ try:
             page.click('#physical-track-'+side)
             page.wait_for_function('window.wheelbotLab.getState().done',timeout=30000)
             s=state(); assert s['steps']==250 and s['elapsedSeconds']==.5 and s['trackingResult']['tracking_success'] and s['estimate'] is None
+            assert page.locator('.pipeline span').all_text_contents()==['Exact simulator state','No observer','Scheduled feedback','MuJoCo full contact']
+            assert not page.evaluate('window.wheelbotLab.getPerformance().active')
             save('lift_'+side,s); snap('lift_'+side)
             assert run(10)['physics']['steps']==s['physics']['steps']
         page.evaluate('window.wheelbotLab.prepareTracking(-1)'); page.click('#step')

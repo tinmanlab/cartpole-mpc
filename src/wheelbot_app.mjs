@@ -1,6 +1,6 @@
 import {createWheelbotBackend} from './wheelbot_backend.mjs';
 import {createWheelbotContactBackend} from './wheelbot_contact_backend.mjs';
-import {createLiveView,createRuntimeMeter} from './wheelbot_live_view.mjs';
+import {createLiveView,createRuntimeMeter,pipelineLabels} from './wheelbot_live_view.mjs';
 import {mountDesignEditor,drawConfiguredScene} from './wheelbot_design_view.mjs';
 import {createWheelbotTrial, validateWheelbotProfile, validateWheelbotResponseProfile} from './wheelbot_control.mjs';
 import {createJumpTrial, validateJumpProfile, jumpMetrics} from './wheelbot_jump.mjs';
@@ -47,7 +47,7 @@ function say(message, bad = false) {
 }
 function state(includeResults=true) {
   const s = trial ? trial.snapshot() : {truth: viewState, estimate: null, steps: 0, last: null, failed: false};
-  return {...s, playing, truth12: s.truth, physics: backend ? {...backend.diagnostics(),controlDt:trial?.controlDt??.01} : null,configuredModel:designActive,modelInfo:(designActive||liveActive)?modelInfo(backend):null,modelKind:liveActive?'live':designActive?'configured':'benchmark',liveActive,jumpActive,
+  return {...s, playing, poseOnly, truth12: s.truth, physics: backend ? {...backend.diagnostics(),controlDt:trial?.controlDt??.01} : null,configuredModel:designActive,modelInfo:(designActive||liveActive)?modelInfo(backend):null,modelKind:liveActive?'live':designActive?'configured':'benchmark',liveActive,jumpActive,
     jumpResult: includeResults && jumpActive && trial ? jumpMetrics(jumpProfile, trial.history, jumpInitialTelemetry) : null,forceActive,forceResult:includeResults&&forceActive&&trial?trial.result():null};
 }
 function legacyScene(g){
@@ -63,6 +63,7 @@ function render(force=true) {
  liveView.sample(s,dt);
  if(force||started-lastPlot>=50){liveView.drawCharts();lastPlot=started;}
  if(force||started-lastTelemetry>=100){
+  const labels=pipelineLabels(s);document.querySelectorAll('.pipeline span').forEach((node,i)=>{node.textContent=labels[i];});
   lastTelemetry=started;const perf=meter.snapshot(),u=s.last?.u??[0,0,0],last=s.last??{};
   $('metric-position').textContent=`${x[0].toFixed(3)} / ${(s.goal??0).toFixed(2)} m`;
   $('metric-pitch').textContent=`${(x[2]*180/Math.PI).toFixed(2)} / ${s.estimate? (s.estimate[2]*180/Math.PI).toFixed(2):'—'}°`;
@@ -77,13 +78,13 @@ function render(force=true) {
    $('truth').innerHTML=names.map((n,i)=>`<tr><td>${n}</td><td>${x[i].toFixed(4)}</td><td>${x[i+6].toFixed(4)}</td></tr>`).join('');
    $('estimate').innerHTML=['x','z','pitch','hip','knee','vx','vz','pitch rate','hip rate','knee rate','wheel rate'].map((n,i)=>`<tr><td>${n}</td><td>${s.estimate?.[i]?.toFixed(4)??'—'}</td></tr>`).join('');
    $('torques').innerHTML=actuators.map((n,i)=>`<tr><td>${n}</td><td>${u[i].toFixed(3)} N·m</td></tr>`).join('');
-   $('solver').textContent=s.tracking?'Offline contact plan + scheduled feedback; no online optimizer':last.solver?`${last.solver} · ${Number(last.solveMs??0).toFixed(3)} ms`:'Fixed-gain LQR + KF; no online optimization';
+   $('solver').textContent=s.tracking?`${labels[2]}; no online optimizer`:last.solver?`${last.solver} · ${Number(last.solveMs??0).toFixed(3)} ms`:`${labels[2]} · ${labels[1]}; no online optimization`;
    $('active-model').textContent=`${liveActive?'Compact full-contact model':designActive?'Full-contact model':'Wheel-only benchmark'} · ${backend.assetSha256}`;
-   const contact=last.contact??backend.contact(x);$('contact').textContent=`Wheel contacts ${contact.wheelContacts??0} · surface slip ${Number(contact.slip??0).toFixed(4)} m/s`;
+   const contact=last.contact??backend.contact(x);$('contact').textContent=`Wheel contacts ${contact.wheelContacts??0} · ${contact.wheelContacts>0?'surface slip':'free/airborne surface velocity—not ground slip'} ${Number(contact.slip??0).toFixed(4)} m/s`;
   }
   if(jumpActive){const result=s.done?state().jumpResult:null;$('jump-status').textContent=`Jump · ${s.steps}/400 · ${s.done?(result?.passed?'target met':'target not met'):'running'} · original model`;}
   if(forceActive){const result=s.done?state().forceResult:null;$('force-status').textContent=`Local pulse · ${s.steps}/300 · ${s.done?(result?.normalPassed?'target met':'target not met'):'running'}`;}
-  if(ready&&!statusLocked)$('status').textContent=`${playing?'RUNNING':'PAUSED'} · ${liveActive?'crouched LQR / noisy KF':s.tracking?'0.5 s contact-lift task':s.mode??'physical trial'}`;
+  if(ready&&!statusLocked)$('status').textContent=`${playing?'RUNNING':'PAUSED'} · ${labels[2]} · ${labels[1]}`;
   if(designActive&&$('physical-editor').open)designEditor?.render();
  }
  $('play').textContent=playing?'Pause':'Start';meter.sampleRender(performance.now()-started);
@@ -156,6 +157,7 @@ function prepareJump(seed = 809) {
   forceActive=false;
   jumpInitialTelemetry = backend.jumpTelemetry(jumpProfile.ref[0]);
   trial = createJumpTrial(backend, jumpProfile, {seed, mode: 'tvlqr_kf'});
+  meter.reset();liveView.clear();
   jumpActive = true; viewState = trial.snapshot().truth;
   for (const id of ['mode', 'design', 'goal', 'pose', 'local']) $(id).disabled = true;
   $('design-info').textContent = 'Jump controller override · nonlinear planned motor trajectory + finite-horizon TVLQR and scheduled KF. Standing settings are preserved and restored by Reset. No true velocity/contact is a controller input.';
@@ -171,6 +173,7 @@ function prepareForce(direction=1,level='normal',seed=901){
   const amplitudeN=forceOperating.amplitudeN;
   const next=createForceTrial(backend,profiles.recovery,forceProtocol,{amplitudeN,direction,mode,seed});
   playing=false;accumulated=0;droppedWallSeconds=0;poseOnly=false;statusLocked=false;jumpActive=false;jumpInitialTelemetry=null;
+  meter.reset();liveView.clear();
   trial=next;forceActive=true;viewState=trial.snapshot().truth;
   for(const id of ['mode','design','goal','pose','local'])$(id).disabled=true;
   $('design-info').textContent='Pulse controller override · existing recovery profile. Same model, estimator and motor limits; only external force challenge selected explicitly. Reset restores prior standing settings.';
@@ -178,12 +181,13 @@ function prepareForce(direction=1,level='normal',seed=901){
 }
 function tick(draw = true) {
   if (!playing || !trial) return;
-  if (trial.snapshot().done) { playing = false; return; }
+  if (trial.snapshot().done) { playing = false; meter.pause(); return; }
   try {
     const before=performance.now();const s = trial.step(0);viewState=s.truth;meter.sampleControl(performance.now()-before,s.steps*(trial.controlDt??.01));liveView.sample(s,trial.controlDt??.01);
     if (s.failed) { playing = false; say('Plant failure reported by trial', true); }
     else if (s.done) playing = false;
   } catch (error) { playing = false; say(`STEP ERROR · ${error.message}`, true); }
+  if (!playing) meter.pause();
   if (draw) render();
 }
 function animate(time) {
@@ -197,7 +201,7 @@ function animate(time) {
     accumulated = Math.min(pending, budget);
     let count = 0;const started=performance.now();
     while (playing && accumulated + 1e-12 >= dt && count++ < Math.round(budget / dt) && performance.now()-started<6) { tick(false); accumulated = Math.max(0, accumulated - dt); }
-    meter.frame(time);if (count) render(false);
+    meter.frame(time);if (count) render(!playing);
   } else accumulated = 0;
   frameTime = time; requestAnimationFrame(animate);
 }
@@ -218,7 +222,7 @@ window.wheelbotLab = {
   prepareForce,
   selectDesign(selection) {
     if(designActive||liveActive)return {accepted:false,reason:'Select the reference model for historical design profiles'};
-    if (!profiles[selection]) { playing=false; return {accepted: false, selection: $('design').value}; }
+    if (!profiles[selection]) { playing=false; meter.pause(); return {accepted: false, selection: $('design').value}; }
     $('design').value = selection; profile = profiles[selection]; configure();
     return {accepted: Boolean(trial), ...designMetadata()};
   },
@@ -227,7 +231,7 @@ window.wheelbotLab = {
     if(liveActive&&mode==='mpc_kf')return {accepted:false,reason:'This compact model currently uses its own validated LQR/KF'};
     const option = [...$('mode').options].find(item => item.value === mode && !item.disabled);
     if (!option) {
-      playing = false; viewState = trial?.snapshot().truth ?? viewState; trial = null;
+      playing = false; meter.pause(); viewState = trial?.snapshot().truth ?? viewState; trial = null;
       const message = mode === 'nmpc' ? 'NMPC is NOT_YET_SUPPORTED for this wheelbot experiment.' : `Controller mode is not supported: ${mode}.`;
       say(`MODE REJECTED · ${message}`, true);
       return {status: $('status').textContent, accepted: false, mode: $('mode').value};
@@ -236,7 +240,7 @@ window.wheelbotLab = {
   },
   run(count) {
     if (!Number.isInteger(count) || count < 0 || count > 2000) throw Error('count must be an integer from 0 to 2000');
-    playing = false;
+    playing = false;meter.pause();
     for (let i = 0; i < count && trial; i++) {
       if (trial.snapshot().done) break;
       const s = trial.step(0); viewState = s.truth;
@@ -295,12 +299,12 @@ try {
   $('play').disabled = $('step').disabled = $('reset').disabled = $('pose').disabled = $('local').disabled = false;
   $('design').disabled = false;
   $('play').onclick = () => { if (!trial) { configure(); if (!trial) return; } if (trial.snapshot().done) return; playing = !playing;if(playing)meter.start(elapsed());else meter.pause();render(); };
-  $('step').onclick = () => { if (!trial) return; playing = false; tickOnce(); };
+  $('step').onclick = () => { if (!trial) return; playing = false; meter.pause(); tickOnce(); };
   $('reset').onclick = configure;
-  $('jump').onclick = () => { try { prepareJump(); playing = true; render(); } catch (error) { say(`JUMP REJECTED · ${error.message}`, true); } };
-  for(const [id,direction] of [['force-left',-1],['force-right',1]])$(id).onclick=()=>{try{prepareForce(direction,'normal');playing=true;render();}catch(error){playing=false;say(`PULSE REJECTED · ${error.message}`,true);}};
-  $('pose').onclick = () => { playing = false; statusLocked = false; trial = null; poseOnly = true; viewState = qrefState(); viewState[3] += 0.12; viewState[4] -= 0.10; render(); };
-  $('local').onclick = () => { playing = false; statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
+  $('jump').onclick = () => { try { prepareJump(); playing = true; meter.start(elapsed()); render(); } catch (error) { say(`JUMP REJECTED · ${error.message}`, true); } };
+  for(const [id,direction] of [['force-left',-1],['force-right',1]])$(id).onclick=()=>{try{prepareForce(direction,'normal');playing=true;meter.start(elapsed());render();}catch(error){playing=false;meter.pause();say(`PULSE REJECTED · ${error.message}`,true);}};
+  $('pose').onclick = () => { playing = false; meter.reset(); statusLocked = false; trial = null; poseOnly = true; viewState = qrefState(); viewState[3] += 0.12; viewState[4] -= 0.10; render(); };
+  $('local').onclick = () => { playing = false; meter.reset(); statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = ()=>liveActive?setLiveGoal(Number($('goal').value)):configure();
   $('robot-model').onchange=()=>selectRobotModel($('robot-model').value);
   for(const [id,value]of[['live-left',-.03],['live-center',0],['live-right',.03]])$(id).onclick=()=>setLiveGoal(value);
@@ -320,7 +324,7 @@ try {
       applyToView:(next,nextTrial,metadata)=>{
         if(liveActive){liveActive=false;backend=benchmarkBackend;profile=profiles[$('design').value]??profiles.baseline;$('robot-model').value='benchmark';}
         if(!designActive)designOriginal={backend,profile};
-        playing=false;accumulated=0;droppedWallSeconds=0;jumpActive=false;forceActive=false;poseOnly=false;statusLocked=false;
+        playing=false;meter.reset();accumulated=0;droppedWallSeconds=0;jumpActive=false;forceActive=false;poseOnly=false;statusLocked=false;
         backend=next;trial=nextTrial;designActive=true;designMetadataCurrent=metadata;viewState=trial.snapshot().truth;
         for(const id of ['mode','design','goal','jump','force-left','force-right','pose','local'])$(id).disabled=true;
         $('design-info').textContent='Configured full-contact model · old gains and jump/force certification do not transfer automatically.';

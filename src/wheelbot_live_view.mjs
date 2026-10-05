@@ -1,9 +1,17 @@
 // Fixed-timestep physics is independent of canvas and low-rate text updates.
 const bounded=(a,v,n=300)=>{a.push(v);if(a.length>n)a.shift();};
 const percentile=(a,p)=>a.length?a.slice().sort((x,y)=>x-y)[Math.min(a.length-1,Math.floor(a.length*p))]:0;
-export function createRuntimeMeter(){
- const control=[],render=[],frames=[];let anchorWall=0,anchorSim=0,latestSim=0,lastFrame=0,active=false;
- return {start(sim=0){anchorWall=performance.now();anchorSim=latestSim=sim;lastFrame=0;active=true;},pause(){active=false;},sampleControl(ms,sim){bounded(control,ms);latestSim=sim;},sampleRender(ms){bounded(render,ms);},frame(time){if(active&&lastFrame)bounded(frames,time-lastFrame);lastFrame=time;},reset(){control.length=render.length=frames.length=0;anchorWall=0;active=false;},snapshot(){const wall=anchorWall?(performance.now()-anchorWall)/1000:0;return{samples:control.length,controlMedianMs:percentile(control,.5),controlP95Ms:percentile(control,.95),controlMaxMs:Math.max(0,...control),renderP95Ms:percentile(render,.95),frameP95Ms:percentile(frames,.95),fps:frames.length?1000/(frames.reduce((a,b)=>a+b,0)/frames.length):0,simulatedSeconds:latestSim-anchorSim,wallSeconds:wall,realTimeFactor:active&&wall>.1?(latestSim-anchorSim)/wall:null,active};}};
+export function pipelineLabels({liveActive=false,configuredModel=false,poseOnly=false,tracking=false,feedback=false,mode,scenario}={}){
+ const plant=liveActive||configuredModel||tracking?'MuJoCo full contact':'MuJoCo wheel-contact benchmark';
+ if(poseOnly)return ['Pose preview · no sensor sampling','No observer','No control',plant];
+ if(tracking)return ['Exact simulator state','No observer',feedback?'Scheduled feedback':'Planned torques · no feedback',plant];
+ if(mode==='contact-diagnostic')return ['Simulator state display','No observer',scenario==='torque'?'Manual torques · no feedback':'Passive · no feedback',plant];
+ const control={lqr_kf:'LQR feedback',mpc_kf:'Local MPC feedback',tvlqr_kf:'Scheduled TVLQR feedback',passive:'Passive · no feedback'}[mode];
+ return control?[liveActive?'Six noisy channels: five poses + wheel encoder rate':'Five noisy position channels','KF state estimate',control,plant]:['Simulator state display','No observer','No control',plant];
+}
+export function createRuntimeMeter(now=()=>performance.now()){
+ const control=[],render=[],frames=[];let anchorWall=0,pausedWall=0,anchorSim=0,latestSim=0,lastFrame=0,active=false;
+ return {start(sim=0){anchorWall=now();pausedWall=0;anchorSim=latestSim=sim;lastFrame=0;active=true;},pause(){if(active)pausedWall=(now()-anchorWall)/1000;active=false;},sampleControl(ms,sim){bounded(control,ms);latestSim=sim;},sampleRender(ms){bounded(render,ms);},frame(time){if(active&&lastFrame)bounded(frames,time-lastFrame);lastFrame=time;},reset(){control.length=render.length=frames.length=0;anchorWall=pausedWall=anchorSim=latestSim=lastFrame=0;active=false;},snapshot(){const wall=active?(now()-anchorWall)/1000:pausedWall;return{samples:control.length,controlMedianMs:percentile(control,.5),controlP95Ms:percentile(control,.95),controlMaxMs:Math.max(0,...control),renderP95Ms:percentile(render,.95),frameP95Ms:percentile(frames,.95),fps:frames.length?1000/(frames.reduce((a,b)=>a+b,0)/frames.length):0,simulatedSeconds:latestSim-anchorSim,wallSeconds:wall,realTimeFactor:active&&wall>.1?(latestSim-anchorSim)/wall:null,active};}};
 }
 export function createLiveView(){
  const canvas=document.getElementById('view'),ctx=canvas.getContext('2d'),traces=[];let lastTrace=-1;
