@@ -1,11 +1,10 @@
-"""Real browser release gates. CI only locally; --url uses a published page."""
+"""Real browser regression for explicitly selected reference-model experiments."""
 from pathlib import Path
 import argparse, functools, hashlib, http.server, json, threading
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'test-results/wheelbot-browser'; OUT.mkdir(parents=True,exist_ok=True)
 def json_response_handler(payload):
-    # Playwright may pass both Route and Request; keep response data separate.
     def handler(route, request=None):
         route.fulfill(body=payload,content_type='application/json')
     return handler
@@ -29,14 +28,19 @@ try:
         def state(): return page.evaluate('window.wheelbotLab.getState()')
         def run(n): return page.evaluate('(n)=>window.wheelbotLab.run(n)',n)
         def snap(name): page.locator('#view').screenshot(path=str(OUT/(name+'.png')))
+        def select_reference():
+            page.select_option('#robot-model','benchmark')
+            page.locator('#reference-experiments').evaluate('(e)=>e.open=true')
+            page.locator('#diagnostics').evaluate('(e)=>e.open=true')
+            page.evaluate('window.wheelbotLab.run(0)')
         def save(name,s):
             report['cases'][name]=s
             assert not s['failed'],name
-        # Published bytes can be matched to the reviewed checkout, without a server.
         for path in ['assets/wheelbot/wheelbot.xml','assets/wheelbot/contact_model.xml','assets/wheelbot/contact_tracking_profile.json','src/wheelbot_app.mjs']:
             response=page.request.get(url.rsplit('/',1)[0]+'/'+path); assert response.ok,path
             digest=hashlib.sha256(response.body()).hexdigest(); assert digest==hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),path
             report['assetHashes'][path]=digest
+        select_reference()
         original=state(); baseline=run(20); assert baseline['steps']==20; save('baseline',baseline)
         page.select_option('#mode','mpc_kf'); page.select_option('#goal','0.03')
         standing=run(300); assert standing['steps']==300 and abs(standing['truth'][0]-.03)<.02
@@ -53,7 +57,6 @@ try:
                 page.evaluate('(d)=>window.wheelbotLab.prepareForce(d)',direction)
                 force=run(300); assert force['steps']==300 and force['forceResult']['normalPassed']; save(f'force_{mode}_{direction}',force)
                 page.click('#reset')
-        # Explicit visible model switch, followed by actual button/wall-time runs.
         page.click('#try-contact'); page.wait_for_function('window.wheelbotLab.getDesignEditor().trackingValid && !window.wheelbotLab.getDesignEditor().busy')
         assert state()['configuredModel'] and page.locator('#jump').is_disabled()
         assert 'Full-contact model' in page.locator('#active-model').inner_text()
@@ -85,12 +88,12 @@ try:
         page.screenshot(path=str(OUT/'editor.png'),full_page=True)
         page.click('#physical-restore'); assert not state()['configuredModel'] and state()['physics']['assetSha256']==original['physics']['assetSha256']
         assert not page.locator('#jump').is_disabled(); assert run(20)['steps']==20
-        # A stale optional source disables only its own feature.
         for filename,field,value,button in [('contact_tracking_profile.json','steps',249,'physical-track-left'),('jump_profile.json','baselineSha256','bad','jump')]:
             bad=json.loads((ROOT/'assets/wheelbot'/filename).read_text()); bad[field]=value
             pattern='**/'+filename
             page.route(pattern,json_response_handler(json.dumps(bad)))
             page.reload(wait_until='networkidle'); page.wait_for_function('window.wheelbotLab?.ready && window.wheelbotLab.getDesignEditor()')
+            select_reference()
             assert run(20)['steps']==20
             if filename.startswith('contact'):
                 page.click('#try-contact'); page.wait_for_function('window.wheelbotLab.getState().configuredModel && !window.wheelbotLab.getDesignEditor().busy')
@@ -100,7 +103,7 @@ try:
             page.set_viewport_size({'width':width,'height':900})
             assert page.evaluate('document.documentElement.scrollWidth-innerWidth')<=1
         assert not errors,errors
-        report.update(passed=True,pageErrors=errors,actualButtonWalltimeLift=True)
+        report.update(passed=True,pageErrors=errors,actualButtonWalltimeLift=True,referenceModelExplicitlySelected=True)
         browser.close()
 finally:
     (OUT/'release.json').write_text(json.dumps(report,indent=2)+'\n')
