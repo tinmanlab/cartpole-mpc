@@ -1,0 +1,135 @@
+{
+  "schema": "wheelbot-jump-independent-reference/v1",
+  "passed": true,
+  "profileSha256": "571c210d86adbd6ad66ffa43442097626fa8dd9ef18d491ce9b42d016f47a443",
+  "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "protocolSha256": "4cf3e7676a199cccb3e544fe70696ec53ee3ac0e548b44854c6105980b6e6edb",
+  "scriptSha256": "c652c74727ba7d59bbb6a2c404a9250e1d6ea70d29a8f88c8578ae06aa1915ba",
+  "controlSteps": 1478,
+  "physicsSteps": 7390,
+  "maxOneStepStateComponentError": 2.9318769634301134e-12,
+  "maxCausalEstimateComponentError": 1.3050671654468715e-13,
+  "maxTorqueErrorNm": 5.240252676230739e-14,
+  "maxComErrorM": 1.1102230246251565e-16,
+  "maxLocalMomentumResidualNs": [
+    0.0015944818894068028,
+    0.0,
+    0.01323120222639931
+  ],
+  "worstSampleMomentumRefinement": [
+    {
+      "dt": 0.002,
+      "residualNs": [
+        -0.0006988030984863548,
+        0.0,
+        0.01323120222639931
+      ],
+      "norm": 0.01323120222639931
+    },
+    {
+      "dt": 0.001,
+      "residualNs": [
+        -0.000166267344434037,
+        0.0,
+        0.003098221614406276
+      ],
+      "norm": 0.003098221614406276
+    },
+    {
+      "dt": 0.0005,
+      "residualNs": [
+        -4.036629323470399e-05,
+        0.0,
+        0.0007455875715992001
+      ],
+      "norm": 0.0007455875715992001
+    },
+    {
+      "dt": 0.00025,
+      "residualNs": [
+        -9.931415767796048e-06,
+        0.0,
+        0.00018258712687705585
+      ],
+      "norm": 0.00018258712687705585
+    }
+  ],
+  "momentumScope": "Observed finite-step residual, with decreasing local error under timestep refinement; not exact conservation or global numerical convergence proof",
+  "maxScheduledControlGainError": 0.0,
+  "maxScheduledKalmanGainError": 0.0,
+  "rows": [
+    {
+      "mode": "nominal_torque",
+      "seed": 0,
+      "steps": 278,
+      "completed": false,
+      "passed": false,
+      "comApexM": 0.06566954477395104,
+      "flightSeconds": 0.24,
+      "tailPositionM": 0.060475993529647436,
+      "tailPitchRad": 0.661991374052622,
+      "minBodyFloorClearanceM": 0.03902635117741746,
+      "minNonadjacentDistanceM": 0.038537362578613815,
+      "peakTorqueNm": [
+        1.043387525765201,
+        8.116646664984785,
+        1.6999999999999997
+      ]
+    },
+    {
+      "mode": "tvlqr_kf",
+      "seed": 809,
+      "steps": 400,
+      "completed": true,
+      "passed": true,
+      "comApexM": 0.06682058767187782,
+      "flightSeconds": 0.25,
+      "tailPositionM": 0.003913113666110018,
+      "tailPitchRad": 0.00530718317496465,
+      "minBodyFloorClearanceM": 0.042147179335913956,
+      "minNonadjacentDistanceM": 0.18899704272571966,
+      "peakTorqueNm": [
+        1.189095541197609,
+        7.8910028914419925,
+        1.7
+      ]
+    },
+    {
+      "mode": "tvlqr_kf",
+      "seed": 821,
+      "steps": 400,
+      "completed": true,
+      "passed": true,
+      "comApexM": 0.06598925506693065,
+      "flightSeconds": 0.24,
+      "tailPositionM": 0.0035481545351083534,
+      "tailPitchRad": 0.005607152966206153,
+      "minBodyFloorClearanceM": 0.042117275522249614,
+      "minNonadjacentDistanceM": 0.18899575256965753,
+      "peakTorqueNm": [
+        1.0897585762672408,
+        8.102116414469675,
+        1.7
+      ]
+    },
+    {
+      "mode": "tvlqr_kf",
+      "seed": 823,
+      "steps": 400,
+      "completed": true,
+      "passed": true,
+      "comApexM": 0.0661403024737659,
+      "flightSeconds": 0.25,
+      "tailPositionM": 0.0038889841816959294,
+      "tailPitchRad": 0.0014189050740258486,
+      "minBodyFloorClearanceM": 0.0421482250485367,
+      "minNonadjacentDistanceM": 0.18899631523891125,
+      "peakTorqueNm": [
+        1.0887057496931656,
+        7.843999617837681,
+        1.7
+      ]
+    }
+  ],
+  "scope": "Same physical model, reserved noise realizations for this fixed jump. No40Nrecovery,globalrobustness,sensor-onlylocalization or hardware claim."
+}

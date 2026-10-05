@@ -27,3 +27,15 @@ const before=context.steps;context.playing=false;context.animate(2517);assert.eq
 context.playing=true;context.animate(2527);assert.equal(context.steps,before+1);
 assert.equal(context.callbacks,5);
 console.log('Recovery profile binding and actual frame scheduler PASS: one redraw, fixed steps, bounded catch-up, pause/resume');
+
+// Both DOM changes and API changes must display the actual active design.
+assert(source.includes('function renderDesignInfo()'),'Missing shared active-design explanation');
+const infoCode=source.slice(source.indexOf('function renderDesignInfo()'),source.indexOf('function configure()'));
+const fields={design:{value:'baseline'},'design-info':{textContent:''}};
+const infoContext={$:id=>fields[id],profiles:{baseline:base,response:JSON.parse(fs.readFileSync('assets/wheelbot/response_profile.json')),recovery},profileLoadErrors:{}};
+vm.createContext(infoContext);vm.runInContext(infoCode,infoContext);
+infoContext.renderDesignInfo();assert(fields['design-info'].textContent.includes('original control'));
+fields.design.value='recovery';infoContext.renderDesignInfo();assert(fields['design-info'].textContent.includes('not contact-loss recovery'));
+fields.design.value='response';infoContext.renderDesignInfo();assert(!fields['design-info'].textContent.includes('Recovery selected'));
+infoContext.profileLoadErrors.recovery='source mismatch';fields.design.value='baseline';infoContext.renderDesignInfo();assert(fields['design-info'].textContent.includes('Recovery design unavailable'));
+console.log('Active-design explanation and optional-profile failure disclosure PASS');

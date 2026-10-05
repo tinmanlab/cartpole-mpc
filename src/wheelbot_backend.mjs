@@ -32,7 +32,8 @@ export async function createWheelbotBackend(xml){
  function step(x,u,externalX=0){
   if(!vector(u,3)||!Number.isFinite(externalX))throw Error('Invalid motor torques/external force');state(x);
   d.ctrl.set(u.map((v,i)=>Math.max(-limits[i],Math.min(limits[i],v))));
-  // Explicit disturbance only; wheel command is exclusively a joint motor.
+  // Explicit generalized root-x disturbance: world-horizontal force at the
+  // torso/hip origin, NOT its COM. Wheel commands remain joint motor torques.
   d.qfrc_applied[0]=externalX;
   for(let i=0;i<5;i++){mj.mj_step(m,d);steps++;}return read();
  }
@@ -43,7 +44,22 @@ export async function createWheelbotBackend(xml){
   let wheelContacts=0;for(let i=0;i<d.ncon;i++){const c=d.contact.get(i);if(c.geom1===wheel||c.geom2===wheel)wheelContacts++;}
   return {count:d.ncon,wheelContacts,slip:vx-m.geom_size[3*wheel]*(x[8]+x[9]+x[10]+x[11]),wheelCenterVx:vx};
  }
- return {nx:12,nu:3,assetSha256,limits,step,geometry,contact,
+ function jumpTelemetry(x){
+  forward(x);
+  const com=Array.from(d.subtree_com.slice(3,6));
+  let wheelContacts=0;for(let i=0;i<d.ncon;i++){const c=d.contact.get(i);if(c.geom1===wheel||c.geom2===wheel)wheelContacts++;}
+  const bodyGeoms=[torso,id(5,'upper_link_visual'),id(5,'lower_link_visual')];
+  const floorClearance=bodyGeoms.map(g=>{
+   const s=m.geom_size.slice(3*g,3*g+3),R=d.geom_xmat.slice(9*g,9*g+9);
+   const extent=g===torso?Math.abs(R[6])*s[0]+Math.abs(R[7])*s[1]+Math.abs(R[8])*s[2]:Math.abs(R[8])*s[1]+s[0]*Math.sqrt(Math.max(0,1-R[8]*R[8]));
+   return d.geom_xpos[3*g+2]-extent;
+  });
+  const pairs=[[torso,bodyGeoms[2]],[torso,wheel],[bodyGeoms[1],wheel]];
+  const distances=pairs.map(([a,b])=>mj.mj_geomDistance(m,d,a,b,1,null));
+  if(!com.every(Number.isFinite)||!distances.every(Number.isFinite))throw Error('Invalid compiled jump geometry');
+  return {com,wheelContacts,wheelClearanceM:d.geom_xpos[3*wheel+2]-m.geom_size[3*wheel],minimumBodyFloorClearanceM:Math.min(...floorClearance),minimumNonadjacentDistanceM:Math.min(...distances)};
+ }
+ return {nx:12,nu:3,assetSha256,limits,step,geometry,contact,jumpTelemetry,
   diagnostics:()=>({backend:'mujoco-wasm',version:'3.7.0',assetSha256,nq:6,nv:6,nu:3,physicsDt:.002,controlDt:.01,steps}),
   dispose(){if(!disposed){d.delete();m.delete();disposed=true;}}};
 }

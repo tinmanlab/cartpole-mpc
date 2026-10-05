@@ -84,7 +84,20 @@ jobs:
           node scripts/validate_wheelbot_mpc.mjs --new-seeds --response
           python tests/test_wheelbot_response_reference.py
           python tests/test_wheelbot_reference.py
+          python tests/test_wheelbot_recovery_ci_contract.py
+          node tests/test_wheelbot_runtime.mjs
+          node scripts/validate_wheelbot_mpc.mjs --recovery
+          python tests/test_wheelbot_recovery_reference.py
           python tests/test_wheelbot_browser.py
+          python tests/test_wheelbot_disturbance_semantics.py
+          node tests/test_wheelbot_jump_contract.mjs
+          node tests/test_wheelbot_jump.mjs assets/wheelbot/jump_profile.json test-results/jump_final_wasm
+          python tests/test_wheelbot_jump_reference.py
+          python tests/test_wheelbot_jump_browser.py
+          node scripts/validate_wheelbot_force.mjs
+          node tests/test_wheelbot_force_contract.mjs
+          python tests/test_wheelbot_force_reference.py
+          python tests/test_wheelbot_force_browser.py
       - name: Preserve wheelbot browser verification
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -98,5 +111,18 @@ jobs:
             evidence/wheelbot_mpc_reference.json
             evidence/wheelbot_mpc_response_validation.json
             evidence/wheelbot_response_design.json
+            evidence/wheelbot_recovery_design.json
+            evidence/wheelbot_mpc_recovery_validation.json
+            evidence/wheelbot_recovery_reference.json
+            evidence/wheelbot_contact_diagnosis.json
+            evidence/wheelbot_jump_reference.json
+            evidence/wheelbot_jump_browser.json
+            evidence/wheelbot_jump_airborne.png
+            evidence/wheelbot_jump_landed.png
+            evidence/wheelbot_disturbance_semantics.json
+            evidence/wheelbot_force_envelope.json
+            evidence/wheelbot_force_reference.json
+            evidence/wheelbot_force_browser.json
+            evidence/wheelbot_force_normal.png
           if-no-files-found: error
           retention-days: 7

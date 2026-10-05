@@ -12,7 +12,7 @@ Primitive mass distributions use analytic inertias, replacing upstream inertia t
 
 ## Physical and measurement contract
 
-The full state is `[x,z,pitch,hip,knee,wheel,vx,vz,pitch_rate,hip_rate,knee_rate,wheel_rate]`. x/z are torso-root world translation (m), angles are relative hinges (rad), and rates are m/s or rad/s. Inputs `[hip_motor,knee_motor,wheel_motor]` are joint torques (Nm), with unit transmission gear. The unactuated root has x/z slides and a pitch hinge; all hinge axes are world sagittal y. Floor friction contact supplies traction. There is no equality connecting wheel angle to x, no welded support, and no horizontal actuation substituted for wheel torque. The explicit `externalX` argument is a separately reported disturbance force in N.
+The full state is `[x,z,pitch,hip,knee,wheel,vx,vz,pitch_rate,hip_rate,knee_rate,wheel_rate]`. x/z are torso-root world translation (m), angles are relative hinges (rad), and rates are m/s or rad/s. Inputs `[hip_motor,knee_motor,wheel_motor]` are joint torques (Nm), with unit transmission gear. The unactuated root has x/z slides and a pitch hinge; all hinge axes are world sagittal y. Floor friction contact supplies traction. There is no equality connecting wheel angle to x, no welded support, and no horizontal actuation substituted for wheel torque. The explicit `externalX` argument is a generalized root-x force in N. It is exactly a world-horizontal force at the torso/hip origin, not a force at the torso COM. At the standing reference, the hip is about 0.125 m below the torso COM, so the 40 N case also creates about -5 N m of pitch moment about that COM. `mj_applyFT` independently confirms this mapping. A force moved to the COM is a different test; it must not replace the original failure case or be called its solution.
 
 Each control sample advances five 2 ms Euler steps (10 ms). Geometry comes from compiled MuJoCo site/geom transforms. Contact loss is counted; signed slip is wheel-center horizontal speed minus radius times total absolute wheel angular speed, in m/s. It is a kinematic contact-point slip diagnostic, including while airborne, not a no-slip constraint.
 
@@ -187,3 +187,21 @@ python tests/test_wheelbot_recovery_reference.py
 ```
 
 The optional paired performance test accepts an exact saved pre-change `src/wheelbot_mpc.mjs` as its first argument. Timing includes host/VM scheduling and garbage-collection effects. The recovery selector remains opt-in and explicitly does not claim contact-loss recovery.
+
+### Required recovery verification and conditional publication
+
+The existing `verify` job now executes the source-level scheduler check, the complete 72-run recovery comparison, and its independent native/filter/metric reconstruction. It also preserves recovery and contact-diagnostic receipts in the existing browser-verification artifact. `tests/test_wheelbot_recovery_ci_contract.py` protects those command and artifact connections. This closes the earlier local-only verification gap without adding a second CI pipeline.
+
+The optional old/new timing benchmark now rejects a missing baseline argument or a source whose SHA-256 differs from the audited pre-optimization implementation. It cannot silently benchmark the current solver against itself. This still measures host distributions, not a worst-case execution-time guarantee.
+
+A subsequent native development investigation retained the physical asset, original force/time/envelope, and the same five noisy position/angle measurements. Augmenting the estimator with a causal unknown horizontal-force state delayed the 40 N failure from step 105 to about step 125, but the cart then crossed the 1 m position envelope. A bounded four-weight differential-evolution development search did not find a 40 N task pass and its selected candidate degraded the smaller-push posture criterion. These candidates were not promoted to the runtime, profiles or UI. This is a failed design experiment, not a recovery solution or a universal infeasibility proof.
+
+Passing numerical/browser CI is distinct from satisfying the admitted physical task. The assessed operating challenge is now explicitly separated from the 40 N stress test; see [external-force envelope](WHEELBOT_FORCE_ENVELOPE.md). The adjusted pulse is not evidence of solving 40 N recovery, and hard real-time behavior remains outside the claim. Planned jumping is separately verified in [the jump experiment](WHEELBOT_JUMP.md). Live review/merge/deployment status belongs to GitHub, not this document.
+
+### Failure diagnosis: integration resolution and force-point semantics
+
+The source of a force is part of the problem, not just its magnitude. `tests/test_wheelbot_disturbance_semantics.py` independently compares the existing generalized root-x vector with MuJoCo Cartesian force application at the hip and at the torso COM. The difference is an explicit angular generalized force, not a controller gain. This correction documents the existing plant; it does not change it.
+
+A same-controller, same-10ms-sample, same-noise native refinement check used physical integration steps 2ms, 1ms and 0.5ms. For the diagnosed seed, all three retain the 3N pass and the 40N contact-loss at sample102/pitch-envelope failure at105. The state values move slightly with integration resolution. This is evidence against that coarse-step artifact as the explanation of this particular failure, not a full convergence or real-world validation proof.
+
+Planned jumping is a distinct task: it deliberately manages crouch, thrust, flight and landing. Success of that plan must not be re-labelled as recovery from the original unexpected 40N horizontal force. The original disturbance, physical limits, and failure record remain unchanged.

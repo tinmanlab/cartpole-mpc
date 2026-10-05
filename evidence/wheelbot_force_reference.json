@@ -1,0 +1,19 @@
+{
+  "schema": "wheelbot-force-envelope-reference/v1",
+  "passed": true,
+  "sourceEvidenceSha256": "7c0e03faef84b62bca4f920f7099eb82f411264567debd33dce9d5f67f1bc2d2",
+  "scriptSha256": "b4225fc9ac20e8c2ae631bd928169a23693ae602eff066fe3e35144f10d9f89b",
+  "trials": 160,
+  "frames": 31668,
+  "maximumNativeOneStepError": 1.2221335055073723e-12,
+  "maximumKfMeanError": 1.0236256287043943e-13,
+  "selectedForceN": 0.8,
+  "screenUpperN": 1,
+  "normalPassed": 20,
+  "normalTrials": 20,
+  "stressPassed": 0,
+  "stressTrials": 20,
+  "selectionRecomputed": true,
+  "pulseTimingAndSignsRecomputed": true,
+  "scope": "Existing 40N/0.2s and original 3N/0.1s receipts are retained. Adjusting the force creates a new operating task; it does not solve or erase the old 40N failure. New noise seeds on the same physical model, not hardware or physical OOD."
+}

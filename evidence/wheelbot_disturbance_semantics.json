@@ -1,0 +1,45 @@
+{
+  "schema": "wheelbot-disturbance-semantics/v1",
+  "passed": true,
+  "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "mappingsAtTrim": {
+    "hip_root": {
+      "worldPointM": [
+        0.0,
+        0.0,
+        0.5442793664645657
+      ],
+      "generalizedForce": [
+        40.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "torso_com": {
+      "worldPointM": [
+        0.0004041524233342096,
+        0.0,
+        0.669278713106133
+      ],
+      "generalizedForce": [
+        40.0,
+        0.0,
+        4.999973865662692,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "hipForceMomentAboutTorsoComNm": [
+    0.0,
+    -4.999973865662692,
+    -0.0
+  ],
+  "unchangedRuntimeDisturbance": true,
+  "claim": "Current force point is physically valid but must be stated. Moving the force to COM changes the task and cannot count as solving the old task.",
+  "source": "https://mujoco.readthedocs.io/en/stable/APIreference/APIfunctions.html#mj-applyft"
+}

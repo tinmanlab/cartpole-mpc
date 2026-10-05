@@ -208,6 +208,11 @@ try:
         assert recovery_initial["steps"] == 0
         assert recovery_initial["estimate"] == baseline_estimate
         assert "not contact-loss recovery" in page.locator("#design-info").inner_text()
+        # Programmatic changes must use the same explanation as DOM changes.
+        page.evaluate("window.wheelbotLab.selectDesign('baseline')")
+        assert "Baseline selected" in page.locator("#design-info").inner_text()
+        page.evaluate("window.wheelbotLab.selectDesign('recovery')")
+        assert "Recovery selected" in page.locator("#design-info").inner_text()
         recovery_run = page.evaluate("window.wheelbotLab.run(20)")
         assert recovery_run["steps"] == 20 and not recovery_run["failed"]
         assert len(recovery_run["last"]["u"]) == 3
@@ -232,6 +237,7 @@ try:
             "resetPreservesSelections": True,
             "baselineResponseDesigns": True,
             "recoveryDesignRunsAndResets": True,
+            "programmaticDesignExplanationMatches": True,
             "timingBoundaryVisible": True,
             "responseChangesQxOnly": True,
             "fetchedResponseBoundToBaseline": True,

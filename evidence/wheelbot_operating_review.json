@@ -1,0 +1,387 @@
+{
+  "schema": "wheelbot-adjusted-operating-review/v1",
+  "baseCommit": "479888a2da91c46e8ccc525d3f30eacc5d6af4e7",
+  "sourceSha256": {
+    ".github/workflows/verify.yml": "fb6269905623a3efcf17a9d51f7fe807dde9a3cc72da9a130667dcd4257dda23",
+    "docs/WHEELBOT_2D.md": "b2138c983968ffcfb817c1d1a5926c7c8a69659e7127fbc176f8352b0e6d907b",
+    "docs/WHEELBOT_FORCE_ENVELOPE.md": "c47587b64609cbecacdabf98e9b4c78592afbaef46ed51bfb9166735693f14b4",
+    "docs/WHEELBOT_JUMP.md": "b192e667bda32a31f8329d034a17a99a4f53c15581071810a2942f20cc354e74",
+    "src/wheelbot_app.mjs": "3743ace9f5e16bc4de8e4552bae815f2f65cd3387951105057d8912489b3ab70",
+    "src/wheelbot_backend.mjs": "024b171afa58a6c50be0a46dedc8f7730643a293678a7bda95336f9a718b46ba",
+    "src/wheelbot_disturbance.mjs": "3cc044beb53f5796c7a80354a00d4698937c38400eef5fd0e19cb23765ca98ad",
+    "src/wheelbot_jump.mjs": "6ae320059e93b114dda5304827c401e3c41aab48de7b65460ef1c1ad93e351a9",
+    "scripts/design_wheelbot_jump.py": "39a22d72e67ec995f02e521a8fc4643183d70ad7149d0499aff6fc4557a373c4",
+    "scripts/validate_wheelbot_force.mjs": "0c08bf4e8cf73de71d2b937483042a442bc03f1270dd8a5f178233832ba981e1",
+    "tests/fixtures/wheelbot_force_envelope.json": "9caef31823a80211822123adb53a1cf8eb3db8a8d6ba36d304a59bf2c6e30d45",
+    "tests/fixtures/wheelbot_jump.json": "4cf3e7676a199cccb3e544fe70696ec53ee3ac0e548b44854c6105980b6e6edb",
+    "tests/test_wheelbot_force_contract.mjs": "ae28953017e65bff3be44e34072e73592684491ce7e22bc5d1932f8000b379e2",
+    "tests/test_wheelbot_force_reference.py": "b4225fc9ac20e8c2ae631bd928169a23693ae602eff066fe3e35144f10d9f89b",
+    "tests/test_wheelbot_force_browser.py": "d269281a15e6d92d75171979d25ec37374b41e3933c597429cf3955d240b606b",
+    "tests/test_wheelbot_jump.mjs": "2f0267e9471a7a9ab3e2163f5303e2eb1a91d97476daaf4122785d95c1f326e3",
+    "tests/test_wheelbot_jump_contract.mjs": "9274a696d1d43824f5fd97cdb7e9f9ebafa6a58afc25399e8c31faffea2d4cf6",
+    "tests/test_wheelbot_jump_reference.py": "c652c74727ba7d59bbb6a2c404a9250e1d6ea70d29a8f88c8578ae06aa1915ba",
+    "tests/test_wheelbot_jump_browser.py": "f6a5c6d2a40f4c8b9c4719dabd546d09b27388e26859e1c77b5b627fca6a6bc5",
+    "tests/test_wheelbot_recovery_ci_contract.py": "95212e98ab5c3d88e0a4c201d4bfb5ba46c95df17cc632ddad89232da7b741ed",
+    "tests/test_wheelbot_runtime.mjs": "179de68583febee5fa4b86aed2febf71984b4bba1e5838853da89128938e55f6",
+    "tests/test_wheelbot_browser.py": "6f26ad39cba0ff728925a2e796ae48333dd4b529f3ce9646ec54a855ce71066d",
+    "tests/test_wheelbot_mpc_performance.mjs": "4455bddab3713890c64316c58e93a2a4b1373fac3886eb132b458d417ce7c16e",
+    "tests/test_wheelbot_disturbance_semantics.py": "e4209ffc6ef00235721aabfb18d4aa654057e17a1aec23aaf7eaf3867cd54ccc",
+    "assets/wheelbot/jump_profile.json": "571c210d86adbd6ad66ffa43442097626fa8dd9ef18d491ce9b42d016f47a443",
+    "wheelbot.html": "fdbfe46d68bd0dd9450e4d1e7fd9e3faca04dfb93ae86e57bd17c47e00d86462"
+  },
+  "authorizedScope": "User explicitly allowed reducing an excessively strong external force. Existing40Ntask retained as stress; no claim of solving it by a smaller force.",
+  "forceSelection": {
+    "screen": [
+      {
+        "amplitudeN": 0,
+        "passed": 12,
+        "cases": 12,
+        "allPassed": true,
+        "completed": 12,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 1,
+        "passed": 12,
+        "cases": 12,
+        "allPassed": true,
+        "completed": 12,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 2,
+        "passed": 2,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 12,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 3,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 12,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 4,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 6,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 6,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 0,
+        "contactLossCases": 0
+      },
+      {
+        "amplitudeN": 8,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 0,
+        "contactLossCases": 2
+      },
+      {
+        "amplitudeN": 12,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 0,
+        "contactLossCases": 12
+      },
+      {
+        "amplitudeN": 20,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 0,
+        "contactLossCases": 12
+      },
+      {
+        "amplitudeN": 40,
+        "passed": 0,
+        "cases": 12,
+        "allPassed": false,
+        "completed": 0,
+        "contactLossCases": 12
+      }
+    ],
+    "method": "Largest contiguous all-pass prefix of the fixed amplitude screen; normal amplitude is 80 percent of its upper tested point, rounded downward to 0.1 N.",
+    "normal": {
+      "amplitudeN": 0.8,
+      "durationSeconds": 0.2,
+      "impulseNs": 0.16000000000000003,
+      "forceToWeight": 0.06800603706592544,
+      "fullImpulseVelocityScaleMS": 0.1334278447233457,
+      "point": "world-horizontal at torso/hip origin, not torso COM"
+    },
+    "admission": {
+      "accepted": true,
+      "normalAmplitudeN": 0.8,
+      "expectedCases": 20,
+      "actualCases": 20,
+      "completeCoverage": true,
+      "passed": 20,
+      "testCanReselect": false,
+      "scope": "Only declared model, same pulse point/duration, assessed signs/modes/noise seeds; not global recovery, physical OOD or hardware admission."
+    },
+    "screenEvaluations": 120,
+    "totalEvaluations": 160,
+    "sourceReference": {
+      "schema": "wheelbot-force-envelope-reference/v1",
+      "passed": true,
+      "sourceEvidenceSha256": "7c0e03faef84b62bca4f920f7099eb82f411264567debd33dce9d5f67f1bc2d2",
+      "scriptSha256": "b4225fc9ac20e8c2ae631bd928169a23693ae602eff066fe3e35144f10d9f89b",
+      "trials": 160,
+      "frames": 31668,
+      "maximumNativeOneStepError": 1.2221335055073723e-12,
+      "maximumKfMeanError": 1.0236256287043943e-13,
+      "selectedForceN": 0.8,
+      "screenUpperN": 1,
+      "normalPassed": 20,
+      "normalTrials": 20,
+      "stressPassed": 0,
+      "stressTrials": 20,
+      "selectionRecomputed": true,
+      "pulseTimingAndSignsRecomputed": true,
+      "scope": "Existing 40N/0.2s and original 3N/0.1s receipts are retained. Adjusting the force creates a new operating task; it does not solve or erase the old 40N failure. New noise seeds on the same physical model, not hardware or physical OOD."
+    }
+  },
+  "jump": {
+    "reference": {
+      "schema": "wheelbot-jump-independent-reference/v1",
+      "passed": true,
+      "profileSha256": "571c210d86adbd6ad66ffa43442097626fa8dd9ef18d491ce9b42d016f47a443",
+      "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+      "protocolSha256": "4cf3e7676a199cccb3e544fe70696ec53ee3ac0e548b44854c6105980b6e6edb",
+      "scriptSha256": "c652c74727ba7d59bbb6a2c404a9250e1d6ea70d29a8f88c8578ae06aa1915ba",
+      "controlSteps": 1478,
+      "physicsSteps": 7390,
+      "maxOneStepStateComponentError": 2.9318769634301134e-12,
+      "maxCausalEstimateComponentError": 1.3050671654468715e-13,
+      "maxTorqueErrorNm": 5.240252676230739e-14,
+      "maxComErrorM": 1.1102230246251565e-16,
+      "maxLocalMomentumResidualNs": [
+        0.0015944818894068028,
+        0.0,
+        0.01323120222639931
+      ],
+      "worstSampleMomentumRefinement": [
+        {
+          "dt": 0.002,
+          "residualNs": [
+            -0.0006988030984863548,
+            0.0,
+            0.01323120222639931
+          ],
+          "norm": 0.01323120222639931
+        },
+        {
+          "dt": 0.001,
+          "residualNs": [
+            -0.000166267344434037,
+            0.0,
+            0.003098221614406276
+          ],
+          "norm": 0.003098221614406276
+        },
+        {
+          "dt": 0.0005,
+          "residualNs": [
+            -4.036629323470399e-05,
+            0.0,
+            0.0007455875715992001
+          ],
+          "norm": 0.0007455875715992001
+        },
+        {
+          "dt": 0.00025,
+          "residualNs": [
+            -9.931415767796048e-06,
+            0.0,
+            0.00018258712687705585
+          ],
+          "norm": 0.00018258712687705585
+        }
+      ],
+      "momentumScope": "Observed finite-step residual, with decreasing local error under timestep refinement; not exact conservation or global numerical convergence proof",
+      "maxScheduledControlGainError": 0.0,
+      "maxScheduledKalmanGainError": 0.0,
+      "rows": [
+        {
+          "mode": "nominal_torque",
+          "seed": 0,
+          "steps": 278,
+          "completed": false,
+          "passed": false,
+          "comApexM": 0.06566954477395104,
+          "flightSeconds": 0.24,
+          "tailPositionM": 0.060475993529647436,
+          "tailPitchRad": 0.661991374052622,
+          "minBodyFloorClearanceM": 0.03902635117741746,
+          "minNonadjacentDistanceM": 0.038537362578613815,
+          "peakTorqueNm": [
+            1.043387525765201,
+            8.116646664984785,
+            1.6999999999999997
+          ]
+        },
+        {
+          "mode": "tvlqr_kf",
+          "seed": 809,
+          "steps": 400,
+          "completed": true,
+          "passed": true,
+          "comApexM": 0.06682058767187782,
+          "flightSeconds": 0.25,
+          "tailPositionM": 0.003913113666110018,
+          "tailPitchRad": 0.00530718317496465,
+          "minBodyFloorClearanceM": 0.042147179335913956,
+          "minNonadjacentDistanceM": 0.18899704272571966,
+          "peakTorqueNm": [
+            1.189095541197609,
+            7.8910028914419925,
+            1.7
+          ]
+        },
+        {
+          "mode": "tvlqr_kf",
+          "seed": 821,
+          "steps": 400,
+          "completed": true,
+          "passed": true,
+          "comApexM": 0.06598925506693065,
+          "flightSeconds": 0.24,
+          "tailPositionM": 0.0035481545351083534,
+          "tailPitchRad": 0.005607152966206153,
+          "minBodyFloorClearanceM": 0.042117275522249614,
+          "minNonadjacentDistanceM": 0.18899575256965753,
+          "peakTorqueNm": [
+            1.0897585762672408,
+            8.102116414469675,
+            1.7
+          ]
+        },
+        {
+          "mode": "tvlqr_kf",
+          "seed": 823,
+          "steps": 400,
+          "completed": true,
+          "passed": true,
+          "comApexM": 0.0661403024737659,
+          "flightSeconds": 0.25,
+          "tailPositionM": 0.0038889841816959294,
+          "tailPitchRad": 0.0014189050740258486,
+          "minBodyFloorClearanceM": 0.0421482250485367,
+          "minNonadjacentDistanceM": 0.18899631523891125,
+          "peakTorqueNm": [
+            1.0887057496931656,
+            7.843999617837681,
+            1.7
+          ]
+        }
+      ],
+      "scope": "Same physical model, reserved noise realizations for this fixed jump. No40Nrecovery,globalrobustness,sensor-onlylocalization or hardware claim."
+    },
+    "sourceBindings": "actual XML, baseline, recovery source, protocol and generator; no numeric redesign this continuation",
+    "oldFeedforwardDiagnosticRetained": true
+  },
+  "issuesFixed": [
+    "Explicit force-point/duration/impulse interpretation rather than magnitude alone.",
+    "A paired two-controller/two-direction screen, fixedmargin and separate five-seed assessment select a conservative declared operating pulse.",
+    "Jump targets cannot be weakened in fetched data; trial profile/snapshots/history are isolated from caller mutation.",
+    "Jump reference now explicitly binds its recovery-cost source.",
+    "Force recipe validation recomputes screening/admission and binds actual loaded profile/protocol; stale optional data preserves other valid modes.",
+    "Existing full recovery, force and jump checks wired into one CI job; source-level timing benchmark cannot silently self-compare."
+  ],
+  "unchanged": "Original physical XML,standingprofiles,controller/observermatrices,actuatorlimits,old3N100ms/40N200mscasesandtests,depsandcoreCartPole/chaincode.",
+  "freshCommands": [
+    {
+      "command": "python scripts/design_wheelbot_jump.py (provenance-only numeric equality checked)",
+      "exitCode": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_jump_contract.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_jump.mjs assets/wheelbot/jump_profile.json test-results/jump_final_wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_jump_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_disturbance_semantics.py",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/validate_wheelbot_force.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_force_contract.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_force_reference.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wheelbot_recovery_ci_contract.py",
+      "exitCode": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_runtime.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --check src/wheelbot_app.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "python -m py_compile tests/test_wheelbot_jump_browser.py tests/test_wheelbot_force_browser.py",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:wasm",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_native_reference.py --require-browser-parity",
+      "exitCode": 0
+    },
+    {
+      "command": "python tests/test_wasm_native.py",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "browser": "Not executed locally due to established socket restriction; actual HTTP/WASM tests and screenshots must be confirmed by exact-head normal CI.",
+  "claimLimits": [
+    "0.8N200ms is a conservative sampled task, not globally maximal or a controller retuning result.",
+    "20assessmentrows share5noise-seedblocks; not20independent safetycertifications.",
+    "Jump and force useassumedexternalx/zlocalization, not encoder/IMU-onlyhardware.",
+    "40N/200ms remainsfailedstress; no globalinfeasibilityproof.",
+    "10ms is simulated timestep, not worst-case walltime guarantee.",
+    "No automatic publication/default/hardware promotion."
+  ],
+  "defaultStandingChanged": false,
+  "merged": false,
+  "deployed": false
+}

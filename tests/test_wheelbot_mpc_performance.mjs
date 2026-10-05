@@ -1,12 +1,17 @@
-// Optional saved baseline enables paired host timing; no timing-dependent pass gate.
+// Exact pre-change source is required; no timing-dependent pass gate.
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {createWheelbotMPC} from '../src/wheelbot_mpc.mjs';
 const baseline=process.argv[2];
-const old=baseline?(await import('data:text/javascript;base64,'+Buffer.from(fs.readFileSync(baseline,'utf8').replace("'../vendor/quadprog/quadprog.js'",JSON.stringify(pathToFileURL(process.cwd()+'/vendor/quadprog/quadprog.js').href))).toString('base64'))).createWheelbotMPC:createWheelbotMPC;
+if(!baseline)throw Error('An exact baseline source is required; no silent self-comparison');
+const baselineSource=fs.readFileSync(baseline,'utf8');
+const baselineSha256=crypto.createHash('sha256').update(baselineSource).digest('hex');
+assert.equal(baselineSha256,'41ca7be08c1ea5e86a6e41ab7b8f27284c1aebcf9c93b3ea9229105b1bd20572','unexpected pre-optimization source');
+const old=(await import('data:text/javascript;base64,'+Buffer.from(baselineSource.replace("'../vendor/quadprog/quadprog.js'",JSON.stringify(pathToFileURL(process.cwd()+'/vendor/quadprog/quadprog.js').href))).toString('base64'))).createWheelbotMPC;
 const stats=values=>{const v=values.slice().sort((a,b)=>a-b);return {n:v.length,p50:v[Math.floor(v.length*.5)],p95:v[Math.floor(v.length*.95)],p99:v[Math.floor(v.length*.99)],max:v.at(-1),over10ms:v.filter(x=>x>10).length};};
-const receipt={scope:'paired deterministic host observations, not WCET',baseline:baseline??'self',tolerances:{trajectory:1e-8,relativeObjective:1e-10},rows:[],rejectionDiscrepancies:0,maxTrajectoryDifference:0};
+const receipt={scope:'paired deterministic host observations, not WCET',baseline,baselineSha256,sourceSha256:crypto.createHash('sha256').update(fs.readFileSync('src/wheelbot_mpc.mjs')).digest('hex'),tolerances:{trajectory:1e-8,relativeObjective:1e-10},rows:[],rejectionDiscrepancies:0,maxTrajectoryDifference:0};
 const traces=baseline&&fs.existsSync('test-results/wheelbot_mpc_response_traces.json')?JSON.parse(fs.readFileSync('test-results/wheelbot_mpc_response_traces.json')).rows:[];
 for(const name of ['baseline','response']){
  const p=JSON.parse(fs.readFileSync(`assets/wheelbot/${name==='baseline'?'profile':'response_profile'}.json`)),ref=p.controlledIndices.map(i=>i<6?p.qref[i]:0);
