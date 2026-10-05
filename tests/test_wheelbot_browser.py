@@ -70,7 +70,12 @@ try:
             page.wait_for_function('window.wheelbotLab?.ready',timeout=30000)
             assert served and all(x['mutation']==mutation for x in served), {'routeNotExercised':mutation,'served':served}
             diagnostics=page.evaluate("() => ({ready:window.wheelbotLab.ready,optionDisabled:document.querySelector('#design option[value=response]').disabled,info:document.querySelector('#design-info').textContent,status:document.querySelector('#status').textContent,design:window.wheelbotLab.getDesign()})")
-            assert page.locator('#design option[value=response]').is_disabled(), {'mutation':mutation,'served':served,'browser':diagnostics}
+            # The live DOM reported disabled=True while Playwright's helper
+            # returned False for this option. Check its actual property and
+            # the application's rejection path, not the parent select state.
+            assert diagnostics['optionDisabled'] is True, {'mutation':mutation,'served':served,'browser':diagnostics}
+            refused=page.evaluate("window.wheelbotLab.selectDesign('response')")
+            assert refused['accepted'] is False and page.locator('#design').input_value()=='baseline', refused
             assert 'unavailable' in page.locator('#design-info').inner_text().lower()
             baseline_run=page.evaluate('window.wheelbotLab.run(20)')
             assert baseline_run['steps']==20 and not baseline_run['failed']
