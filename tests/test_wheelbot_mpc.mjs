@@ -66,3 +66,17 @@ assert(activeComparison.some(c=>c.maxActionDifferenceNm>1e-3));
 fs.writeFileSync('evidence/wheelbot_mpc_active_comparison.json',JSON.stringify({scope:'offline constructed states, not physically reachable claims',rows:activeComparison},null,2)+'\n');
 
 for(const c of cases){assert.deepEqual(c.result.forecastActiveCountsByMotor,[0,1,2].map(j=>c.result.U.filter(u=>Math.abs(u[j])>=c.limits[j]-1e-8).length));assert.equal(c.result.forecastConstraintActive,c.result.forecastActiveCountsByMotor.some(n=>n>0));}
+
+// General full symmetric effort and terminal costs must survive cached maps.
+const full=structuredClone(p);
+full.R=[[.3,.02,-.01],[.02,.4,.015],[-.01,.015,.2]];
+full.P=full.P.map((r,i)=>r.map((v,j)=>v+(i===j?.1:0)));
+for(const N of [1,20])for(const scale of [.0001,.3]){
+ const e0=ref.map((_,i)=>scale*Math.sin(i+1)),controller=createWheelbotMPC(full,limits,{N});
+ const estimate=ref.map((v,i)=>v+e0[i]),first=controller.solve(estimate);
+ controller.solve(ref);const repeated=controller.solve(estimate);
+ for(const key of ['U','E','J','forecastActiveCountsByMotor','forecastConstraintActive','saturated'])assert.deepEqual(first[key],repeated[key],'cached QP data must survive upstream mutation');
+ cases.push({name:'full_R_terminal_P',N,p:full,limits,e0,result:first});
+}
+fs.writeFileSync('test-results/wheelbot_mpc_reference.json',JSON.stringify({cases}));
+console.log('full symmetric R, modified terminal P, repeated solve isolation passed');

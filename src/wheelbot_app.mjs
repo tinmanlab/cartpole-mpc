@@ -6,7 +6,7 @@ const names = ['x', 'z', 'pitch', 'hip', 'knee', 'wheel'];
 const actuators = ['hip', 'knee', 'wheel'];
 let backend = null, profile = null, profiles = {}, trial = null, viewState = null;
 let ready = false, playing = false, poseOnly = false, statusLocked = false;
-let frameTime = 0, accumulated = 0;
+let frameTime = 0, accumulated = 0, droppedWallSeconds = 0;
 
 const getJson = async path => {
   const response = await fetch(path);
@@ -69,6 +69,7 @@ function render() {
   const metric = (value, digits = 2) => Number.isFinite(value) ? value.toExponential(digits) : '—';
   const diagnostics = last.solver === undefined ? 'Solver · —' : `Solver · accepted · ${solver} · KKT residual ${metric(last.kktResidual)} · primal residual ${metric(last.primalResidual)} · solve ${metric(last.solveMs)} ms · planned bound-active ${Boolean(last.forecastConstraintActive)}`;
   $('solver').textContent = diagnostics;
+  $('timing').textContent = `Timing · simulated step 10 ms; last MPC solve ${metric(last.solveMs)} ms. Wall catch-up dropped ${(droppedWallSeconds*1000).toFixed(1)} ms; physics steps are never skipped. No hard real-time guarantee.`;
   const contact = s.last?.contact ?? backend.contact(x);
   $('contact').textContent = `Contact · wheel contacts: ${contact.wheelContacts ?? contact.count ?? 0} · slip [m/s]: ${Number(contact.slip ?? 0).toFixed(4)} m/s · step ${s.steps ?? 0} · ${s.failed ? 'failure flagged' : 'running state valid'}`;
   if (ready && (trial || poseOnly) && !statusLocked) {
@@ -84,7 +85,7 @@ function makeTrial(initial = qrefState()) {
   return createWheelbotTrial(backend, profile, {seed: 17, goal: Number($('goal').value), initialState: initial, mode});
 }
 function configure() {
-  playing = false; accumulated = 0; poseOnly = false; statusLocked = false;
+  playing = false; accumulated = 0; droppedWallSeconds = 0; poseOnly = false; statusLocked = false;
   try { trial = makeTrial(); viewState = trial.snapshot().truth; say('Validated · paused at profile equilibrium'); }
   catch (error) { trial = null; say(`MODE REJECTED · ${error.message}`, true); }
   render();
@@ -93,21 +94,27 @@ function designMetadata() {
   const selected = $('design').value;
   return {selection: selected, ...(profiles[selected]?.responseDesign ?? {source: 'Original baseline profile'})};
 }
-function tick() {
+function tick(draw = true) {
   if (!playing || !trial) return;
   try {
     const s = trial.step(0); viewState = s.truth;
     if (s.failed) { playing = false; say('Plant failure reported by trial', true); }
   } catch (error) { playing = false; say(`STEP ERROR · ${error.message}`, true); }
-  render();
+  if (draw) render();
 }
 function animate(time) {
   if (frameTime === 0) frameTime = time;
   if (playing) {
-    accumulated += Math.min(.08, (time - frameTime) / 1000);
     const dt = backend?.diagnostics().controlDt ?? .01;
+    const elapsed = Math.max(0, (time - frameTime) / 1000);
+    const budget = 4 * dt;
+    const pending = accumulated + elapsed;
+    droppedWallSeconds += Math.max(0, pending - budget);
+    accumulated = Math.min(pending, budget);
     let count = 0;
-    while (playing && accumulated >= dt && count++ < 4) { tick(); accumulated -= dt; }
+    while (playing && accumulated + 1e-12 >= dt && count++ < 4) { tick(false); accumulated = Math.max(0, accumulated - dt); }
+    // One redraw per browser frame, never one redraw per physics/control tick.
+    if (count) render();
   } else accumulated = 0;
   frameTime = time; requestAnimationFrame(animate);
 }
@@ -116,7 +123,7 @@ window.wheelbotLab = {
   getState: state,
   getDesign: designMetadata,
   selectDesign(selection) {
-    if (!profiles[selection]) return {accepted: false, selection: $('design').value};
+    if (!profiles[selection]) { playing=false; return {accepted: false, selection: $('design').value}; }
     $('design').value = selection;
     profile = profiles[selection];
     configure();
@@ -156,6 +163,14 @@ try {
     $('design').querySelector('option[value="response"]').disabled = true;
     $('design-info').textContent = `Response design unavailable · ${error.message}`;
   }
+  try {
+    const recoveryProfile = await getJson('assets/wheelbot/recovery_profile.json');
+    validateWheelbotResponseProfile(next, p, recoveryProfile, baseline.sha256);
+    if (recoveryProfile.responseDesign?.positionTargetM !== .01 || recoveryProfile.responseDesign?.pitchTargetRad !== .02) throw Error('Recovery model target mismatch');
+    profiles.recovery = recoveryProfile;
+  } catch (error) {
+    $('design').querySelector('option[value="recovery"]').disabled = true;
+  }
   ready = true;
   $('play').disabled = $('step').disabled = $('reset').disabled = $('pose').disabled = $('local').disabled = false;
   $('design').disabled = false;
@@ -169,7 +184,12 @@ try {
   $('pose').onclick = () => { playing = false; statusLocked = false; trial = null; poseOnly = true; viewState = qrefState(); viewState[3] += 0.12; viewState[4] -= 0.10; render(); };
   $('local').onclick = () => { playing = false; statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = configure;
-  $('design').onchange = () => { profile = profiles[$('design').value] ?? profiles.baseline; configure(); };
+  $('design').onchange = () => {
+    profile = profiles[$('design').value] ?? profiles.baseline;
+    if ($('design').value==='recovery') $('design-info').textContent=`Recovery · model-designed Qx factor ${profile.responseDesign.factor}; position + 3 N local push, with existing KF. Nominal targets 10 mm and 0.020 rad; not contact-loss recovery. Source profile SHA-256 ${profile.responseDesign.sourceProfileSha256}.`;
+    else if(profiles.response) $('design-info').textContent=`Baseline · original control and noise settings. Response · model-designed Qx factor ${profiles.response.responseDesign.factor}. Source profile SHA-256 ${profiles.response.responseDesign.sourceProfileSha256}. Plant and estimator unchanged.`;
+    configure();
+  };
   configure(); requestAnimationFrame(animate);
 } catch (error) {
   ready = false; say(`MODEL / PROFILE REJECTED · ${error.message}`, true);

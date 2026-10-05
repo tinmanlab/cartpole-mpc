@@ -7,12 +7,12 @@
 <a href="index.html">← CartPole commissioning lab</a><h1>Planar wheel-leg plant</h1>
 <p class="lead">A second physical asset for transfer experiments: one sagittal-plane wheel, a white torso, and two blue links joined by two red motorized hinges. Three torque motors drive hip, knee, and wheel. This planar model suppresses out-of-plane motion; it does not establish one-wheel 3D balance.</p>
 <div class="layout"><section class="card">
- <div class="toolbar"><label>Design<br><select id="design" disabled><option value="baseline">Baseline · original design</option><option value="response">Response · model-designed Qx</option></select></label>
+ <div class="toolbar"><label>Design<br><select id="design" disabled><option value="baseline">Baseline · original design</option><option value="response">Response · model-designed Qx</option><option value="recovery">Recovery · position + local push</option></select></label>
  <label>Controller<br><select id="mode"><option value="lqr_kf">Local LQR + KF</option><option value="mpc_kf">Linear MPC + same KF</option><option value="passive">Passive plant</option></select></label>
  <label>Goal x [m]<br><select id="goal"><option value="0">0.00</option><option value="0.03">0.03</option></select></label>
  <button id="play" disabled>Start</button><button id="step" disabled>Step</button><button id="reset" disabled>Reset</button><button id="pose" disabled>Pose probe</button><button id="local" disabled>Local test</button></div>
  <p id="design-info" class="muted">Loading baseline and response-design metadata…</p><p id="status" class="status" role="status">Loading model and validating profile…</p><canvas id="view" width="1000" height="540" aria-label="MuJoCo wheel-leg geometry in side view"></canvas>
- <p id="message" class="muted">Animation uses compiled MuJoCo body transforms. The displayed robot is a simplified source-derived teaching model, not a hardware digital twin.</p>
+ <p id="timing" class="muted">Timing: simulated 10 ms steps; no hard real-time guarantee.</p><p id="message" class="muted">Animation uses compiled MuJoCo body transforms. The displayed robot is a simplified source-derived teaching model, not a hardware digital twin.</p>
  <div class="grid"><div><h2>True state · MuJoCo</h2><table><tbody id="truth"></tbody></table></div><div><h2>KF estimate · wheel phase omitted</h2><table><tbody id="estimate"></tbody></table></div><div><h2>Applied torque [N·m]</h2><table><tbody id="torques"></tbody></table><p id="solver" class="muted">Solver · —</p></div></div>
 </section><aside class="card"><h2>Model and experiment boundary</h2>
  <div class="notice"><b>Source-derived</b><br>Upkie pinned geometry: 0.25 m leg links, 0.05 m wheel radius, hip/knee limit 16 N·m, wheel limit 1.7 N·m. Single-side sagittal derivative with primitive geometry and checked primitive inertias.</div>

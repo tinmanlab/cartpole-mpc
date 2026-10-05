@@ -203,6 +203,19 @@ try:
         assert "contact" in page.locator("#contact").inner_text().lower()
         assert "m/s" in page.locator("#contact").inner_text()
         assert page.locator("#estimate tr").count() == 11
+        page.locator("#design").select_option("recovery")
+        recovery_initial = page.evaluate("window.wheelbotLab.getState()")
+        assert recovery_initial["steps"] == 0
+        assert recovery_initial["estimate"] == baseline_estimate
+        assert "not contact-loss recovery" in page.locator("#design-info").inner_text()
+        recovery_run = page.evaluate("window.wheelbotLab.run(20)")
+        assert recovery_run["steps"] == 20 and not recovery_run["failed"]
+        assert len(recovery_run["last"]["u"]) == 3
+        assert "No hard real-time" in page.locator("#timing").inner_text()
+        page.locator("#reset").click()
+        assert page.locator("#design").input_value() == "recovery"
+        assert page.evaluate("window.wheelbotLab.getState().steps") == 0
+        page.evaluate("window.wheelbotLab.run(20)")
         page.screenshot(path=str(ROOT / "evidence/wheelbot_browser.png"), full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth-innerWidth") <= 1
         assert not errors, errors
@@ -218,6 +231,8 @@ try:
             "mpcSolverMetrics": True,
             "resetPreservesSelections": True,
             "baselineResponseDesigns": True,
+            "recoveryDesignRunsAndResets": True,
+            "timingBoundaryVisible": True,
             "responseChangesQxOnly": True,
             "fetchedResponseBoundToBaseline": True,
             "mismatchedResponsePreservesBaseline": True,

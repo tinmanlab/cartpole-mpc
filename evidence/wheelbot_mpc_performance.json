@@ -1,0 +1,288 @@
+{
+  "scope": "paired deterministic host observations, not WCET",
+  "baseline": "test-results/resume-performance-old.mjs",
+  "tolerances": {
+    "trajectory": 1e-08,
+    "relativeObjective": 1e-10
+  },
+  "rows": [
+    {
+      "profile": "baseline",
+      "N": 1,
+      "physicalEstimates": 80,
+      "construction": {
+        "old": {
+          "n": 20,
+          "p50": 0.17885400000000118,
+          "p95": 0.2344099999999969,
+          "p99": 0.2344099999999969,
+          "max": 0.2344099999999969,
+          "over10ms": 0
+        },
+        "new": {
+          "n": 20,
+          "p50": 0.31386799999998516,
+          "p95": 0.881495000000001,
+          "p99": 0.881495000000001,
+          "max": 0.881495000000001,
+          "over10ms": 0
+        }
+      },
+      "solve": {
+        "old": {
+          "n": 232,
+          "p50": 0.04889399999999,
+          "p95": 0.11613599999998314,
+          "p99": 0.36405600000000504,
+          "max": 0.5805850000000135,
+          "over10ms": 0
+        },
+        "new": {
+          "n": 232,
+          "p50": 0.026501999999993586,
+          "p95": 0.06955200000001582,
+          "p99": 0.2198449999999923,
+          "max": 0.47439299999999207,
+          "over10ms": 0
+        }
+      }
+    },
+    {
+      "profile": "baseline",
+      "N": 20,
+      "physicalEstimates": 80,
+      "construction": {
+        "old": {
+          "n": 20,
+          "p50": 12.931198999999992,
+          "p95": 20.783046000000013,
+          "p99": 20.783046000000013,
+          "max": 20.783046000000013,
+          "over10ms": 20
+        },
+        "new": {
+          "n": 20,
+          "p50": 11.687866999999983,
+          "p95": 30.93078700000001,
+          "p99": 30.93078700000001,
+          "max": 30.93078700000001,
+          "over10ms": 20
+        }
+      },
+      "solve": {
+        "old": {
+          "n": 232,
+          "p50": 2.187896000000137,
+          "p95": 3.9333579999999984,
+          "p99": 5.494721000000027,
+          "max": 10.750896999999895,
+          "over10ms": 1
+        },
+        "new": {
+          "n": 232,
+          "p50": 0.4541390000001684,
+          "p95": 0.8374729999998181,
+          "p99": 1.6276809999999386,
+          "max": 6.550470000000132,
+          "over10ms": 0
+        }
+      }
+    },
+    {
+      "profile": "response",
+      "N": 1,
+      "physicalEstimates": 80,
+      "construction": {
+        "old": {
+          "n": 20,
+          "p50": 0.11568400000010115,
+          "p95": 0.22109699999987242,
+          "p99": 0.22109699999987242,
+          "max": 0.22109699999987242,
+          "over10ms": 0
+        },
+        "new": {
+          "n": 20,
+          "p50": 0.1994449999999688,
+          "p95": 0.6279859999999644,
+          "p99": 0.6279859999999644,
+          "max": 0.6279859999999644,
+          "over10ms": 0
+        }
+      },
+      "solve": {
+        "old": {
+          "n": 232,
+          "p50": 0.03344299999980649,
+          "p95": 0.05228199999987737,
+          "p99": 0.20913999999993393,
+          "max": 0.41295599999989463,
+          "over10ms": 0
+        },
+        "new": {
+          "n": 232,
+          "p50": 0.014631999999892287,
+          "p95": 0.02262299999983952,
+          "p99": 0.039064999999936845,
+          "max": 0.06802200000015546,
+          "over10ms": 0
+        }
+      }
+    },
+    {
+      "profile": "response",
+      "N": 20,
+      "physicalEstimates": 80,
+      "construction": {
+        "old": {
+          "n": 20,
+          "p50": 12.523433000000296,
+          "p95": 19.187101999999868,
+          "p99": 19.187101999999868,
+          "max": 19.187101999999868,
+          "over10ms": 20
+        },
+        "new": {
+          "n": 20,
+          "p50": 11.139478999999938,
+          "p95": 17.045720999999958,
+          "p99": 17.045720999999958,
+          "max": 17.045720999999958,
+          "over10ms": 20
+        }
+      },
+      "solve": {
+        "old": {
+          "n": 232,
+          "p50": 1.0596199999999953,
+          "p95": 1.6894820000002255,
+          "p99": 2.287600999999995,
+          "max": 28.816539999999804,
+          "over10ms": 1
+        },
+        "new": {
+          "n": 232,
+          "p50": 0.4126009999999951,
+          "p95": 0.9408830000002126,
+          "p99": 2.4853439999997136,
+          "max": 29.207788000000164,
+          "over10ms": 1
+        }
+      }
+    }
+  ],
+  "rejectionDiscrepancies": 0,
+  "maxTrajectoryDifference": 5.5067062021407764e-14,
+  "physicalTolerance": 1e-08,
+  "physical": [
+    {
+      "profile": "baseline",
+      "name": "local_balance",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 4.46975789714088e-13,
+      "maxEstimate": 4.4192427495204356e-13,
+      "finalTruthDifference": 3.932132397466148e-13
+    },
+    {
+      "profile": "baseline",
+      "name": "position",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 3.246569679760114e-13,
+      "maxEstimate": 2.806088694740083e-13,
+      "finalTruthDifference": 2.1765922397776194e-13
+    },
+    {
+      "profile": "baseline",
+      "name": "push",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 3.4219849176508887e-13,
+      "maxEstimate": 3.138322934859161e-13,
+      "finalTruthDifference": 1.6131540547803525e-13
+    },
+    {
+      "profile": "response",
+      "name": "local_balance",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 4.545912257736262e-13,
+      "maxEstimate": 4.4192427495204356e-13,
+      "finalTruthDifference": 2.981850877326053e-13
+    },
+    {
+      "profile": "response",
+      "name": "position",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 4.96269692007445e-13,
+      "maxEstimate": 4.118094754090862e-13,
+      "finalTruthDifference": 8.892886427247504e-14
+    },
+    {
+      "profile": "response",
+      "name": "push",
+      "seed": 101,
+      "steps": 300,
+      "maxTruth": 3.601563491884008e-13,
+      "maxEstimate": 2.184918912462308e-13,
+      "finalTruthDifference": 1.0510342596248279e-13
+    }
+  ],
+  "baselineSha256": "41ca7be08c1ea5e86a6e41ab7b8f27284c1aebcf9c93b3ea9229105b1bd20572",
+  "sourceSha256": "c723f80e7de45856c96af1f59ecf034f5b5b347334e5bb78d462e5c6970a437e",
+  "prechangeBottleneckMs": {
+    "assembly": {
+      "p50": 0.175057,
+      "p95": 1.442669
+    },
+    "upstream": {
+      "p50": 0.588,
+      "p95": 1.017309
+    },
+    "total": {
+      "p50": 1.52705,
+      "p95": 3.316096
+    }
+  },
+  "commands": [
+    {
+      "command": "node tests/test_wheelbot_mpc_performance.mjs test-results/resume-performance-old.mjs (before optimization)",
+      "exit": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_mpc_performance.mjs test-results/resume-performance-old.mjs (after optimization)",
+      "exit": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_mpc.mjs",
+      "exit": 0
+    },
+    {
+      "command": "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python tests/test_wheelbot_mpc_reference.py",
+      "exit": 0
+    },
+    {
+      "command": "node tests/test_wheelbot_profile_binding.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node test-results/resume-physical.mjs",
+      "exit": 0
+    },
+    {
+      "command": "npm run check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "limits": [
+    "Host timing observations, not WCET; response p99/max did not improve in this sample.",
+    "Physical paired comparison: seed 101, local_balance/position/push, 300 steps each; no 40 N recovery change.",
+    "Public quadprog solveQP retained, including per-solve factorization; no optimizer/vendor change."
+  ]
+}

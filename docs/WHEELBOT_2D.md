@@ -162,3 +162,28 @@ python tests/test_wheelbot_response_reference.py
 The response model is optional and selected explicitly; it is not written over the baseline profile. The generated response function reproduces only a nominal model target. Nonlinear sensor-in-the-loop assessment is the separate comparison above, with its observed seed-reuse limitations.
 
 Optional response profiles are checked against the exact raw-byte SHA-256 of the baseline fetched by the page. The loader independently checks the declared one-variable Qx change and unchanged model, observer, noise, trim and limits. A stale source hash or changed noise/observer field disables only the response option; baseline operation remains available. This is accidental stale-data validation, not a security signature or independent stability certificate.
+
+## Local disturbance recovery and runtime reuse
+
+The optional `recovery_profile.json` is a second model-designed Qx-only profile, not a replacement for either historical profile. `scripts/design_wheelbot_recovery.py` derives the horizontal-disturbance column from central differences of the same five native MuJoCo substeps. The offline design simulates the existing stationary KF mean together with the nominal linear plant. The actual disturbance is never supplied to the online controller or filter.
+
+The frozen target includes both the 3 cm reference step and the 3 N, 0.1 s pulse: maximum position error 10 mm and pitch error 0.020 rad over samples 250–300. Brent root finding in the fixed log10 factor bracket [0,4] gives Qx multiplier about 1375.03647 relative to the original Qx=2. This is one declared nominal design requirement, not a global optimal parameter, an estimator calibration or a hard state constraint. A/B, Rc, L, Qe/Re, initial state, model, limits, sensor noise and the original test thresholds are unchanged.
+
+The profile and `tests/fixtures/wheelbot_recovery_validation.json` were fixed before opening noise seeds 401/409/419. These are new noise realizations on known physical cases, not new physical OOD. The 72-run assessment compares baseline/response/recovery with LQR/KF and MPC/KF. Each recovery controller completes 9/12 and meets 9/12 tasks; each old response controller meets 6/12 and each baseline controller 3/12. The small-push task now passes 3/3 for each recovery controller without losing its balance or position-task passes. No force/noise/time/task-limit relaxation is used. All three 40 N boundary failures per group remain failures.
+
+The native reference independently reconstructs the joint 22-dimensional plant/filter mean model, Riccati gains, seeded filter initialization, every recorded KF mean, original task metrics and native one-step dynamics for all 18,090 executed frames. `evidence/wheelbot_recovery_reference.json` records those results. Native contact-force diagnostics from the actually applied commands are in `evidence/wheelbot_contact_diagnosis.json`; they are not online sensor inputs. In the recorded 40 N onset, support force vanishes at step 102 and the pitch envelope fails at 105. The filter substantially underestimates the rapid pitch rate. This identifies a model/estimation regime change, not a proof that every controller must fail. Static mu*m*g is only a scale comparison and is not used as a dynamic infeasibility certificate. Hybrid contact-aware estimation/control and large-pulse recovery remain unimplemented.
+
+MPC runtime changes cache fixed transposes, one-indexed representations and the linear map from initial error to the complete finite-horizon objective. The upstream quadprog call still runs for every solve; its mutable inputs are copied, not reused after mutation. Full Rc/P, every B column, tiny nonzero cost terms, original-unit KKT/dynamics/torque gates and rejected-command no-advance behavior remain intact. The paired timing receipt reports distributions and outliers, not a hard real-time guarantee. One development comparison lowered baseline N20 p50 from 2.188 to 0.454 ms and response p50 from 1.060 to 0.413 ms; response p99/max did not improve in that sample. Current measurements are in the receipt.
+
+The browser redraws once per animation frame instead of once per control tick. Its wall-clock catch-up budget is bounded to four unchanged 10 ms control samples; discarded wall catch-up is displayed. This prevents an unbounded display backlog, but does not skip physical integration steps or establish hardware deadline compliance. Pauses and slow browser frames do not change the physics timestep.
+
+Reproduce the added assessment (use the existing native Python environment):
+
+```
+python scripts/design_wheelbot_recovery.py
+node tests/test_wheelbot_runtime.mjs
+node scripts/validate_wheelbot_mpc.mjs --recovery
+python tests/test_wheelbot_recovery_reference.py
+```
+
+The optional paired performance test accepts an exact saved pre-change `src/wheelbot_mpc.mjs` as its first argument. Timing includes host/VM scheduling and garbage-collection effects. The recovery selector remains opt-in and explicitly does not claim contact-loss recovery.

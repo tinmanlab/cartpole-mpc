@@ -1,0 +1,443 @@
+{
+  "schema": "wheelbot-recovery-design/v1",
+  "accepted": true,
+  "sourceProfileSha256": "d54d98ec5b18d89bdf4043a408ea49d7636edcb9c29301b88f446cda9a968e77",
+  "protocolSha256": "a52635e5495fee45cc34f2a987eece5ddff80d01329d794b9b5e647d418bcc24",
+  "assetSha256": "fe62740619c7fdc2a744a27ffcb4b4589cedee5cf3af39c404e66198faa6961a",
+  "designScriptSha256": "7beb19ffe65d7a1efd03422c7dd01406cb79d0cffade14fe9bb0c01012e43e75",
+  "profileSha256": "493cb5828e478efa3458da4e6a480054c0927a0f67e878b432d562a3641b9cbe",
+  "method": "scipy.optimize.brentq; combined position/push target with existing KF mean",
+  "equation": "max over position/push of tail position/0.010m and pitch/0.020rad minus 1",
+  "log10FactorBracket": [
+    0,
+    4
+  ],
+  "endpointResiduals": [
+    13.326753411988232,
+    -0.6961946243677872
+  ],
+  "factor": 1375.036470795756,
+  "rootResidual": -2.3915314173450497e-12,
+  "dareNormalizedResidual": 4.675408021543956e-14,
+  "closedLoopRadius": 0.9732318012141328,
+  "disturbanceColumnPerN": [
+    0.00017401350987264,
+    -7.982114968996257e-06,
+    -0.0009659995865176317,
+    0.0014177404425441686,
+    -0.0001936504828714547,
+    0.028916823419059365,
+    -0.001290570412513108,
+    -0.16037826947858416,
+    0.23484867143177385,
+    -0.03142496278222401,
+    -0.04321134472125289
+  ],
+  "disturbanceRefinementError": 2.62479399326665e-10,
+  "modelCases": {
+    "position": {
+      "positionTailMaxM": 2.8440002125384306e-05,
+      "pitchTailMaxRad": 0.00020410436715711828,
+      "maxAbsTorqueNm": [
+        0.12479933051801384,
+        0.3963667161902467,
+        0.14690841536968707
+      ]
+    },
+    "push": {
+      "positionTailMaxM": 0.0013689994156360602,
+      "pitchTailMaxRad": 0.01999999999995217,
+      "maxAbsTorqueNm": [
+        0.5257638922356422,
+        0.5523580506677159,
+        0.18072537760483998
+      ]
+    }
+  },
+  "evaluations": [
+    {
+      "log10Factor": 0.0,
+      "factor": 1.0,
+      "normalizedTargetResidual": 13.326753411988232,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 0.022808336264040607,
+          "pitchTailMaxRad": 7.351993960539746e-05,
+          "maxAbsTorqueNm": [
+            0.004204051416679206,
+            0.38917530627286906,
+            0.005457126552065022
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.14326753411988233,
+          "pitchTailMaxRad": 0.001995557324084401,
+          "maxAbsTorqueNm": [
+            0.5294769717956411,
+            0.3893202800457525,
+            0.1307286671558813
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 4.0,
+      "factor": 10000.0,
+      "normalizedTargetResidual": -0.6961946243677872,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 3.0529473546495045e-06,
+          "pitchTailMaxRad": 3.06643562369631e-05,
+          "maxAbsTorqueNm": [
+            0.7556961333971272,
+            0.8135533407488329,
+            0.17408187929167487
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0006571296965087339,
+          "pitchTailMaxRad": 0.006076107512644257,
+          "maxAbsTorqueNm": [
+            0.5531828334326262,
+            0.8337570954540704,
+            0.20200084302789478
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 0.0,
+      "factor": 1.0,
+      "normalizedTargetResidual": 13.326753411988232,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 0.022808336264040607,
+          "pitchTailMaxRad": 7.351993960539746e-05,
+          "maxAbsTorqueNm": [
+            0.004204051416679206,
+            0.38917530627286906,
+            0.005457126552065022
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.14326753411988233,
+          "pitchTailMaxRad": 0.001995557324084401,
+          "maxAbsTorqueNm": [
+            0.5294769717956411,
+            0.3893202800457525,
+            0.1307286671558813
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 4.0,
+      "factor": 10000.0,
+      "normalizedTargetResidual": -0.6961946243677872,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 3.0529473546495045e-06,
+          "pitchTailMaxRad": 3.06643562369631e-05,
+          "maxAbsTorqueNm": [
+            0.7556961333971272,
+            0.8135533407488329,
+            0.17408187929167487
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0006571296965087339,
+          "pitchTailMaxRad": 0.006076107512644257,
+          "maxAbsTorqueNm": [
+            0.5531828334326262,
+            0.8337570954540704,
+            0.20200084302789478
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.801412763546488,
+      "factor": 6330.13195985477,
+      "normalizedTargetResidual": -0.6276367532160536,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 5.888990754654433e-06,
+          "pitchTailMaxRad": 3.159575580041774e-05,
+          "maxAbsTorqueNm": [
+            0.5331445355437112,
+            0.6526539141483119,
+            0.1842931873459598
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0009654655166391272,
+          "pitchTailMaxRad": 0.007447264935678929,
+          "maxAbsTorqueNm": [
+            0.5426633531671391,
+            0.7633131546229814,
+            0.1988182754106727
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 2.065148301889809,
+      "factor": 116.18452903899973,
+      "normalizedTargetResidual": 3.7273203726389665,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 0.001275426925600634,
+          "pitchTailMaxRad": 0.0005952767672326022,
+          "maxAbsTorqueNm": [
+            0.0064723700114418465,
+            0.3921800275491107,
+            0.0551534872568903
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.04727320372638966,
+          "pitchTailMaxRad": 0.01537928749212521,
+          "maxAbsTorqueNm": [
+            0.5250415964356044,
+            0.4166026169904362,
+            0.14957727888266328
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.5511821968736497,
+      "factor": 3557.8054567299214,
+      "normalizedTargetResidual": -0.4420395402572965,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 9.933053762695848e-06,
+          "pitchTailMaxRad": 2.8553522709822917e-05,
+          "maxAbsTorqueNm": [
+            0.3260962098709887,
+            0.5109618054586054,
+            0.17970870079843224
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0012761118607405165,
+          "pitchTailMaxRad": 0.01115920919485407,
+          "maxAbsTorqueNm": [
+            0.534340927996927,
+            0.674592034421102,
+            0.1930228676866631
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.0183906028329686,
+      "factor": 1043.2553074903328,
+      "normalizedTargetResidual": 0.10278606675858515,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 6.411533167138828e-05,
+          "pitchTailMaxRad": 0.00023614612588781494,
+          "maxAbsTorqueNm": [
+            0.09046937103734841,
+            0.3962682169005406,
+            0.13493589505742215
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.00305911066355973,
+          "pitchTailMaxRad": 0.022055721335171703,
+          "maxAbsTorqueNm": [
+            0.5242021298618899,
+            0.5251208863132985,
+            0.17670498037166238
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.1189063488777062,
+      "factor": 1314.9412481098373,
+      "normalizedTargetResidual": 0.018471951384242624,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 3.3408527550737865e-05,
+          "pitchTailMaxRad": 0.0002111012817112074,
+          "maxAbsTorqueNm": [
+            0.11864817783351646,
+            0.3963738601168849,
+            0.1449967555424896
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013559816447156641,
+          "pitchTailMaxRad": 0.020369439027684854,
+          "maxAbsTorqueNm": [
+            0.525482486130834,
+            0.5476957903717329,
+            0.18008137682283532
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.140044511563095,
+      "factor": 1380.5257497302766,
+      "normalizedTargetResidual": -0.0016764949265171136,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.801344520417942e-05,
+          "pitchTailMaxRad": 0.00020345365136835748,
+          "maxAbsTorqueNm": [
+            0.1253596059394911,
+            0.39636557597387706,
+            0.14707814496546937
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.001370154019311494,
+          "pitchTailMaxRad": 0.01996647010146966,
+          "maxAbsTorqueNm": [
+            0.5257895293639413,
+            0.5527762806116798,
+            0.18078263075042023
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.1382856651512494,
+      "factor": 1374.946073603563,
+      "normalizedTargetResidual": 2.762485671659043e-05,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.844706355203605e-05,
+          "pitchTailMaxRad": 0.00020411506948106198,
+          "maxAbsTorqueNm": [
+            0.12479010168184511,
+            0.3963667342975977,
+            0.14690561358750479
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013689798367929773,
+          "pitchTailMaxRad": 0.02000055249713433,
+          "maxAbsTorqueNm": [
+            0.5257634699436061,
+            0.5523511527773726,
+            0.1807244326197432
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.13831417716114,
+      "factor": 1375.036343603663,
+      "normalizedTargetResidual": 3.8868788410084676e-08,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.8440012060336473e-05,
+          "pitchTailMaxRad": 0.00020410438221715163,
+          "maxAbsTorqueNm": [
+            0.12479931753275253,
+            0.39636671621571173,
+            0.14690841142737512
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013689993881069661,
+          "pitchTailMaxRad": 0.02000000077737577,
+          "maxAbsTorqueNm": [
+            0.5257638916414781,
+            0.5523580409625282,
+            0.18072537627518886
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.1383142173337664,
+      "factor": 1375.036470795756,
+      "normalizedTargetResidual": -2.3915314173450497e-12,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.8440002125384306e-05,
+          "pitchTailMaxRad": 0.00020410436715711828,
+          "maxAbsTorqueNm": [
+            0.12479933051801384,
+            0.3963667161902467,
+            0.14690841536968707
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013689994156360602,
+          "pitchTailMaxRad": 0.01999999999995217,
+          "maxAbsTorqueNm": [
+            0.5257638922356422,
+            0.5523580506677159,
+            0.18072537760483998
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.1383142172821974,
+      "factor": 1375.0364706324815,
+      "normalizedTargetResidual": 4.352962434950314e-11,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.8440002138047787e-05,
+          "pitchTailMaxRad": 0.00020410436717419015,
+          "maxAbsTorqueNm": [
+            0.12479933050117398,
+            0.3963667161903595,
+            0.146908415365329
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013689994155829024,
+          "pitchTailMaxRad": 0.020000000000870592,
+          "maxAbsTorqueNm": [
+            0.5257638922348198,
+            0.5523580506551687,
+            0.18072537760333068
+          ]
+        }
+      }
+    },
+    {
+      "log10Factor": 3.1383142173337664,
+      "factor": 1375.036470795756,
+      "normalizedTargetResidual": -2.3915314173450497e-12,
+      "cases": {
+        "position": {
+          "positionTailMaxM": 2.8440002125384306e-05,
+          "pitchTailMaxRad": 0.00020410436715711828,
+          "maxAbsTorqueNm": [
+            0.12479933051801384,
+            0.3963667161902467,
+            0.14690841536968707
+          ]
+        },
+        "push": {
+          "positionTailMaxM": 0.0013689994156360602,
+          "pitchTailMaxRad": 0.01999999999995217,
+          "maxAbsTorqueNm": [
+            0.5257638922356422,
+            0.5523580506677159,
+            0.18072537760483998
+          ]
+        }
+      }
+    }
+  ],
+  "actualModelEvaluations": 15,
+  "brentFunctionCalls": 12,
+  "brentIterations": 11,
+  "nonlinearAssessmentInputs": false,
+  "scope": "Nominal linear plant plus existing stationary KF mean, zero-mean measurement noise. The force is used to design a disturbance response, not supplied to the runtime controller/filter.",
+  "sources": [
+    "https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.brentq.html",
+    "https://mujoco.readthedocs.io/en/stable/APIreference/APIfunctions.html"
+  ]
+}

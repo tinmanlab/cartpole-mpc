@@ -1,0 +1,113 @@
+{
+  "schema": "wheelbot-recovery-independent-reference/v1",
+  "passed": true,
+  "trials": 72,
+  "frames": 18090,
+  "profileSha256": "493cb5828e478efa3458da4e6a480054c0927a0f67e878b432d562a3641b9cbe",
+  "jointModelTailMaxima": {
+    "position": [
+      2.844000212592901e-05,
+      0.00020410436715843526
+    ],
+    "push": [
+      0.0013689994156355426,
+      0.01999999999995492
+    ]
+  },
+  "maxNativeOneStepError": 2.19824158875781e-13,
+  "maxObserverMeanError": 1.362174262276028e-13,
+  "maxSameEstimateLqrError": 3.5860203695392556e-14,
+  "counts": [
+    {
+      "profile": "baseline",
+      "mode": "lqr_kf",
+      "completed": 9,
+      "passed": 3,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 0,
+        "push": 0,
+        "boundary_push": 0
+      }
+    },
+    {
+      "profile": "baseline",
+      "mode": "mpc_kf",
+      "completed": 9,
+      "passed": 3,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 0,
+        "push": 0,
+        "boundary_push": 0
+      }
+    },
+    {
+      "profile": "response",
+      "mode": "lqr_kf",
+      "completed": 9,
+      "passed": 6,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 3,
+        "push": 0,
+        "boundary_push": 0
+      }
+    },
+    {
+      "profile": "response",
+      "mode": "mpc_kf",
+      "completed": 9,
+      "passed": 6,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 3,
+        "push": 0,
+        "boundary_push": 0
+      }
+    },
+    {
+      "profile": "recovery",
+      "mode": "lqr_kf",
+      "completed": 9,
+      "passed": 9,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 3,
+        "push": 3,
+        "boundary_push": 0
+      }
+    },
+    {
+      "profile": "recovery",
+      "mode": "mpc_kf",
+      "completed": 9,
+      "passed": 9,
+      "trials": 12,
+      "physicalFailures": 3,
+      "qpRejected": 0,
+      "cases": {
+        "local_balance": 3,
+        "position": 3,
+        "push": 3,
+        "boundary_push": 0
+      }
+    }
+  ],
+  "scope": "New noise realizations on known physical cases. No physical OOD, global recovery, or hardware claim."
+}

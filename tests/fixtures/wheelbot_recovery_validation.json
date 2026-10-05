@@ -1,0 +1,25 @@
+{
+  "schema": "wheelbot-recovery-protocol/v1",
+  "baseline": "assets/wheelbot/profile.json",
+  "unchangedCases": "tests/fixtures/wheelbot_cases.json",
+  "assessmentSeeds": [401, 409, 419],
+  "assessmentScope": "New noise seeds on the same development physical cases; not new physical OOD or a failure-probability guarantee.",
+  "design": {
+    "changedPreference": "Qc[0,0] only",
+    "log10FactorBracket": [0, 4],
+    "method": "scipy.optimize.brentq",
+    "tailSamples": [250, 300],
+    "positionTargetM": 0.01,
+    "pitchTargetRad": 0.02,
+    "positionStepM": 0.03,
+    "pulseForceN": 3,
+    "pulseSamples": [100, 110],
+    "disturbanceDifferenceN": 0.0001,
+    "refinementDifferenceN": 0.001,
+    "targetResidualTolerance": 1e-8,
+    "model": "Nominal linear plant plus existing stationary KF mean, zero-mean measurement noise. The force is used to design a disturbance response, not supplied to the runtime controller/filter."
+  },
+  "runtime": {"controlDt": 0.01, "horizon": 20, "torqueLimitsNm": [16, 16, 1.7]},
+  "acceptance": "Profile is locked before assessment; preserve every original failure and unchanged 300-step/tail50/15mm/0.025rad protocol. A boundary failure is not a successful recovery. No retuning after opening the assessment seeds.",
+  "notClaimed": ["global optimum", "contact-loss recovery", "robust stability", "hard real-time", "hardware admission"]
+}
