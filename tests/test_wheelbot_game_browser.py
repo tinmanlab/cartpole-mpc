@@ -67,18 +67,27 @@ with sync_playwright() as p:
     assert abs(released['truth'][0]-before['truth'][0])<.03
     if released['steps']==before['steps']:assert released['truth']==before['truth'] and released['estimate']==before['estimate']
     if moving:assert released['truth'][6]>.1
-    airborne=False;min_v=10
+    airborne=False;min_v=10;flight_com_v=[]
+    prior_com=page.evaluate('wheelbotGame.getWorld().centerOfMass[0]');prior_steps=state()['steps'];prior_air=False
     for _ in range(80):
      s=run(5);min_v=min(min_v,s['truth'][6])
+     com=page.evaluate('wheelbotGame.getWorld().centerOfMass[0]');air=s['last']['physical']['flightSamples']
+     all_air=all(z['air'] for z in air)
+     if all_air and prior_air:flight_com_v.append((com-prior_com)/((s['steps']-prior_steps)*.01))
+     prior_com,prior_steps,prior_air=com,s['steps'],all_air
      if s['last']['physical']['maximumWheelClearanceM']>.01 and not airborne:
       airborne=True;shot('flight-moving' if moving else 'flight')
      assert not s['failed'],s
     assert airborne and s['jump']['flight'] and s['jump']['landed'] and s['jump']['success'],s
     if moving:
-     assert min_v>.05 and s['truth'][0]>before['truth'][0]+.4
+     # An articulated base can recoil during landing; do not confuse this with
+     # a stopped launch or loss of forward flight momentum. Retain the minimum
+     # base velocity in evidence, and check actual airborne COM progression.
+     assert len(flight_com_v)>=1 and min(flight_com_v)>.05,flight_com_v
+     assert s['truth'][0]>before['truth'][0]+.4 and s['truth'][6]>.15
      page.keyboard.up('KeyD')
     else:heights.append(s['jump']['maxClearance'])
-    record(f'jump moving={moving} hold={duration/100}',{'charge':charged['charge'],'before':before,'released':released,'landed':s,'minimumVx':min_v})
+    record(f'jump moving={moving} hold={duration/100}',{'charge':charged['charge'],'before':before,'released':released,'landed':s,'minimumBaseVxIncludingLanding':min_v,'airborneCOMVx':flight_com_v})
   assert heights[0]<heights[1]<heights[2],heights
   robot_hash=hashlib.sha256(Path('assets/wheelbot/live_model.xml').read_bytes()).hexdigest()
   for level,count in [('flat',0),('obstacles',4),('ramp',3),('uneven',16)]:
@@ -97,3 +106,5 @@ with sync_playwright() as p:
  finally:
   (out/'wheelbot-game-browser.json').write_text(json.dumps(report,indent=2))
   browser.close()
+
+print(json.dumps({"passed":report["passed"],"flows":len(report["flows"]),"performance":report.get("wallPerformance"),"errors":report["errors"],"scope":"Actual keyboard motion, stationary/moving charged hops, focus/pause handling and compiled collision courses; no universal terrain traversal claim."}))
