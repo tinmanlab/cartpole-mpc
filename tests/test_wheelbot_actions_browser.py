@@ -65,6 +65,7 @@ try:
   steps=fallen['physics']['steps'];continued=run(50);assert continued['physics']['steps']==steps+250
   refused=page.evaluate('()=>{const before=JSON.stringify(wheelbotLab.getState());try{wheelbotLab.recover();return false;}catch{return before===JSON.stringify(wheelbotLab.getState());}}')
   assert refused and page.locator('#action-recover').is_disabled()
+  frozen=state()['truth'];page.keyboard.press('ArrowRight');assert state()['truth']==frozen
   page.screenshot(path=str(OUT/'physical-fall.png'),full_page=False)
   page.click('#reset');assert state()['steps']==0 and not state()['failed']
   # Missing/invalid optional jump data must not stop the baseline pose controller.

@@ -340,7 +340,7 @@ try {
 
   for(const [id,value]of[['live-left',-.03],['live-center',0],['live-right',.03]])$(id).onclick=()=>setLiveGoal(value);
   $('show-com').onchange=()=>render();
-  document.addEventListener('keydown',event=>{if(!liveActive||event.ctrlKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();setLiveTarget({x:Math.max(-1,Math.min(1,(trial.snapshot().target?.x??0)+(event.key==='ArrowLeft'?-.1:.1)))});}});
+  document.addEventListener('keydown',event=>{if(!liveActive||event.ctrlKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();if($('target-x').disabled)return;setLiveTarget({x:Math.max(-1,Math.min(1,(trial.snapshot().target?.x??0)+(event.key==='ArrowLeft'?-.1:.1)))});}});
   $('design').onchange = () => { profile=profiles[$('design').value]??profiles.baseline; configure(); };
   configure();
   try {
