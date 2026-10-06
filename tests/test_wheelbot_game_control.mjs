@@ -6,7 +6,7 @@ const {createWheelbotContactBackend}=await import('../src/wheelbot_contact_backe
 const read=n=>JSON.parse(fs.readFileSync(`assets/wheelbot/${n}.json`));
 const b=await createWheelbotContactBackend(fs.readFileSync('assets/wheelbot/live_model.xml','utf8'));
 try {
- const c=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'));
+ const c=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'),{stationaryJumpBundle:read('stationary_jump')});
  assert.throws(()=>c.setInput({horizontal:NaN}));
  const results=[];
  for(const horizontal of [1,0,-1,0]){c.setInput({horizontal,vertical:0,tilt:0});for(let k=0;k<200;k++)c.step();const s=c.snapshot();assert(!s.failed);assert(Math.abs(s.truth[6]-.2*horizontal)<.04);results.push({horizontal,x:s.truth[0],vx:s.truth[6]});}
@@ -15,6 +15,8 @@ try {
  assert.throws(()=>createGameController({...b,assetSha256:'wrong'},read('live_profile'),read('pose_profiles'),read('target_jump')));
  const wrapped=createGameController({...b,assetSha256:'scene',robotAssetSha256:b.assetSha256},read('live_profile'),read('pose_profiles'),read('target_jump'));assert.equal(wrapped.snapshot().steps,0);
  wrapped.setInput({horizontal:1});for(let k=0;k<200;k++)wrapped.step();wrapped.beginCharge();for(let k=0;k<10;k++)wrapped.step();const release=wrapped.releaseCharge();assert.equal(release.phase,'jump');const cancelled=wrapped.cancelInput();assert.equal(cancelled.phase,'jump');assert.deepEqual(cancelled.truth,release.truth);assert.deepEqual(cancelled.estimate,release.estimate);for(let k=0;k<400;k++)wrapped.step();assert(!wrapped.snapshot().failed);assert(Math.abs(wrapped.snapshot().truth[6])<.04,'release brakes after landing');
+ const boosted=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'));boosted.setInput({horizontal:1,boost:1});for(let k=0;k<240;k++)boosted.step();assert(!boosted.snapshot().failed);assert(boosted.snapshot().speedLimit>.39);assert(boosted.snapshot().truth[6]>.3);boosted.setInput({horizontal:1,boost:0});for(let k=0;k<100;k++)boosted.step();assert(boosted.snapshot().speedLimit<.21);assert(boosted.snapshot().target.vx<.21);
+
  const s=c.snapshot();assert.equal(s.truth.length,12);assert.equal(s.estimate.length,11);s.truth[0]=999;assert.notEqual(c.snapshot().truth[0],999);
  fs.writeFileSync('evidence/wheelbot_game_control.json',JSON.stringify({engine:b.diagnostics().version,results},null,2)+'\n');console.log(results);
 }finally{b.dispose();}

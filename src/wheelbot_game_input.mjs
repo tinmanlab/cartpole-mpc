@@ -1,9 +1,9 @@
 // Event.code works with non-English keyboard layouts. Charge time is measured
 // by simulation, never by OS key-repeat cadence.
 export function createGameInput({onChargeStart=()=>{},onChargeRelease=()=>{},onCancel=()=>{},onPause=()=>{},onReset=()=>{},onHelp=()=>{}}={}){
- const held=new Set(),keys=new Set(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','Space','KeyP','KeyR','Escape']);
+ const held=new Set(),keys=new Set(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','ShiftLeft','ShiftRight','Space','KeyP','KeyR','Escape']);
  const editable=e=>/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target?.tagName??'')||e.target?.isContentEditable;
- const axes=()=>({horizontal:Number(held.has('KeyD'))-Number(held.has('KeyA')),vertical:Number(held.has('KeyW'))-Number(held.has('KeyS')),tilt:Number(held.has('KeyE'))-Number(held.has('KeyQ'))});
+ const axes=()=>({horizontal:Number(held.has('KeyD'))-Number(held.has('KeyA')),vertical:Number(held.has('KeyW'))-Number(held.has('KeyS')),tilt:Number(held.has('KeyE'))-Number(held.has('KeyQ')),boost:Number(held.has('ShiftLeft')||held.has('ShiftRight'))});
  function clear(){held.clear();onCancel();}
  return {axes,clear,down(e){
   if(editable(e)||e.ctrlKey||e.altKey||e.metaKey||!keys.has(e.code))return false;
