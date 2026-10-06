@@ -1,5 +1,6 @@
-// Official MuJoCo 3.7.0 WASM. This adapter maps the lab's four-state interface;
+// Official pinned MuJoCo WASM. This adapter maps the lab's four-state interface;
 // it contains no equations of motion, rigid-body solver or fallback integrator.
+import {MUJOCO_VERSION} from '../vendor/mujoco/version.mjs';
 import loadMujoco from '../vendor/mujoco/mujoco.js';
 const DT=.02,wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
 const arr=(a,start,n)=>Array.from(a.slice(start,start+n));
@@ -9,7 +10,7 @@ export async function createMujocoBackend(){
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(xml));
   const assetSha256=Array.from(new Uint8Array(digest),v=>v.toString(16).padStart(2,'0')).join('');
   const mj=await loadMujoco();
-  const version=mj.mj_versionString();if(version!=='3.7.0')throw Error('Unexpected MuJoCo runtime: '+version);
+  const version=mj.mj_versionString();if(version!==MUJOCO_VERSION)throw Error('Unexpected MuJoCo runtime: '+version);
   mj.FS.writeFile('/cartpole.xml',xml);
   const cache=new Map();let stepCalls=0;
   function entry(spec,params={},substeps=4){

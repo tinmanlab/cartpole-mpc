@@ -7,10 +7,12 @@ import scipy.linalg as la
 from scipy.optimize import least_squares
 from design_wheelbot_live import linearize, atomic_json, XML, ROOT
 
-HASH='17fec38c99f4ba42c99052570e8951b35cb4d041543ef47761baff91c4a50382'
+HASH=json.loads((ROOT/'assets/wheelbot/live_design.json').read_text())['modelSha256']
 
 def build():
     assert hashlib.sha256(XML.read_bytes()).hexdigest()==HASH
+    manifest=json.loads((ROOT/'assets/wheelbot/live_design.json').read_text())
+    assert hashlib.sha256((ROOT/'assets/wheelbot/live_profile.json').read_bytes()).hexdigest()==manifest['profileSha256']
     m=mujoco.MjModel.from_xml_path(str(XML)); d=mujoco.MjData(m)
     profiles=[]
     base=json.loads((ROOT/'assets/wheelbot/live_profile.json').read_text())
@@ -52,9 +54,10 @@ def build():
             profiles.append(p)
     bundle={'schema':'wheelbot-pose-atlas/v1','assetSha256':HASH,'controlDt':.01,
       'ranges':{'x':[-1,1],'z':[.36,.49],'pitch':[-float(np.pi/18),float(np.pi/18)]},
+      'proposedRetiming':{'averageCoordinateRates':[.24,.06,.24],'scope':'Proposed quintic duration parameters, not certified physical speed limits'},
       'referenceLimits':{'velocity':[.12,.015,.04],'acceleration':[.12,.03,.08]},
       'capabilities':{'jump':False,'recover':False},'profiles':profiles,
-      'versions':{'mujoco':mujoco.__version__,'scipy':scipy.__version__,'numpy':np.__version__},
+      'versions':{'mujoco':mujoco.mj_versionString(),'scipy':scipy.__version__,'numpy':np.__version__},
       'scope':'Native solved static trims; bilinear scheduled LQR/KF is evaluated empirically, no time-varying Lyapunov claim.'}
     atomic_json(ROOT/'assets/wheelbot/pose_profiles.json',bundle)
     print(json.dumps({'count':len(profiles),'maxTrim':max(p['trimQaccInf'] for p in profiles),'maxPole':max(p['closedLoopRadius'] for p in profiles),'versions':bundle['versions']}))

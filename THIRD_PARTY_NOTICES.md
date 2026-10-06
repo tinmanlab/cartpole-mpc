@@ -32,7 +32,7 @@ Their source is not bundled here except for the CartPole plant lineage noted abo
 ## Official MuJoCo WebAssembly runtime
 
 - Upstream: https://github.com/google-deepmind/mujoco
-- npm package `@mujoco/mujoco`, tested pin **3.7.0**; runtime version is checked independently.
+- npm package `@mujoco/mujoco`, tested pin **3.15.0**; runtime version is checked independently.
 - Unmodified JavaScript loader, WASM binary and upstream README are shipped under `vendor/mujoco/`.
 - License: Apache-2.0; full license shipped as `vendor/mujoco/LICENSE`.
 - The local `assets/cartpole.xml` and state/parameter adapter are this repository's work, not an upstream hardware/model reproduction.

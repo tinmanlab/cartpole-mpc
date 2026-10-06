@@ -22,7 +22,7 @@ def main():
  assert m.opt.timestep==.002 and int(m.opt.disableflags)==0 and int(m.opt.enableflags)==0
  np.testing.assert_allclose(m.body_mass.sum(),1.19915,atol=1e-13)
  np.testing.assert_allclose(m.body_ipos[1],[0,0,.02],atol=1e-14)
- np.testing.assert_allclose(m.body_inertia[1],[(.07**2+.075**2)/5,(.085**2+.075**2)/5,(.085**2+.07**2)/5],atol=1e-14)
+ np.testing.assert_allclose(m.body_inertia[1],[(.07**2+.075**2)/3,(.085**2+.075**2)/3,(.085**2+.07**2)/3],atol=1e-14)
  for inertia in m.body_inertia[1:]: assert min(inertia)>0 and 2*max(inertia)<=sum(inertia)+1e-14
  np.testing.assert_array_equal(m.actuator_trnid[:,0],[3,4,5])
  np.testing.assert_allclose(m.actuator_gear[:,0],1)
@@ -30,7 +30,7 @@ def main():
  assert not m.body_gravcomp.any()
  for name in ['torso_visual','upper_link_visual','lower_link_visual','wheel_visual']:
   g=m.geom(name).id; assert m.geom_contype[g]==m.geom_conaffinity[g]==1
- assert m.geom('torso_visual').type==mujoco.mjtGeom.mjGEOM_ELLIPSOID
+ assert m.geom('torso_visual').type==mujoco.mjtGeom.mjGEOM_BOX
  np.testing.assert_allclose(m.geom('torso_visual').size,[.085,.07,.075])
  assert mujoco.mj_name2id(m,mujoco.mjtObj.mjOBJ_GEOM,'obstacle')==-1
  A,B,Q,R,K,L,Qe,Re=[np.array(p[k]) for k in ['A','B','Q','R','K','L','Qe','Re']]

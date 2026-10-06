@@ -12,7 +12,7 @@ assert sha('assets/wheelbot/contact_tracking_profile.json') == '8ecc3f2719e63c5d
 for key, path in [('model','assets/wheelbot/contact_model.xml'),('cost','assets/wheelbot/contact_profile.json'),('protocol','tests/fixtures/wheelbot_contact_tracking.json')]:
     assert p['identities'][key+'_sha256'] == sha(path)
 assert c['model_sha256'] == p['identities']['model_sha256']
-assert mujoco.__version__ == '3.7.0' and p['steps'] == 250 and p['dt'] == .002
+assert mujoco.mj_versionString() == json.loads((ROOT/'package.json').read_text())['dependencies']['@mujoco/mujoco'] and p['steps'] == 250 and p['dt'] == .002
 m = mujoco.MjModel.from_xml_path(str(ROOT/'assets/wheelbot/contact_model.xml'))
 d, geo = mujoco.MjData(m), mujoco.MjData(m)
 assert (m.nq,m.nv,m.nu,m.neq) == (6,6,3,0) and m.opt.timestep == .002

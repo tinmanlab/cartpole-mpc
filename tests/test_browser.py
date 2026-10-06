@@ -33,7 +33,7 @@ async def main():
         state = json.loads(await page.evaluate("window.__webmcpTools.cartpole_run_steps.execute({steps:8})"))
         assert state["controller"] == "full_nmpc"
         assert state["physics"]["backend"] == "mujoco-wasm"
-        assert state["physics"]["version"] == "3.7.0"
+        assert state["physics"]["version"] == json.loads(Path("package.json").read_text())["dependencies"]["@mujoco/mujoco"]
         assert state["physics"]["stepCalls"] > 0
         assert state["fault"] is None
         assert state["solver"]["horizon"] == 30

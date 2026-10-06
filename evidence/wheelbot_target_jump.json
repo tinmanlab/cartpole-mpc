@@ -1,0 +1,6131 @@
+{
+  "schema": "wheelbot-target-jump-evidence/v1",
+  "assetSha256": "a813b1c3c3cf7d2d38e71cfc584b96e490d34e7dc263892150aa1bed8995eaea",
+  "profileSha256": "045231db8477bb291ea8b8353b46ace43c6d3e0041b77d0ae0b82bd56d8a6c69",
+  "nativeVersion": "3.15.0",
+  "interpreter": "/home/tinman/cartpole-wheelbot-paths-20261006/.venv-native/bin/python",
+  "manifestSha256": "a8145731552af3f7193e1446affbc547282d7d2b3d1b57bfcd0db9168fad73c2",
+  "distributionVersion": "3.15.0",
+  "protocol": {
+    "physicsDt": 0.002,
+    "controlDt": 0.01,
+    "minFlightS": 0.03,
+    "minWheelClearanceM": 0.02,
+    "maxTargetErrorM": 0.03,
+    "maxPenetrationM": 0.01,
+    "maxJointOverrunRad": 0.02,
+    "maxPitchRad": 0.6,
+    "maxTerminalRate": 0.3,
+    "maxAirborneWheelRate": 25,
+    "targetMeaning": "wheel-centre apex world x,z; landing on existing floor",
+    "durationS": 6,
+    "seeds": [
+      7,
+      42
+    ],
+    "maxLandingTangentialSpeed": 0.5,
+    "landingSpeedScope": "Explicit simulation benchmark assumption (0.5 m/s), not a hardware-derived bound"
+  },
+  "archivedAttempts": [
+    {
+      "source": "current-state-jump-probe.json",
+      "results": [
+        {
+          "height": 0.3925,
+          "dx": -0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.1,
+          "peakAbsoluteWheelRate": 47.89924217926194,
+          "airborneMotorWorkJ": 1.6528168208752758,
+          "airborneAngularMomentumRange": [
+            -0.006325526818724164,
+            -0.006306016236352318
+          ],
+          "penetrationM": 0.0008776784706239077,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.001971520547923017,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.06159296976811324,
+          "apexErrorM": 0.10840703023188678,
+          "targetMet": false,
+          "finalRate": 0.2157121325983413,
+          "peakTorque": [
+            0.11806247202227389,
+            8.497410973450698,
+            0.7655486068783163
+          ],
+          "passed": true
+        },
+        {
+          "height": 0.3925,
+          "dx": -0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0.06,
+          "peakAbsoluteWheelRate": 6.2276449080411656,
+          "airborneMotorWorkJ": 0.0024148588726982632,
+          "airborneAngularMomentumRange": [
+            -0.011031119684474594,
+            -0.011003934034590917
+          ],
+          "penetrationM": 0.0008840452745821487,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.01085180747972353,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05525360625450074,
+          "apexErrorM": 0.11474639374549928,
+          "targetMet": false,
+          "finalRate": 0.022331124215325526,
+          "peakTorque": [
+            0.10954873256644423,
+            8.519988134500613,
+            0.3913053578703623
+          ],
+          "passed": true
+        },
+        {
+          "height": 0.3925,
+          "dx": 0,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.07,
+          "peakAbsoluteWheelRate": 100.23315437505555,
+          "airborneMotorWorkJ": 6.240611949896321,
+          "airborneAngularMomentumRange": [
+            -0.013693773191579037,
+            -0.013670157079957094
+          ],
+          "penetrationM": 0.0011207202509818243,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.017603931564683234,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05722246218405386,
+          "apexErrorM": 0.11277753781594616,
+          "targetMet": false,
+          "finalRate": 0.1477089918039738,
+          "peakTorque": [
+            0.8761507339988494,
+            8.551547441805498,
+            1.6999983903960787
+          ],
+          "passed": true
+        },
+        {
+          "height": 0.3925,
+          "dx": 0,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0.16,
+          "peakAbsoluteWheelRate": 29.267681890022427,
+          "airborneMotorWorkJ": 0.016455903136108202,
+          "airborneAngularMomentumRange": [
+            -0.017556829328109275,
+            -0.01746395358358918
+          ],
+          "penetrationM": 0.001238148814002929,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.03089801966826422,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.07142067316180298,
+          "apexErrorM": 0.09857932683819703,
+          "targetMet": false,
+          "finalRate": 0.3945734254269098,
+          "peakTorque": [
+            0.39605270342991356,
+            8.518368674070532,
+            1.7
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.3925,
+          "dx": 0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.11,
+          "peakAbsoluteWheelRate": 113.14704804438848,
+          "airborneMotorWorkJ": 18.374756387946107,
+          "airborneAngularMomentumRange": [
+            -0.02194048616926415,
+            -0.0009084285598169299
+          ],
+          "penetrationM": 0.00147946866698144,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.04592435235419509,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.0619492426796637,
+          "apexErrorM": 0.10805075732033631,
+          "targetMet": false,
+          "finalRate": 0.6736153576209497,
+          "peakTorque": [
+            0.7588624232809839,
+            16,
+            1.7
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.3925,
+          "dx": 0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0.07,
+          "peakAbsoluteWheelRate": 32.310618608284145,
+          "airborneMotorWorkJ": 0.004293723010738422,
+          "airborneAngularMomentumRange": [
+            -0.019403220636789297,
+            -0.019349519610454106
+          ],
+          "penetrationM": 0.00089514287825955,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.037652256957813934,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05762228591374852,
+          "apexErrorM": 0.1123777140862515,
+          "targetMet": false,
+          "finalRate": 0.5199953783410796,
+          "peakTorque": [
+            0.429344399779221,
+            9.007315123518564,
+            1.7
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.425,
+          "dx": -0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.09,
+          "peakAbsoluteWheelRate": 19.60836234223442,
+          "airborneMotorWorkJ": 0.18390261390557383,
+          "airborneAngularMomentumRange": [
+            -0.004213019650224326,
+            -0.004201380549891749
+          ],
+          "penetrationM": 0.0013963582179663675,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.00015204701871532333,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.0606324912439907,
+          "apexErrorM": 0.10936750875600931,
+          "targetMet": false,
+          "finalRate": 0.16598365290009992,
+          "peakTorque": [
+            0.09474788049453234,
+            6.440857565034038,
+            0.39538156602967156
+          ],
+          "passed": true
+        },
+        {
+          "height": 0.425,
+          "dx": -0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 2.315171807190964,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.000744191708835204,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.006281895052589553,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05314190822830786,
+          "apexErrorM": 0.11685809177169215,
+          "targetMet": false,
+          "finalRate": 0.04616671749018957,
+          "peakTorque": [
+            0.06303298050801644,
+            6.427585381698879,
+            0.08944898669328744
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.425,
+          "dx": 0,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.12,
+          "peakAbsoluteWheelRate": 108.03160661360594,
+          "airborneMotorWorkJ": 27.046628692120706,
+          "airborneAngularMomentumRange": [
+            -0.0176985184204666,
+            0.07251157460884293
+          ],
+          "penetrationM": 0.002717266517307096,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.029791395593872977,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.0643517609405867,
+          "apexErrorM": 0.10564823905941331,
+          "targetMet": false,
+          "finalRate": 0.7167373429526603,
+          "peakTorque": [
+            0.2648947538617832,
+            16,
+            1.7
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.425,
+          "dx": 0,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0.03,
+          "peakAbsoluteWheelRate": 13.593650545817972,
+          "airborneMotorWorkJ": 0.00043789946812798164,
+          "airborneAngularMomentumRange": [
+            -0.013985316274141568,
+            -0.013974907665018242
+          ],
+          "penetrationM": 0.00074365128610894,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.01934938503408959,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05441104008937653,
+          "apexErrorM": 0.11558895991062348,
+          "targetMet": false,
+          "finalRate": 0.19725362695431703,
+          "peakTorque": [
+            0.18050732434810474,
+            6.474666598784819,
+            0.851893788608537
+          ],
+          "passed": true
+        },
+        {
+          "height": 0.425,
+          "dx": 0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 97.93799126560496,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0008445343075597772,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.024269158652716005,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.052382400308024074,
+          "apexErrorM": 0.11761759969197594,
+          "targetMet": false,
+          "finalRate": 0.2889212747548479,
+          "peakTorque": [
+            0.881347426432287,
+            9.768447862963168,
+            1.6999997613279967
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.425,
+          "dx": 0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 18.226129327253854,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0008430812754720712,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.026829406608220335,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.052561492213709426,
+          "apexErrorM": 0.11743850778629059,
+          "targetMet": false,
+          "finalRate": 0.33662195358789215,
+          "peakTorque": [
+            0.2339632901551382,
+            9.72891390666997,
+            1.1457466367911502
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": -0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 8.7488174585866,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0006724530282772173,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.0008588996929186354,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.050564589824942385,
+          "apexErrorM": 0.11943541017505763,
+          "targetMet": false,
+          "finalRate": 0.15938201128690294,
+          "peakTorque": [
+            0.05106185237546884,
+            5.198035943076593,
+            0.23799590689105604
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": -0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 3.743373674235342,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0006833223367639502,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.0007611998317538504,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05150770196705945,
+          "apexErrorM": 0.11849229803294056,
+          "targetMet": false,
+          "finalRate": 0.1291260591225037,
+          "peakTorque": [
+            0.058125842932138745,
+            6.9250515344993655,
+            0.24583189478659262
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": 0,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 59.04006013940165,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0006830706165647099,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.0015823208996543492,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05108289989519532,
+          "apexErrorM": 0.11891710010480469,
+          "targetMet": false,
+          "finalRate": 0.1138033056047456,
+          "peakTorque": [
+            0.06351544576469165,
+            6.897726067163087,
+            1.0685153998138774
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": 0,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 3.5689634348706387,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0006815630224227404,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.01073148980146349,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.05043099710696769,
+          "apexErrorM": 0.11956900289303232,
+          "targetMet": false,
+          "finalRate": 0.05713160995483065,
+          "peakTorque": [
+            0.05884028933504108,
+            6.881869428168755,
+            0.23311623455682334
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": 0.06,
+          "spinWeight": 0,
+          "steps": 400,
+          "flightS": 0.06,
+          "peakAbsoluteWheelRate": 107.04947325269907,
+          "airborneMotorWorkJ": 8.703144439784104,
+          "airborneAngularMomentumRange": [
+            -0.02215055350659435,
+            -0.022133294619337072
+          ],
+          "penetrationM": 0.0012347224013017494,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.024789397649292,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.057097874371348695,
+          "apexErrorM": 0.11290212562865132,
+          "targetMet": false,
+          "finalRate": 0.31991834340982284,
+          "peakTorque": [
+            0.19095287290477103,
+            5.189894084411924,
+            1.699165070271971
+          ],
+          "passed": false
+        },
+        {
+          "height": 0.4575,
+          "dx": 0.06,
+          "spinWeight": 0.04,
+          "steps": 400,
+          "flightS": 0,
+          "peakAbsoluteWheelRate": 15.589361991827083,
+          "airborneMotorWorkJ": 0,
+          "airborneAngularMomentumRange": null,
+          "penetrationM": 0.0006750355316583329,
+          "jointOverrunRad": 0,
+          "landingErrorM": 0.02403203584755756,
+          "requestedWheelApexM": 0.17,
+          "actualWheelApexM": 0.0500406877761278,
+          "apexErrorM": 0.11995931222387221,
+          "targetMet": false,
+          "finalRate": 0.30575310862954297,
+          "peakTorque": [
+            0.18828817549605856,
+            5.166708629611663,
+            1.0051349313992715
+          ],
+          "passed": false
+        }
+      ]
+    },
+    {
+      "source": "target-jump-search.json",
+      "results": [
+        {
+          "passed": false,
+          "steps": 86,
+          "flightS": 0.3900000000000002,
+          "apex": [
+            -0.1916479691495303,
+            0.2980679037823676
+          ],
+          "landing": [
+            0.13407213436189752,
+            0.045505638870630305
+          ],
+          "landingTangentialSpeed": 0.1197053321116496,
+          "airborneWheelRate": 24.106282427486263,
+          "airborneAbsoluteMotorWorkJ": 3.070821908057074,
+          "penetration": 0.004494361129369698,
+          "jointOverrun": 0.2536385832196535,
+          "pitch": 0.38757374093020497,
+          "terminalRate": 132.10127676381938,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 82,
+          "flightS": 0.3900000000000002,
+          "apex": [
+            0.015232103495631567,
+            0.22460537469683514
+          ],
+          "landing": [
+            0.15280871876391733,
+            0.047312266049794854
+          ],
+          "landingTangentialSpeed": 0.23332631527025138,
+          "airborneWheelRate": 58.628143368394255,
+          "airborneAbsoluteMotorWorkJ": 1.0906550955528969,
+          "penetration": 0.004040704754516303,
+          "jointOverrun": 0.41646200633180297,
+          "pitch": 0.4403341089699102,
+          "terminalRate": 156.70801357405546,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 153,
+          "flightS": 0.21000000000000005,
+          "apex": [
+            -0.126901551794662,
+            0.4468526480639558
+          ],
+          "landing": [
+            0.0511385754133719,
+            0.0515194684288546
+          ],
+          "landingTangentialSpeed": 0.30837718390301466,
+          "airborneWheelRate": 35.524412443543675,
+          "airborneAbsoluteMotorWorkJ": 0.8124197308385848,
+          "penetration": 0.021185627582257237,
+          "jointOverrun": 0.2755143953204997,
+          "pitch": 0.13924569957189503,
+          "terminalRate": 108.76190954413661,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 109,
+          "flightS": 0.21000000000000005,
+          "apex": [
+            -0.29257443619932966,
+            0.4574031072127967
+          ],
+          "landing": [
+            0.055445392401514845,
+            0.05169553035054
+          ],
+          "landingTangentialSpeed": 0.3213429653748112,
+          "airborneWheelRate": 59.09262046485094,
+          "airborneAbsoluteMotorWorkJ": 0.8179012093216638,
+          "penetration": 0.04862850975962281,
+          "jointOverrun": 0.365863040913033,
+          "pitch": 0.1682979382166566,
+          "terminalRate": 124.21811963873661,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 141,
+          "flightS": 0.24000000000000007,
+          "apex": [
+            -0.17230040410193892,
+            0.45736362330270486
+          ],
+          "landing": [
+            0.055138380872985115,
+            0.05240625932004961
+          ],
+          "landingTangentialSpeed": 0.3440722017775628,
+          "airborneWheelRate": 42.98206400018459,
+          "airborneAbsoluteMotorWorkJ": 0.7277623535460851,
+          "penetration": 0.03303742828658537,
+          "jointOverrun": 0.31852690701152886,
+          "pitch": 0.1415045180422629,
+          "terminalRate": 110.14889060296778,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 92,
+          "flightS": 0.24000000000000007,
+          "apex": [
+            -0.18425506917816337,
+            0.2767945284955998
+          ],
+          "landing": [
+            0.07272001120171756,
+            0.05311788365956421
+          ],
+          "landingTangentialSpeed": 0.391007626979933,
+          "airborneWheelRate": 133.58038909741,
+          "airborneAbsoluteMotorWorkJ": 8.358443984343431,
+          "penetration": 0.002058303405728837,
+          "jointOverrun": 0.16469052399340622,
+          "pitch": 0.2123076923676655,
+          "terminalRate": 104.77231596421146,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0076246618988027315,
+            0.05021837494906364
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005201918447006598,
+          "jointOverrun": 0,
+          "pitch": 0.0027807450509593217,
+          "terminalRate": 0.0000013546296323689263,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007231274841877897,
+            0.05021579762954187
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005202705110032985,
+          "jointOverrun": 0,
+          "pitch": 0.003815813315516023,
+          "terminalRate": 0.0000011593020694592497,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.00629400568696907,
+            0.05159174078589099
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007337583471583725,
+          "jointOverrun": 0,
+          "pitch": 0.01059993653463737,
+          "terminalRate": 0.0000030022657854754573,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.005229105494202607,
+            0.05158820479210102
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007339969391938622,
+          "jointOverrun": 0,
+          "pitch": 0.027117987512525983,
+          "terminalRate": 0.000008396767655919243,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.008037433941509839,
+            0.050950765016286925
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005672868350617005,
+          "jointOverrun": 0,
+          "pitch": 0.007262745297526107,
+          "terminalRate": 0.0000017221476162076022,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.3,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.006142493618437564,
+            0.05093288762787354
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005680762219906904,
+          "jointOverrun": 0,
+          "pitch": 0.011310921068562383,
+          "terminalRate": 0.000003931539257552609,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.3,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 83,
+          "flightS": 0.49000000000000027,
+          "apex": [
+            0.09621590369485604,
+            0.2901832690418416
+          ],
+          "landing": [
+            0.18170483225762485,
+            0.03774413549501994
+          ],
+          "landingTangentialSpeed": 0.40299900457376303,
+          "airborneWheelRate": 28.175041567018695,
+          "airborneAbsoluteMotorWorkJ": 0.5502620846850028,
+          "penetration": 0.012255864504980063,
+          "jointOverrun": 0.06833545251024975,
+          "pitch": 0.48899876454845653,
+          "terminalRate": 132.3003359929634,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 82,
+          "flightS": 0.47000000000000025,
+          "apex": [
+            0.107483735241814,
+            0.26288955726590946
+          ],
+          "landing": [
+            0.19672843635006118,
+            0.04623787791019708
+          ],
+          "landingTangentialSpeed": 0.27758909023824435,
+          "airborneWheelRate": 86.20105703928004,
+          "airborneAbsoluteMotorWorkJ": 0.6287349130293565,
+          "penetration": 0.005470293268957219,
+          "jointOverrun": 0.352929694467796,
+          "pitch": 0.5561353544838352,
+          "terminalRate": 175.68723374811034,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 86,
+          "flightS": 0.2900000000000001,
+          "apex": [
+            -0.1938864105696412,
+            0.26532331924345337
+          ],
+          "landing": [
+            0.07639772247996392,
+            0.04857542107919963
+          ],
+          "landingTangentialSpeed": 0.29833584269394847,
+          "airborneWheelRate": 141.54007263349465,
+          "airborneAbsoluteMotorWorkJ": 8.66191062764456,
+          "penetration": 0.003461636526921205,
+          "jointOverrun": 0.046338121483525896,
+          "pitch": 0.2419875493308789,
+          "terminalRate": 104.21822238397583,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 87,
+          "flightS": 0.2700000000000001,
+          "apex": [
+            -0.18674788465409078,
+            0.3228219832005772
+          ],
+          "landing": [
+            0.07593181830614865,
+            0.04880721084292175
+          ],
+          "landingTangentialSpeed": 0.3207378649092432,
+          "airborneWheelRate": 133.2789005197273,
+          "airborneAbsoluteMotorWorkJ": 6.713827384881682,
+          "penetration": 0.014404104617193736,
+          "jointOverrun": 0.23735677271495215,
+          "pitch": 0.19778320118424184,
+          "terminalRate": 106.91672993992324,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 117,
+          "flightS": 0.2700000000000001,
+          "apex": [
+            -0.27031271988127503,
+            0.45088414495160417
+          ],
+          "landing": [
+            0.06134297144981524,
+            0.05157187307294123
+          ],
+          "landingTangentialSpeed": 0.32820997684049347,
+          "airborneWheelRate": 56.28749512859949,
+          "airborneAbsoluteMotorWorkJ": 0.8178354530838438,
+          "penetration": 0.03540612652278872,
+          "jointOverrun": 0.3046741978301646,
+          "pitch": 0.17248494010699122,
+          "terminalRate": 114.53143685517156,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 94,
+          "flightS": 0.25000000000000006,
+          "apex": [
+            -0.19380482435666693,
+            0.27113169862931946
+          ],
+          "landing": [
+            0.06906422703397924,
+            0.04989858022129534
+          ],
+          "landingTangentialSpeed": 0.3699345676064024,
+          "airborneWheelRate": 113.33792434102887,
+          "airborneAbsoluteMotorWorkJ": 8.648486274793566,
+          "penetration": 0.002129975462996661,
+          "jointOverrun": 0.15906142533499512,
+          "pitch": 0.1901986321304981,
+          "terminalRate": 105.0079233055564,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.11999999999999998,
+          "apex": [
+            0.006702503102419086,
+            0.06738701338067413
+          ],
+          "landing": [
+            0.017985211188004793,
+            0.05417531696144551
+          ],
+          "landingTangentialSpeed": 0.23585568127280676,
+          "airborneWheelRate": 0.5261689544989543,
+          "airborneAbsoluteMotorWorkJ": 0.0015814641978730694,
+          "penetration": 0.001888556525845006,
+          "jointOverrun": 0,
+          "pitch": 0.07412545846787233,
+          "terminalRate": 0.000025893391644084372,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 125,
+          "flightS": 0.15,
+          "apex": [
+            -0.2479571126542749,
+            0.4161772445677922
+          ],
+          "landing": [
+            0.03219663443332453,
+            0.051331044520405544
+          ],
+          "landingTangentialSpeed": 0.28375663996949596,
+          "airborneWheelRate": 37.94573872213111,
+          "airborneAbsoluteMotorWorkJ": 1.1364642046768183,
+          "penetration": 0.0022628583021582632,
+          "jointOverrun": 0.1263475848573674,
+          "pitch": 0.12156790351996331,
+          "terminalRate": 111.1846548738649,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.17,
+          "apex": [
+            0.0022639575761351782,
+            0.0741720046960749
+          ],
+          "landing": [
+            0.019047955317672026,
+            0.05462670416872892
+          ],
+          "landingTangentialSpeed": 0.25323260191375835,
+          "airborneWheelRate": 0.5536504749139359,
+          "airborneAbsoluteMotorWorkJ": 0.010426971314538583,
+          "penetration": 0.001609108789888944,
+          "jointOverrun": 0,
+          "pitch": 0.07387583327773191,
+          "terminalRate": 0.000022524536166973416,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004173216841205307,
+            0.05212532362372008
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.000787981733506013,
+          "jointOverrun": 0,
+          "pitch": 0.033841975746451945,
+          "terminalRate": 0.000012078191801489252,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.009516235300678078,
+            0.05006446425142741
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006829268286426132,
+          "jointOverrun": 0,
+          "pitch": 0.006719780268627356,
+          "terminalRate": 0.000004345486981492356,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0057132908386846315,
+            0.05104098518419689
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006798147323317655,
+          "jointOverrun": 0,
+          "pitch": 0.02651125516789581,
+          "terminalRate": 0.000009941147838847333,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 83,
+          "flightS": 0.5000000000000002,
+          "apex": [
+            0.01671744217079907,
+            0.35373854359088547
+          ],
+          "landing": [
+            0.22284512801222978,
+            0.012269164085248419
+          ],
+          "landingTangentialSpeed": 0.43683862931234163,
+          "airborneWheelRate": 74.09999127861549,
+          "airborneAbsoluteMotorWorkJ": 2.6040507758928078,
+          "penetration": 0.037730835914751584,
+          "jointOverrun": 0.3967531676678171,
+          "pitch": 0.5781119946757967,
+          "terminalRate": 136.91482596261125,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 76,
+          "flightS": 0.49000000000000027,
+          "apex": [
+            0.13626908861082987,
+            0.32678539343518453
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0.8939665046708152,
+          "airborneAbsoluteMotorWorkJ": 0.07425822921887616,
+          "penetration": 0.0014361389197520974,
+          "jointOverrun": 0,
+          "pitch": 0.6108883656722532,
+          "terminalRate": 16.444141474469152,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.18,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 88,
+          "flightS": 0.3200000000000001,
+          "apex": [
+            -0.265194534835526,
+            0.32920009154272334
+          ],
+          "landing": [
+            0.09454950439877541,
+            0.04942329705537263
+          ],
+          "landingTangentialSpeed": 0.30291455043376,
+          "airborneWheelRate": 141.0268552481134,
+          "airborneAbsoluteMotorWorkJ": 6.958967894627734,
+          "penetration": 0.03431664469947501,
+          "jointOverrun": 0.32010382924465075,
+          "pitch": 0.3069984279174858,
+          "terminalRate": 103.05288003729287,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 83,
+          "flightS": 0.3200000000000001,
+          "apex": [
+            0.02646053271353232,
+            0.140469191462543
+          ],
+          "landing": [
+            0.09772050300143831,
+            0.04988597750511328
+          ],
+          "landingTangentialSpeed": 0.30784345860710777,
+          "airborneWheelRate": 16.012554103276464,
+          "airborneAbsoluteMotorWorkJ": 0.8668682673679611,
+          "penetration": 0.003538996536122871,
+          "jointOverrun": 0.09023080778631232,
+          "pitch": 0.2863448372855803,
+          "terminalRate": 132.85476719825385,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.18,
+            0.45,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.3000000000000001,
+          "apex": [
+            -0.26024651492549933,
+            0.48486207600050185
+          ],
+          "landing": [
+            0.07939445396391674,
+            0.04741605216680139
+          ],
+          "landingTangentialSpeed": 0.21035487278782805,
+          "airborneWheelRate": 63.96091160164545,
+          "airborneAbsoluteMotorWorkJ": 0.8249535751716217,
+          "penetration": 0.06353193696804417,
+          "jointOverrun": 0.44529358050226,
+          "pitch": 0.21029421221870392,
+          "terminalRate": 130.12581468059997,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 93,
+          "flightS": 0.3000000000000001,
+          "apex": [
+            -0.21671265897919453,
+            0.3177281986495505
+          ],
+          "landing": [
+            0.09212154733631393,
+            0.04823604324477432
+          ],
+          "landingTangentialSpeed": 0.22257719576828133,
+          "airborneWheelRate": 130.31403463891354,
+          "airborneAbsoluteMotorWorkJ": 6.339884253564716,
+          "penetration": 0.021622552978383548,
+          "jointOverrun": 0.26418572950503094,
+          "pitch": 0.2588096636033142,
+          "terminalRate": 98.70046622050756,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.05
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.15,
+          "apex": [
+            0.008569521667955077,
+            0.07116045880819569
+          ],
+          "landing": [
+            0.026648782696251427,
+            0.05085390656297559
+          ],
+          "landingTangentialSpeed": 0.2765239726688446,
+          "airborneWheelRate": 0.46494208154887495,
+          "airborneAbsoluteMotorWorkJ": 0.003099536584372794,
+          "penetration": 0.0014712834833059546,
+          "jointOverrun": 0,
+          "pitch": 0.08185792227455248,
+          "terminalRate": 0.00001435984103625925,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        }
+      ]
+    },
+    {
+      "source": "target-jump-family-search.json",
+      "results": [
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.19000000000000003,
+          "apex": [
+            -0.0034976614678602774,
+            0.08059666939201399
+          ],
+          "landing": [
+            0.02193170482033751,
+            0.052479666299818234
+          ],
+          "landingTangentialSpeed": 0.3458669009420361,
+          "airborneWheelRate": 0.58760506491548,
+          "airborneAbsoluteMotorWorkJ": 0.011892281807911582,
+          "penetration": 0.001742152355681606,
+          "jointOverrun": 0,
+          "pitch": 0.05529326851650963,
+          "terminalRate": 0.000013736568091073256,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 124,
+          "flightS": 0.20000000000000004,
+          "apex": [
+            -0.2588444172610411,
+            0.45088015880134535
+          ],
+          "landing": [
+            0.019827134644885752,
+            0.04915315943181714
+          ],
+          "landingTangentialSpeed": 0.2498096200343371,
+          "airborneWheelRate": 58.278737176158515,
+          "airborneAbsoluteMotorWorkJ": 0.8132741070362938,
+          "penetration": 0.03212744363065537,
+          "jointOverrun": 0.2946413227092015,
+          "pitch": 0.14224040703214252,
+          "terminalRate": 121.02004775361054,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.15,
+          "apex": [
+            0.008569521667955077,
+            0.07116045880819569
+          ],
+          "landing": [
+            0.026648782696251427,
+            0.05085390656297559
+          ],
+          "landingTangentialSpeed": 0.2765239726688446,
+          "airborneWheelRate": 0.46494208154887495,
+          "airborneAbsoluteMotorWorkJ": 0.003099536584372794,
+          "penetration": 0.0014712834833059546,
+          "jointOverrun": 0,
+          "pitch": 0.08185792227455248,
+          "terminalRate": 0.00001435984103625925,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 111,
+          "flightS": 0.13999999999999999,
+          "apex": [
+            -0.4068390666762801,
+            0.453956801583318
+          ],
+          "landing": [
+            0.009326126892909861,
+            0.05063514975326561
+          ],
+          "landingTangentialSpeed": 0.12593916968952032,
+          "airborneWheelRate": 52.206584120062914,
+          "airborneAbsoluteMotorWorkJ": 1.1274067346135346,
+          "penetration": 0.04656725455265564,
+          "jointOverrun": 0.35824230784819244,
+          "pitch": 0.1567947066138487,
+          "terminalRate": 142.83886243058316,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 110,
+          "flightS": 0.15,
+          "apex": [
+            -0.3222109634620075,
+            0.4782745643882006
+          ],
+          "landing": [
+            0.028800956878129683,
+            0.05315881902657815
+          ],
+          "landingTangentialSpeed": 0.1880587544744163,
+          "airborneWheelRate": 65.19569154832145,
+          "airborneAbsoluteMotorWorkJ": 0.8114062722048523,
+          "penetration": 0.06269646795289074,
+          "jointOverrun": 0.43916840307423355,
+          "pitch": 0.16782309601654635,
+          "terminalRate": 132.0080193094076,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 106,
+          "flightS": 0.3200000000000001,
+          "apex": [
+            -0.586972794141092,
+            0.4230013573351951
+          ],
+          "landing": [
+            0.02947977601023105,
+            0.051371017200151664
+          ],
+          "landingTangentialSpeed": 0.09108174539627915,
+          "airborneWheelRate": 59.56511050609615,
+          "airborneAbsoluteMotorWorkJ": 1.717974894121184,
+          "penetration": 0.08055625754876272,
+          "jointOverrun": 0.41040302562781283,
+          "pitch": 0.30539843958928137,
+          "terminalRate": 175.4237067397806,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 99,
+          "flightS": 0.3300000000000001,
+          "apex": [
+            -0.4834618053965172,
+            0.23775832485448528
+          ],
+          "landing": [
+            0.03651795947318753,
+            0.05441476479338364
+          ],
+          "landingTangentialSpeed": 0.10486257853850185,
+          "airborneWheelRate": 122.50158130131629,
+          "airborneAbsoluteMotorWorkJ": 9.112435792543216,
+          "penetration": 0.009096184663383204,
+          "jointOverrun": 0.24433390845126501,
+          "pitch": 0.329782674518286,
+          "terminalRate": 110.80756031411829,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 106,
+          "flightS": 0.3100000000000001,
+          "apex": [
+            -0.5592130537229603,
+            0.437604385024686
+          ],
+          "landing": [
+            0.028928345011402262,
+            0.05257318325391597
+          ],
+          "landingTangentialSpeed": 0.09004546413748753,
+          "airborneWheelRate": 101.2234450771765,
+          "airborneAbsoluteMotorWorkJ": 3.0699416743710706,
+          "penetration": 0.08266530276216177,
+          "jointOverrun": 0.46533162803275685,
+          "pitch": 0.3022651987615659,
+          "terminalRate": 150.0503017095531,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 91,
+          "flightS": 0.2700000000000001,
+          "apex": [
+            -0.3597482470869967,
+            0.28107400363184765
+          ],
+          "landing": [
+            0.05461148138708474,
+            0.04987378056789543
+          ],
+          "landingTangentialSpeed": 0.18273799500858184,
+          "airborneWheelRate": 130.881959557053,
+          "airborneAbsoluteMotorWorkJ": 8.769427986296733,
+          "penetration": 0.036640023174522036,
+          "jointOverrun": 0.35598931766275355,
+          "pitch": 0.29160744365629176,
+          "terminalRate": 106.2659745354449,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 104,
+          "flightS": 0.21000000000000005,
+          "apex": [
+            -0.4503850668966739,
+            0.42935744970536815
+          ],
+          "landing": [
+            0.025388333462073615,
+            0.054209597504612544
+          ],
+          "landingTangentialSpeed": 0.14340503948471706,
+          "airborneWheelRate": 71.09285697720269,
+          "airborneAbsoluteMotorWorkJ": 0.8464705579443137,
+          "penetration": 0.03751365846556855,
+          "jointOverrun": 0.2655737085017118,
+          "pitch": 0.22774346632364675,
+          "terminalRate": 145.03635783919708,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 93,
+          "flightS": 0.22000000000000006,
+          "apex": [
+            -0.4026133060803242,
+            0.22137256850388154
+          ],
+          "landing": [
+            0.025342397291567897,
+            0.04851929186958598
+          ],
+          "landingTangentialSpeed": 0.13141183181857607,
+          "airborneWheelRate": 126.72800941831318,
+          "airborneAbsoluteMotorWorkJ": 9.062410243132351,
+          "penetration": 0.0026900852411093495,
+          "jointOverrun": 0.09694252814417093,
+          "pitch": 0.2437718520331851,
+          "terminalRate": 108.49737930657697,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 120,
+          "flightS": 0.09999999999999999,
+          "apex": [
+            0.16113012142919986,
+            0.4826471211052203
+          ],
+          "landing": [
+            0.008901591647460037,
+            0.05308976635874654
+          ],
+          "landingTangentialSpeed": 0.3400947081549539,
+          "airborneWheelRate": 13.091349145447147,
+          "airborneAbsoluteMotorWorkJ": 1.315269158330366,
+          "penetration": 0.061334727537793926,
+          "jointOverrun": 0.4536199612410905,
+          "pitch": 0.06480912364990925,
+          "terminalRate": 121.74398702553034,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 114,
+          "flightS": 0.02,
+          "apex": [
+            0.18966968445727028,
+            0.5055912450588875
+          ],
+          "landing": [
+            0.18966968445727028,
+            0.5055912450588875
+          ],
+          "landingTangentialSpeed": 0.3522902491824468,
+          "airborneWheelRate": 22.411913930535377,
+          "airborneAbsoluteMotorWorkJ": 1.2673467188234824,
+          "penetration": 0.07843893053970555,
+          "jointOverrun": 0.5247276390284847,
+          "pitch": 0.07642125894489717,
+          "terminalRate": 118.96194120709436,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 128,
+          "flightS": 0.02,
+          "apex": [
+            0.13635565610496717,
+            0.4894877507163707
+          ],
+          "landing": [
+            0.13635565610496717,
+            0.4894877507163707
+          ],
+          "landingTangentialSpeed": 1.4707252783048737,
+          "airborneWheelRate": 12.62754387504473,
+          "airborneAbsoluteMotorWorkJ": 1.2539304564711329,
+          "penetration": 0.06456108652748965,
+          "jointOverrun": 0.4674736137706259,
+          "pitch": 0.06252682773209887,
+          "terminalRate": 125.32798323094873,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 134,
+          "flightS": 0.08,
+          "apex": [
+            0.11368730528589296,
+            0.4249724555001974
+          ],
+          "landing": [
+            0.003236322203381249,
+            0.05466391429910633
+          ],
+          "landingTangentialSpeed": 0.32639599925065677,
+          "airborneWheelRate": 22.867333132704573,
+          "airborneAbsoluteMotorWorkJ": 1.692599206132585,
+          "penetration": 0.001311641364041452,
+          "jointOverrun": 0.16943860761216323,
+          "pitch": 0.06272029062143332,
+          "terminalRate": 109.46571253774493,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 133,
+          "flightS": 0.03,
+          "apex": [
+            0.1054370288234335,
+            0.4169939260705402
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 27.76127967430768,
+          "airborneAbsoluteMotorWorkJ": 1.5380275856557313,
+          "penetration": 0.0007923576534282911,
+          "jointOverrun": 0.1361371844480117,
+          "pitch": 0.06227195547072893,
+          "terminalRate": 110.43015439813469,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 126,
+          "flightS": 0.03,
+          "apex": [
+            0.11772274270229391,
+            0.43041955584829716
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 15.35728514655763,
+          "airborneAbsoluteMotorWorkJ": 1.8072644652235768,
+          "penetration": 0.0005648116142927123,
+          "jointOverrun": 0.19335272757228328,
+          "pitch": 0.06749565910246097,
+          "terminalRate": 107.87273948239927,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.02,
+          "apex": [
+            0.17781844796407031,
+            0.4622115813796221
+          ],
+          "landing": [
+            0.17781844796407031,
+            0.4622115813796221
+          ],
+          "landingTangentialSpeed": -1.6703824322161616,
+          "airborneWheelRate": 4.5155278407840385,
+          "airborneAbsoluteMotorWorkJ": 1.6246495323997487,
+          "penetration": 0.037932554951005004,
+          "jointOverrun": 0.3602040908906896,
+          "pitch": 0.07471410967861568,
+          "terminalRate": 114.68243866996619,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.03,
+          "apex": [
+            0.17147246976960376,
+            0.40247906361147645
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 31.295335023964228,
+          "airborneAbsoluteMotorWorkJ": 1.7899840108119323,
+          "penetration": 0.0006916509355389816,
+          "jointOverrun": 0.09143109290079332,
+          "pitch": 0.07469076958065733,
+          "terminalRate": 112.00568681900504,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.17,
+          "apex": [
+            0.0022639575761351782,
+            0.0741720046960749
+          ],
+          "landing": [
+            0.019047955317672026,
+            0.05462670416872892
+          ],
+          "landingTangentialSpeed": 0.25323260191375835,
+          "airborneWheelRate": 0.5536504749139359,
+          "airborneAbsoluteMotorWorkJ": 0.010426971314538583,
+          "penetration": 0.001609108789888944,
+          "jointOverrun": 0,
+          "pitch": 0.07387583327773191,
+          "terminalRate": 0.000022524536166973416,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.02,
+          "apex": [
+            -0.30246469959697697,
+            0.4892766106095101
+          ],
+          "landing": [
+            -0.30246469959697697,
+            0.4892766106095101
+          ],
+          "landingTangentialSpeed": 5.296141362758455,
+          "airborneWheelRate": 53.6466745422774,
+          "airborneAbsoluteMotorWorkJ": 0.8799549330459915,
+          "penetration": 0.07417530495744466,
+          "jointOverrun": 0.4958679944834512,
+          "pitch": 0.09514952494461228,
+          "terminalRate": 123.994096570368,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 126,
+          "flightS": 0.03,
+          "apex": [
+            -0.22180406809571537,
+            0.42573504915032495
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 42.51349314014844,
+          "airborneAbsoluteMotorWorkJ": 0.8018731820034084,
+          "penetration": 0.0007826608742211444,
+          "jointOverrun": 0.15992758792477035,
+          "pitch": 0.08607949312560938,
+          "terminalRate": 110.07258949832502,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 114,
+          "flightS": 0.02,
+          "apex": [
+            -0.30692416677299844,
+            0.4662226828261078
+          ],
+          "landing": [
+            -0.30692416677299844,
+            0.4662226828261078
+          ],
+          "landingTangentialSpeed": 9.51682817028843,
+          "airborneWheelRate": 62.16830078019551,
+          "airborneAbsoluteMotorWorkJ": 0.7883988191588933,
+          "penetration": 0.052943704727383724,
+          "jointOverrun": 0.39846835565395544,
+          "pitch": 0.09730257093182756,
+          "terminalRate": 126.84120557064003,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 111,
+          "flightS": 0.11999999999999998,
+          "apex": [
+            -0.3543869587417535,
+            0.47714141922571757
+          ],
+          "landing": [
+            0.022509726360126686,
+            0.05086278713319123
+          ],
+          "landingTangentialSpeed": 0.18511599006845808,
+          "airborneWheelRate": 59.15360545999327,
+          "airborneAbsoluteMotorWorkJ": 0.8571458403955071,
+          "penetration": 0.07032730768038732,
+          "jointOverrun": 0.4732555119294042,
+          "pitch": 0.1443609547561815,
+          "terminalRate": 128.32601344350428,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 114,
+          "flightS": 0.02,
+          "apex": [
+            -0.29383249766690683,
+            0.48895359756207957
+          ],
+          "landing": [
+            -0.29383249766690683,
+            0.48895359756207957
+          ],
+          "landingTangentialSpeed": 5.294684389041368,
+          "airborneWheelRate": 53.5870603869333,
+          "airborneAbsoluteMotorWorkJ": 0.8819383203476948,
+          "penetration": 0.07314366887352775,
+          "jointOverrun": 0.4917505188161102,
+          "pitch": 0.09835214408893378,
+          "terminalRate": 123.99508645724667,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 117,
+          "flightS": 0.03,
+          "apex": [
+            -0.25948704121401167,
+            0.41354098907172687
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 40.2489484110789,
+          "airborneAbsoluteMotorWorkJ": 1.118675862574512,
+          "penetration": 0.0008034718816764402,
+          "jointOverrun": 0.11512287583144598,
+          "pitch": 0.08532674840505293,
+          "terminalRate": 111.64778443763265,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 122,
+          "flightS": 0.02,
+          "apex": [
+            -0.2410498456469974,
+            0.4606349475751699
+          ],
+          "landing": [
+            -0.2410498456469974,
+            0.4606349475751699
+          ],
+          "landingTangentialSpeed": 7.435357258775935,
+          "airborneWheelRate": 56.385910230979526,
+          "airborneAbsoluteMotorWorkJ": 0.8039075098638558,
+          "penetration": 0.04380716573506304,
+          "jointOverrun": 0.35768738493518937,
+          "pitch": 0.07896344297903622,
+          "terminalRate": 119.27918266695282,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 120,
+          "flightS": 0.02,
+          "apex": [
+            -0.24626565797307712,
+            0.4552361341504393
+          ],
+          "landing": [
+            -0.24626565797307712,
+            0.4552361341504393
+          ],
+          "landingTangentialSpeed": 7.616633163522166,
+          "airborneWheelRate": 56.68525560859217,
+          "airborneAbsoluteMotorWorkJ": 0.799369645810354,
+          "penetration": 0.03894571948264382,
+          "jointOverrun": 0.3354679198456454,
+          "pitch": 0.08213991919677038,
+          "terminalRate": 118.88874334611532,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 109,
+          "flightS": 0.02,
+          "apex": [
+            0.25616376154748427,
+            0.48509795872717354
+          ],
+          "landing": [
+            0.25616376154748427,
+            0.48509795872717354
+          ],
+          "landingTangentialSpeed": 0.4705163198575279,
+          "airborneWheelRate": 57.80390864851843,
+          "airborneAbsoluteMotorWorkJ": 0.7667224091231344,
+          "penetration": 0.07210340119423957,
+          "jointOverrun": 0.4998853182903642,
+          "pitch": 0.09324488947567729,
+          "terminalRate": 119.85825077969776,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 107,
+          "flightS": 0.02,
+          "apex": [
+            0.19687385014172148,
+            0.4942894623836245
+          ],
+          "landing": [
+            0.19687385014172148,
+            0.4942894623836245
+          ],
+          "landingTangentialSpeed": -0.4508381257226809,
+          "airborneWheelRate": 40.94699477518416,
+          "airborneAbsoluteMotorWorkJ": 0.5051701515700884,
+          "penetration": 0.08108401870684565,
+          "jointOverrun": 0.5350844462395061,
+          "pitch": 0.07409685396226479,
+          "terminalRate": 123.7182890935012,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 107,
+          "flightS": 0.03,
+          "apex": [
+            0.2543233581622124,
+            0.3935113846983524
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 62.573860192898266,
+          "airborneAbsoluteMotorWorkJ": 1.1151752504403671,
+          "penetration": 0.0007317937644930467,
+          "jointOverrun": 0.09750894973834301,
+          "pitch": 0.07815023673354562,
+          "terminalRate": 109.91492040015049,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 110,
+          "flightS": 0.03,
+          "apex": [
+            0.2294820918123996,
+            0.3836691444174457
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 57.85466957123138,
+          "airborneAbsoluteMotorWorkJ": 1.0992217244942082,
+          "penetration": 0.0007293662811547336,
+          "jointOverrun": 0.05018288486784783,
+          "pitch": 0.06589669766121296,
+          "terminalRate": 111.00931664019171,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 107,
+          "flightS": 0.02,
+          "apex": [
+            0.23378073006873823,
+            0.4490064158737038
+          ],
+          "landing": [
+            0.23378073006873823,
+            0.4490064158737038
+          ],
+          "landingTangentialSpeed": -5.4048105393486106,
+          "airborneWheelRate": 19.163956121450006,
+          "airborneAbsoluteMotorWorkJ": 0.9301399378460069,
+          "penetration": 0.03139078394015345,
+          "jointOverrun": 0.33597414205838216,
+          "pitch": 0.08175975537320625,
+          "terminalRate": 113.05379845668335,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 107,
+          "flightS": 0.02,
+          "apex": [
+            0.1805080252674447,
+            0.47877316982620816
+          ],
+          "landing": [
+            0.1805080252674447,
+            0.47877316982620816
+          ],
+          "landingTangentialSpeed": 0.4952220062946163,
+          "airborneWheelRate": 42.95486301738135,
+          "airborneAbsoluteMotorWorkJ": 0.70672808719364,
+          "penetration": 0.06063213725494981,
+          "jointOverrun": 0.45312637878987694,
+          "pitch": 0.07222673077331343,
+          "terminalRate": 120.20497416583291,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 115,
+          "flightS": 0.060000000000000005,
+          "apex": [
+            0.1539930096464391,
+            0.390132185886916
+          ],
+          "landing": [
+            -0.004412302642927704,
+            0.05362741271026156
+          ],
+          "landingTangentialSpeed": 0.28532766246150254,
+          "airborneWheelRate": 43.9894009473864,
+          "airborneAbsoluteMotorWorkJ": 1.1542989953543248,
+          "penetration": 0.0008255771395625083,
+          "jointOverrun": 0.05788451544523987,
+          "pitch": 0.06057930830453545,
+          "terminalRate": 108.73494511381851,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 106,
+          "flightS": 0.02,
+          "apex": [
+            0.20690492189805768,
+            0.4667734436092484
+          ],
+          "landing": [
+            0.20690492189805768,
+            0.4667734436092484
+          ],
+          "landingTangentialSpeed": -0.4232668630482672,
+          "airborneWheelRate": 37.63654581759769,
+          "airborneAbsoluteMotorWorkJ": 0.43109409699702106,
+          "penetration": 0.05373937186207459,
+          "jointOverrun": 0.42534963128123326,
+          "pitch": 0.07512130589946121,
+          "terminalRate": 121.41044564775127,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            -0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.006967595625466186,
+            0.05039517257298226
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.000699381605004698,
+          "jointOverrun": 0,
+          "pitch": 0.0078118315779062576,
+          "terminalRate": 0.0000021255722311339297,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0074742965925300164,
+            0.05000732048981793
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.00048291831580123123,
+          "jointOverrun": 0,
+          "pitch": 0.002618878277808803,
+          "terminalRate": 7.441845098704633e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0075223293691183135,
+            0.050005256432302
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006308798216606987,
+          "jointOverrun": 0,
+          "pitch": 0.0025153594646375108,
+          "terminalRate": 8.028254062612026e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004832304512327801,
+            0.052541480658749695
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.000653409666852553,
+          "jointOverrun": 0,
+          "pitch": 0.014855521147271449,
+          "terminalRate": 0.000009000680116460419,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007627943517791877,
+            0.050042902690101754
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005997051991789709,
+          "jointOverrun": 0,
+          "pitch": 0.003591653580710355,
+          "terminalRate": 3.205954519613192e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.00736116678178797,
+            0.049995928640696435
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0004938307895258481,
+          "jointOverrun": 0,
+          "pitch": 0.002405151110772974,
+          "terminalRate": 8.598704657136846e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.07,
+          "apex": [
+            -0.0005549926742481615,
+            0.05745309470609433
+          ],
+          "landing": [
+            0.007352958944299881,
+            0.053189160095767185
+          ],
+          "landingTangentialSpeed": 0.21563357529889024,
+          "airborneWheelRate": 0.5087636262222266,
+          "airborneAbsoluteMotorWorkJ": 0.0006378434076597597,
+          "penetration": 0.0013734282105267587,
+          "jointOverrun": 0,
+          "pitch": 0.038891914655643504,
+          "terminalRate": 0.000016488115075500895,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007542638065971191,
+            0.05000180711591626
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0004864596954275574,
+          "jointOverrun": 0,
+          "pitch": 0.0023850654296091608,
+          "terminalRate": 1.2864100773647677e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 115,
+          "flightS": 0.03,
+          "apex": [
+            -0.29464837497860735,
+            0.48199450831092266
+          ],
+          "landing": [
+            -0.29464837497860735,
+            0.48199450831092266
+          ],
+          "landingTangentialSpeed": 4.5839065027488255,
+          "airborneWheelRate": 41.38317130689368,
+          "airborneAbsoluteMotorWorkJ": 1.1336463893305386,
+          "penetration": 0.07088515242506822,
+          "jointOverrun": 0.485998063456897,
+          "pitch": 0.08722016125630451,
+          "terminalRate": 115.33194575002227,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 118,
+          "flightS": 0.02,
+          "apex": [
+            -0.23019850918910448,
+            0.4585817613918668
+          ],
+          "landing": [
+            -0.23019850918910448,
+            0.4585817613918668
+          ],
+          "landingTangentialSpeed": 5.850618153691953,
+          "airborneWheelRate": 52.64181989361167,
+          "airborneAbsoluteMotorWorkJ": 0.5947031169073895,
+          "penetration": 0.04739188353143223,
+          "jointOverrun": 0.3715165520283499,
+          "pitch": 0.0762363427080532,
+          "terminalRate": 115.10240140833923,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 115,
+          "flightS": 0.03,
+          "apex": [
+            -0.30966750278262983,
+            0.38722165471793873
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 36.31386556950749,
+          "airborneAbsoluteMotorWorkJ": 0.8998026686330669,
+          "penetration": 0.0007257973831325676,
+          "jointOverrun": 0.02048014922357666,
+          "pitch": 0.07980354950499682,
+          "terminalRate": 111.90932850056825,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.27,
+            0.4,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 108,
+          "flightS": 0.10999999999999999,
+          "apex": [
+            -0.3742254555935837,
+            0.4422174887004214
+          ],
+          "landing": [
+            0.022002440514024516,
+            0.05436750771014201
+          ],
+          "landingTangentialSpeed": 0.1806873403688849,
+          "airborneWheelRate": 53.43216460251934,
+          "airborneAbsoluteMotorWorkJ": 0.8975213245971276,
+          "penetration": 0.041924568758298406,
+          "jointOverrun": 0.3162530010280382,
+          "pitch": 0.14016152570830978,
+          "terminalRate": 119.9695054830237,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.28,
+            0.32,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.02,
+          "apex": [
+            -0.2528234737047126,
+            0.4872421013673195
+          ],
+          "landing": [
+            -0.2528234737047126,
+            0.4872421013673195
+          ],
+          "landingTangentialSpeed": 4.767151510744714,
+          "airborneWheelRate": 45.9323197370797,
+          "airborneAbsoluteMotorWorkJ": 0.9279969039984104,
+          "penetration": 0.07115005969397956,
+          "jointOverrun": 0.48705023329175257,
+          "pitch": 0.07937830580367082,
+          "terminalRate": 118.15547246678987,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 120,
+          "flightS": 0.02,
+          "apex": [
+            -0.21147163729659693,
+            0.4493429506739265
+          ],
+          "landing": [
+            -0.21147163729659693,
+            0.4493429506739265
+          ],
+          "landingTangentialSpeed": 5.036062809167316,
+          "airborneWheelRate": 48.695557192365825,
+          "airborneAbsoluteMotorWorkJ": 0.4201265813368959,
+          "penetration": 0.03597381067005358,
+          "jointOverrun": 0.3199232751974179,
+          "pitch": 0.07339075150351097,
+          "terminalRate": 106.6751459345251,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.22,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 111,
+          "flightS": 0.02,
+          "apex": [
+            -0.27987646989092685,
+            0.47679719278144184
+          ],
+          "landing": [
+            -0.27987646989092685,
+            0.47679719278144184
+          ],
+          "landingTangentialSpeed": 5.510416588028459,
+          "airborneWheelRate": 56.04834543399101,
+          "airborneAbsoluteMotorWorkJ": 0.8673703602765156,
+          "penetration": 0.06793037154714052,
+          "jointOverrun": 0.4683385648707379,
+          "pitch": 0.09148419622173533,
+          "terminalRate": 125.73543916174933,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.45,
+            0.4,
+            0.08,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 116,
+          "flightS": 0.03,
+          "apex": [
+            -0.23196590509007706,
+            0.4786529080077744
+          ],
+          "landing": [
+            -0.23196590509007706,
+            0.4786529080077744
+          ],
+          "landingTangentialSpeed": 5.3525774179140955,
+          "airborneWheelRate": 41.29849381264697,
+          "airborneAbsoluteMotorWorkJ": 0.7371392038953836,
+          "penetration": 0.06222767126492645,
+          "jointOverrun": 0.4549329425110442,
+          "pitch": 0.07676106803666277,
+          "terminalRate": 114.62735235020497,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.5,
+            0.4,
+            0.08,
+            0.02
+          ]
+        }
+      ]
+    },
+    {
+      "source": "target-jump-expanded-search.json",
+      "results": [
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007001443523306242,
+            0.05244263883299563
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007507745731445276,
+          "jointOverrun": 0,
+          "pitch": 0.019806140102648764,
+          "terminalRate": 0.000010188132876458263,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007273075096224699,
+            0.051523106647520744
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0008106910274525564,
+          "jointOverrun": 0,
+          "pitch": 0.016199882788893803,
+          "terminalRate": 0.000010747260769602693,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.08,
+          "apex": [
+            -0.0034111084733417785,
+            0.058681432979189985
+          ],
+          "landing": [
+            0.006185089676695135,
+            0.05468131391061179
+          ],
+          "landingTangentialSpeed": 0.2744494501809596,
+          "airborneWheelRate": 0.41159519425629987,
+          "airborneAbsoluteMotorWorkJ": 0.002505759136410001,
+          "penetration": 0.0011282565708463227,
+          "jointOverrun": 0,
+          "pitch": 0.018909884538627103,
+          "terminalRate": 0.000005445399259442602,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.008873439424587473,
+            0.05081359207568145
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006213316580164913,
+          "jointOverrun": 0,
+          "pitch": 0.017382167622508667,
+          "terminalRate": 0.00001316846368784491,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.011964489109346693,
+            0.050007023163945896
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0003870660499908779,
+          "jointOverrun": 0,
+          "pitch": 0.023324240370305185,
+          "terminalRate": 0.000017861011538073462,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.22,
+            0.5,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.008960421354179182,
+            0.05260125048129463
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005493995854475714,
+          "jointOverrun": 0,
+          "pitch": 0.017051588600921104,
+          "terminalRate": 0.000009918277635770902,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.23,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.009389085405070982,
+            0.052777307939987694
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006591509329783168,
+          "jointOverrun": 0,
+          "pitch": 0.017039333710559327,
+          "terminalRate": 0.000010623847928337865,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.25,
+            0.4,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.010958475549525795,
+            0.05019027164743067
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006924590694712546,
+          "jointOverrun": 0,
+          "pitch": 0.021858830810403674,
+          "terminalRate": 0.000021449221621879462,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.29,
+            0.35,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 142,
+          "flightS": 0.21000000000000005,
+          "apex": [
+            -0.16874685180886978,
+            0.4081041414247507
+          ],
+          "landing": [
+            0.04273928747115141,
+            0.05020166763074968
+          ],
+          "landingTangentialSpeed": 0.31365033609552667,
+          "airborneWheelRate": 47.232044984077504,
+          "airborneAbsoluteMotorWorkJ": 0.32227497694180407,
+          "penetration": 0.0028528631182960923,
+          "jointOverrun": 0.12725158895630528,
+          "pitch": 0.1101869366766723,
+          "terminalRate": 107.5353217293615,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.002959977930404742,
+            0.051584516611511866
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0008123666274546387,
+          "jointOverrun": 0,
+          "pitch": 0.015892984379699993,
+          "terminalRate": 0.00000947308561440371,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.08,
+          "apex": [
+            0.0003471098147870971,
+            0.058820293734647866
+          ],
+          "landing": [
+            0.009214412786373458,
+            0.05499687782076082
+          ],
+          "landingTangentialSpeed": 0.2548899549052223,
+          "airborneWheelRate": 0.4083216040564326,
+          "airborneAbsoluteMotorWorkJ": 0.0023927732033718037,
+          "penetration": 0.0007859015033042788,
+          "jointOverrun": 0,
+          "pitch": 0.04228588445425067,
+          "terminalRate": 0.000017670589524115825,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004694207964099237,
+            0.05086497233387688
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006227908107413055,
+          "jointOverrun": 0,
+          "pitch": 0.01150716454197128,
+          "terminalRate": 0.000006652879078872079,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.007512467462524125,
+            0.05000711574746117
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0003884544389552852,
+          "jointOverrun": 0,
+          "pitch": 0.002191073661190967,
+          "terminalRate": 3.165459420328632e-7,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.22,
+            0.5,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004335903358944432,
+            0.05265608906646771
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007352809390866605,
+          "jointOverrun": 0,
+          "pitch": 0.014230087480703167,
+          "terminalRate": 0.00000826951485558364,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.23,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004758759993969117,
+            0.05283009740786221
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005744668059823738,
+          "jointOverrun": 0,
+          "pitch": 0.01658409919952535,
+          "terminalRate": 0.000009016712648783054,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.25,
+            0.4,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.006956819600207095,
+            0.05018789104170113
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006942559577919477,
+          "jointOverrun": 0,
+          "pitch": 0.004747321498867815,
+          "terminalRate": 0.000001035588900234784,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.29,
+            0.35,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 114,
+          "flightS": 0.21000000000000005,
+          "apex": [
+            -0.25961843799954687,
+            0.4584445588918021
+          ],
+          "landing": [
+            0.04298375368912409,
+            0.05125654463624951
+          ],
+          "landingTangentialSpeed": 0.28765154017978084,
+          "airborneWheelRate": 51.58468725286647,
+          "airborneAbsoluteMotorWorkJ": 0.7876781777776088,
+          "penetration": 0.0467074342008823,
+          "jointOverrun": 0.3639280913378622,
+          "pitch": 0.13703251180102172,
+          "terminalRate": 113.5705589413084,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            0.0013595191140090973,
+            0.05164490505583799
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0008132378003871815,
+          "jointOverrun": 0,
+          "pitch": 0.03915870017259196,
+          "terminalRate": 0.000029480192231816625,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.25,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 178,
+          "flightS": 0.09,
+          "apex": [
+            -0.06857134954386085,
+            0.4517022931033644
+          ],
+          "landing": [
+            0.014464266833997222,
+            0.05247251207662659
+          ],
+          "landingTangentialSpeed": 0.2311867578594182,
+          "airborneWheelRate": 31.574270764498333,
+          "airborneAbsoluteMotorWorkJ": 0.43838388638458925,
+          "penetration": 0.03319345199076781,
+          "jointOverrun": 0.3276674073437049,
+          "pitch": 0.07412313658282503,
+          "terminalRate": 105.16911081225082,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.26,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0005087783367656723,
+            0.05091423530807593
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006235416827901213,
+          "jointOverrun": 0,
+          "pitch": 0.034650977449147774,
+          "terminalRate": 0.000026024087158673088,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.24,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0030554801474676763,
+            0.05000764294357185
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.00038911255514499643,
+          "jointOverrun": 0,
+          "pitch": 0.023020491576535154,
+          "terminalRate": 0.00001870211838744445,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.22,
+            0.5,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            0.00029424203457849296,
+            0.05270874725674435
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006340803816977797,
+          "jointOverrun": 0,
+          "pitch": 0.037161354961426064,
+          "terminalRate": 0.00002606109169156142,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.23,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.00014942245148172328,
+            0.05287431894184896
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006889757758013898,
+          "jointOverrun": 0,
+          "pitch": 0.0398080016454703,
+          "terminalRate": 0.0000283105176012371,
+          "height": 0.4575,
+          "parameters": [
+            0.1,
+            0.25,
+            0.4,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.003139986498150879,
+            0.050082444851102914
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006953207695985092,
+          "jointOverrun": 0,
+          "pitch": 0.02722105752744769,
+          "terminalRate": 0.00002255479540397011,
+          "height": 0.4575,
+          "parameters": [
+            0.18,
+            0.29,
+            0.35,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.012095261577700134,
+            0.05021024223308429
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005182611074508597,
+          "jointOverrun": 0,
+          "pitch": 0.02190006657751163,
+          "terminalRate": 0.000013383790083222068,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.011348185336364128,
+            0.05032473748326219
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006771254683431843,
+          "jointOverrun": 0,
+          "pitch": 0.017047815699455085,
+          "terminalRate": 0.000012565336004332104,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.01038591008608053,
+            0.05053161870377701
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007015336572416958,
+          "jointOverrun": 0,
+          "pitch": 0.0169517635120678,
+          "terminalRate": 0.00001270307884742289,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.26,
+            0.4,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.10999999999999999,
+          "apex": [
+            -0.0009610078484968004,
+            0.06361802856724069
+          ],
+          "landing": [
+            0.010232867387421435,
+            0.0520167254254196
+          ],
+          "landingTangentialSpeed": 0.23522165626450525,
+          "airborneWheelRate": 0.6019774817473778,
+          "airborneAbsoluteMotorWorkJ": 0.0013444773306124013,
+          "penetration": 0.0016463501799799801,
+          "jointOverrun": 0,
+          "pitch": 0.03281992325578194,
+          "terminalRate": 0.000004011043344648715,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.09999999999999999,
+          "apex": [
+            -0.002988945336661289,
+            0.06017848066811665
+          ],
+          "landing": [
+            0.006219885530185057,
+            0.0549147315617613
+          ],
+          "landingTangentialSpeed": 0.24721416747000935,
+          "airborneWheelRate": 0.45312178495759703,
+          "airborneAbsoluteMotorWorkJ": 0.0031642049816960937,
+          "penetration": 0.0010771780773014689,
+          "jointOverrun": 0,
+          "pitch": 0.02766137602494913,
+          "terminalRate": 0.000004618842823398848,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.28,
+            0.4,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.005843252514983077,
+            0.05471907303530313
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0008917728410404585,
+          "jointOverrun": 0,
+          "pitch": 0.014610309038608008,
+          "terminalRate": 0.000003400640507187796,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.29,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.18000000000000002,
+          "apex": [
+            0.00007181796830067755,
+            0.07555343449016363
+          ],
+          "landing": [
+            0.021405706278419638,
+            0.05097358913723052
+          ],
+          "landingTangentialSpeed": 0.2836839227422736,
+          "airborneWheelRate": 0.5777384124937219,
+          "airborneAbsoluteMotorWorkJ": 0.011042874163413052,
+          "penetration": 0.001758171753183338,
+          "jointOverrun": 0,
+          "pitch": 0.052048646984378256,
+          "terminalRate": 0.000008853568211296853,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0076246618988027315,
+            0.05021837494906364
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005201918447006598,
+          "jointOverrun": 0,
+          "pitch": 0.0027807450509593217,
+          "terminalRate": 0.0000013546296323689263,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0069739752572297725,
+            0.05034970880328063
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006786812592139285,
+          "jointOverrun": 0,
+          "pitch": 0.008388260479113278,
+          "terminalRate": 0.0000026310685120013013,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.006079088840264313,
+            0.05056948507159956
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007031598890504392,
+          "jointOverrun": 0,
+          "pitch": 0.009471523372821538,
+          "terminalRate": 0.0000030720121637075865,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.26,
+            0.4,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.07,
+          "apex": [
+            -0.00101933609631559,
+            0.05732154852630919
+          ],
+          "landing": [
+            0.006718655489326195,
+            0.052603634912183506
+          ],
+          "landingTangentialSpeed": 0.20392972489166586,
+          "airborneWheelRate": 0.5365928993105775,
+          "airborneAbsoluteMotorWorkJ": 0.0004371451189621766,
+          "penetration": 0.0008547256411042398,
+          "jointOverrun": 0,
+          "pitch": 0.04157036424581577,
+          "terminalRate": 0.000015664193050747857,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.09,
+          "apex": [
+            0.000003594350107827271,
+            0.059183692432126705
+          ],
+          "landing": [
+            0.008372680898816168,
+            0.053331966625425886
+          ],
+          "landingTangentialSpeed": 0.2250511800539908,
+          "airborneWheelRate": 0.4631369362864022,
+          "airborneAbsoluteMotorWorkJ": 0.0018547075897541536,
+          "penetration": 0.0011471122961502073,
+          "jointOverrun": 0,
+          "pitch": 0.047022171782657315,
+          "terminalRate": 0.000016032882778370757,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.28,
+            0.4,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.004206474532687618,
+            0.053751526314460785
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0008962944537312806,
+          "jointOverrun": 0,
+          "pitch": 0.021339359498134175,
+          "terminalRate": 0.000013262019240612433,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.29,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.17,
+          "apex": [
+            0.0022639575761351782,
+            0.0741720046960749
+          ],
+          "landing": [
+            0.019047955317672026,
+            0.05462670416872892
+          ],
+          "landingTangentialSpeed": 0.25323260191375835,
+          "airborneWheelRate": 0.5536504749139359,
+          "airborneAbsoluteMotorWorkJ": 0.010426971314538583,
+          "penetration": 0.001609108789888944,
+          "jointOverrun": 0,
+          "pitch": 0.07387583327773191,
+          "terminalRate": 0.000022524536166973416,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0031493839752980007,
+            0.05022654732177209
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0005212809291705728,
+          "jointOverrun": 0,
+          "pitch": 0.025163932409821534,
+          "terminalRate": 0.000015945489685024294,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.002593553898284029,
+            0.050374071978086715
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0006795153517387825,
+          "jointOverrun": 0,
+          "pitch": 0.03135432318857846,
+          "terminalRate": 0.00001765096866904482,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.0017659107536271978,
+            0.05060605034206045
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007040385400860355,
+          "jointOverrun": 0,
+          "pitch": 0.03263265063509833,
+          "terminalRate": 0.00001907622326619993,
+          "height": 0.425,
+          "parameters": [
+            0.1,
+            0.26,
+            0.4,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            0.0025553320124593465,
+            0.05321843636157886
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007782287857941023,
+          "jointOverrun": 0,
+          "pitch": 0.045877130091314854,
+          "terminalRate": 0.000026452815805623668,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 134,
+          "flightS": 0.16,
+          "apex": [
+            -0.2164345545655001,
+            0.40395948034311757
+          ],
+          "landing": [
+            0.021665557198711438,
+            0.04955826483587836
+          ],
+          "landingTangentialSpeed": 0.2302072878437244,
+          "airborneWheelRate": 38.83255323815915,
+          "airborneAbsoluteMotorWorkJ": 0.7566485692939369,
+          "penetration": 0.0016869294831609455,
+          "jointOverrun": 0.07248491065290352,
+          "pitch": 0.096127937798597,
+          "terminalRate": 112.54486884567577,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.28,
+            0.4,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0.09999999999999999,
+          "apex": [
+            0.0035254678886129376,
+            0.06037784076243605
+          ],
+          "landing": [
+            0.011833700770655223,
+            0.05466379926277423
+          ],
+          "landingTangentialSpeed": 0.23516093405431446,
+          "airborneWheelRate": 0.376493901158647,
+          "airborneAbsoluteMotorWorkJ": 0.00407257102854406,
+          "penetration": 0.0012202853603747316,
+          "jointOverrun": 0,
+          "pitch": 0.07207270814063763,
+          "terminalRate": 0.000031216870208663464,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.29,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 600,
+          "flightS": 0,
+          "apex": [
+            -0.00216884240438861,
+            0.05214798878562668
+          ],
+          "landing": null,
+          "landingTangentialSpeed": null,
+          "airborneWheelRate": 0,
+          "airborneAbsoluteMotorWorkJ": 0,
+          "penetration": 0.0007883253032271303,
+          "jointOverrun": 0,
+          "pitch": 0.03708605759312898,
+          "terminalRate": 0.00002267171471070714,
+          "height": 0.425,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.15,
+          "apex": [
+            0.006115131571744328,
+            0.07078744978210769
+          ],
+          "landing": [
+            0.025958846972907387,
+            0.05002666333466688
+          ],
+          "landingTangentialSpeed": 0.3038036199165097,
+          "airborneWheelRate": 0.46744883252819447,
+          "airborneAbsoluteMotorWorkJ": 0.003127008507253448,
+          "penetration": 0.0021028107872334417,
+          "jointOverrun": 0,
+          "pitch": 0.0555118329993705,
+          "terminalRate": 0.000003993054667027745,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.23000000000000007,
+          "apex": [
+            0.011841355846529969,
+            0.09471718002741022
+          ],
+          "landing": [
+            0.047186564402552506,
+            0.05203027226746282
+          ],
+          "landingTangentialSpeed": 0.3450745123992481,
+          "airborneWheelRate": 0.6316931799325136,
+          "airborneAbsoluteMotorWorkJ": 0.011206308478521922,
+          "penetration": 0.002574871353164185,
+          "jointOverrun": 0,
+          "pitch": 0.1002215011703861,
+          "terminalRate": 0.00001124808422771346,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.15,
+          "apex": [
+            0.008569521667955077,
+            0.07116045880819569
+          ],
+          "landing": [
+            0.026648782696251427,
+            0.05085390656297559
+          ],
+          "landingTangentialSpeed": 0.2765239726688446,
+          "airborneWheelRate": 0.46494208154887495,
+          "airborneAbsoluteMotorWorkJ": 0.003099536584372794,
+          "penetration": 0.0014712834833059546,
+          "jointOverrun": 0,
+          "pitch": 0.08185792227455248,
+          "terminalRate": 0.00001435984103625925,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.23000000000000007,
+          "apex": [
+            0.013097718993824087,
+            0.09527805352332488
+          ],
+          "landing": [
+            0.04484489067536637,
+            0.053492373257352455
+          ],
+          "landingTangentialSpeed": 0.3078712053143366,
+          "airborneWheelRate": 0.6269209097498276,
+          "airborneAbsoluteMotorWorkJ": 0.011164055554226815,
+          "penetration": 0.0024926786452765942,
+          "jointOverrun": 0,
+          "pitch": 0.1287230034481498,
+          "terminalRate": 0.000020350622516637458,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": true,
+          "steps": 600,
+          "flightS": 0.15,
+          "apex": [
+            0.011025936925228977,
+            0.07150761933918848
+          ],
+          "landing": [
+            0.027331876026971708,
+            0.05163043388160926
+          ],
+          "landingTangentialSpeed": 0.24907721903325986,
+          "airborneWheelRate": 0.4624127488671459,
+          "airborneAbsoluteMotorWorkJ": 0.0030780773648138348,
+          "penetration": 0.0017324272971852711,
+          "jointOverrun": 0,
+          "pitch": 0.10883295197381584,
+          "terminalRate": 0.00002402067479849956,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.24,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 127,
+          "flightS": 0.23000000000000007,
+          "apex": [
+            -0.21944064613442996,
+            0.47527146363196465
+          ],
+          "landing": [
+            0.04248127649317457,
+            0.05482905790755033
+          ],
+          "landingTangentialSpeed": 0.2704150676646584,
+          "airborneWheelRate": 57.730299458003074,
+          "airborneAbsoluteMotorWorkJ": 0.8525615015272389,
+          "penetration": 0.051128608262279045,
+          "jointOverrun": 0.3987432970452276,
+          "pitch": 0.15743872102078307,
+          "terminalRate": 131.14769471440167,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.25,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 124,
+          "flightS": 0.24000000000000007,
+          "apex": [
+            -0.25578765055277597,
+            0.43748268810661023
+          ],
+          "landing": [
+            0.045146183910105414,
+            0.05474596831996914
+          ],
+          "landingTangentialSpeed": 0.2842524137279656,
+          "airborneWheelRate": 43.939441494937824,
+          "airborneAbsoluteMotorWorkJ": 0.9639549296890368,
+          "penetration": 0.009928357107940766,
+          "jointOverrun": 0.2026858334572177,
+          "pitch": 0.16182174076983033,
+          "terminalRate": 112.49086277189117,
+          "height": 0.3925,
+          "parameters": [
+            0.1,
+            0.26,
+            0.4,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 96,
+          "flightS": 0.3100000000000001,
+          "apex": [
+            -0.3416154602360197,
+            0.23189444067513157
+          ],
+          "landing": [
+            0.042756865824359586,
+            0.04873149710175548
+          ],
+          "landingTangentialSpeed": 0.1898494953537474,
+          "airborneWheelRate": 131.46676945783543,
+          "airborneAbsoluteMotorWorkJ": 9.038153828272481,
+          "penetration": 0.0031482078995480195,
+          "jointOverrun": 0.10277248522361138,
+          "pitch": 0.2545406079834294,
+          "terminalRate": 107.53548443469849,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.26,
+            0.45,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 111,
+          "flightS": 0.24000000000000007,
+          "apex": [
+            -0.3681723405220162,
+            0.46825392088288065
+          ],
+          "landing": [
+            0.03513551348064359,
+            0.04999226202118326
+          ],
+          "landingTangentialSpeed": 0.22901529896805792,
+          "airborneWheelRate": 73.6761363518732,
+          "airborneAbsoluteMotorWorkJ": 0.7506474271037908,
+          "penetration": 0.06833755722990612,
+          "jointOverrun": 0.45866666185913063,
+          "pitch": 0.19283928492208335,
+          "terminalRate": 140.69314487479423,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.28,
+            0.4,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 136,
+          "flightS": 0.11999999999999998,
+          "apex": [
+            -0.22035133560970807,
+            0.41084622264182674
+          ],
+          "landing": [
+            0.01072263055238279,
+            0.0538102291147039
+          ],
+          "landingTangentialSpeed": 0.1956250071531768,
+          "airborneWheelRate": 29.26361545488783,
+          "airborneAbsoluteMotorWorkJ": 1.3522316453692635,
+          "penetration": 0.001197775520378433,
+          "jointOverrun": 0.0710577351143371,
+          "pitch": 0.09951574421865511,
+          "terminalRate": 114.31098966760831,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.29,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 125,
+          "flightS": 0.20000000000000004,
+          "apex": [
+            -0.2947519144069915,
+            0.4377862188896982
+          ],
+          "landing": [
+            0.01805748026422299,
+            0.05012882603221358
+          ],
+          "landingTangentialSpeed": 0.21672580323650167,
+          "airborneWheelRate": 45.13138156517181,
+          "airborneAbsoluteMotorWorkJ": 0.9098576938915843,
+          "penetration": 0.012369342095006725,
+          "jointOverrun": 0.204785080118691,
+          "pitch": 0.13080738125888977,
+          "terminalRate": 115.34688569293891,
+          "height": 0.3925,
+          "parameters": [
+            0.18,
+            0.3,
+            0.32,
+            0.4,
+            0.025,
+            0.02
+          ]
+        }
+      ]
+    },
+    {
+      "source": "target-jump-high-search.json",
+      "results": [
+        {
+          "passed": false,
+          "steps": 169,
+          "flightS": 0.05,
+          "apex": [
+            -0.10655504648202377,
+            0.48178148641234564
+          ],
+          "landing": [
+            0.00008686305401578442,
+            0.048710312541199924
+          ],
+          "landingTangentialSpeed": 0.011574201595759746,
+          "airborneWheelRate": 35.12955266962996,
+          "airborneAbsoluteMotorWorkJ": 0.3620900683752465,
+          "penetration": 0.060998427771236895,
+          "jointOverrun": 0.45083047033427803,
+          "pitch": 0.08333199171736598,
+          "terminalRate": 118.71369100939613,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.28,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 121,
+          "flightS": 0.05,
+          "apex": [
+            -0.2663245028654475,
+            0.44712946341579785
+          ],
+          "landing": [
+            0.0019617815304469877,
+            0.048674063972530685
+          ],
+          "landingTangentialSpeed": 0.014259722099909021,
+          "airborneWheelRate": 49.0575157095461,
+          "airborneAbsoluteMotorWorkJ": 0.6937295592707452,
+          "penetration": 0.03266206945846855,
+          "jointOverrun": 0.3112927992468655,
+          "pitch": 0.060207851233387594,
+          "terminalRate": 111.82469482325712,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.28,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 128,
+          "flightS": 0.19000000000000003,
+          "apex": [
+            -0.23387465190479081,
+            0.4895449873875487
+          ],
+          "landing": [
+            0.00008686305401578442,
+            0.048710312541199924
+          ],
+          "landingTangentialSpeed": 0.011574201595759746,
+          "airborneWheelRate": 36.21715480813896,
+          "airborneAbsoluteMotorWorkJ": 0.5735012396705952,
+          "penetration": 0.07045835055940483,
+          "jointOverrun": 0.4889038771371039,
+          "pitch": 0.07647173146117626,
+          "terminalRate": 111.48479718949504,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.3,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 115,
+          "flightS": 0.19000000000000003,
+          "apex": [
+            -0.3355476107171296,
+            0.4479123264393948
+          ],
+          "landing": [
+            0.0019617815304469877,
+            0.048674063972530685
+          ],
+          "landingTangentialSpeed": 0.014259722099909021,
+          "airborneWheelRate": 53.217207177093044,
+          "airborneAbsoluteMotorWorkJ": 0.8611759941901278,
+          "penetration": 0.040010682468854676,
+          "jointOverrun": 0.3253743767130204,
+          "pitch": 0.10189870162297408,
+          "terminalRate": 114.71574116893947,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 117,
+          "flightS": 0.18000000000000002,
+          "apex": [
+            -0.3129153537481278,
+            0.4047683766801808
+          ],
+          "landing": [
+            0.00008686305401578442,
+            0.048710312541199924
+          ],
+          "landingTangentialSpeed": 0.011574201595759746,
+          "airborneWheelRate": 31.361226125929832,
+          "airborneAbsoluteMotorWorkJ": 1.0954659785819947,
+          "penetration": 0.00249682867793434,
+          "jointOverrun": 0.10734611463234334,
+          "pitch": 0.11037363415483656,
+          "terminalRate": 110.33915282969494,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.32,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 113,
+          "flightS": 0.18000000000000002,
+          "apex": [
+            -0.3421378588841604,
+            0.479884913885286
+          ],
+          "landing": [
+            0.0019617815304469877,
+            0.048674063972530685
+          ],
+          "landingTangentialSpeed": 0.014259722099909021,
+          "airborneWheelRate": 36.82459478886773,
+          "airborneAbsoluteMotorWorkJ": 1.3137882102643132,
+          "penetration": 0.07244860622638918,
+          "jointOverrun": 0.49096352482726546,
+          "pitch": 0.12214347055896153,
+          "terminalRate": 116.67168690315651,
+          "height": 0.4575,
+          "parameters": [
+            0.28,
+            0.32,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 106,
+          "flightS": 0.08,
+          "apex": [
+            -0.5173242598053012,
+            0.43637784381361155
+          ],
+          "landing": [
+            0.0023421599710831964,
+            0.0489276309290059
+          ],
+          "landingTangentialSpeed": -0.007875742366470807,
+          "airborneWheelRate": 41.053347332932866,
+          "airborneAbsoluteMotorWorkJ": 0.9995749606951717,
+          "penetration": 0.044198856442740055,
+          "jointOverrun": 0.30315482281813555,
+          "pitch": 0.10301132535381481,
+          "terminalRate": 131.42218919549663,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.28,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 105,
+          "flightS": 0.08,
+          "apex": [
+            -0.606428762205321,
+            0.450866115848782
+          ],
+          "landing": [
+            0.004312542479547793,
+            0.04894684783020059
+          ],
+          "landingTangentialSpeed": 0.007398882193415689,
+          "airborneWheelRate": 38.29218204243591,
+          "airborneAbsoluteMotorWorkJ": 1.654379247362745,
+          "penetration": 0.07038942835628517,
+          "jointOverrun": 0.4139817992986261,
+          "pitch": 0.13179167581088527,
+          "terminalRate": 147.5169969994679,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.28,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 107,
+          "flightS": 0.23000000000000007,
+          "apex": [
+            -0.512653343122536,
+            0.46156125425142874
+          ],
+          "landing": [
+            0.0023421599710831964,
+            0.0489276309290059
+          ],
+          "landingTangentialSpeed": -0.007875742366470807,
+          "airborneWheelRate": 48.242510945682334,
+          "airborneAbsoluteMotorWorkJ": 1.1019650393846698,
+          "penetration": 0.06722815052252744,
+          "jointOverrun": 0.4548601657410627,
+          "pitch": 0.1461988418804377,
+          "terminalRate": 124.5734967910807,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.3,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 106,
+          "flightS": 0.23000000000000007,
+          "apex": [
+            -0.6562057653805883,
+            0.41169289091670175
+          ],
+          "landing": [
+            0.004312542479547793,
+            0.04894684783020059
+          ],
+          "landingTangentialSpeed": 0.007398882193415689,
+          "airborneWheelRate": 28.200350047446378,
+          "airborneAbsoluteMotorWorkJ": 1.2052833385600743,
+          "penetration": 0.03568324005079442,
+          "jointOverrun": 0.19896379810991327,
+          "pitch": 0.1748852801088083,
+          "terminalRate": 140.2559539682825,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.3,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 109,
+          "flightS": 0.09,
+          "apex": [
+            -0.5272084722151587,
+            0.4249495300748163
+          ],
+          "landing": [
+            0.0023421599710831964,
+            0.0489276309290059
+          ],
+          "landingTangentialSpeed": -0.007875742366470807,
+          "airborneWheelRate": 56.71029917459965,
+          "airborneAbsoluteMotorWorkJ": 0.9386033277908366,
+          "penetration": 0.03696348856264039,
+          "jointOverrun": 0.2514765712364211,
+          "pitch": 0.10197100910076214,
+          "terminalRate": 122.04189890227744,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.32,
+            0.32,
+            0.4,
+            -0.025,
+            0.02
+          ]
+        },
+        {
+          "passed": false,
+          "steps": 108,
+          "flightS": 0.09,
+          "apex": [
+            -0.5872147781752297,
+            0.4561919970810114
+          ],
+          "landing": [
+            0.004312542479547793,
+            0.04894684783020059
+          ],
+          "landingTangentialSpeed": 0.007398882193415689,
+          "airborneWheelRate": 64.47106109375073,
+          "airborneAbsoluteMotorWorkJ": 1.0610257555383358,
+          "penetration": 0.07455051971341171,
+          "jointOverrun": 0.4673613666550751,
+          "pitch": 0.12393785926105767,
+          "terminalRate": 139.34906425261343,
+          "height": 0.4575,
+          "parameters": [
+            0.32,
+            0.32,
+            0.32,
+            0.4,
+            0,
+            0.02
+          ]
+        }
+      ]
+    },
+    {
+      "source": "target-jump-native-attempt1.json",
+      "results": [
+        {
+          "profileId": 0,
+          "seed": 7,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.19400000000000014,
+          "apex": [
+            0.31214387011393036,
+            0.08029183863620329
+          ],
+          "landing": [
+            0.34316811160487204,
+            0.04995969503994366
+          ],
+          "apexError": 0.005649761090349699,
+          "landingError": 0.011515515297985035,
+          "penetration": 0.0014933256544364254,
+          "jointOverrun": 0,
+          "pitch": 0.05812508929314978,
+          "terminalRate": 0.12707699890568525,
+          "airborneWheelRate": 0.6612463109151969,
+          "airborneAbsoluteMotorWorkJ": 0.011789254501505572,
+          "landingTangentialSpeed": 0.4165709849039579,
+          "peakTorque": [
+            0.10839081042078057,
+            10.63743246496309,
+            0.740179946331766
+          ]
+        },
+        {
+          "profileId": 0,
+          "seed": 42,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.19400000000000014,
+          "apex": [
+            -0.27543962777689107,
+            0.08049880750387989
+          ],
+          "landing": [
+            -0.24672815972738407,
+            0.04991185776527715
+          ],
+          "apexError": 0.0019444305322020982,
+          "landingError": 0.0028964812618961534,
+          "penetration": 0.0015745052607797488,
+          "jointOverrun": 0,
+          "pitch": 0.05694320871899921,
+          "terminalRate": 0.1053285056639279,
+          "airborneWheelRate": 0.6326632658802849,
+          "airborneAbsoluteMotorWorkJ": 0.011873352540628903,
+          "landingTangentialSpeed": 0.38988639206527126,
+          "peakTorque": [
+            0.08888428549649345,
+            10.678894422111302,
+            0.751964892604203
+          ]
+        },
+        {
+          "profileId": 1,
+          "seed": 7,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.1460000000000001,
+          "apex": [
+            0.3212263354584627,
+            0.07143016003151514
+          ],
+          "landing": [
+            0.3430371812808012,
+            0.04955948717953934
+          ],
+          "apexError": 0.0026704677993362107,
+          "landingError": 0.0065182173955225554,
+          "penetration": 0.002149784604633012,
+          "jointOverrun": 0,
+          "pitch": 0.07663901678227537,
+          "terminalRate": 0.12710022182945624,
+          "airborneWheelRate": 0.5091162307856614,
+          "airborneAbsoluteMotorWorkJ": 0.0026048467116525343,
+          "landingTangentialSpeed": 0.32880476075185733,
+          "peakTorque": [
+            0.20572184359271353,
+            6.011385983643801,
+            1.5153617073408985
+          ]
+        },
+        {
+          "profileId": 1,
+          "seed": 42,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.1460000000000001,
+          "apex": [
+            -0.26466462208505803,
+            0.07134410964592414
+          ],
+          "landing": [
+            -0.24473136737054738,
+            0.04910678088448156
+          ],
+          "apexError": 0.0032393538623238034,
+          "landingError": 0.0022264910382343572,
+          "penetration": 0.0018837678802498398,
+          "jointOverrun": 0,
+          "pitch": 0.08064092592915115,
+          "terminalRate": 0.10534908990255785,
+          "airborneWheelRate": 0.4818137703501699,
+          "airborneAbsoluteMotorWorkJ": 0.0025801264219449354,
+          "landingTangentialSpeed": 0.30891042896891585,
+          "peakTorque": [
+            0.20978991506307124,
+            5.996491504252572,
+            1.5002093868681219
+          ]
+        },
+        {
+          "profileId": 2,
+          "seed": 7,
+          "passed": false,
+          "checks": {
+            "duration": false,
+            "flight": true,
+            "clearance": true,
+            "apex": false,
+            "landing": true,
+            "penetration": false,
+            "joints": false,
+            "pitch": false,
+            "terminal": false,
+            "wheelRate": false
+          },
+          "flightS": 0.17200000000000013,
+          "apex": [
+            0.3486992316321734,
+            0.36268261289975257
+          ],
+          "landing": [
+            0.34244649829562546,
+            0.04952259284474253
+          ],
+          "apexError": 0.29080216684473764,
+          "landingError": 0.014337813861942548,
+          "penetration": 0.022610238041637493,
+          "jointOverrun": 0.0880204176191981,
+          "pitch": 0.6037705378402416,
+          "terminalRate": 114.90413774963724,
+          "airborneWheelRate": 124.17880204082437,
+          "airborneAbsoluteMotorWorkJ": 32.36629149095274,
+          "landingTangentialSpeed": 0.3276454648172681,
+          "peakTorque": [
+            0.44040463791747836,
+            11.831235857720198,
+            1.7
+          ]
+        },
+        {
+          "profileId": 2,
+          "seed": 42,
+          "passed": false,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": false,
+            "landing": true,
+            "penetration": false,
+            "joints": false,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": false
+          },
+          "flightS": 0.17200000000000013,
+          "apex": [
+            -0.25207956988601066,
+            0.3116749707287557
+          ],
+          "landing": [
+            -0.24588195441328614,
+            0.049683842006022466
+          ],
+          "apexError": 0.23801845308011166,
+          "landingError": 0.007080798097372088,
+          "penetration": 0.026483543172521568,
+          "jointOverrun": 0.11240601351494428,
+          "pitch": 0.15254430305411262,
+          "terminalRate": 0.10786844211267738,
+          "airborneWheelRate": 36.06785787843836,
+          "airborneAbsoluteMotorWorkJ": 1.0320492847024976,
+          "landingTangentialSpeed": 0.31329149934373957,
+          "peakTorque": [
+            0.8355754056150739,
+            16,
+            1.7
+          ]
+        }
+      ]
+    },
+    {
+      "source": "target-jump-native-attempt2.json",
+      "results": [
+        {
+          "profileId": 0,
+          "seed": 7,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.19400000000000014,
+          "apex": [
+            0.31214387011393036,
+            0.08029183863620329
+          ],
+          "landing": [
+            0.34316811160487204,
+            0.04995969503994366
+          ],
+          "apexError": 0.005649761090349699,
+          "landingError": 0.011515515297985035,
+          "penetration": 0.0014933256544364254,
+          "jointOverrun": 0,
+          "pitch": 0.05812508929314978,
+          "terminalRate": 0.12707699890568525,
+          "airborneWheelRate": 0.6612463109151969,
+          "airborneAbsoluteMotorWorkJ": 0.011789254501505572,
+          "landingTangentialSpeed": 0.4165709849039579,
+          "peakTorque": [
+            0.10839081042078057,
+            10.63743246496309,
+            0.740179946331766
+          ]
+        },
+        {
+          "profileId": 0,
+          "seed": 42,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.19400000000000014,
+          "apex": [
+            -0.27543962777689107,
+            0.08049880750387989
+          ],
+          "landing": [
+            -0.24672815972738407,
+            0.04991185776527715
+          ],
+          "apexError": 0.0019444305322020982,
+          "landingError": 0.0028964812618961534,
+          "penetration": 0.0015745052607797488,
+          "jointOverrun": 0,
+          "pitch": 0.05694320871899921,
+          "terminalRate": 0.1053285056639279,
+          "airborneWheelRate": 0.6326632658802849,
+          "airborneAbsoluteMotorWorkJ": 0.011873352540628903,
+          "landingTangentialSpeed": 0.38988639206527126,
+          "peakTorque": [
+            0.08888428549649345,
+            10.678894422111302,
+            0.751964892604203
+          ]
+        },
+        {
+          "profileId": 1,
+          "seed": 7,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.1460000000000001,
+          "apex": [
+            0.3212263354584627,
+            0.07143016003151514
+          ],
+          "landing": [
+            0.3430371812808012,
+            0.04955948717953934
+          ],
+          "apexError": 0.0026704677993362107,
+          "landingError": 0.0065182173955225554,
+          "penetration": 0.002149784604633012,
+          "jointOverrun": 0,
+          "pitch": 0.07663901678227537,
+          "terminalRate": 0.12710022182945624,
+          "airborneWheelRate": 0.5091162307856614,
+          "airborneAbsoluteMotorWorkJ": 0.0026048467116525343,
+          "landingTangentialSpeed": 0.32880476075185733,
+          "peakTorque": [
+            0.20572184359271353,
+            6.011385983643801,
+            1.5153617073408985
+          ]
+        },
+        {
+          "profileId": 1,
+          "seed": 42,
+          "passed": true,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": true,
+            "landing": true,
+            "penetration": true,
+            "joints": true,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": true
+          },
+          "flightS": 0.1460000000000001,
+          "apex": [
+            -0.26466462208505803,
+            0.07134410964592414
+          ],
+          "landing": [
+            -0.24473136737054738,
+            0.04910678088448156
+          ],
+          "apexError": 0.0032393538623238034,
+          "landingError": 0.0022264910382343572,
+          "penetration": 0.0018837678802498398,
+          "jointOverrun": 0,
+          "pitch": 0.08064092592915115,
+          "terminalRate": 0.10534908990255785,
+          "airborneWheelRate": 0.4818137703501699,
+          "airborneAbsoluteMotorWorkJ": 0.0025801264219449354,
+          "landingTangentialSpeed": 0.30891042896891585,
+          "peakTorque": [
+            0.20978991506307124,
+            5.996491504252572,
+            1.5002093868681219
+          ]
+        },
+        {
+          "profileId": 2,
+          "seed": 7,
+          "passed": false,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": false,
+            "landing": true,
+            "penetration": false,
+            "joints": false,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": false
+          },
+          "flightS": 0.17200000000000013,
+          "apex": [
+            0.3482729076346785,
+            0.36217782103484736
+          ],
+          "landing": [
+            0.34244649829562546,
+            0.04952259284474253
+          ],
+          "apexError": 0.29024816059586217,
+          "landingError": 0.014337813861942548,
+          "penetration": 0.016752730417663772,
+          "jointOverrun": 0.08428557317374086,
+          "pitch": 0.09446078297758576,
+          "terminalRate": 0.12803048007232018,
+          "airborneWheelRate": 71.94072628107808,
+          "airborneAbsoluteMotorWorkJ": 2.1098350092654803,
+          "landingTangentialSpeed": 0.3276454648172681,
+          "peakTorque": [
+            0.32159919448717955,
+            11.831235857720198,
+            1.7
+          ]
+        },
+        {
+          "profileId": 2,
+          "seed": 42,
+          "passed": false,
+          "checks": {
+            "duration": true,
+            "flight": true,
+            "clearance": true,
+            "apex": false,
+            "landing": true,
+            "penetration": false,
+            "joints": false,
+            "pitch": true,
+            "terminal": true,
+            "wheelRate": false
+          },
+          "flightS": 0.17200000000000013,
+          "apex": [
+            -0.25207956988601066,
+            0.3116749707287557
+          ],
+          "landing": [
+            -0.24588195441328614,
+            0.049683842006022466
+          ],
+          "apexError": 0.23801845308011166,
+          "landingError": 0.007080798097372088,
+          "penetration": 0.026399144533631753,
+          "jointOverrun": 0.11240601351494428,
+          "pitch": 0.14970697399267752,
+          "terminalRate": 0.10798727313449613,
+          "airborneWheelRate": 41.78536681419649,
+          "airborneAbsoluteMotorWorkJ": 1.1131420440869184,
+          "landingTangentialSpeed": 0.31329149934373957,
+          "peakTorque": [
+            0.8355754056150739,
+            16,
+            1.7
+          ]
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "profileId": 0,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.19400000000000014,
+      "apex": [
+        0.3131211490099577,
+        0.08032984085877573
+      ],
+      "landing": [
+        0.3455728177799367,
+        0.04871406570634876
+      ],
+      "apexError": 0.005177144550326908,
+      "landingError": 0.00927587188001677,
+      "penetration": 0.002459433191793939,
+      "jointOverrun": 0,
+      "pitch": 0.05791387609390468,
+      "terminalRate": 0.12707681227497897,
+      "airborneWheelRate": 0.6719746071033974,
+      "airborneAbsoluteMotorWorkJ": 0.011787931680839827,
+      "landingTangentialSpeed": 0.43479142487323286,
+      "peakTorque": [
+        0.11276811260482081,
+        10.635123200251536,
+        0.7398816209590078
+      ]
+    },
+    {
+      "profileId": 0,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.19400000000000014,
+      "apex": [
+        -0.27442207304428207,
+        0.0805215667100787
+      ],
+      "landing": [
+        -0.24510184350761044,
+        0.04995789344961718
+      ],
+      "apexError": 0.00233714940034947,
+      "landingError": 0.002185242413856096,
+      "penetration": 0.0015318592410318438,
+      "jointOverrun": 0,
+      "pitch": 0.05675328491069943,
+      "terminalRate": 0.10532847763313723,
+      "airborneWheelRate": 0.6445957071363022,
+      "airborneAbsoluteMotorWorkJ": 0.011871251459774709,
+      "landingTangentialSpeed": 0.40115017622323357,
+      "peakTorque": [
+        0.0933058654094179,
+        10.676691319912935,
+        0.751665912940489
+      ]
+    },
+    {
+      "profileId": 1,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1460000000000001,
+      "apex": [
+        0.3220046906008161,
+        0.0714593105823075
+      ],
+      "landing": [
+        0.3443690636235385,
+        0.049623048127978964
+      ],
+      "apexError": 0.002008972280568558,
+      "landingError": 0.004281291936175217,
+      "penetration": 0.002150638983853162,
+      "jointOverrun": 0,
+      "pitch": 0.07689488503145302,
+      "terminalRate": 0.12710022725547926,
+      "airborneWheelRate": 0.5209299754802692,
+      "airborneAbsoluteMotorWorkJ": 0.0026045778571202175,
+      "landingTangentialSpeed": 0.3390259168975362,
+      "peakTorque": [
+        0.20564789176484025,
+        6.010677112288139,
+        1.5159371441407274
+      ]
+    },
+    {
+      "profileId": 1,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1460000000000001,
+      "apex": [
+        -0.263810625437696,
+        0.07135474815484796
+      ],
+      "landing": [
+        -0.24329047189923286,
+        0.04914974627800661
+      ],
+      "apexError": 0.0037966552075268806,
+      "landingError": 0.003538375491568491,
+      "penetration": 0.0018403408791769355,
+      "jointOverrun": 0,
+      "pitch": 0.08098766454163413,
+      "terminalRate": 0.10534910225479473,
+      "airborneWheelRate": 0.4945479369241159,
+      "airborneAbsoluteMotorWorkJ": 0.0025799509421925043,
+      "landingTangentialSpeed": 0.32027282530758605,
+      "peakTorque": [
+        0.20973939907806968,
+        5.995802229100792,
+        1.5005833184133988
+      ]
+    },
+    {
+      "profileId": 2,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.17800000000000013,
+      "apex": [
+        0.3172135132110048,
+        0.07539506708658389
+      ],
+      "landing": [
+        0.3432685373206104,
+        0.04988290567813686
+      ],
+      "apexError": 0.005695348472946141,
+      "landingError": 0.008313569925688186,
+      "penetration": 0.0015408140327374115,
+      "jointOverrun": 0,
+      "pitch": 0.046215567219805166,
+      "terminalRate": 0.12799240748191137,
+      "airborneWheelRate": 0.6748324952711258,
+      "airborneAbsoluteMotorWorkJ": 0.01027804176991248,
+      "landingTangentialSpeed": 0.357606672814471,
+      "peakTorque": [
+        0.1207292664722529,
+        11.978828616452311,
+        0.8555280266188204
+      ]
+    },
+    {
+      "profileId": 2,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.17800000000000013,
+      "apex": [
+        -0.26911765387948283,
+        0.07540408667890203
+      ],
+      "landing": [
+        -0.24508001764885368,
+        0.04976118287166001
+      ],
+      "apexError": 0.0006192833295192691,
+      "landingError": 0.001527919281576214,
+      "penetration": 0.0016404890999229121,
+      "jointOverrun": 0,
+      "pitch": 0.050800633132802996,
+      "terminalRate": 0.10791307004418838,
+      "airborneWheelRate": 0.6480812456661731,
+      "airborneAbsoluteMotorWorkJ": 0.01034907439017652,
+      "landingTangentialSpeed": 0.33729105892841377,
+      "peakTorque": [
+        0.12170815678113717,
+        12.019105682545117,
+        0.8438121930591583
+      ]
+    },
+    {
+      "profileId": 3,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1460000000000001,
+      "apex": [
+        0.319590617852999,
+        0.07110176255556988
+      ],
+      "landing": [
+        0.3431258545299574,
+        0.04979174825652305
+      ],
+      "apexError": 0.0020511624545574577,
+      "landingError": 0.0038975196749085365,
+      "penetration": 0.0013411386917806106,
+      "jointOverrun": 0,
+      "pitch": 0.051241330832218046,
+      "terminalRate": 0.127092416675082,
+      "airborneWheelRate": 0.5232320767654288,
+      "airborneAbsoluteMotorWorkJ": 0.0026131877571230265,
+      "landingTangentialSpeed": 0.3623695031616861,
+      "peakTorque": [
+        0.0927451969550164,
+        6.032404862303011,
+        0.6281673926267445
+      ]
+    },
+    {
+      "profileId": 3,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1440000000000001,
+      "apex": [
+        -0.26621164335122,
+        0.07096880938454464
+      ],
+      "landing": [
+        -0.24444778788965793,
+        0.04934761219606759
+      ],
+      "apexError": 0.0037427047174488576,
+      "landingError": 0.0043778114710077195,
+      "penetration": 0.0017194446769664834,
+      "jointOverrun": 0,
+      "pitch": 0.05493022622450052,
+      "terminalRate": 0.10534588555475594,
+      "airborneWheelRate": 0.4969592595426846,
+      "airborneAbsoluteMotorWorkJ": 0.00254621651184335,
+      "landingTangentialSpeed": 0.33733838615404577,
+      "peakTorque": [
+        0.09367656421962518,
+        6.019202477663345,
+        0.6214570171576065
+      ]
+    },
+    {
+      "profileId": 4,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.23000000000000018,
+      "apex": [
+        0.3269374506131082,
+        0.09508713978355221
+      ],
+      "landing": [
+        0.3675559471212004,
+        0.04937409425607531
+      ],
+      "apexError": 0.0036662609206443157,
+      "landingError": 0.0062774785031707095,
+      "penetration": 0.0017778088601417413,
+      "jointOverrun": 0,
+      "pitch": 0.09197207173432945,
+      "terminalRate": 0.1270967576143805,
+      "airborneWheelRate": 0.6689796946134621,
+      "airborneAbsoluteMotorWorkJ": 0.010386765818384157,
+      "landingTangentialSpeed": 0.4228185268731131,
+      "peakTorque": [
+        0.20684032418774728,
+        12.012791919617301,
+        1.4742885855747399
+      ]
+    },
+    {
+      "profileId": 4,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.23000000000000018,
+      "apex": [
+        -0.2590597370777111,
+        0.09507317382898661
+      ],
+      "landing": [
+        -0.2215619143268771,
+        0.04971096011566212
+      ],
+      "apexError": 0.0023398643544437926,
+      "landingError": 0.003862563718301241,
+      "penetration": 0.0018215133805398326,
+      "jointOverrun": 0,
+      "pitch": 0.09919686376341313,
+      "terminalRate": 0.10534457998321461,
+      "airborneWheelRate": 0.653459854661179,
+      "airborneAbsoluteMotorWorkJ": 0.01029701672684671,
+      "landingTangentialSpeed": 0.38776181323042913,
+      "peakTorque": [
+        0.20935863210296976,
+        12.122985714496847,
+        1.448547717729361
+      ]
+    },
+    {
+      "profileId": 5,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.23200000000000018,
+      "apex": [
+        0.32866041865689094,
+        0.09568887904042367
+      ],
+      "landing": [
+        0.365643517458742,
+        0.0494233026195042
+      ],
+      "apexError": 0.004134610488110701,
+      "landingError": 0.006762365905925694,
+      "penetration": 0.0018237960555969185,
+      "jointOverrun": 0,
+      "pitch": 0.1192969546417863,
+      "terminalRate": 0.12709322293288852,
+      "airborneWheelRate": 0.6639612719905807,
+      "airborneAbsoluteMotorWorkJ": 0.010540424635918543,
+      "landingTangentialSpeed": 0.3750177531188065,
+      "peakTorque": [
+        0.32808022669819537,
+        11.98579147559953,
+        1.7
+      ]
+    },
+    {
+      "profileId": 5,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.23200000000000018,
+      "apex": [
+        -0.25737360675164767,
+        0.09569894287860903
+      ],
+      "landing": [
+        -0.22344017652662873,
+        0.04974586871249334
+      ],
+      "apexError": 0.0019293289266198973,
+      "landingError": 0.003401757427033223,
+      "penetration": 0.001820734849869124,
+      "jointOverrun": 0,
+      "pitch": 0.1275609055343553,
+      "terminalRate": 0.1053114070761115,
+      "airborneWheelRate": 0.6495396051524525,
+      "airborneAbsoluteMotorWorkJ": 0.010431713592348051,
+      "landingTangentialSpeed": 0.35125007633669725,
+      "peakTorque": [
+        0.3266006417389313,
+        12.090490523875747,
+        1.7
+      ]
+    },
+    {
+      "profileId": 6,
+      "seed": 7,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1480000000000001,
+      "apex": [
+        0.32494312428346034,
+        0.07178158241399152
+      ],
+      "landing": [
+        0.3454850578022645,
+        0.04943300259842803
+      ],
+      "apexError": 0.002483793438435121,
+      "landingError": 0.0046981220254159834,
+      "penetration": 0.001493051363875994,
+      "jointOverrun": 0,
+      "pitch": 0.10325710310392384,
+      "terminalRate": 0.1270950884490557,
+      "airborneWheelRate": 0.5176467181757085,
+      "airborneAbsoluteMotorWorkJ": 0.002649311403858937,
+      "landingTangentialSpeed": 0.3201208328526944,
+      "peakTorque": [
+        0.3351488415523099,
+        5.988586145967187,
+        1.7
+      ]
+    },
+    {
+      "profileId": 6,
+      "seed": 42,
+      "passed": true,
+      "checks": {
+        "landingSpeed": true,
+        "duration": true,
+        "flight": true,
+        "clearance": true,
+        "apex": true,
+        "landing": true,
+        "penetration": true,
+        "joints": true,
+        "pitch": true,
+        "terminal": true,
+        "wheelRate": true
+      },
+      "flightS": 0.1480000000000001,
+      "apex": [
+        -0.2609258734008099,
+        0.07170240890798205
+      ],
+      "landing": [
+        -0.24280900486573115,
+        0.04992313096449902
+      ],
+      "apexError": 0.003368979719903903,
+      "landingError": 0.004058768550124636,
+      "penetration": 0.0012424642129180569,
+      "jointOverrun": 0,
+      "pitch": 0.10817482752105229,
+      "terminalRate": 0.10531180804140326,
+      "airborneWheelRate": 0.4916742713297584,
+      "airborneAbsoluteMotorWorkJ": 0.0026265476649854997,
+      "landingTangentialSpeed": 0.28877772986419115,
+      "peakTorque": [
+        0.3395902891324892,
+        5.973649593101559,
+        1.7
+      ]
+    }
+  ],
+  "passed": 14,
+  "trials": 14,
+  "seconds": 12.280883669999639,
+  "scope": "Native six noisy measurement KF; translated current x and +/- .005 initial vx; no runtime truth feedback, reset or root force; WASM separate",
+  "wasm": {
+    "engineVersion": "3.15.0",
+    "manifestSha256": "a8145731552af3f7193e1446affbc547282d7d2b3d1b57bfcd0db9168fad73c2",
+    "results": [
+      {
+        "profileId": 0,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.19400000000000014,
+        "apex": [
+          0.31312114900996874,
+          0.0803298408587729
+        ],
+        "apexError": 0.005177144550338087,
+        "landing": [
+          0.34557281777994975,
+          0.04871406570634343
+        ],
+        "landingError": 0.009275871880029537,
+        "landingTangentialSpeed": 0.43479141165689406,
+        "airborneAbsoluteMotorWorkJ": 0.011787931680840013,
+        "airborneWheelRate": 0.6719746071034445,
+        "penetration": 0.002459433191799157,
+        "jointOverrun": 0,
+        "pitch": 0.057913876093899544,
+        "terminalRate": 0.12707681227482906
+      },
+      {
+        "profileId": 0,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.19400000000000014,
+        "apex": [
+          -0.274422073044284,
+          0.08052156671007937
+        ],
+        "apexError": 0.0023371494003513907,
+        "landing": [
+          -0.24510184350761327,
+          0.049957893449618485
+        ],
+        "landingError": 0.00218524241385889,
+        "landingTangentialSpeed": 0.4011501670704818,
+        "airborneAbsoluteMotorWorkJ": 0.01187125145977461,
+        "airborneWheelRate": 0.6445957071363049,
+        "penetration": 0.0015318592410309279,
+        "jointOverrun": 0,
+        "pitch": 0.056753284910701925,
+        "terminalRate": 0.10532847763324539
+      },
+      {
+        "profileId": 1,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.1460000000000001,
+        "apex": [
+          0.32200469060081616,
+          0.07145931058230756
+        ],
+        "apexError": 0.0020089722805686216,
+        "landing": [
+          0.3443690636235399,
+          0.049623048127978936
+        ],
+        "landingError": 0.0042812919361766046,
+        "landingTangentialSpeed": 0.3390258956632429,
+        "airborneAbsoluteMotorWorkJ": 0.0026045778571202128,
+        "airborneWheelRate": 0.5209299754803143,
+        "penetration": 0.002150638983850775,
+        "jointOverrun": 0,
+        "pitch": 0.0768948850314527,
+        "terminalRate": 0.12710022725547832
+      },
+      {
+        "profileId": 1,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.1460000000000001,
+        "apex": [
+          -0.2638106254376987,
+          0.07135474815484874
+        ],
+        "apexError": 0.003796655207529582,
+        "landing": [
+          -0.24329047189923558,
+          0.04914974627800847
+        ],
+        "landingError": 0.0035383754915714956,
+        "landingTangentialSpeed": 0.3202728080165003,
+        "airborneAbsoluteMotorWorkJ": 0.002579950942192518,
+        "airborneWheelRate": 0.49454793692412014,
+        "penetration": 0.0018403408791740489,
+        "jointOverrun": 0,
+        "pitch": 0.08098766454162011,
+        "terminalRate": 0.10534910225484753
+      },
+      {
+        "profileId": 2,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.17800000000000013,
+        "apex": [
+          0.3172135132110254,
+          0.07539506708658184
+        ],
+        "apexError": 0.005695348472966785,
+        "landing": [
+          0.34326853732064116,
+          0.04988290567813344
+        ],
+        "landingError": 0.008313569925717659,
+        "landingTangentialSpeed": 0.35760666619172077,
+        "airborneAbsoluteMotorWorkJ": 0.010278041769912814,
+        "airborneWheelRate": 0.6748324952713913,
+        "penetration": 0.0015408140327405756,
+        "jointOverrun": 0,
+        "pitch": 0.04621556721983037,
+        "terminalRate": 0.12799240748190918
+      },
+      {
+        "profileId": 2,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.17800000000000013,
+        "apex": [
+          -0.26911765387947667,
+          0.07540408667890142
+        ],
+        "apexError": 0.0006192833295134364,
+        "landing": [
+          -0.24508001764884324,
+          0.04976118287165904
+        ],
+        "landingError": 0.0015279192815741446,
+        "landingTangentialSpeed": 0.3372910524868416,
+        "airborneAbsoluteMotorWorkJ": 0.010349074390176573,
+        "airborneWheelRate": 0.6480812456662273,
+        "penetration": 0.0016404890999232452,
+        "jointOverrun": 0,
+        "pitch": 0.0508006331328086,
+        "terminalRate": 0.10791307004416995
+      },
+      {
+        "profileId": 3,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.1460000000000001,
+        "apex": [
+          0.3195906178529972,
+          0.07110176255557007
+        ],
+        "apexError": 0.0020511624545556774,
+        "landing": [
+          0.34312585452995614,
+          0.049791748256523466
+        ],
+        "landingError": 0.0038975196749076227,
+        "landingTangentialSpeed": 0.36236948801349095,
+        "airborneAbsoluteMotorWorkJ": 0.0026131877571230347,
+        "airborneWheelRate": 0.5232320767654322,
+        "penetration": 0.0013411386917797224,
+        "jointOverrun": 0,
+        "pitch": 0.05124133083221016,
+        "terminalRate": 0.1270924166749626
+      },
+      {
+        "profileId": 3,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.1440000000000001,
+        "apex": [
+          -0.26621164335122316,
+          0.07096880938454561
+        ],
+        "apexError": 0.003742704717452065,
+        "landing": [
+          -0.24444778788966148,
+          0.04934761219606909
+        ],
+        "landingError": 0.004377811471011569,
+        "landingTangentialSpeed": 0.3373383736733693,
+        "airborneAbsoluteMotorWorkJ": 0.0025462165118433655,
+        "airborneWheelRate": 0.4969592595426706,
+        "penetration": 0.00171944467696529,
+        "jointOverrun": 0,
+        "pitch": 0.054930226224490224,
+        "terminalRate": 0.10534588555471702
+      },
+      {
+        "profileId": 4,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.23000000000000018,
+        "apex": [
+          0.326937450613094,
+          0.09508713978354802
+        ],
+        "apexError": 0.003666260920629755,
+        "landing": [
+          0.3675559471211801,
+          0.049374094256070644
+        ],
+        "landingError": 0.006277478503150002,
+        "landingTangentialSpeed": 0.4228184644881057,
+        "airborneAbsoluteMotorWorkJ": 0.01038676581838447,
+        "airborneWheelRate": 0.6689796946130757,
+        "penetration": 0.0017778088601450165,
+        "jointOverrun": 0,
+        "pitch": 0.09197207173432154,
+        "terminalRate": 0.12709675761443517
+      },
+      {
+        "profileId": 4,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.23000000000000018,
+        "apex": [
+          -0.25905973707767793,
+          0.09507317382899028
+        ],
+        "apexError": 0.002339864354411541,
+        "landing": [
+          -0.22156191432682978,
+          0.04971096011566578
+        ],
+        "landingError": 0.003862563718265262,
+        "landingTangentialSpeed": 0.38776177512734655,
+        "airborneAbsoluteMotorWorkJ": 0.010297016726845996,
+        "airborneWheelRate": 0.6534598546618682,
+        "penetration": 0.0018215133805372513,
+        "jointOverrun": 0,
+        "pitch": 0.09919686376343823,
+        "terminalRate": 0.10534457998345474
+      },
+      {
+        "profileId": 5,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.23200000000000018,
+        "apex": [
+          0.3286604186569407,
+          0.09568887904043213
+        ],
+        "apexError": 0.004134610488161034,
+        "landing": [
+          0.36564351745881307,
+          0.04942330261951347
+        ],
+        "landingError": 0.006762365905996462,
+        "landingTangentialSpeed": 0.37501768862784346,
+        "airborneAbsoluteMotorWorkJ": 0.010540424635917409,
+        "airborneWheelRate": 0.6639612719916324,
+        "penetration": 0.0018237960555898408,
+        "jointOverrun": 0,
+        "pitch": 0.1192969546418366,
+        "terminalRate": 0.1270932229327219
+      },
+      {
+        "profileId": 5,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.23200000000000018,
+        "apex": [
+          -0.2573736067516818,
+          0.09569894287860672
+        ],
+        "apexError": 0.001929328926652712,
+        "landing": [
+          -0.22344017652667797,
+          0.04974586871249259
+        ],
+        "landingError": 0.003401757427069805,
+        "landingTangentialSpeed": 0.35125003403408983,
+        "airborneAbsoluteMotorWorkJ": 0.010431713592348808,
+        "airborneWheelRate": 0.6495396051518592,
+        "penetration": 0.001820734849867875,
+        "jointOverrun": 0,
+        "pitch": 0.12756090553430607,
+        "terminalRate": 0.10531140707621933
+      },
+      {
+        "profileId": 6,
+        "seed": 7,
+        "passed": true,
+        "flightS": 0.1480000000000001,
+        "apex": [
+          0.3249431242834573,
+          0.07178158241399255
+        ],
+        "apexError": 0.0024837934384321996,
+        "landing": [
+          0.34548505780226135,
+          0.04943300259842959
+        ],
+        "landingError": 0.004698122025413304,
+        "landingTangentialSpeed": 0.3201208043120744,
+        "airborneAbsoluteMotorWorkJ": 0.0026493114038589447,
+        "airborneWheelRate": 0.5176467181757394,
+        "penetration": 0.001493051363875189,
+        "jointOverrun": 0,
+        "pitch": 0.10325710310392265,
+        "terminalRate": 0.12709508844912165
+      },
+      {
+        "profileId": 6,
+        "seed": 42,
+        "passed": true,
+        "flightS": 0.1480000000000001,
+        "apex": [
+          -0.26092587340080897,
+          0.07170240890798207
+        ],
+        "apexError": 0.0033689797199029626,
+        "landing": [
+          -0.24280900486572862,
+          0.04992313096449916
+        ],
+        "landingError": 0.004058768550122387,
+        "landingTangentialSpeed": 0.28877771120327855,
+        "airborneAbsoluteMotorWorkJ": 0.0026265476649855,
+        "airborneWheelRate": 0.4916742713298139,
+        "penetration": 0.0012424642129180569,
+        "jointOverrun": 0,
+        "pitch": 0.10817482752105294,
+        "terminalRate": 0.10531180804134091
+      }
+    ],
+    "maxSnapshot": 9.325873406851315e-14,
+    "maxState": 2.4509727580834806e-11,
+    "maxTorque": 2.7553070935937285e-11,
+    "maxEstimate": 2.3564261653064023e-11,
+    "planningP95Ms": 0.3762780000000703,
+    "feedbackP95Ms": 0.02173899999979767,
+    "scope": "Node official WASM; no HTTP or browser; measurements use same random draws as native"
+  }
+}

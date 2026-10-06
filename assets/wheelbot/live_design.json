@@ -1,9 +1,9 @@
 {
   "schema": "wheelbot-live-design/v1",
-  "modelSha256": "17fec38c99f4ba42c99052570e8951b35cb4d041543ef47761baff91c4a50382",
-  "profileSha256": "ac38ca546e68c56b33a85ed71eb28fa4d8f6d064b2138f7381b1c3c957ee0383",
+  "modelSha256": "a813b1c3c3cf7d2d38e71cfc584b96e490d34e7dc263892150aa1bed8995eaea",
+  "profileSha256": "c85249b8c908467953e625c7cf36f32682bc329bce482c1d107623eb40cead90",
   "modelMetadata": {
-    "baseGeometryType": "ellipsoid",
+    "baseGeometryType": "box",
     "baseHalfSizeM": [
       0.085,
       0.07,
@@ -32,9 +32,9 @@
     },
     "massAssumptions": "1 kg lumped body/drive assembly + two 0.056 kg rods + 0.08715 kg wheel/tire; not hardware identified",
     "baseInertiaKgM2": [
-      0.002105,
-      0.0025700000000000002,
-      0.0024250000000000005
+      0.0035083333333333334,
+      0.0042833333333333334,
+      0.004041666666666667
     ],
     "fullBodyContact": true,
     "collisionExclusion": "Standard MuJoCo parent-child filter only",
@@ -45,7 +45,7 @@
     "totalMassKg": 1.1991500000000002,
     "linkLengthM": 0.25,
     "wheelRadiusM": 0.05,
-    "derivedFrom": "Original source-derived Upkie/sketch leg and tire dimensions/masses; new rounded base is an engineering assumption, with 1 kg lumped body/drive assembly and no identified motor assemblies or remote transmission"
+    "derivedFrom": "Original source-derived Upkie/sketch leg and tire dimensions/masses; new rectangular box base is an engineering assumption, with 1 kg lumped body/drive assembly and no identified motor assemblies or remote transmission"
   },
   "defaultMode": "lqr_kf",
   "controlDt": 0.01,
