@@ -18,7 +18,7 @@ $('help').addEventListener('toggle',()=>input.clear());
 $('course').onchange=()=>void changeCourse($('course').value);
 function tick(){controller.setInput(input.axes());const start=performance.now(),s=controller.step();meter.sampleControl(performance.now()-start,s.steps*.01);return s;}
 function render(dt,text=false){if(!controller)return;const s=controller.snapshot();camera+=(s.truth[0]-camera)*(1-Math.exp(-5*dt));view.drawScene(backend.sceneGeometry(s.truth),s.truth,{game:true,cameraX:camera,showCOM:false});if(!text)return;
- $('telemetry').textContent=`x ${s.truth[0].toFixed(2)} m · v ${s.truth[6].toFixed(2)} m/s · 높이 ${(s.truth[1]*100).toFixed(1)} cm`;
+ $('telemetry').textContent=`x ${s.truth[0].toFixed(2)} m · v ${s.truth[6].toFixed(2)} m/s · cap ${s.speedLimit.toFixed(2)} · 높이 ${(s.truth[1]*100).toFixed(1)} cm`;
  $('charge').value=s.charge.fraction;$('charge-label').textContent=`${s.charge.seconds.toFixed(2)} s · ${(100*s.charge.requestedHeight).toFixed(1)} cm`;
  $('status').textContent=loading?'코스 불러오는 중…':!playing?'일시정지 · P로 계속':s.status;$('failure').hidden=!s.failed;
  if($('help').open)$('metrics').textContent=JSON.stringify({runtime:backend.diagnostics().version,robotAssetSha256:backend.robotAssetSha256,sceneAssetSha256:backend.assetSha256,knownTerrain:true,performance:meter.snapshot()},null,2);

@@ -81,6 +81,7 @@ jobs:
           node tests/test_wheelbot_game_world.mjs
           node tests/test_wheelbot_wheel_support.mjs
           node tests/test_wheelbot_game_control.mjs
+          node tests/test_wheelbot_game_stability.mjs
           node tests/test_wheelbot_game_optional.mjs
           python tests/test_wheelbot_game_jump_reference.py
           node tests/test_wheelbot_game_jump.mjs
