@@ -1,6 +1,24 @@
-# One-box wheelbot lab
+# Wheelbot keyboard playground
 
-[Wheelbot viewer](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html) · [CartPole](../index.html)
+The default `wheelbot.html` is a full-screen keyboard playground: A/D requests ±0.2 m/s horizontal velocity; W/S requests ±0.06 m/s height velocity within 36–49 cm; Q/E changes in-plane pitch within ±0.17 rad. Space charges for up to one simulated second and requests calibrated wheel clearance of about 2.1–4.5 cm. These are local tested ranges, not global physical maxima. Moving hops retain velocity intent. Pause, focus loss, hidden tabs and course changes cancel charge; R resets the state, not a get-up maneuver.
+
+Courses add actual MuJoCo collision geometry to the canonical robot and floor. The controller uses a known static terrain map. Compiling and displaying a course does not prove traversal. Actual keyboard, flight, focus, layout and wall-clock acceptance runs only in normal CI via `tests/test_wheelbot_game_browser.py --url URL`; local syntax checks do not establish browser acceptance.
+
+## Game control boundaries
+
+Releasing Space never overwrites position, velocity or the observer. The jump reference is translated using the measured launch velocity, with wheel rolling rate and joint damping compensation. The horizontal keys are retained and become ground velocity commands again after landing. This preserves motion; it does not claim arbitrary horizontal acceleration is sustainable in free flight without an external force. Charge is based on simulated held duration, capped at one second, independent of keyboard repeat.
+
+The two source hops share an approximately 39.25 cm entry and a roughly 35.47 cm minimum hip-axis height. Higher charge therefore does not imply proportionally deeper crouching in this implementation; calibrated push-off/flight scheduling changes the requested clearance. W/S or Q/E may put the robot outside the checked jump-entry neighborhood. A release then reports the reason instead of silently moving to another pose or pretending to jump.
+
+The flat-ground measured envelope covers steady horizontal velocities from −0.2 to +0.2 m/s, short/full charge and five calibrated charge fractions. Every course has real collision geometry, but the original terrain-controller probes failed at some corners/crests: the ramp, uneven and obstacle courses are visible stress tests, not certified traversal. Failed control disengages all motors and invalidates its estimate while gravity and collision integration continue. Press R for an explicit reset.
+
+The current playground requires its complete validated asset bundle to load; corrupt/missing jump data can prevent startup rather than degrading to a ground-only game. The preserved path lesson has its own optional-data isolation checks. A proposed game fallback and radius-aware terrain-reference experiment were not incorporated; no result from those unaccepted prototypes is claimed.
+
+## Preserved path lesson
+
+The following describes `wheelbot-paths.html`, which retains the existing path application and its numerical/browser regressions.
+
+[Path lesson](https://tinmanlab.github.io/cartpole-mpc/wheelbot-paths.html) · [CartPole](../index.html)
 
 ## One model and an explicit runtime version
 

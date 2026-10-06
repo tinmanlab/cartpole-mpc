@@ -4,7 +4,7 @@
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
-[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). One rectangular-box robot: click a base/wheel target or draw and release a path. Requested and checked paths remain distinct. The same page exposes the validated small-jump family from its declared low-stance entry range; other requests are explicitly rejected. Runtime and profile generation use MuJoCo 3.15.0. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
+[**Open wheelbot playground →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). WASD controls base velocity and height; Q/E tilts the body; hold and release Space for a calibrated small hop while stationary or moving. Four physical terrain courses use the same box robot and MuJoCo 3.15.0. Terrain traversal remains a challenge, not a validated guarantee. [Previous path lesson](wheelbot-paths.html) · [Guide](docs/WHEELBOT_LAB.md).
 
 ![MuJoCo WASM control/observer lab](evidence/mujoco_wasm_browser.png)
 

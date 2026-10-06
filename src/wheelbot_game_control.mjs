@@ -22,9 +22,14 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
  let target={x:0,z:.3925+surface(0).height,pitch:0,vx:0,vz:0},height=.3925,pr=profile(height,0,0,surface(0).height),truth=[...pr.qref,0,0,0,0,0,0],estimate=[...measure(truth).slice(0,5),0,0,0,0,0,0];
  let input={horizontal:0,vertical:0,tilt:0},steps=0,last=null,failed=false,status='Ready · calibrated charge height',jump=null,index=0,outcome=null,air=0;
  let charge={active:false,seconds:0,fraction:0,requestedHeight:planner.levels[0],acceptedHeight:null};
- const snapshot=()=>structuredClone({truth,estimate,steps,last,failed,phase:failed?'fallen':jump?'jump':charge.active?'charging':'ground',target,charge,jump:jump?{profileId:jump.profileId,vx:jump.vx,index,...outcome}:outcome,status,controlDt:.01});
+ const snapshot=()=>structuredClone({truth,estimate,steps,last,failed,observerValid:!failed,phase:failed?'fallen':jump?'jump':charge.active?'charging':'ground',target,charge,jump:jump?{profileId:jump.profileId,vx:jump.vx,index,...outcome}:outcome,status,controlDt:.01});
  function step(){
-  if(failed)return snapshot();
+  if(failed){
+   // Loss of control never pauses gravity or contact dynamics.
+   truth=backend.stepWrench(truth,[0,0,0],[0,0,0],true);steps++;
+   last={u:[0,0,0],contact:backend.contact(truth),physical:backend.lastActionStep(),measurement:null,reference:last?.reference??null};
+   return snapshot();
+  }
   if(charge.active){charge.seconds=Math.min(1,charge.seconds+.01);charge.fraction=charge.seconds;charge.requestedHeight=planner.levels[0]+charge.fraction*(planner.levels[1]-planner.levels[0]);}
   let action;
   if(jump)action=jump.command(index,estimate);
@@ -55,7 +60,7 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
    else if(index>=600){jump=null;failed=true;status='Jump did not land';}
   }
   if(!jump&&outcome?.landed){outcome.recoverySteps++;outcome.terminalRelativeRate=Math.max(...truth.slice(6).map((v,j)=>Math.abs(v-action.state[5+j])));outcome.success=!failed&&outcome.flightS>=.03&&outcome.recoverySteps>=100&&outcome.terminalRelativeRate<=.3;}
-  if(failed)status='Physical envelope exceeded';
+  if(failed){status='Physical envelope exceeded · motors off';charge.active=false;input={horizontal:0,vertical:0,tilt:0};jump=null;}
   steps++;last={u:action.u,contact:backend.contact(truth),physical,measurement,reference:action.state};return snapshot();
  }
  return {snapshot,step,setInput(values){if(!values||Object.keys(values).some(k=>!['horizontal','vertical','tilt'].includes(k))||Object.values(values).some(v=>!Number.isFinite(v)||Math.abs(v)>1))throw Error('Inputs must be finite in [-1,1]');input={horizontal:0,vertical:0,tilt:0,...values};},beginCharge(){if(!failed&&!jump&&!charge.active)charge={active:true,seconds:0,fraction:0,requestedHeight:planner.levels[0],acceptedHeight:null};return snapshot();},releaseCharge(){if(!charge.active)return snapshot();charge.active=false;try{jump=planner.start(estimate,charge.fraction,surface(estimate[0]));index=0;air=0;outcome={flight:false,landed:false,flightS:0,maxClearance:0,success:false};charge.acceptedHeight=jump.acceptedHeight;status='Charged moving jump · momentum preserved';}catch(e){status=e.message;}return snapshot();},cancelInput(){input={horizontal:0,vertical:0,tilt:0};charge.active=false;return snapshot();}};

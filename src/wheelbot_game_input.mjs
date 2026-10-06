@@ -11,7 +11,7 @@ export function createGameInput({onChargeStart=()=>{},onChargeRelease=()=>{},onC
   if(e.code==='KeyP'){clear();onPause();return true;}if(e.code==='KeyR'){clear();onReset();return true;}if(e.code==='Escape'){clear();onHelp();return true;}
   held.add(e.code);if(e.code==='Space')onChargeStart();return true;
  },up(e){
-  if(!held.has(e.code))return false;held.delete(e.code);if(!editable(e))e.preventDefault?.();
+  if(!held.has(e.code))return false;if(editable(e)){clear();return true;}held.delete(e.code);if(!editable(e))e.preventDefault?.();
   if(e.code==='Space')onChargeRelease();return true;
  }};
 }

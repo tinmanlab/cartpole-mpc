@@ -61,15 +61,6 @@ jobs:
           node tests/test_wheelbot_configuration.mjs
           node tests/test_wheelbot_contact.mjs
           python tests/test_wheelbot_contact_reference.py
-      - name: Canonical one-box real pointer browser gates
-        if: always()
-        run: |
-          python -m py_compile tests/test_wheelbot_paths_browser.py
-          mkdir -p test-results
-          python -m http.server 8765 --bind 127.0.0.1 > test-results/wheelbot-ci-server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          python tests/test_wheelbot_paths_browser.py --url http://127.0.0.1:8765/wheelbot.html
       - name: Historical aspirational fast-response benchmark (failure retained)
         if: always()
         continue-on-error: true
@@ -86,12 +77,25 @@ jobs:
         if: always()
         run: |
           node tests/test_wheelbot_game_input.mjs
+          node tests/test_wheelbot_game_ui.mjs
           node tests/test_wheelbot_game_world.mjs
           node tests/test_wheelbot_game_control.mjs
           python tests/test_wheelbot_game_jump_reference.py
           node tests/test_wheelbot_game_jump.mjs
           node tests/test_wheelbot_continuous_charge.mjs
           node tests/test_wheelbot_game_fall.mjs
+      - name: Path lesson and keyboard game actual browser acceptance
+        if: always()
+        run: |
+          python -m py_compile tests/test_wheelbot_paths_browser.py tests/test_wheelbot_game_browser.py
+          mkdir -p test-results
+          python -m http.server 8765 --bind 127.0.0.1 > test-results/wheelbot-game-ci-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          failed=0
+          python tests/test_wheelbot_paths_browser.py --url http://127.0.0.1:8765/wheelbot-paths.html || failed=1
+          python tests/test_wheelbot_game_browser.py --url http://127.0.0.1:8765/wheelbot.html || failed=1
+          exit "$failed"
       - name: Upload verification evidence
         if: always()
         uses: actions/upload-artifact@v4

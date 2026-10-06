@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-const html=fs.readFileSync('wheelbot.html','utf8');
+const html=fs.readFileSync('wheelbot-paths.html','utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
 assert.equal(new Set(ids).size,ids.length);
 for(const id of ['view','target-x','target-z','target-pitch','target-mode','target-action','cancel','status'])assert(ids.includes(id));
