@@ -1,0 +1,15 @@
+{
+  "physicsDt": 0.002,
+  "controlDt": 0.01,
+  "maximumVelocity": 0.2,
+  "maximumAcceleration": 0.5,
+  "heightRange": [0.36, 0.49],
+  "pitchRange": [-0.17, 0.17],
+  "chargeSeconds": [0.1, 0.5, 1],
+  "seeds": [7, 42],
+  "movingVelocities": [-0.2, -0.1, 0.1, 0.2],
+  "jumpProfiles": [1, 5],
+  "chargeMeaning": "Linear requested clearance; nearest two calibrated zero-bias levels, threshold 0.5 s. Not continuous exact height.",
+  "initialHipHeight": 0.3925,
+  "scope": "Same canonical robot; initial atlas trim only. No jump-time state/observer reset; no external force. Terrain is known-map context, not a sensor."
+}

@@ -82,6 +82,16 @@ jobs:
         run: |
           python tests/test_runtime_versions.py --require-latest
           node tests/test_runtime_versions.mjs --require-latest
+      - name: Keyboard game prototype acceptance (draft feature)
+        if: always()
+        run: |
+          node tests/test_wheelbot_game_input.mjs
+          node tests/test_wheelbot_game_world.mjs
+          node tests/test_wheelbot_game_control.mjs
+          python tests/test_wheelbot_game_jump_reference.py
+          node tests/test_wheelbot_game_jump.mjs
+          node tests/test_wheelbot_continuous_charge.mjs
+          node tests/test_wheelbot_game_fall.mjs
       - name: Upload verification evidence
         if: always()
         uses: actions/upload-artifact@v4

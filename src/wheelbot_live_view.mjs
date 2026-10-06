@@ -1,5 +1,5 @@
-export function worldTransform(width,height,{live=true,camera=0}={}){
- const ground=height-43,scale=live?Math.min((height-60)/.72,width/2.6):Math.min(height*.98,width*.8);
+export function worldTransform(width,height,{live=true,camera=0,game=false}={}){
+ const ground=game?height*.82:height-43,scale=game?Math.min(height/1.25,width/3.8):live?Math.min((height-60)/.72,width/2.6):Math.min(height*.98,width*.8);
  return {toPixel:({x,z})=>({x:width/2+(x-camera)*scale,y:ground-z*scale}),toWorld:({x,y})=>({x:(x-width/2)/scale+camera,z:(ground-y)/scale}),scale,ground};
 }
 // Fixed-timestep physics is independent of canvas and low-rate text updates.
@@ -22,12 +22,12 @@ export function createLiveView(){
  const canvas=document.getElementById('view'),ctx=canvas.getContext('2d'),traces=[],actual=[];let lastTrace=-1,lastActual=null,lastActualMode=null;
  const resize=()=>{const r=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,1.5);const w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}};
  new ResizeObserver(resize).observe(canvas);resize();
- function drawScene(geoms,x,{live=false,comLocal=.02,showCOM=true,goal=0,target=null,wrench=null,path=null}={}){
-  resize();const W=canvas.width,H=canvas.height,camera=live?0:(geoms.find(g=>g.name==='torso_visual')?.position[0]??0),transform=worldTransform(W,H,{live,camera}),{ground,scale}=transform;
+ function drawScene(geoms,x,{live=false,comLocal=.02,showCOM=true,goal=0,target=null,wrench=null,path=null,game=false,cameraX=0}={}){
+  resize();const W=canvas.width,H=canvas.height,camera=game?cameraX:live?0:(geoms.find(g=>g.name==='torso_visual')?.position[0]??0),transform=worldTransform(W,H,{live,camera,game}),{ground,scale}=transform;
   const px=v=>transform.toPixel({x:v,z:0}).x,py=v=>transform.toPixel({x:0,z:v}).y;
   ctx.clearRect(0,0,W,H);ctx.fillStyle='#fbfdff';ctx.fillRect(0,0,W,H);
   ctx.font=`${Math.max(10,H/36)}px system-ui`;ctx.lineWidth=1;ctx.strokeStyle='#dfe8ef';ctx.fillStyle='#7690a0';
-  for(let i=-10;i<=10;i++){const value=i*.1,screen=px(value);if(screen<0||screen>W)continue;ctx.beginPath();ctx.moveTo(screen,ground);ctx.lineTo(screen,ground+6);ctx.stroke();if(i%2===0)ctx.fillText(value.toFixed(1)+' m',screen-12,ground+22);}
+  for(let i=Math.floor((camera-3)*10);i<=Math.ceil((camera+3)*10);i++){const value=i*.1,screen=px(value);if(screen<0||screen>W)continue;ctx.beginPath();ctx.moveTo(screen,ground);ctx.lineTo(screen,ground+6);ctx.stroke();if(i%2===0)ctx.fillText(value.toFixed(1)+' m',screen-12,ground+22);}
   ctx.strokeStyle='#7892a4';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,ground);ctx.lineTo(W,ground);ctx.stroke();
   if(live&&target){
    const t=geoms.find(g=>g.name==='torso_visual');ctx.save();ctx.translate(px(target.x+Math.sin(target.pitch)*comLocal),py(target.z+Math.cos(target.pitch)*comLocal));ctx.rotate(-target.pitch);ctx.setLineDash([5,4]);ctx.strokeStyle='#c69e58';ctx.fillStyle='rgba(218,174,98,.10)';ctx.lineWidth=1.6;ctx.beginPath();ctx.rect(-(t?.size[0]??.085)*scale,-(t?.size[2]??.075)*scale,2*(t?.size[0]??.085)*scale,2*(t?.size[2]??.075)*scale);ctx.fill();ctx.stroke();ctx.restore();
@@ -37,10 +37,11 @@ export function createLiveView(){
   if(lastActualMode!==path?.mode){actual.length=0;lastActual=null;lastActualMode=path?.mode;}
   const wheelPoint=geoms.find(g=>g.name==='wheel_visual')?.position;const point=path?.mode==='wheel'&&wheelPoint?{x:wheelPoint[0],z:wheelPoint[2]}:{x:x[0],z:x[1]};
   if(!lastActual||Math.hypot(point.x-lastActual.x,point.z-lastActual.z)>.001){bounded(actual,point,600);lastActual=point;}
-  if(actual.length>1){ctx.strokeStyle='#2979bd';ctx.lineWidth=1.5;ctx.beginPath();actual.forEach((p,i)=>i?ctx.lineTo(px(p.x),py(p.z)):ctx.moveTo(px(p.x),py(p.z)));ctx.stroke();}
+  if(!game&&actual.length>1){ctx.strokeStyle='#2979bd';ctx.lineWidth=1.5;ctx.beginPath();actual.forEach((p,i)=>i?ctx.lineTo(px(p.x),py(p.z)):ctx.moveTo(px(p.x),py(p.z)));ctx.stroke();}
   const ordered=geoms.filter(g=>g.type!==0).sort((a,b)=>(a.name==='torso_visual'?1:0)-(b.name==='torso_visual'?1:0));
   for(const g of ordered){ctx.save();ctx.translate(px(g.position[0]),py(g.position[2]));ctx.rotate(g.name==='wheel_visual'?x[2]+x[3]+x[4]+x[5]:-Math.atan2(g.rotation[6],g.rotation[0]));ctx.fillStyle=g.name==='torso_visual'?'#e8f0f5':g.name==='wheel_visual'?'#344b60':g.name.includes('link')?'#4385b7':'#b3946c';ctx.strokeStyle=g.name==='torso_visual'?'#54778f':'#285778';ctx.lineWidth=2;
    if(g.name==='wheel_visual'){const radius=g.size[0]*scale;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.strokeStyle='#d2e2ed';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(radius,0);ctx.stroke();}
+   else if(g.type===2){ctx.beginPath();ctx.arc(0,0,g.size[0]*scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
    else if(g.type===4){ctx.beginPath();ctx.ellipse(0,0,g.size[0]*scale,g.size[2]*scale,0,0,Math.PI*2);ctx.fill();ctx.stroke();}
    else if(g.type===6){ctx.fillRect(-g.size[0]*scale,-g.size[2]*scale,2*g.size[0]*scale,2*g.size[2]*scale);ctx.strokeRect(-g.size[0]*scale,-g.size[2]*scale,2*g.size[0]*scale,2*g.size[2]*scale);}
    else if(g.type===5){ctx.lineWidth=Math.max(3,2*g.size[0]*scale);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,-g.size[1]*scale);ctx.lineTo(0,g.size[1]*scale);ctx.stroke();}
