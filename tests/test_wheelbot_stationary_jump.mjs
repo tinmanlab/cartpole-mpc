@@ -39,7 +39,7 @@ console.log(JSON.stringify({passed:true,rows}));
   const bad={...read('stationary_jump'),nativeVersion:'mismatch'};
   const c=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'),{seed:7,stationaryJumpBundle:bad});
   assert.equal(c.snapshot().stationaryJumpAvailable,false);
-  c.beginCharge();c.step();const stopped=c.releaseCharge();assert.notEqual(stopped.phase,'jump');assert(stopped.jumpUnavailableReason.length>0);
+  c.beginCharge();c.step();const fallback=c.releaseCharge();assert.equal(fallback.phase,'jump');assert(!String(fallback.jump?.profileId).startsWith('stationary-'));assert(fallback.jumpUnavailableReason.length>0);
   c.setInput({horizontal:1});for(let k=0;k<200;k++)assert(!c.step().failed);
   c.beginCharge();for(let k=0;k<10;k++)c.step();const moving=c.releaseCharge();assert.equal(moving.phase,'jump','Moving jump remains available when only stationary data is invalid');
  }finally{b.dispose();}
