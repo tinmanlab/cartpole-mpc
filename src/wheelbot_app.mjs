@@ -1,3 +1,5 @@
+import {admitOptionalJump} from './wheelbot_action_jump.mjs';
+import {createWheelbotActions} from './wheelbot_actions.mjs';
 import {createWheelbotBackend} from './wheelbot_backend.mjs';
 import {createWheelbotContactBackend} from './wheelbot_contact_backend.mjs';
 import {createLiveView,createRuntimeMeter,pipelineLabels} from './wheelbot_live_view.mjs';
@@ -17,7 +19,7 @@ let jumpProfile = null, jumpActive = false, jumpInitialTelemetry = null;
 let forceProtocol=null,forceOperating=null,forceActive=false;
 const profileHashes={};
 let designEditor=null,designActive=false,designOriginal=null,designMetadataCurrent=null;
-let liveActive=false,liveBackend=null,liveProfile=null,benchmarkBackend=null;
+let liveActive=false,liveBackend=null,liveProfile=null,benchmarkBackend=null,livePoseBundle=null,liveJumpProfile=null;
 const liveView=createLiveView(),meter=createRuntimeMeter(),infoCache=new WeakMap();
 let lastTelemetry=0,lastPlot=0;
 const elapsed=()=>trial?(trial.snapshot().steps*(trial.controlDt??.01)):0;
@@ -59,9 +61,9 @@ function render(force=true) {
  const started=performance.now(),s=state(false),x=s.truth12??viewState,dt=trial?.controlDt??.01;
  viewState=x.slice();const geoms=backend.sceneGeometry?backend.sceneGeometry(x):legacyScene(backend.geometry(x));
  const comOffset=liveActive?.02:designActive?(designMetadataCurrent?.configuration?.base?.sizeM?.[2]??.25)/2:.125;
- liveView.drawScene(geoms,x,{live:liveActive,comLocal:comOffset,showCOM:$('show-com').checked,goal:s.goal??0});
+ liveView.drawScene(geoms,x,{live:liveActive,comLocal:comOffset,showCOM:$('show-com').checked,goal:s.goal??0,target:s.target??null,wrench:s.last?.externalWrench??null});
  liveView.sample(s,dt);
- if(force||started-lastPlot>=50){liveView.drawCharts();lastPlot=started;}
+ if($('advanced-lab').open&&(force||started-lastPlot>=50)){liveView.drawCharts();lastPlot=started;}
  if(force||started-lastTelemetry>=100){
   const labels=pipelineLabels(s);document.querySelectorAll('.pipeline span').forEach((node,i)=>{node.textContent=labels[i];});
   lastTelemetry=started;const perf=meter.snapshot(),u=s.last?.u??[0,0,0],last=s.last??{};
@@ -71,10 +73,10 @@ function render(force=true) {
   $('metric-rtf').textContent=perf.realTimeFactor===null?'Paused':`${perf.realTimeFactor.toFixed(2)}×`;
   $('metric-performance').textContent=`${perf.fps.toFixed(0)} fps / ${perf.controlP95Ms.toFixed(2)} ms`;
   $('runtime-badge').textContent=`MuJoCo ${backend.diagnostics().version} · ${liveActive?'compact live':designActive?'contact experiment':'reference model'}`;
-  $('pose-info').textContent=liveActive?'63° knee flexion · hip axis near body COM':s.tracking?'Reference contact lift · exact-state feedback':'Reference model · separate controller validation';
+  $('pose-info').textContent=s.actions?`x ${x[0].toFixed(2)} m · 높이 ${(x[1]*100).toFixed(1)} cm · 기울기 ${(x[2]*180/Math.PI).toFixed(1)}°`:s.tracking?'접촉 들기 · 정확한 상태 사용':'이전 모델 비교 실험';
   $('live-clock').textContent=`t = ${(s.steps*dt).toFixed(2)} s`;
   $('timing').textContent=`${(dt*1000).toFixed(0)} ms feedback · 2 ms physics · control p95 ${perf.controlP95Ms.toFixed(2)} ms · render p95 ${perf.renderP95Ms.toFixed(2)} ms · lag dropped ${(droppedWallSeconds*1000).toFixed(1)} ms. Measured runtime, not a hard real-time guarantee.`;
-  if($('diagnostics').open){
+  if($('advanced-lab').open&&$('diagnostics').open){
    $('truth').innerHTML=names.map((n,i)=>`<tr><td>${n}</td><td>${x[i].toFixed(4)}</td><td>${x[i+6].toFixed(4)}</td></tr>`).join('');
    $('estimate').innerHTML=['x','z','pitch','hip','knee','vx','vz','pitch rate','hip rate','knee rate','wheel rate'].map((n,i)=>`<tr><td>${n}</td><td>${s.estimate?.[i]?.toFixed(4)??'—'}</td></tr>`).join('');
    $('torques').innerHTML=actuators.map((n,i)=>`<tr><td>${n}</td><td>${u[i].toFixed(3)} N·m</td></tr>`).join('');
@@ -84,15 +86,36 @@ function render(force=true) {
   }
   if(jumpActive){const result=s.done?state().jumpResult:null;$('jump-status').textContent=`Jump · ${s.steps}/400 · ${s.done?(result?.passed?'target met':'target not met'):'running'} · original model`;}
   if(forceActive){const result=s.done?state().forceResult:null;$('force-status').textContent=`Local pulse · ${s.steps}/300 · ${s.done?(result?.normalPassed?'target met':'target not met'):'running'}`;}
-  if(ready&&!statusLocked)$('status').textContent=`${playing?'RUNNING':'PAUSED'} · ${labels[2]} · ${labels[1]}`;
+  if(s.actions){
+   const locked=s.phase==='jumping'||s.phase==='preparing-jump'||s.failed;
+   for(const k of ['x','z','pitch']){const el=$('target-'+k);el.disabled=locked;const value=k==='pitch'?s.target[k]*180/Math.PI:s.target[k];if(document.activeElement!==el)el.value=String(value);$('target-'+k+'-value').textContent=k==='x'?value.toFixed(2)+' m':k==='z'?(value*100).toFixed(1)+' cm':value.toFixed(1)+'°';}
+   $('target-home').disabled=locked;$('action-jump').disabled=locked||!s.capabilities.jump;$('action-recover').disabled=!s.capabilities.recover;
+   $('action-recover').title=s.capabilities.recover?'현재 자세에서 모터로 복구':'완전 기립은 아직 검증되지 않았습니다. 초기화와 다릅니다.';
+   $('disturb-left').disabled=$('disturb-right').disabled=false;
+   const phaseText={standing:'균형 유지',moving:'목표로 이동',jumping:'점프 · 착지 · 제동', 'preparing-jump':'점프 준비',falling:'넘어지는 중',fallen:'넘어짐 · 제어 정지'}[s.phase]??s.phase;
+   if(!statusLocked)$('status').textContent=`${playing?phaseText:'일시정지'} · ${perf.realTimeFactor===null?'':perf.realTimeFactor.toFixed(2)+'× · '}${perf.fps.toFixed(0)} fps`;
+   $('action-note').textContent=s.failed?'지면 충돌 물리는 계속 계산됩니다. 완전 기립은 미검증이며 초기화로 대신하지 않습니다.':s.phase==='jumping'||s.phase==='preparing-jump'?s.actionStatus:s.lastJumpResult&&!s.lastJumpResult.passed?'착지 후 안정화 기준 미달 · 목표 복귀로 균형을 확인하세요.':'점선은 목표입니다. 슬라이더로 위치·높이·기울기를 바꾸세요. 2D 평면 제어 · 높이는 hip 축 기준.';
+  }else{
+   for(const id of ['target-x','target-z','target-pitch','target-home','action-jump','action-recover','disturb-left','disturb-right'])$(id).disabled=true;
+   if(ready&&!statusLocked)$('status').textContent=`${playing?'RUNNING':'PAUSED'} · ${labels[2]} · ${labels[1]}`;
+   $('action-note').textContent='이전 모델 실험입니다. 기본 직접 조작으로 돌아가려면 Compact 모델을 선택하세요.';
+  }
   if(designActive&&$('physical-editor').open)designEditor?.render();
  }
- $('play').textContent=playing?'Pause':'Start';meter.sampleRender(performance.now()-started);
+ $('play').textContent=playing?'일시정지':'시작';meter.sampleRender(performance.now()-started);
 }
 function setLiveGoal(value){
  if(!liveActive||!trial)throw Error('Select compact live control first');
  const next=Number(value);if(![-.03,0,.03].includes(next))throw Error('Validated live goals are -0.03,0,+0.03 m');
- trial.setGoal(next);$('goal').value=String(next);playing=true;meter.start(elapsed());render();return state();
+ if(trial.setTarget)trial.setTarget({x:next});else trial.setGoal(next);$('goal').value=String(next);if(!playing)meter.start(elapsed());playing=true;statusLocked=false;render();return state();
+}
+function setLiveTarget(request){
+ if(!liveActive||!trial?.setTarget)throw Error('기본 로봇의 자세 제어를 선택하세요.');
+ trial.setTarget(request);if(!playing)meter.start(elapsed());playing=true;statusLocked=false;render();return state();
+}
+function liveAction(method,request){
+ if(!liveActive||typeof trial?.[method]!=='function')throw Error('현재 모델에서 사용할 수 없는 동작입니다.');
+ trial[method](request);if(!playing)meter.start(elapsed());playing=true;statusLocked=false;render();return state();
 }
 function selectRobotModel(selection){
  if(!['live','benchmark'].includes(selection))throw Error('Unknown robot experiment');
@@ -108,6 +131,7 @@ function makeTrial(initial = qrefState()) {
   if (mode === 'nmpc') throw Error('NMPC is NOT_YET_SUPPORTED for this wheelbot experiment.');
   if (!['lqr_kf', 'mpc_kf', 'passive'].includes(mode)) throw Error(`Controller mode is not supported: ${mode || '(empty)'}.`);
   if (mode === 'lqr_kf' && profile.designAvailable !== true) throw Error(`LQR/KF design rejected: ${profile.reason ?? 'profile is not approved'}`);
+  if(liveActive&&livePoseBundle&&mode==='lqr_kf')return createWheelbotActions(backend,profile,livePoseBundle,{seed:17,jumpProfile:liveJumpProfile});
   return createWheelbotTrial(backend, profile, {seed: 17, goal: Number($('goal').value), initialState: initial, mode});
 }
 function renderDesignInfo() {
@@ -184,7 +208,7 @@ function tick(draw = true) {
   if (trial.snapshot().done) { playing = false; meter.pause(); return; }
   try {
     const before=performance.now();const s = trial.step(0);viewState=s.truth;meter.sampleControl(performance.now()-before,s.steps*(trial.controlDt??.01));liveView.sample(s,trial.controlDt??.01);
-    if (s.failed) { playing = false; say('Plant failure reported by trial', true); }
+    if (s.failed&&!s.actions) { playing = false; say('Plant failure reported by trial', true); }
     else if (s.done) playing = false;
   } catch (error) { playing = false; say(`STEP ERROR · ${error.message}`, true); }
   if (!playing) meter.pause();
@@ -208,7 +232,7 @@ function animate(time) {
 window.wheelbotLab = {
   get ready() { return ready && !booting; },
   getState: state,
-  selectRobotModel,setLiveGoal,getPerformance:()=>meter.snapshot(),
+  selectRobotModel,setLiveGoal,setLiveTarget,jump:()=>liveAction('jump'),recover:()=>liveAction('recover'),disturb:request=>liveAction('disturb',request),getPerformance:()=>meter.snapshot(),
   pause(){playing=false;meter.pause();render();return state();},
   prepareTracking:(sign=1)=>designEditor.startTracking(sign),
   getDesignEditor:()=>designEditor?.getState(),
@@ -244,7 +268,7 @@ window.wheelbotLab = {
     for (let i = 0; i < count && trial; i++) {
       if (trial.snapshot().done) break;
       const s = trial.step(0); viewState = s.truth;
-      if (s.failed) { say('Plant failure reported by trial', true); break; }
+      if (s.failed&&!s.actions) { say('Plant failure reported by trial', true); break; }
     }
     render(); return state();
   },
@@ -307,9 +331,16 @@ try {
   $('local').onclick = () => { playing = false; meter.reset(); statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = ()=>liveActive?setLiveGoal(Number($('goal').value)):configure();
   $('robot-model').onchange=()=>selectRobotModel($('robot-model').value);
+  for(const k of ['x','z','pitch'])$('target-'+k).oninput=()=>{try{const value=Number($('target-'+k).value);setLiveTarget({[k]:k==='pitch'?value*Math.PI/180:value});}catch(error){say(error.message,true);}};
+  $('target-home').onclick=()=>{try{setLiveTarget({x:0,z:liveProfile.qref[1],pitch:liveProfile.qref[2]});}catch(error){say(error.message,true);}};
+  $('action-jump').onclick=()=>{try{liveAction('jump');}catch(error){say(error.message,true);}};
+  $('action-recover').onclick=()=>{try{liveAction('recover');}catch(error){say(error.message,true);}};
+  for(const [id,direction]of[['disturb-left',-1],['disturb-right',1]])$(id).onclick=()=>{try{liveAction('disturb',{kind:$('disturb-kind').value,direction,strength:$('disturb-strength').value});}catch(error){say(error.message,true);}};
+  $('advanced-lab').ontoggle=()=>render();
+
   for(const [id,value]of[['live-left',-.03],['live-center',0],['live-right',.03]])$(id).onclick=()=>setLiveGoal(value);
   $('show-com').onchange=()=>render();
-  document.addEventListener('keydown',event=>{if(!liveActive||event.ctrlKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();setLiveGoal(event.key==='ArrowLeft'?-.03:.03);}});
+  document.addEventListener('keydown',event=>{if(!liveActive||event.ctrlKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();setLiveTarget({x:Math.max(-1,Math.min(1,(trial.snapshot().target?.x??0)+(event.key==='ArrowLeft'?-.1:.1)))});}});
   $('design').onchange = () => { profile=profiles[$('design').value]??profiles.baseline; configure(); };
   configure();
   try {
@@ -345,6 +376,9 @@ try {
     if(!liveXmlResponse.ok)throw Error('Compact XML unavailable');
     const candidate=await createWheelbotContactBackend(await liveXmlResponse.text());
     validateWheelbotProfile(candidate,liveProfileValue);liveBackend=candidate;liveProfile=liveProfileValue;
+    livePoseBundle=await getJson('assets/wheelbot/pose_profiles.json');
+    try{const admitted=admitOptionalJump(candidate,liveProfileValue,await getJson('assets/wheelbot/action_jump.json'));liveJumpProfile=admitted.profile;$('action-jump').title=admitted.reason?'점프 프로필 검증 실패 · 자세 조절은 사용할 수 있습니다.':'같은 로봇으로 점프·착지합니다.';if(admitted.reason)console.warn('Compact jump unavailable',admitted.reason);}catch(error){console.warn('Compact jump unavailable',error.message);liveJumpProfile=null;$('action-jump').title='점프 자료 없음 · 자세 조절은 사용할 수 있습니다.';}
+    for(const k of ['x','z','pitch']){const range=livePoseBundle.ranges[k],scale=k==='pitch'?180/Math.PI:1;$('target-'+k).min=String(range[0]*scale);$('target-'+k).max=String(range[1]*scale);}
     selectRobotModel('live');playing=true;meter.start(0);
   }catch(error){say('Compact model rejected: '+error.message,true);}
   document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;meter.pause();accumulated=0;render();}});

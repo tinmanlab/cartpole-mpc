@@ -31,7 +31,7 @@ export async function createWheelbotContactBackend(xml){
  function modelInfo(){
   return {assetSha256,totalMassKg:Array.from(m.body_mass).reduce((a,b)=>a+b,0),bodyMassKg:Array.from(m.body_mass),bodyInertiaKgM2:Array.from(m.body_inertia),torqueLimitsNm:limits.slice(),jointDamping:Array.from(m.dof_damping),jointArmature:Array.from(m.dof_armature),jointRanges:Array.from(m.jnt_range),rootUnactuated:true};
  }
- let disposed=false,fastSteps=0;
+ let disposed=false,fastSteps=0,lastActionStep=null;
  function physicsStep(x,u){
   if(disposed||!vector(u,3)||u.some((v,i)=>Math.abs(v)>limits[i]))throw Error('Invalid fast motor command');
   state(x);d.ctrl.set(u);mj.mj_step(m,d);fastSteps++;
@@ -40,6 +40,25 @@ export async function createWheelbotContactBackend(xml){
   const penetration=Math.max(0,...Array.from({length:d.ncon},(_,i)=>-d.contact.get(i).dist));
   return {truth,penetration,externalForcesZero:[...d.qfrc_applied,...d.xfrc_applied].every(v=>v===0)};
  }
+ // Explicit world force at the torso origin and pure world-y moment. For
+ // these planar root coordinates virtual work gives [Fx,Fz,Ty,0,0,0].
+ function stepWrench(x,u,wrench=[0,0,0]){
+  if(disposed||!vector(u,3)||u.some((v,i)=>Math.abs(v)>limits[i])||!vector(wrench,3)||wrench.some((v,i)=>Math.abs(v)>[4,4,.1][i]))throw Error('Invalid action torque/wrench');
+  state(x);d.ctrl.set(u);d.qfrc_applied.set([...wrench,0,0,0]);
+  let maximumPenetrationM=0,jointLimitExcursionRad=0;
+  for(let i=0;i<5;i++){mj.mj_step(m,d);fastSteps++;
+   maximumPenetrationM=Math.max(maximumPenetrationM,...Array.from({length:d.ncon},(_,j)=>-d.contact.get(j).dist));
+   jointLimitExcursionRad=Math.max(jointLimitExcursionRad,m.jnt_range[6]-d.qpos[3],d.qpos[3]-m.jnt_range[7],m.jnt_range[8]-d.qpos[4],d.qpos[4]-m.jnt_range[9]);
+  }
+  lastActionStep={maximumPenetrationM,jointLimitExcursionRad,externalWrench:wrench.slice(),actualTorqueNm:Array.from(d.actuator_force)};
+  const truth=[...d.qpos,...d.qvel];if(!truth.every(Number.isFinite))throw Error('Nonfinite action state');
+  return truth;
+ }
+ function actionTelemetry(x,u=[0,0,0]){
+  const contacts=contactDetails(x,u);
+  const wheel=mj.mj_name2id(m,5,'wheel_visual');
+  return {...contacts,wheelClearanceM:d.geom_xpos[3*wheel+2]-m.geom_size[3*wheel],jointLimitExcursionRad:Math.max(0,m.jnt_range[6]-x[3],x[3]-m.jnt_range[7],m.jnt_range[8]-x[4],x[4]-m.jnt_range[9]),actualTorqueNm:Array.from(d.actuator_force),rootUnactuated:true};
+ }
  function trackingGeometry(x,sign){
   forward(x);const body=mj.mj_name2id(m,1,'torso'),g=mj.mj_name2id(m,5,'torso_visual');
   const edge=d.xpos[3*body+2]+d.xmat[9*body+6]*sign*m.geom_size[3*g]+d.xmat[9*body+8]*(m.geom_pos[3*g+2]-m.geom_size[3*g+2]);
@@ -47,5 +66,5 @@ export async function createWheelbotContactBackend(xml){
   return {edge,excursion,penetration:Math.max(0,...Array.from({length:d.ncon},(_,i)=>-d.contact.get(i).dist))};
  }
 
- return {...core,physicsStep,trackingGeometry,diagnostics:()=>({...core.diagnostics(),steps:core.diagnostics().steps+fastSteps,fastPhysicsSteps:fastSteps}),contactDetails,sceneGeometry,modelInfo,dispose(){if(!disposed){core.dispose();forceBuffer.delete();d.delete();m.delete();disposed=true;}}};
+ return {...core,stepWrench,lastActionStep:()=>lastActionStep?structuredClone(lastActionStep):null,actionTelemetry,physicsStep,trackingGeometry,diagnostics:()=>({...core.diagnostics(),steps:core.diagnostics().steps+fastSteps,fastPhysicsSteps:fastSteps}),contactDetails,sceneGeometry,modelInfo,dispose(){if(!disposed){core.dispose();forceBuffer.delete();d.delete();m.delete();disposed=true;}}};
 }

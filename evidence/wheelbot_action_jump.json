@@ -1,0 +1,154 @@
+{
+  "schema": "wheelbot-action-jump-reference/v1",
+  "profileSha256": "87909995af0a41c9054c6675e5c6ccc31d859b188a5d0faeae1831d77c8b8e12",
+  "modelSha256": "17fec38c99f4ba42c99052570e8951b35cb4d041543ef47761baff91c4a50382",
+  "passed": 6,
+  "trials": 6,
+  "results": [
+    {
+      "seed": 1,
+      "xOffset": 0,
+      "initialPitchError": 0,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.004431701069405283,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.0025911060864048214,
+        0.00010351074712883213,
+        0.000924593707846819,
+        0.000771320456177671,
+        0.0007768688466016638
+      ],
+      "tailMaxRate": 0.13451834060164236,
+      "peakTorque": [
+        0.28182983248637505,
+        12.770563420556492,
+        1.7
+      ],
+      "maxWheelClearance": 0.11189800341600863
+    },
+    {
+      "seed": 7,
+      "xOffset": 0.5,
+      "initialPitchError": 0,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.0030370539538026736,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.0020415906229748204,
+        0.0003349733995920423,
+        0.0019431406147781254,
+        0.002651662300079183,
+        0.0025679640930422742
+      ],
+      "tailMaxRate": 0.13185875218215676,
+      "peakTorque": [
+        0.2154162652784364,
+        9.327593246893622,
+        1.7
+      ],
+      "maxWheelClearance": 0.11149511583855824
+    },
+    {
+      "seed": 42,
+      "xOffset": -0.5,
+      "initialPitchError": 0,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.0049066734818061924,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.0017782505628624046,
+        0.000328087729791704,
+        0.0013447393363897105,
+        0.0005717693288084247,
+        0.0025235230710161094
+      ],
+      "tailMaxRate": 0.13862805722378593,
+      "peakTorque": [
+        0.2905995065811742,
+        12.863867116657277,
+        1.7
+      ],
+      "maxWheelClearance": 0.111913350899104
+    },
+    {
+      "seed": 2026,
+      "xOffset": 0,
+      "initialPitchError": 0.003,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.0032038698150391037,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.0033927620625615836,
+        0.00034636236731816483,
+        0.0014187848468311497,
+        0.0005616293310274356,
+        0.002622924955374417
+      ],
+      "tailMaxRate": 0.14735396737804135,
+      "peakTorque": [
+        0.21665311083131478,
+        9.32221224933731,
+        1.7
+      ],
+      "maxWheelClearance": 0.1113483695577525
+    },
+    {
+      "seed": 17,
+      "xOffset": 0,
+      "initialPitchError": -0.003,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.004210701687375959,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.0015894038198765227,
+        0.00030822941702568496,
+        0.0018395451809218363,
+        0.0013604884486702051,
+        0.0023685438448657337
+      ],
+      "tailMaxRate": 0.10267287033074328,
+      "peakTorque": [
+        0.28631836764793317,
+        12.767611499679235,
+        1.7
+      ],
+      "maxWheelClearance": 0.1122107275584857
+    },
+    {
+      "seed": 819,
+      "xOffset": 0.25,
+      "initialPitchError": 0.005,
+      "passed": true,
+      "steps": 600,
+      "flightSeconds": 0.34,
+      "maxPenetration": 0.004414385395821993,
+      "maxJointExcursion": 0.0,
+      "tailErrors": [
+        0.001041868786646749,
+        0.0004579869510921708,
+        0.0012223461285161552,
+        0.0015904786956972838,
+        0.003490000581437558
+      ],
+      "tailMaxRate": 0.07067556405946679,
+      "peakTorque": [
+        0.28616293295902906,
+        12.834673425383224,
+        1.7
+      ],
+      "maxWheelClearance": 0.11207606920351786
+    }
+  ],
+  "scope": "Same compact robot; six noisy measurement channels; no true-state feedback/force/reset. Known bounded entry conditions, no arbitrary jump/getup or hardware claim."
+}

@@ -18,8 +18,9 @@ try:
   s=state();assert abs(s['truth'][4])>.9 and abs(s['truth'][4])<1.3 and not s['failed'];assert s['estimate'] is not None
   assert page.locator('.pipeline span').all_text_contents()==['Six noisy channels: five poses + wheel encoder rate','KF state estimate','LQR feedback','MuJoCo full contact']
   canvas=page.locator('#view').bounding_box();assert canvas['y']<300 and canvas['y']+canvas['height']<900
-  assert page.locator('#play').is_visible() and page.locator('#live-left').is_visible()
+  assert page.locator('#play').is_visible() and page.locator('#target-x').is_visible()
   page.screenshot(path=str(OUT/'default.png'),full_page=False)
+  page.locator('#advanced-lab').evaluate('(e)=>e.open=true');assert page.locator('#live-left').is_visible()
   page.locator('#physical-editor').evaluate('(e)=>e.open=true');after=page.locator('#view').bounding_box();assert abs(canvas['y']-after['y'])<1
   page.screenshot(path=str(OUT/'settings.png'),full_page=False);page.locator('#physical-editor').evaluate('(e)=>e.open=false')
   # Public runtime telemetry is measured; it is not an intended-rate label.
