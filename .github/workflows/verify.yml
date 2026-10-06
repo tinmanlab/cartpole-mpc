@@ -39,6 +39,17 @@ jobs:
           node tests/test_wheelbot_live_runtime.mjs
           node tests/test_wheelbot_live_parity.mjs
           python tests/test_wheelbot_live_browser.py
+      - name: Direct pose, disturbances and compact jump
+        run: |
+          node tests/test_wheelbot_action_optional.mjs
+          node tests/test_wheelbot_simple_ui.mjs
+          node tests/test_wheelbot_actions.mjs
+          python tests/test_wheelbot_pose.py
+          python tests/test_wheelbot_action_jump.py
+          python tests/test_wheelbot_action_jump_reference.py
+          node tests/test_wheelbot_action_jump_wasm.mjs
+          node tests/test_wheelbot_actions_jump_manager.mjs
+          python tests/test_wheelbot_actions_browser.py
       - name: Wheelbot portable native, WASM and browser release gates
         run: |
           python -m py_compile tests/test_wheelbot_release_browser.py

@@ -4,7 +4,7 @@
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
-[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). Try standing with local MPC/KF, a planned jump, or edit masses, links and actuator limits for full-body falls and obstacles. **Try contact lift** applies the default full-contact model, then left/right runs a 0.5 s exact-state lift/hold. Full get-up is not implemented; the fast tracker uses a frozen offline plan and simulator state, not new online MPC. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
+[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). Three sliders control position (±1 m), height (36–49 cm) and pitch (±10°). Jump and land on the same compact robot, or apply pushes, gusts and body moments. Analysis and older experiments stay collapsed. Full floor-to-standing recovery is not yet validated; Reset is not recovery. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
 
 ![MuJoCo WASM control/observer lab](evidence/mujoco_wasm_browser.png)
 
@@ -352,4 +352,4 @@ The CartPole versions preserve the **control/estimation structure** needed to un
 
 ### Wheelbot live default
 
-The wheelbot page opens with a compact ellipsoid body and a controlled 63° knee-flexed posture. The hip axis is 20 mm from the declared base COM; mass/inertia, trim, LQR and KF are regenerated for that model. Move −3 cm / Center / +3 cm without resetting state. The KF uses five noisy pose channels and an explicitly simulated wheel encoder-rate channel. The viewport stays visible while settings are open, with live target/state plots and measured pacing. Select **Reference · standing / jump** for the preserved older MPC, jump, pulse and contact-lift profiles; these are not transplanted onto the redesigned body. See [model, sensing and validation boundaries](docs/WHEELBOT_LAB.md).
+The default compact ellipsoid robot starts in a controlled bent-knee posture. The hip axis is 20 mm from the declared base COM, with model-specific trim and gain design. Set a wider position, height and pitch target without resetting state; the same robot can prepare, jump, land and settle. Six explicitly noisy measurement channels feed the observer. The page keeps primary controls visible and analysis collapsed. Strong disturbances can cause real contact/fall dynamics; full get-up is not claimed. See [model, sensing and validation boundaries](docs/WHEELBOT_LAB.md).

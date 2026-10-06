@@ -29,6 +29,7 @@ try:
         def run(n): return page.evaluate('(n)=>window.wheelbotLab.run(n)',n)
         def snap(name): page.locator('#view').screenshot(path=str(OUT/(name+'.png')))
         def select_reference():
+            page.locator('#advanced-lab').evaluate('(e)=>e.open=true')
             page.select_option('#robot-model','benchmark')
             page.locator('#reference-experiments').evaluate('(e)=>e.open=true')
             page.locator('#diagnostics').evaluate('(e)=>e.open=true')

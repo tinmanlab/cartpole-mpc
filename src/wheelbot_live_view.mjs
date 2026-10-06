@@ -1,8 +1,9 @@
 // Fixed-timestep physics is independent of canvas and low-rate text updates.
 const bounded=(a,v,n=300)=>{a.push(v);if(a.length>n)a.shift();};
 const percentile=(a,p)=>a.length?a.slice().sort((x,y)=>x-y)[Math.min(a.length-1,Math.floor(a.length*p))]:0;
-export function pipelineLabels({liveActive=false,configuredModel=false,poseOnly=false,tracking=false,feedback=false,mode,scenario}={}){
+export function pipelineLabels({liveActive=false,configuredModel=false,poseOnly=false,tracking=false,feedback=false,actions=false,failed=false,mode,scenario}={}){
  const plant=liveActive||configuredModel||tracking?'MuJoCo full contact':'MuJoCo wheel-contact benchmark';
+ if(actions&&failed)return ['Simulator state display','Observer invalid after fall','Motors disengaged',plant];
  if(poseOnly)return ['Pose preview · no sensor sampling','No observer','No control',plant];
  if(tracking)return ['Exact simulator state','No observer',feedback?'Scheduled feedback':'Planned torques · no feedback',plant];
  if(mode==='contact-diagnostic')return ['Simulator state display','No observer',scenario==='torque'?'Manual torques · no feedback':'Passive · no feedback',plant];
@@ -17,13 +18,16 @@ export function createLiveView(){
  const canvas=document.getElementById('view'),ctx=canvas.getContext('2d'),traces=[];let lastTrace=-1;
  const resize=()=>{const r=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,1.5);const w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}};
  new ResizeObserver(resize).observe(canvas);resize();
- function drawScene(geoms,x,{live=false,comLocal=.02,showCOM=true,goal=0}={}){
-  resize();const W=canvas.width,H=canvas.height,ground=H-43,scale=Math.min(H*.98,W*.8),camera=live?0:(geoms.find(g=>g.name==='torso_visual')?.position[0]??0);
+ function drawScene(geoms,x,{live=false,comLocal=.02,showCOM=true,goal=0,target=null,wrench=null}={}){
+  resize();const W=canvas.width,H=canvas.height,ground=H-43,scale=live?Math.min((H-60)/.72,W/2.6):Math.min(H*.98,W*.8),camera=live?0:(geoms.find(g=>g.name==='torso_visual')?.position[0]??0);
   const px=v=>W/2+(v-camera)*scale,py=v=>ground-v*scale;
   ctx.clearRect(0,0,W,H);ctx.fillStyle='#fbfdff';ctx.fillRect(0,0,W,H);
   ctx.font=`${Math.max(10,H/36)}px system-ui`;ctx.lineWidth=1;ctx.strokeStyle='#dfe8ef';ctx.fillStyle='#7690a0';
   for(let i=-10;i<=10;i++){const value=i*.1,screen=px(value);if(screen<0||screen>W)continue;ctx.beginPath();ctx.moveTo(screen,ground);ctx.lineTo(screen,ground+6);ctx.stroke();if(i%2===0)ctx.fillText(value.toFixed(1)+' m',screen-12,ground+22);}
   ctx.strokeStyle='#7892a4';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,ground);ctx.lineTo(W,ground);ctx.stroke();
+  if(live&&target){
+   const t=geoms.find(g=>g.name==='torso_visual');ctx.save();ctx.translate(px(target.x+Math.sin(target.pitch)*comLocal),py(target.z+Math.cos(target.pitch)*comLocal));ctx.rotate(-target.pitch);ctx.setLineDash([5,4]);ctx.strokeStyle='#c69e58';ctx.fillStyle='rgba(218,174,98,.10)';ctx.lineWidth=1.6;ctx.beginPath();ctx.ellipse(0,0,(t?.size[0]??.085)*scale,(t?.size[2]??.075)*scale,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+  }
   if(live){ctx.setLineDash([4,4]);ctx.strokeStyle='#daa653';ctx.beginPath();ctx.moveTo(px(goal),ground);ctx.lineTo(px(goal),ground-H*.75);ctx.stroke();ctx.setLineDash([]);}
   const ordered=geoms.filter(g=>g.type!==0).sort((a,b)=>(a.name==='torso_visual'?1:0)-(b.name==='torso_visual'?1:0));
   for(const g of ordered){ctx.save();ctx.translate(px(g.position[0]),py(g.position[2]));ctx.rotate(-Math.atan2(g.rotation[6],g.rotation[0]));ctx.fillStyle=g.name==='torso_visual'?'#e8f0f5':g.name==='wheel_visual'?'#344b60':g.name.includes('link')?'#4385b7':'#b3946c';ctx.strokeStyle=g.name==='torso_visual'?'#54778f':'#285778';ctx.lineWidth=2;
@@ -31,6 +35,12 @@ export function createLiveView(){
    else if(g.type===4){ctx.beginPath();ctx.ellipse(0,0,g.size[0]*scale,g.size[2]*scale,0,0,Math.PI*2);ctx.fill();ctx.stroke();}
    else if(g.type===6){ctx.fillRect(-g.size[0]*scale,-g.size[2]*scale,2*g.size[0]*scale,2*g.size[2]*scale);ctx.strokeRect(-g.size[0]*scale,-g.size[2]*scale,2*g.size[0]*scale,2*g.size[2]*scale);}
    else if(g.type===5){ctx.lineWidth=Math.max(3,2*g.size[0]*scale);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,-g.size[1]*scale);ctx.lineTo(0,g.size[1]*scale);ctx.stroke();}
+   ctx.restore();
+  }
+  if(wrench&&wrench.some(v=>v!==0)){
+   ctx.save();ctx.strokeStyle='#ce714f';ctx.fillStyle='#ce714f';ctx.lineWidth=3;ctx.font='12px system-ui';
+   if(wrench[0]){const sign=Math.sign(wrench[0]),a=px(x[0])-sign*95,y=py(x[1]);ctx.beginPath();ctx.moveTo(a,y);ctx.lineTo(a+sign*55,y);ctx.lineTo(a+sign*43,y-7);ctx.moveTo(a+sign*55,y);ctx.lineTo(a+sign*43,y+7);ctx.stroke();ctx.fillText(Math.abs(wrench[0]).toFixed(1)+' N',a-sign*5,y-13);}
+   if(wrench[2]){const sign=Math.sign(wrench[2]),cx=px(x[0]),cy=py(x[1]),radius=38,start=-Math.PI*.8,end=start+sign*Math.PI*1.35;ctx.beginPath();ctx.arc(cx,cy,radius,start,end,sign<0);const ex=cx+radius*Math.cos(end),ey=cy+radius*Math.sin(end),tangent=end+sign*Math.PI/2;ctx.moveTo(ex-10*Math.cos(tangent-.5),ey-10*Math.sin(tangent-.5));ctx.lineTo(ex,ey);ctx.lineTo(ex-10*Math.cos(tangent+.5),ey-10*Math.sin(tangent+.5));ctx.stroke();ctx.fillText(Math.abs(wrench[2]).toFixed(2)+' N·m',cx+45,cy-24);}
    ctx.restore();
   }
   const torso=geoms.find(g=>g.name==='torso_visual');
