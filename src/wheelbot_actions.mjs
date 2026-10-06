@@ -1,3 +1,4 @@
+import {planAffineTracking} from './wheelbot_affine_tracking.mjs';
 import {validateWheelbotProfile,observerUpdate} from './wheelbot_control.mjs';
 import {CONTROLLED_INDICES as indices} from './wheelbot_backend.mjs';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -39,7 +40,7 @@ export function createWheelbotActions(backend,baseProfile,poseBundle,{seed=17,in
   const [zi,zt]=bracket(zs,z),[pi,pt]=bracket(ps,pitch);
   const corners=[[zi,pi,(1-zt)*(1-pt)],[zi+1,pi,zt*(1-pt)],[zi,pi+1,(1-zt)*pt],[zi+1,pi+1,zt*pt]].map(([i,j,w])=>[bundle.profiles.find(p=>p.target.z===zs[i]&&p.target.pitch===ps[j]),w]);
   const blend=(name)=>{const go=(v,path)=>Array.isArray(v)?v.map((a,i)=>go(a,[...path,i])):corners.reduce((s,[p,w])=>s+w*path.reduce((a,i)=>a[i],p[name]),0);return go(corners[0][0][name],[]);};
-  const p={...base};for(const name of ['qref','uref','A','B','K','L'])p[name]=blend(name);p.qref[0]=x;cachedProfile={z,pitch,p};return p;
+  const p={...base};for(const name of ['qref','uref','A','B','K','L','P'])p[name]=blend(name);p.qref[0]=x;cachedProfile={z,pitch,p};return p;
  }
  if(initial){
   const valid=(a,n)=>Array.isArray(a)&&a.length===n&&a.every(Number.isFinite);
@@ -65,6 +66,23 @@ export function createWheelbotActions(backend,baseProfile,poseBundle,{seed=17,in
   }
   return frames;
  }
+ function prepareTracking(frames){
+  if(!frames.length)return frames;
+  const origin={...appliedTarget},extended=frames;
+  const poses=[origin,...extended].map(point=>profile(point.z,point.pitch,point.x));
+  const refs=poses.map((p,k)=>{
+   const r=indices.map(j=>j<6?p.qref[j]:0),previous=poses[Math.max(0,k-1)],next=poses[Math.min(poses.length-1,k+1)];
+   const dt=(k===0||k===poses.length-1)?.01:.02;
+   for(let j=0;j<5;j++)r[5+j]=(next.qref[j]-previous.qref[j])/dt;
+   r[10]=(wheelX(next)-wheelX(previous))/dt/.05-r[7]-r[8]-r[9];
+   if(k===0){r[5]=referenceVelocity[0];r[6]=referenceVelocity[1];r[7]=referenceVelocity[2];}
+   if(k===poses.length-1)for(let j=5;j<11;j++)r[j]=0;
+   return r;
+  });
+  const stages=poses.slice(0,-1).map((p,k)=>({A:p.A,B:p.B,Q:p.Q,R:p.R,trim:indices.map(j=>j<6?p.qref[j]:0),uref:p.uref,reference:refs[k]}));
+  const tracking=planAffineTracking(stages,poses.at(-1).P,refs.at(-1));
+  return extended.map((point,k)=>({...point,controlProfile:poses[k],targetProfile:poses[k+1],tracking:tracking[k]}));
+ }
  function step(){
   if(jump&&!failed){
    const started=performance.now(),action=jump.command(jumpIndex,estimate),controlMs=performance.now()-started,plantStart=performance.now();
@@ -78,17 +96,20 @@ export function createWheelbotActions(backend,baseProfile,poseBundle,{seed=17,in
    else if(jumpIndex===600){const r=jump.reference(599).state;const success=jumpCompleted({flight:jumpWasAir,landed:jumpLanded,maxClearance:jumpClearance,truth,reference:r});jumpOutcome={success,flight:jumpWasAir,landed:jumpLanded,maxClearance:jumpClearance};appliedTarget={x:r[0],z:r[1],pitch:r[2]};target={...appliedTarget};referenceVelocity=[0,0,0];jump=null;status=success?'점프 완료 · 도착 자세 균형 유지':'점프 목표 미달 · 균형 제어 계속';}
    return snapshot();
   }
-  const started=performance.now(),old=profile(appliedTarget.z,appliedTarget.pitch,appliedTarget.x);
-  if(cursor<queue.length)appliedTarget={...queue[cursor++]};
-  const p=profile(appliedTarget.z,appliedTarget.pitch,appliedTarget.x);
-  const ref=indices.map(j=>j<6?p.qref[j]:0);
-  referenceVelocity=keys.map((k,j)=>(p.qref[j]-old.qref[j])/.01);
+  const started=performance.now(),currentFrame=cursor<queue.length?queue[cursor++]:null;
+  const old=currentFrame?.controlProfile??profile(appliedTarget.z,appliedTarget.pitch,appliedTarget.x);
+  if(currentFrame)appliedTarget=Object.fromEntries(keys.map(key=>[key,currentFrame[key]]));
+  const targetProfile=currentFrame?.targetProfile??profile(appliedTarget.z,appliedTarget.pitch,appliedTarget.x);
+  const p=currentFrame?.controlProfile??targetProfile;
+  const ref=indices.map(j=>j<6?targetProfile.qref[j]:0);
+  referenceVelocity=keys.map((k,j)=>(targetProfile.qref[j]-old.qref[j])/.01);
   // All scheduled coordinate rates, including the joints induced by atlas FK.
-  for(let j=0;j<5;j++)ref[5+j]=(p.qref[j]-old.qref[j])/.01;
+  for(let j=0;j<5;j++)ref[5+j]=(targetProfile.qref[j]-old.qref[j])/.01;
   const oldWheel=wheelX(old);
-  const newWheel=wheelX(p);
+  const newWheel=wheelX(targetProfile);
   ref[10]=(newWheel-oldWheel)/.01/.05-ref[7]-ref[8]-ref[9];
-  const requested=failed?[0,0,0]:p.uref.map((v,i)=>v-p.K[i].reduce((sum,g,j)=>sum+g*(estimate[j]-ref[j]),0));
+  const tracking=currentFrame?.tracking,K=tracking?.K??p.K,reference=tracking?.reference??ref,ff=tracking?.feedforward??[0,0,0];
+  const requested=failed?[0,0,0]:p.uref.map((v,i)=>v+ff[i]-K[i].reduce((sum,g,j)=>sum+g*(estimate[j]-reference[j]),0));
   const u=requested.map((v,i)=>clamp(v,-backend.limits[i],backend.limits[i])),controlMs=performance.now()-started,plantStart=performance.now();
   const wrench=[0,0,0];
   if(pulse){const envelope=pulse.kind==='gust'?Math.sin(Math.PI*(pulse.total-pulse.remaining+.5)/pulse.total):1;wrench[pulse.kind==='twist'?2:0]=pulse.direction*pulse.amplitude*envelope;}
@@ -98,7 +119,7 @@ export function createWheelbotActions(backend,baseProfile,poseBundle,{seed=17,in
   failed ||= Math.abs(truth[2]-appliedTarget.pitch)>.5||truth[1]<.26||physical.maximumPenetrationM>.005||physical.jointLimitExcursionRad>.02||physical.minimumNonadjacentDistanceM<0;
   if(failed){status='Outside ground control domain; motors disengaged';queue=[];}
   if(pulse&&--pulse.remaining===0)pulse=null;
-  last={u,requested,externalWrench:wrench,measurement,controlMs:controlMs+performance.now()-observerStart,plantMs,loopMs:performance.now()-started,physical,reference:ref};steps++;return snapshot();
+  last={u,requested,externalWrench:wrench,measurement,controlMs:controlMs+performance.now()-observerStart,plantMs,loopMs:performance.now()-started,physical,reference};steps++;return snapshot();
  }
  function brakeFuture(){
   const origin={...appliedTarget},v=referenceVelocity.slice();queue=[];cursor=0;
@@ -135,7 +156,8 @@ export function createWheelbotActions(backend,baseProfile,poseBundle,{seed=17,in
   // ponytail: three local retimings only; expand the candidate family after measured failures.
   for(const scale of [1,2,4]){
    if(performance.now()-started>5000){reason="Planning wall budget 5 s exceeded";break;}
-   const frames=schedule(points,scale);if(frames.some(p=>keys.some(k=>p[k]<bundle.ranges[k][0]||p[k]>bundle.ranges[k][1]))){reason='Continuous reference leaves atlas domain';continue;}if(frames.length>1200){reason='Path exceeds 12 s bounded preview; use fewer/closer points';continue;}
+   let frames=schedule(points,scale);if(frames.some(p=>keys.some(k=>p[k]<bundle.ranges[k][0]||p[k]>bundle.ranges[k][1]))){reason='Continuous reference leaves atlas domain';continue;}if(frames.length>1200){reason='Path exceeds 12 s bounded preview; use fewer/closer points';continue;}
+   frames=prepareTracking(frames);
    const x=Array(12).fill(0);indices.forEach((j,i)=>x[j]=start[i]);
    const preview=createWheelbotActions(prediction,base,bundle,{seed,initial:{truth:x,estimate:start,appliedTarget:{...appliedTarget},referenceVelocity:referenceVelocity.slice(),queue:frames,target:points.at(-1)}});
    let safe=true,s,airSeconds=0,chunkStart=performance.now(),tailPass=true;const metrics={scale,steps:0,maximumPenetrationM:0,maxTrackingError:[0,0,0],peakTorqueNm:[0,0,0],reason:null};

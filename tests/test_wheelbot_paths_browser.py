@@ -73,6 +73,26 @@ with sync_playwright() as p:
  assert after['jumpOutcome']['flight'] and after['jumpOutcome']['landed'] and after['jumpOutcome']['maxClearance']>=.02
  assert not page.evaluate('wheelbotLab.run(200).failed')
  page.screenshot(path='test-results/wheelbot-small-jump.png',full_page=True)
+ # Real pointer response: do not infer interactive speed from an offline rollout.
+ page.evaluate('wheelbotLab.pause()');page.click('#reset');page.evaluate('wheelbotLab.run(100)')
+ nominal=page.evaluate('wheelbotLab.getState().appliedTarget')
+ page.select_option('#target-mode','base');page.select_option('#target-action','follow');page.click('#play')
+ requested_at=page.evaluate('performance.now()')
+ page.mouse.click(*screen(.1,nominal['z']))
+ page.wait_for_function('!wheelbotLab.isPlanning() && wheelbotLab.getState().path?.available===true')
+ admitted=page.evaluate('({time:performance.now(),steps:wheelbotLab.getState().steps,path:wheelbotLab.getState().path})')
+ assert abs(admitted['path']['accepted'][-1]['x']-.1)<1e-6
+ page.wait_for_function('(k)=>wheelbotLab.getState().steps>=k+150',arg=admitted['steps'])
+ measured=page.evaluate('({time:performance.now(),state:wheelbotLab.getState(),timing:wheelbotLab.getPerformance()})')
+ page.evaluate('wheelbotLab.pause()')
+ actual=measured['state']['truth']
+ assert not measured['state']['failed'] and abs(actual[0]-.1)<=.005 and abs(actual[1]-nominal['z'])<=.005
+ assert abs(actual[2]-nominal['pitch'])<=.03 and max(abs(v)for v in actual[6:])<=.3
+ planning_ms=admitted['time']-requested_at
+ live_ratio=((measured['state']['steps']-admitted['steps'])*.01)/((measured['time']-admitted['time'])/1000)
+ assert planning_ms<=1000 and live_ratio>=.85,{'planningMs':planning_ms,'realTimeFactor':live_ratio}
+ Path('test-results/wheelbot-responsive-browser.json').write_text(json.dumps({'passed':True,'planningWallMs':planning_ms,'requestToEvaluationWallMs':measured['time']-requested_at,'simulationSecondsAfterAdmission':(measured['state']['steps']-admitted['steps'])*.01,'actual':actual[:3],'target':{'x':.1,'z':nominal['z'],'pitch':nominal['pitch']},'positionErrorM':abs(actual[0]-.1),'realTimeFactor':live_ratio,'timing':measured['timing'],'scope':'One real pointer-triggered 10 cm command, not hardware or worst-case timing.'},indent=2))
+ page.screenshot(path='test-results/wheelbot-responsive-browser.png',full_page=True)
  # Optional corrupt jump must preserve ordinary balance.
  bad_jump=json.loads(Path('assets/wheelbot/target_jump.json').read_text());bad_jump['nativeVersion']='mismatch'
  page.route('**/target_jump.json',lambda route:route.fulfill(json=bad_jump));page.reload();page.wait_for_function('window.wheelbotLab?.ready');page.wait_for_function('document.querySelector("#jump-status").textContent.includes("mismatch")');assert not page.evaluate('wheelbotLab.run(30).failed')

@@ -40,15 +40,15 @@ export async function createWheelbotBackend(xml){
   d.qfrc_applied[0]=externalX;
   for(let i=0;i<5;i++){mj.mj_step(m,d);steps++;}return read();
  }
- function geometry(x){forward(x);return {torso:{position:Array.from(d.geom_xpos.slice(3*torso,3*torso+3)),rotation:Array.from(d.geom_xmat.slice(9*torso,9*torso+9)),halfSize:Array.from(m.geom_size.slice(3*torso,3*torso+3))},hip:Array.from(d.site_xpos.slice(3*sites[0],3*sites[0]+3)),knee:Array.from(d.site_xpos.slice(3*sites[1],3*sites[1]+3)),wheel:Array.from(d.site_xpos.slice(3*sites[2],3*sites[2]+3)),wheelRotation:Array.from(d.geom_xmat.slice(9*wheel,9*wheel+9)),wheelRadius:m.geom_size[3*wheel]};}
+ function geometry(x){state(x);mj.mj_kinematics(m,d);return {torso:{position:Array.from(d.geom_xpos.slice(3*torso,3*torso+3)),rotation:Array.from(d.geom_xmat.slice(9*torso,9*torso+9)),halfSize:Array.from(m.geom_size.slice(3*torso,3*torso+3))},hip:Array.from(d.site_xpos.slice(3*sites[0],3*sites[0]+3)),knee:Array.from(d.site_xpos.slice(3*sites[1],3*sites[1]+3)),wheel:Array.from(d.site_xpos.slice(3*sites[2],3*sites[2]+3)),wheelRotation:Array.from(d.geom_xmat.slice(9*wheel,9*wheel+9)),wheelRadius:m.geom_size[3*wheel]};}
  function contact(x){
   const eps=1e-7,xp=x.slice(),xm=x.slice();for(let i=0;i<6;i++){xp[i]+=eps*x[6+i];xm[i]-=eps*x[6+i];}
-  const vx=(geometry(xp).wheel[0]-geometry(xm).wheel[0])/(2*eps);forward(x);
+  const vx=(geometry(xp).wheel[0]-geometry(xm).wheel[0])/(2*eps);state(x);mj.mj_fwdPosition(m,d);
   let wheelContacts=0;for(let i=0;i<d.ncon;i++){const c=d.contact.get(i);if(c.geom1===wheel||c.geom2===wheel)wheelContacts++;}
   return {count:d.ncon,wheelContacts,slip:vx-m.geom_size[3*wheel]*(x[8]+x[9]+x[10]+x[11]),wheelCenterVx:vx};
  }
  function jumpTelemetry(x){
-  forward(x);
+  state(x);mj.mj_fwdPosition(m,d);
   const com=Array.from(d.subtree_com.slice(3,6));
   let wheelContacts=0;for(let i=0;i<d.ncon;i++){const c=d.contact.get(i);if(c.geom1===wheel||c.geom2===wheel)wheelContacts++;}
   const bodyGeoms=[torso,id(5,'upper_link_visual'),id(5,'lower_link_visual')];
