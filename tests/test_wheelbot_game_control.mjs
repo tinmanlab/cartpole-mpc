@@ -6,7 +6,7 @@ const {createWheelbotContactBackend}=await import('../src/wheelbot_contact_backe
 const read=n=>JSON.parse(fs.readFileSync(`assets/wheelbot/${n}.json`));
 const b=await createWheelbotContactBackend(fs.readFileSync('assets/wheelbot/live_model.xml','utf8'));
 try {
- const c=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'));
+ const c=createGameController(b,read('live_profile'),read('pose_profiles'),read('target_jump'),{stationaryJumpBundle:read('stationary_jump')});
  assert.throws(()=>c.setInput({horizontal:NaN}));
  const results=[];
  for(const horizontal of [1,0,-1,0]){c.setInput({horizontal,vertical:0,tilt:0});for(let k=0;k<200;k++)c.step();const s=c.snapshot();assert(!s.failed);assert(Math.abs(s.truth[6]-.2*horizontal)<.04);results.push({horizontal,x:s.truth[0],vx:s.truth[6]});}
