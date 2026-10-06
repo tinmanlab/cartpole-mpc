@@ -26,7 +26,7 @@ export async function createWheelbotContactBackend(xml){
   return {count:d.ncon,pairs,maximumPenetrationM:Math.max(0,...pairs.map(p=>-p.distanceM)),source:'MuJoCo contact solver at current state and explicit diagnostic torque; not a sensor measurement'};
  }
  function sceneGeometry(x){
-  forward(x);const geoms=[];
+  state(x);mj.mj_kinematics(m,d);const geoms=[];
   for(let i=0;i<m.ngeom;i++)geoms.push({name:mj.mj_id2name(m,5,i),type:m.geom_type[i],position:Array.from(d.geom_xpos.slice(3*i,3*i+3)),rotation:Array.from(d.geom_xmat.slice(9*i,9*i+9)),size:Array.from(m.geom_size.slice(3*i,3*i+3)),rgba:Array.from(m.geom_rgba.slice(4*i,4*i+4)),collisionEnabled:!!(m.geom_contype[i]||m.geom_conaffinity[i])});
   return geoms;
  }
