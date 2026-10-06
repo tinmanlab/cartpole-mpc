@@ -12,7 +12,7 @@ The two source hops share an approximately 39.25 cm entry and a roughly 35.47 cm
 
 The flat-ground measured envelope covers steady horizontal velocities from −0.2 to +0.2 m/s, short/full charge and five calibrated charge fractions. Every course has real collision geometry, but the original terrain-controller probes failed at some corners/crests: the ramp, uneven and obstacle courses are visible stress tests, not certified traversal. Failed control disengages all motors and invalidates its estimate while gravity and collision integration continue. Press R for an explicit reset.
 
-The current playground requires its complete validated asset bundle to load; corrupt/missing jump data can prevent startup rather than degrading to a ground-only game. The preserved path lesson has its own optional-data isolation checks. A proposed game fallback and radius-aware terrain-reference experiment were not incorporated; no result from those unaccepted prototypes is claimed.
+Jump data is optional in the current playground: missing, malformed, baseline-mismatched, or runtime-mismatched jump data disables Space/jump while ordinary A/D/W/S/Q/E balancing remains available. Terrain reference context uses finite-radius wheel support derived from the exact course geoms and the compiled wheel radius; low steps and ramp corners are represented before the wheel centre crosses an edge, while a vertical rise larger than one wheel radius remains a blocking obstacle. These checks improve reference/contact consistency but do not certify universal terrain traversal.
 
 ## Preserved path lesson
 
