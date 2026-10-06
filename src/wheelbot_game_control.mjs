@@ -23,7 +23,7 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
  const measure=x=>base.measurementIndices.map((j,i)=>x[j]+base.measurementSigma[i]*Math.sqrt(-2*Math.log(uniform()))*Math.cos(2*Math.PI*uniform()));
  let target={x:0,z:.3925+surface(0).height,pitch:0,vx:0,vz:0},height=.3925,pr=profile(height,0,0,surface(0).height),truth=[...pr.qref,0,0,0,0,0,0],estimate=[...measure(truth).slice(0,5),0,0,0,0,0,0];
  let input={horizontal:0,vertical:0,tilt:0,boost:0},speedLimit=.2,steps=0,last=null,failed=false,status=planner?'Ready · calibrated charge height':jumpUnavailableReason,jump=null,index=0,outcome=null,air=0;
- let charge={active:false,seconds:0,fraction:0,requestedHeight:planner?.levels[0]??0,acceptedHeight:null};
+ let charge={active:false,seconds:0,fraction:0,requestedHeight:planner?.levels[0]??0,acceptedHeight:null},measurementHistory=[];
  const snapshot=()=>structuredClone({truth,estimate,steps,last,failed,observerValid:!failed,phase:failed?'fallen':jump?'jump':charge.active?'charging':'ground',target,speedLimit,charge,jumpAvailable:!!planner,jumpUnavailableReason,jump:jump?{profileId:jump.profileId,vx:jump.vx,index,...outcome}:outcome,status,controlDt:.01});
  function step(){
   if(failed){
@@ -33,17 +33,20 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
    return snapshot();
   }
   if(charge.active){charge.seconds=Math.min(1,charge.seconds+.01);charge.fraction=charge.seconds;charge.requestedHeight=planner.levels[0]+charge.fraction*(planner.levels[1]-planner.levels[0]);}
-  let action;
+  let action,referenceSupport=null,terrainObserver=false;
   if(jump)action=jump.command(index,estimate);
   else{
    const geometry=backend.geometry([estimate[0],estimate[1],estimate[2],estimate[3],estimate[4],0,...estimate.slice(5)]),wheel=geometry.wheel,s=surface(wheel[0],geometry.wheelRadius);
    speedLimit=approach(speedLimit,input.boost?.4:.2,input.boost?.0025:.005);
-   const speed=Math.abs(s.slope)>.1?Math.min(.08,speedLimit):speedLimit;
+   const direction=Math.sign(input.horizontal||target.vx),preview=direction?[.5,1,2,3].map(k=>surface(wheel[0]+direction*k*geometry.wheelRadius,geometry.wheelRadius)):[s];
+   const maxSlope=Math.max(Math.abs(s.slope),...preview.map(v=>Math.abs(v.slope))),maxRise=Math.max(0,...preview.map(v=>Math.abs(v.height-s.height))),blocked=preview.some(v=>v.blockedBy);
+   const terrainAhead=blocked||maxSlope>.02||maxRise>.001,terrainCap=blocked||maxRise>.004?.05:terrainAhead?.08:speedLimit;
+   const speed=Math.min(speedLimit,terrainCap);terrainObserver=terrainAhead||s.source!=='floor';
    target.vx=approach(target.vx,input.horizontal*speed,.005);
    if(Math.abs(target.x+target.vx*.01)>3.95)target.vx=approach(target.vx,0,.01);
    target.x=clamp(target.x+target.vx*.01,-4,4);
    const desired=charge.active?clamp((.3925-height)*3,-.06,.06):input.vertical*.06;
-   target.vz=approach(target.vz,desired,.003);height=clamp(height+target.vz*.01,.36,.49);target.pitch=clamp(target.pitch+input.tilt*.004,-.17,.17);let next=profile(height,target.pitch,target.x,s.height);const rg0=backend.geometry([...next.qref,0,0,0,0,0,0]),referenceSupport=surface(rg0.wheel[0],rg0.wheelRadius);next=profile(height,target.pitch,target.x,referenceSupport.height);target.z=height+referenceSupport.height;
+   target.vz=approach(target.vz,desired,.003);height=clamp(height+target.vz*.01,.36,.49);target.pitch=clamp(target.pitch+input.tilt*.004,-.17,.17);let next=profile(height,target.pitch,target.x,s.height);const rg0=backend.geometry([...next.qref,0,0,0,0,0,0]);referenceSupport=surface(rg0.wheel[0],rg0.wheelRadius);terrainObserver=terrainObserver||referenceSupport.source!=='floor';next=profile(height,target.pitch,target.x,referenceSupport.height);target.z=height+referenceSupport.height;
    const ref=[...next.qref.slice(0,5),0,0,0,0,0,0];
    for(let j=0;j<5;j++)ref[5+j]=(next.qref[j]-pr.qref[j])/.01;
    const wheelX=p=>backend.geometry([...p.qref,0,0,0,0,0,0]).wheel[0];
@@ -53,7 +56,9 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
    action={u,state:ref};pr=next;
   }
   truth=backend.stepWrench(truth,action.u,[0,0,0],true);const measurement=measure(truth),physical=backend.lastActionStep();
+  measurementHistory.push(measurement.slice());if(measurementHistory.length>7)measurementHistory.shift();
   estimate=jump?jump.observe(index,estimate,action.u,measurement):observerUpdate(pr,estimate,action.u,measurement);
+  if(!jump&&terrainObserver&&measurementHistory.length>=5){const n=measurementHistory.length,mid=(n-1)/2,den=.01*Array.from({length:n},(_,i)=>(i-mid)**2).reduce((a,b)=>a+b,0),rates=Array.from({length:5},(_,j)=>measurementHistory.reduce((sum,y,i)=>sum+(i-mid)*y[j],0)/den);for(let j=0;j<5;j++){estimate[j]=.85*estimate[j]+.15*measurement[j];estimate[5+j]=.65*estimate[5+j]+.35*rates[j];}estimate[10]=.65*estimate[10]+.35*measurement[5];}
   failed=!estimate.every(Number.isFinite)||Math.abs(truth[0])>4.1||Math.abs(truth[2]-target.pitch)>.6||physical.maximumPenetrationM>.01||physical.jointLimitExcursionRad>.02||physical.maximumAirborneWheelRate>25;
   if(jump){
    outcome.maxClearance=Math.max(outcome.maxClearance,physical.maximumWheelClearanceM-jump.height);
@@ -64,7 +69,7 @@ export function createGameController(backend,base,atlas,jumpBundle,{seed=7,world
   }
   if(!jump&&outcome?.landed){outcome.recoverySteps++;outcome.terminalRelativeRate=Math.max(...truth.slice(6).map((v,j)=>Math.abs(v-action.state[5+j])));outcome.success=!failed&&outcome.flightS>=.03&&outcome.recoverySteps>=100&&outcome.terminalRelativeRate<=.3;}
   if(failed){status='Physical envelope exceeded · motors off';charge.active=false;input={horizontal:0,vertical:0,tilt:0,boost:0};jump=null;}
-  steps++;last={u:action.u,contact:backend.contact(truth),physical,measurement,reference:action.state,support:jump?null:surface(backend.geometry(truth).wheel[0],backend.geometry(truth).wheelRadius),referenceSupport:jump?null:(typeof referenceSupport==='undefined'?null:referenceSupport)};return snapshot();
+  steps++;last={u:action.u,contact:backend.contact(truth),physical,measurement,reference:action.state,support:jump?null:surface(backend.geometry(truth).wheel[0],backend.geometry(truth).wheelRadius),referenceSupport:jump?null:referenceSupport};return snapshot();
  }
  return {snapshot,step,setInput(values){if(!values||Object.keys(values).some(k=>!['horizontal','vertical','tilt','boost'].includes(k))||Object.values(values).some(v=>!Number.isFinite(v)||Math.abs(v)>1))throw Error('Inputs must be finite in [-1,1]');input={horizontal:0,vertical:0,tilt:0,boost:0,...values};},beginCharge(){if(!planner){status=jumpUnavailableReason;return snapshot();}if(!failed&&!jump&&!charge.active)charge={active:true,seconds:0,fraction:0,requestedHeight:planner.levels[0],acceptedHeight:null};return snapshot();},releaseCharge(){if(!planner){charge.active=false;status=jumpUnavailableReason;return snapshot();}if(!charge.active)return snapshot();charge.active=false;try{const geometry=backend.geometry(truth);const stationaryIntent=Math.abs(target.vx)<.03&&input.horizontal===0;jump=planner.start(estimate,charge.fraction,surface(geometry.wheel[0],geometry.wheelRadius),{stationary:stationaryIntent});index=0;air=0;outcome={flight:false,landed:false,flightS:0,maxClearance:0,success:false};charge.acceptedHeight=jump.acceptedHeight;status='Charged moving jump · momentum preserved';}catch(e){status=e instanceof Error?e.message:String(e);}return snapshot();},cancelInput(){input={horizontal:0,vertical:0,tilt:0,boost:0};charge.active=false;return snapshot();}};
 }
