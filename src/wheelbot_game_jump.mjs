@@ -2,7 +2,10 @@ import {createTargetJump} from './wheelbot_target_jump.mjs';
 const ix=[0,1,2,3,4,6,7,8,9,10,11];
 const mv=(a,x)=>a.map(r=>r.reduce((s,v,j)=>s+v*x[j],0));
 export function createGameJump(backend,base,bundle){
+ if(!bundle)throw Error('Game jump bundle unavailable');
  bundle=structuredClone(bundle);
+ const runtimeVersion=backend.diagnostics?.().version;
+ if(typeof runtimeVersion!=='string'||bundle.nativeVersion!==runtimeVersion)throw Error('Game jump runtime version mismatch');
  // Reuse the complete existing schedule validation; canonical robot identity is
  // distinct from a trusted world's scene digest. Neither profile is relabeled.
  createTargetJump({...backend,assetSha256:backend.robotAssetSha256??backend.assetSha256},base,bundle);

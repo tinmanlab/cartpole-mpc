@@ -31,11 +31,13 @@ async function changeCourse(level){const request=++token;pause();loading=true;$(
  }catch(e){next?.dispose();if(request!==token)return;loading=false;if(controller)$('loading').hidden=true;$('loading').textContent='코스를 열 수 없습니다: '+e.message;$('status').textContent=e.message;}
 }
 const get=async name=>{const r=await fetch('assets/wheelbot/'+name);if(!r.ok)throw Error('Unavailable '+name);return r.text();};
+const optional=async name=>{try{return await get(name);}catch{return null;}};
 try{
- const [xml,baseText,atlasText,jumpText]=await Promise.all(['live_model.xml','live_profile.json','pose_profiles.json','target_jump.json'].map(get));
- const base=JSON.parse(baseText),atlas=JSON.parse(atlasText),jump=JSON.parse(jumpText);
+ const [xml,baseText,atlasText,jumpText]=await Promise.all([get('live_model.xml'),get('live_profile.json'),get('pose_profiles.json'),optional('target_jump.json')]);
+ const base=JSON.parse(baseText),atlas=JSON.parse(atlasText);
  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(baseText))),v=>v.toString(16).padStart(2,'0')).join('');
- if(jump.baselineSha256!==hash)throw Error('Jump baseline identity mismatch');
+ let jump=null;
+ if(jumpText)try{const parsed=JSON.parse(jumpText);if(parsed.baselineSha256===hash)jump=parsed;}catch{}
  config={xml,base,atlas,jump};await changeCourse('flat');
  window.wheelbotGame=Object.freeze({get ready(){return !!controller&&!loading;},getState:()=>controller.snapshot(),getPerformance:()=>meter.snapshot(),getWorld:()=>({robotAssetSha256:backend.robotAssetSha256,assetSha256:backend.assetSha256,manifest:structuredClone(backend.worldManifest),centerOfMass:backend.jumpTelemetry(controller.snapshot().truth).com,geoms:backend.sceneGeometry(controller.snapshot().truth)}),run(n){if(!Number.isInteger(n)||n<0||n>2000)throw Error('run requires integer 0–2000');if(loading)throw Error('Course loading');previous=accumulator=0;for(let k=0;k<n;k++)tick();render(0,true);return controller.snapshot();}});
  requestAnimationFrame(frame);

@@ -59,25 +59,35 @@ with sync_playwright() as p:
    for duration in ([10,50,100] if not moving else [10,100]):
     reset()
     if moving:page.keyboard.down('KeyD');run(200)
-    page.keyboard.down('Space');run(duration)
-    charged=state();page.keyboard.down('Space');assert state()['charge']['seconds']>=charged['charge']['seconds']
-    assert abs(charged['charge']['seconds']-min(1,duration*.01))<.12
+    page.keyboard.down('Space')
+    timed=page.evaluate('(n)=>{const start=wheelbotGame.getState().charge.seconds;const after=wheelbotGame.run(n);return {start,after};}',duration)
+    charged=timed['after'];page.keyboard.down('Space');assert state()['charge']['seconds']>=charged['charge']['seconds']
+    expected_delta=min(1-timed['start'],duration*.01)
+    assert abs((charged['charge']['seconds']-timed['start'])-expected_delta)<.02
     before=state();page.keyboard.up('Space');released=state()
     assert released['phase']=='jump',released['status']
     assert abs(released['truth'][0]-before['truth'][0])<.03
     if released['steps']==before['steps']:assert released['truth']==before['truth'] and released['estimate']==before['estimate']
     if moving:assert released['truth'][6]>.1
-    airborne=False;min_v=10;flight_com_v=[]
-    prior_com=page.evaluate('wheelbotGame.getWorld().centerOfMass[0]');prior_steps=state()['steps'];prior_air=False
-    for _ in range(80):
-     s=run(5);min_v=min(min_v,s['truth'][6])
-     com=page.evaluate('wheelbotGame.getWorld().centerOfMass[0]');air=s['last']['physical']['flightSamples']
-     all_air=all(z['air'] for z in air)
-     if all_air and prior_air:flight_com_v.append((com-prior_com)/((s['steps']-prior_steps)*.01))
-     prior_com,prior_steps,prior_air=com,s['steps'],all_air
-     if s['last']['physical']['maximumWheelClearanceM']>.01 and not airborne:
-      airborne=True;shot('flight-moving' if moving else 'flight')
-     assert not s['failed'],s
+    # Keep accelerated flight/recovery in one JS task. Python/Playwright calls
+    # between samples would let the real rAF loop consume the short flight.
+    trace=page.evaluate('''()=>{
+      let s=wheelbotGame.getState(),priorCom=wheelbotGame.getWorld().centerOfMass[0],priorSteps=s.steps;
+      let priorAir=s.last?.physical?.flightSamples?.length>0&&s.last.physical.flightSamples.every(z=>z.air);
+      let minV=s.truth[6],flight=[],airborne=false;
+      for(let i=0;i<600;i++){
+        s=wheelbotGame.run(1);const com=wheelbotGame.getWorld().centerOfMass[0];
+        const samples=s.last.physical.flightSamples,allAir=samples.length>0&&samples.every(z=>z.air);
+        minV=Math.min(minV,s.truth[6]);airborne ||= s.last.physical.maximumWheelClearanceM>.01;
+        if(allAir&&priorAir&&s.steps>priorSteps)flight.push((com-priorCom)/((s.steps-priorSteps)*.01));
+        priorCom=com;priorSteps=s.steps;priorAir=allAir;
+        if(s.failed)break;
+        if(s.phase==='ground'&&s.jump?.landed&&s.jump?.success&&s.jump.recoverySteps>=120)break;
+      }
+      return {state:s,minV,flight,airborne};
+    }''')
+    s=trace['state'];min_v=trace['minV'];flight_com_v=trace['flight'];airborne=trace['airborne']
+    assert not s['failed'],s
     assert airborne and s['jump']['flight'] and s['jump']['landed'] and s['jump']['success'],s
     if moving:
      # An articulated base can recoil during landing; do not confuse this with
@@ -99,6 +109,16 @@ with sync_playwright() as p:
    assert (world['assetSha256']==robot_hash)==(level=='flat')
    assert page.locator('#view').evaluate('(e)=>document.activeElement===e')
    shot('course-'+level);record('compiled course '+level,world)
+  # Missing optional jump data must disable only Space/jump, not the game.
+  isolated=browser.new_page(viewport={'width':1000,'height':700})
+  isolated.route('**/assets/wheelbot/target_jump.json',lambda route:route.abort())
+  isolated.goto(args.url);isolated.wait_for_function('window.wheelbotGame?.ready',timeout=60000)
+  missing=isolated.evaluate('wheelbotGame.getState()');assert not missing['jumpAvailable'] and missing['jumpUnavailableReason']
+  isolated.locator('#view').focus();isolated.keyboard.down('KeyD');moved=isolated.evaluate('wheelbotGame.run(200)');isolated.keyboard.up('KeyD')
+  assert not moved['failed'] and moved['truth'][6]>.1
+  isolated.keyboard.down('Space');isolated.evaluate('wheelbotGame.run(20)');isolated.keyboard.up('Space')
+  assert isolated.evaluate('wheelbotGame.getState().phase')!='jump'
+  isolated.close();record('missing jump asset isolation',{'vx':moved['truth'][6],'reason':missing['jumpUnavailableReason']})
   assert not report['errors'],report['errors']
   report['passed']=True
  except Exception as e:
