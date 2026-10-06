@@ -41,6 +41,11 @@ with sync_playwright() as p:
   assert moving['truth'][6]>.1 and moving['truth'][0]>before['truth'][0]+.05,moving
   page.keyboard.up('KeyD');run(250);assert abs(state()['truth'][6])<.04
   record('horizontal and release',{'before':before,'moving':moving,'stopped':state()})
+  reset();page.keyboard.down('KeyD');page.keyboard.down('ShiftLeft');boosted=run(240)
+  assert boosted['speedLimit']>.39 and boosted['truth'][6]>.3,boosted
+  page.keyboard.up('ShiftLeft');released_boost=run(100)
+  assert released_boost['speedLimit']<.21 and released_boost['target']['vx']<.21,released_boost
+  page.keyboard.up('KeyD');run(250);record('progressive Shift speed cap',{'boosted':boosted,'released':released_boost})
   reset();z=state()['truth'][1]
   page.keyboard.down('KeyW');run(70);page.keyboard.up('KeyW');run(80);assert state()['truth'][1]>z+.02
   page.keyboard.down('KeyS');run(100);page.keyboard.up('KeyS');run(80);assert state()['truth'][1]<z+.01
@@ -96,9 +101,9 @@ with sync_playwright() as p:
      assert len(flight_com_v)>=1 and min(flight_com_v)>.05,flight_com_v
      assert s['truth'][0]>before['truth'][0]+.4 and s['truth'][6]>.15
      page.keyboard.up('KeyD')
-    else:heights.append(s['jump']['maxClearance'])
+    else:heights.append({'accepted':s['charge']['acceptedHeight'],'actual':s['jump']['maxClearance']})
     record(f'jump moving={moving} hold={duration/100}',{'charge':charged['charge'],'before':before,'released':released,'landed':s,'minimumBaseVxIncludingLanding':min_v,'airborneCOMVx':flight_com_v})
-  assert heights[0]<heights[1]<heights[2],heights
+  accepted=[h['accepted'] for h in heights];assert accepted[0]<=accepted[1]<=accepted[2] and accepted[0]<accepted[2],heights
   robot_hash=hashlib.sha256(Path('assets/wheelbot/live_model.xml').read_bytes()).hexdigest()
   for level,count in [('flat',0),('obstacles',4),('ramp',3),('uneven',16)]:
    page.select_option('#course',level)
@@ -109,9 +114,16 @@ with sync_playwright() as p:
    assert (world['assetSha256']==robot_hash)==(level=='flat')
    assert page.locator('#view').evaluate('(e)=>document.activeElement===e')
    shot('course-'+level);record('compiled course '+level,world)
+  page.select_option('#course','obstacles')
+  page.wait_for_function("wheelbotGame.ready&&wheelbotGame.getWorld().manifest.id==='obstacles'",timeout=60000)
+  page.locator('#view').focus();page.keyboard.down('KeyD');blocked=run(1800);page.keyboard.up('KeyD')
+  assert not blocked['failed'] and .45<blocked['truth'][0]<.70 and abs(blocked['truth'][6])<.03,blocked
+  assert blocked['status'].startswith('Vertical step ahead'),blocked['status']
+  record('vertical-step rolling admission boundary',blocked)
   # Missing optional jump data must disable only Space/jump, not the game.
   isolated=browser.new_page(viewport={'width':1000,'height':700})
   isolated.route('**/assets/wheelbot/target_jump.json',lambda route:route.abort())
+  isolated.route('**/assets/wheelbot/stationary_jump.json',lambda route:route.abort())
   isolated.goto(args.url);isolated.wait_for_function('window.wheelbotGame?.ready',timeout=60000)
   missing=isolated.evaluate('wheelbotGame.getState()');assert not missing['jumpAvailable'] and missing['jumpUnavailableReason']
   isolated.locator('#view').focus();isolated.keyboard.down('KeyD');moved=isolated.evaluate('wheelbotGame.run(200)');isolated.keyboard.up('KeyD')
