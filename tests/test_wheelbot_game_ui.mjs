@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createGameInput} from '../src/wheelbot_game_input.mjs';
+const html=fs.readFileSync('wheelbot.html','utf8'),app=fs.readFileSync('src/wheelbot_game_app.mjs','utf8');
+assert.equal((html.match(/<canvas\b/g)||[]).length,1);
+assert(!/<details[^>]*\bopen/.test(html));
+for(const id of ['view','course','charge','pause','reset','help'])assert(html.includes(`id="${id}"`));
+assert(html.includes('wheelbot-paths.html')&&html.includes('기울기'));
+assert(app.includes('createLiveView()')&&app.includes('createRuntimeMeter()'));
+assert(!app.includes('setPointerCapture')&&!app.includes('setqvel'));
+assert(fs.readFileSync('wheelbot-paths.html','utf8').includes('src/wheelbot_app.mjs'));
+let released=0,cancelled=0;
+const input=createGameInput({onChargeRelease:()=>released++,onCancel:()=>cancelled++});
+input.down({code:'Space',target:{tagName:'CANVAS'}});
+input.up({code:'Space',target:{tagName:'SELECT'}});
+assert.equal(released,0);assert.equal(cancelled,1);
+assert.equal(input.down({code:'Unknown'}),false);
+console.log('Game page, legacy route and editable-focus charge cancellation PASS');

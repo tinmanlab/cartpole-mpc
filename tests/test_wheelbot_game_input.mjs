@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {createGameInput}from '../src/wheelbot_game_input.mjs';
+let start=0,release=0,cancel=0,pause=0;
+const input=createGameInput({onChargeStart:()=>start++,onChargeRelease:()=>release++,onCancel:()=>cancel++,onPause:()=>pause++});
+const ev=(code,repeat=false,tagName='CANVAS')=>({code,repeat,target:{tagName},preventDefault(){this.prevented=true;}});
+input.down(ev('KeyD'));assert.deepEqual(input.axes(),{horizontal:1,vertical:0,tilt:0});input.down(ev('KeyA'));assert.equal(input.axes().horizontal,0);input.up(ev('KeyD'));assert.equal(input.axes().horizontal,-1);
+input.down(ev('KeyW'));input.down(ev('KeyE'));assert.deepEqual(input.axes(),{horizontal:-1,vertical:1,tilt:1});
+input.down(ev('Space'));input.down(ev('Space',true));assert.equal(start,1);input.up(ev('Space'));input.up(ev('Space'));assert.equal(release,1);
+input.down(ev('Space'));input.clear();input.up(ev('Space'));assert.equal(release,1);assert.equal(cancel,1);assert.deepEqual(input.axes(),{horizontal:0,vertical:0,tilt:0});
+input.down(ev('KeyD',false,'INPUT'));assert.equal(input.axes().horizontal,0);input.down(ev('KeyP'));assert.equal(pause,1);
+console.log('Keyboard velocity axes, repeat isolation, focus cancellation and charge/release PASS');

@@ -36,7 +36,7 @@ try{
  for(let i=0;i<600;i++)assert(!trial.step().failed);
  assert(Math.abs(trial.snapshot().truth[0]-.03)<.02);
  assert(Math.abs(p.qref[4])>.9&&Math.abs(p.qref[4])<1.3);
- const html=fs.readFileSync('wheelbot.html','utf8');
+ const html=fs.readFileSync('wheelbot-paths.html','utf8');
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate page element IDs');
  assert(html.includes('id="robot-model"')&&html.includes('id="live-left"'),'Visible live model and movement controls missing');
  assert(html.indexOf('id="view"')<html.indexOf('id="physical-editor"'),'Primary robot viewport must precede advanced settings');
