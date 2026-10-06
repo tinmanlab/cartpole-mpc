@@ -13,7 +13,7 @@ for(const p of parameters)for(const x of samples)for(const u of [-7,0,5]){
  reference.push({spec:s,x,u,acc:[r.drive.acc,r.drive.alpha],step:L.nonlinearStep(x,u,s)});
 }
 const backend=await createMujocoBackend();
-assert.equal(backend.version,'3.7.0');assert.equal(backend.assetSha256,crypto.createHash('sha256').update(fs.readFileSync('assets/cartpole.xml')).digest('hex'));
+assert.equal(backend.version,JSON.parse(fs.readFileSync('package.json')).dependencies['@mujoco/mujoco']);assert.equal(backend.assetSha256,crypto.createHash('sha256').update(fs.readFileSync('assets/cartpole.xml')).digest('hex'));
 let maxAccelerationError=0,maxStepError=0,maxGeometryError=0;
 for(const r of reference){
  const a=backend.acceleration(r.x,r.u,r.spec),x=backend.transition(r.x,r.u,r.spec);

@@ -4,11 +4,11 @@
 
 [**Open the live lab →**](https://tinmanlab.github.io/cartpole-mpc/) · [Full NMPC](https://tinmanlab.github.io/cartpole-mpc/#full_nmpc) · [InEKF bridge](https://tinmanlab.github.io/cartpole-mpc/#inekf) · [FOCUS bridge](https://tinmanlab.github.io/cartpole-mpc/#focus)
 
-[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). Three sliders control position (±1 m), height (36–49 cm) and pitch (±10°). Jump and land on the same compact robot, or apply pushes, gusts and body moments. Analysis and older experiments stay collapsed. Full floor-to-standing recovery is not yet validated; Reset is not recovery. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
+[**Open wheelbot simulation →**](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html). One rectangular-box robot: click a base/wheel target or draw and release a path. Requested and checked paths remain distinct. The same page exposes the validated small-jump family from its declared low-stance entry range; other requests are explicitly rejected. Runtime and profile generation use MuJoCo 3.15.0. See the [wheelbot guide](docs/WHEELBOT_LAB.md).
 
 ![MuJoCo WASM control/observer lab](evidence/mujoco_wasm_browser.png)
 
-The browser now runs **official MuJoCo WASM 3.7.0**, using the checked-in `assets/cartpole.xml`. The default is **hard-rail constrained MPC + EKF**. Canvas displays a 2D projection of the compiled MJCF geometry; it is not a separate physics engine. The screenshot is a real browser run. Older GIF/WebM files under `media/` are historical recordings of the earlier JavaScript physics implementation, not evidence of this runtime.
+The browser now runs **official MuJoCo WASM 3.15.0**, using the checked-in `assets/cartpole.xml`. The default is **hard-rail constrained MPC + EKF**. Canvas displays a 2D projection of the compiled MJCF geometry; it is not a separate physics engine. The screenshot is a real browser run. Older GIF/WebM files under `media/` are historical recordings of the earlier JavaScript physics implementation, not evidence of this runtime.
 
 See [runtime, assets and failure contracts](docs/MUJOCO_WASM_RUNTIME.md) for exact versions, masses/inertias, model scope, upstream code reuse and verification commands.
 
@@ -352,4 +352,4 @@ The CartPole versions preserve the **control/estimation structure** needed to un
 
 ### Wheelbot live default
 
-The default compact ellipsoid robot starts in a controlled bent-knee posture. The hip axis is 20 mm from the declared base COM, with model-specific trim and gain design. Set a wider position, height and pitch target without resetting state; the same robot can prepare, jump, land and settle. Six explicitly noisy measurement channels feed the observer. The page keeps primary controls visible and analysis collapsed. Strong disturbances can cause real contact/fall dynamics; full get-up is not claimed. See [model, sensing and validation boundaries](docs/WHEELBOT_LAB.md).
+The default rectangular-box robot starts in a controlled bent-knee posture. No action swaps in a different robot. Position/height paths are locally projected and checked with the nonlinear model; this is not global reachability or a minimum-time guarantee. The original ambitious 1.5-second response benchmark remains unmet and is reported separately, not hidden. Small jumps are available only inside a checked low-stance neighborhood; arbitrary base-apex jumps and floor-to-standing recovery are not claimed. Six explicitly noisy measurement channels feed the observer. See [model, sensing and validation boundaries](docs/WHEELBOT_LAB.md).

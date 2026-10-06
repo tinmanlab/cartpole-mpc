@@ -23,6 +23,12 @@ jobs:
       - run: npm ci
       - run: pip install -r requirements-native.txt playwright==1.61.0
       - run: python -m playwright install --with-deps chromium
+      - name: Actual runtime identity and optional jump isolation
+        run: |
+          python tests/test_runtime_versions.py
+          node tests/test_runtime_versions.mjs
+          node tests/test_wheelbot_viewer_timing.mjs
+          node tests/test_wheelbot_jump_completion.mjs
       - name: Source, assets and regression contracts
         run: npm run check
       - name: Actual official MuJoCo WASM and canonical MJCF
@@ -33,33 +39,49 @@ jobs:
         run: python tests/test_wasm_native.py
       - name: Real browser network, solver and failure paths
         run: npm run test:browser
-      - name: Compact wheelbot model, live control and pacing
+      - name: Canonical box native design and WASM path evidence
         run: |
-          python tests/test_wheelbot_live_model.py
-          node tests/test_wheelbot_live_runtime.mjs
-          node tests/test_wheelbot_live_parity.mjs
-          python tests/test_wheelbot_live_browser.py
-      - name: Direct pose, disturbances and compact jump
+          failed=0
+          python tests/test_wheelbot_live_model.py || failed=1
+          node tests/test_wheelbot_live_parity.mjs || failed=1
+          node tests/test_wheelbot_box_paths.mjs || failed=1
+          node tests/test_wheelbot_simple_ui.mjs || failed=1
+          node tests/test_wheelbot_paths_runtime.mjs || failed=1
+          python tests/test_wheelbot_box_parity.py || failed=1
+          python tests/test_wheelbot_pose.py || failed=1
+          node tests/test_wheelbot_preview_isolation.mjs || failed=1
+          node tests/test_wheelbot_review_fixes.mjs || failed=1
+          node tests/test_wheelbot_request_replacement.mjs || failed=1
+          exit "$failed"
+      - name: Historical offline contact physics regressions
+        if: always()
         run: |
-          node tests/test_wheelbot_action_optional.mjs
-          node tests/test_wheelbot_simple_ui.mjs
-          node tests/test_wheelbot_actions.mjs
-          python tests/test_wheelbot_pose.py
-          python tests/test_wheelbot_action_jump.py
-          python tests/test_wheelbot_action_jump_reference.py
-          node tests/test_wheelbot_action_jump_wasm.mjs
-          node tests/test_wheelbot_actions_jump_manager.mjs
-          python tests/test_wheelbot_actions_browser.py
-      - name: Wheelbot portable native, WASM and browser release gates
-        run: |
-          python -m py_compile tests/test_wheelbot_release_browser.py
-          python tests/test_wheelbot_release_routes.py
           python tests/export_wheelbot_tracking_reference.py
           node tests/test_wheelbot_contact_tracking_wasm.mjs
           node tests/test_wheelbot_configuration.mjs
           node tests/test_wheelbot_contact.mjs
           python tests/test_wheelbot_contact_reference.py
-          python tests/test_wheelbot_release_browser.py
+      - name: Canonical one-box real pointer browser gates
+        if: always()
+        run: |
+          python -m py_compile tests/test_wheelbot_paths_browser.py
+          mkdir -p test-results
+          python -m http.server 8765 --bind 127.0.0.1 > test-results/wheelbot-ci-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          python tests/test_wheelbot_paths_browser.py --url http://127.0.0.1:8765/wheelbot.html
+      - name: Historical aspirational fast-response benchmark (failure retained)
+        if: always()
+        continue-on-error: true
+        run: node tests/test_wheelbot_paths_runtime.mjs --require-fast
+      - name: Fresh native target jump before WASM parity
+        if: always()
+        run: python tests/test_wheelbot_target_jump.py && node tests/test_wheelbot_target_jump.mjs && node tests/test_wheelbot_target_jump_actions.mjs
+      - name: Requested latest version release gate
+        if: always()
+        run: |
+          python tests/test_runtime_versions.py --require-latest
+          node tests/test_runtime_versions.mjs --require-latest
       - name: Upload verification evidence
         if: always()
         uses: actions/upload-artifact@v4

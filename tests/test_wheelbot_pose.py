@@ -19,12 +19,13 @@ for p in bundle['profiles']:
     assert p['measurementIndices']==[0,1,2,3,4,11] and p['measurementSigma']==[.001,.001,.002,.003,.003,.02]
     A,B,_=linearize(p['qref'],p['uref'])
     max_fd=max(max_fd,float(np.max(abs(A-p['A']))),float(np.max(abs(B-p['B']))))
-fixture=json.loads((ROOT/'tests/fixtures/wheelbot_actions.json').read_text())
-for t in fixture['transitions']:
-    mujoco.mj_resetData(m,d);d.qpos[:]=t['before'][:6];d.qvel[:]=t['before'][6:];d.ctrl[:]=t['u'];d.qfrc_applied[:3]=t['wrench']
+fixture=json.loads((ROOT/'test-results/wheelbot-box-parity-input.json').read_text())
+assert fixture['modelHash']==bundle['assetSha256']
+for t in fixture['parity']:
+    mujoco.mj_resetData(m,d);d.qpos[:]=t['before'][:6];d.qvel[:]=t['before'][6:];d.ctrl[:]=t['u'];d.qfrc_applied[:3]=0
     for _ in range(5):mujoco.mj_step(m,d)
     max_replay=max(max_replay,float(np.max(abs(np.r_[d.qpos,d.qvel]-t['after']))))
 assert max_trim<1e-7 and max_fd<1e-8 and max_replay<1e-6,(max_trim,max_fd,max_replay)
-receipt={'nativeVersion':mujoco.__version__,'trimMaxQacc':max_trim,'finiteDifferenceRepeatMaxAbs':max_fd,'wasmNativeTransitionMaxAbs':max_replay,'replayedTransitions':len(fixture['transitions'])}
-path=ROOT/'evidence/wheelbot_actions.json';e=json.loads(path.read_text());e['nativeVerification']=receipt;path.write_text(json.dumps(e,indent=2)+'\n')
+receipt={'nativeVersion':mujoco.__version__,'trimMaxQacc':max_trim,'finiteDifferenceRepeatMaxAbs':max_fd,'wasmNativeTransitionMaxAbs':max_replay,'replayedTransitions':len(fixture['parity'])}
+path=ROOT/'test-results/wheelbot-box-atlas.json';path.write_text(json.dumps(receipt,indent=2)+'\n')
 print(json.dumps(receipt))

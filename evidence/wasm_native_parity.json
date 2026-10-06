@@ -1,6 +1,6 @@
 {
   "schema": "cartpole-wasm-native-parity/v1",
-  "mujocoVersion": "3.7.0",
+  "mujocoVersion": "3.15.0",
   "assetSha256": "0cd42edcef6ecccb9128af20644a17cfbe2ea484208675458c161d01cc40e46e",
   "controlSteps": 80,
   "maxAbsoluteStateError": 2.220446049250313e-15,

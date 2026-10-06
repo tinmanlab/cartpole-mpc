@@ -1,13 +1,16 @@
 // Narrow six-coordinate contact-plant adapter to the existing pinned runtime.
+import {MUJOCO_VERSION} from '../vendor/mujoco/version.mjs';
 import loadMujoco from '../vendor/mujoco/mujoco.js';
 export const STATE_NAMES=['x','z','pitch','hip','knee','wheel','vx','vz','pitch_rate','hip_rate','knee_rate','wheel_rate'];
 export const CONTROLLED_INDICES=[0,1,2,3,4,6,7,8,9,10,11];
 const vector=(x,n)=>Array.isArray(x)&&x.length===n&&x.every(Number.isFinite);
 export async function createWheelbotBackend(xml){
  const mj=await loadMujoco();
- if(mj.mj_versionString()!=='3.7.0')throw Error('Unverified MuJoCo version');
+ if(mj.mj_versionString()!==MUJOCO_VERSION)throw Error('Unverified MuJoCo version');
  const assetSha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(xml))),v=>v.toString(16).padStart(2,'0')).join('');
- mj.FS.writeFile('/wheelbot.xml',xml);const m=mj.MjModel.mj_loadXML('/wheelbot.xml'),d=new mj.MjData(m);
+ mj.FS.writeFile('/wheelbot.xml',xml);const m=mj.MjModel.mj_loadXML('/wheelbot.xml');
+ function dataBackend(ownsModel=false){
+ const d=new mj.MjData(m);
  let disposed=false,steps=0;
  const reject=message=>{d.delete();m.delete();throw Error(message);};
  if(m.nq!==6||m.nv!==6||m.nu!==3||m.na!==0||m.neq!==0||m.ntendon!==0)reject('Unsupported wheelbot model dimensions/support');
@@ -59,7 +62,9 @@ export async function createWheelbotBackend(xml){
   if(!com.every(Number.isFinite)||!distances.every(Number.isFinite))throw Error('Invalid compiled jump geometry');
   return {com,wheelContacts,wheelClearanceM:d.geom_xpos[3*wheel+2]-m.geom_size[3*wheel],minimumBodyFloorClearanceM:Math.min(...floorClearance),minimumNonadjacentDistanceM:Math.min(...distances)};
  }
- return {nx:12,nu:3,assetSha256,limits,step,geometry,contact,jumpTelemetry,
-  diagnostics:()=>({backend:'mujoco-wasm',version:'3.7.0',assetSha256,nq:6,nv:6,nu:3,physicsDt:.002,controlDt:.01,steps}),
-  dispose(){if(!disposed){d.delete();m.delete();disposed=true;}}};
+ return {fork:()=>dataBackend(),nx:12,nu:3,assetSha256,limits,step,geometry,contact,jumpTelemetry,
+  diagnostics:()=>({backend:'mujoco-wasm',version:mj.mj_versionString(),assetSha256,nq:6,nv:6,nu:3,physicsDt:.002,controlDt:.01,steps}),
+  dispose(){if(!disposed){d.delete();if(ownsModel)m.delete();disposed=true;}}};
+ }
+ return dataBackend(true);
 }

@@ -20,7 +20,7 @@
     "test:browser": "python3 tests/test_browser.py"
   },
   "dependencies": {
-    "@mujoco/mujoco": "3.7.0",
+    "@mujoco/mujoco": "3.15.0",
     "quadprog": "1.6.1"
   }
 }

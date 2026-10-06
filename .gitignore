@@ -9,3 +9,6 @@ test-results/
 .pytest_cache/
 
 !media/cartpole-mpc-demo.webm
+
+.npm-cache/
+.pip-cache/

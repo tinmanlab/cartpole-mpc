@@ -1,29 +1,33 @@
 {
   "schema": "cartpole-runtime-assets/v1",
   "packages": {
-    "@mujoco/mujoco": "3.7.0",
+    "@mujoco/mujoco": "3.15.0",
     "quadprog": "1.6.1"
   },
   "origins": {
-    "@mujoco/mujoco": "https://github.com/google-deepmind/mujoco/tree/3.7.0/wasm",
+    "@mujoco/mujoco": "https://github.com/google-deepmind/mujoco/tree/3.15.0/wasm",
     "quadprog": "https://github.com/albertosantini/quadprog"
   },
   "files": {
     "vendor/mujoco/mujoco.js": {
-      "sha256": "2f173521a2d415a416126892a16a8b557b62bb9390386a3ad0ae7f09da25336e",
-      "bytes": 297816
+      "sha256": "a5d5f00c4c16d327cf8275f88ddd47c857a5e9baec8ca4174d676fe299267a0c",
+      "bytes": 293619
     },
     "vendor/mujoco/mujoco.wasm": {
-      "sha256": "328208582acb65aad91c1ca2edfdc81d5b991a2db1bc9f2cbfeacfe9bc2d9a8a",
-      "bytes": 8698150
+      "sha256": "d59c489dd521c80af6965756c5b90daff549fa281566544e4540c170d937633d",
+      "bytes": 10370402
     },
     "vendor/mujoco/README.md": {
       "sha256": "8aac6a48315d961e9f5d06b1df254f6033ce541e4e8b7ba8d376859d6ad6b570",
       "bytes": 20260
     },
     "vendor/mujoco/package.json": {
-      "sha256": "0627d06da252303089be3d7bbec0b92d1f5c97b47eefd60d285db54c326541d0",
-      "bytes": 36
+      "sha256": "f8cbb1f65f69a46d4e0f3c7e5fa7651b57152619c0daf018cc1bdef66e0712de",
+      "bytes": 37
+    },
+    "vendor/mujoco/version.mjs": {
+      "sha256": "acbf7d19bd4fd34eac250346b0c84a1424b3adbd291a5cea0f054312a1e328d0",
+      "bytes": 38
     },
     "vendor/mujoco/LICENSE": {
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",

@@ -1,6 +1,6 @@
 """Design a local planar wheelbot LQR/KF profile with native MuJoCo FD + SciPy."""
 from __future__ import annotations
-import hashlib, json
+import hashlib, json, sys, importlib.metadata
 from pathlib import Path
 import mujoco, numpy as np, scipy, scipy.linalg as la
 from scipy.optimize import least_squares
@@ -42,7 +42,7 @@ def design(*, hip=.55, knee=-1.10, initial_height=None):
     A,B,_=linearize(qref,uref)
     # State is [x,z,pitch,hip,knee, vx,vz, pitch_rate,hip_rate,knee_rate,wheel_rate].
     prior=json.loads((ROOT/'assets/wheelbot/contact_profile.json').read_text())
-    Q=np.array(prior['Q']); Q[0,0]=80. # Stronger position cost for short live commands; not an optimum.
+    Q=np.array(prior['Q']); Q[0,0]=1280. # Single declared Qx=1280 candidate for 1.5 s / 10 cm tracking; not an optimum.
     R=np.diag([.08,.08,.35])
     P=la.solve_discrete_are(A,B,Q,R)
     K=la.solve(R+B.T@P@B,B.T@P@A)
@@ -58,7 +58,7 @@ def design(*, hip=.55, knee=-1.10, initial_height=None):
     observer_radius=float(max(abs(la.eigvals((np.eye(11)-L@H)@A))))
     phase_A,phase_B,_=linearize(qref,uref,phase=.713)
     phase_invariance=float(max(np.max(np.abs(phase_A-A)),np.max(np.abs(phase_B-B))))
-    return {'schema':'wheelbot-profile/v1','model':'Compact crouched educational wheelbot; declared engineering approximation, not calibrated hardware',
+    return {'schema':'wheelbot-profile/v1','generation':{'engineVersion':mujoco.mj_versionString(),'moduleVersion':mujoco.__version__,'distributionVersion':importlib.metadata.version('mujoco'),'interpreter':sys.executable,'manifestSha256':hashlib.sha256((ROOT/'vendor/manifest.json').read_bytes()).hexdigest()},'model':'Compact crouched educational wheelbot; declared engineering approximation, not calibrated hardware',
       'asset':'assets/wheelbot/live_model.xml','assetSha256':hashlib.sha256(XML.read_bytes()).hexdigest(),'xmlSha256':hashlib.sha256(XML.read_bytes()).hexdigest(),
       'timestep':.002,'controlDt':DT,'substeps':5,'qOrder':['x','z','pitch','hip','knee','wheel'],'vOrder':['x_dot','z_dot','pitch_dot','hip_dot','knee_dot','wheel_dot'],
       'actuators':['hip_motor','knee_motor','wheel_motor'],'actuatorUnits':'N m','qref':qref.tolist(),'uref':uref.tolist(),
@@ -69,17 +69,17 @@ def design(*, hip=.55, knee=-1.10, initial_height=None):
       'observerErrorRadius':observer_radius,'wheelPhaseInvarianceMaxAbs':phase_invariance,
       'designAvailable':bool(trim<1e-8 and dare<1e-8 and max(radii)<1 and observer_radius<1 and phase_invariance<1e-7),
       'modelMetadata':{**METADATA,'torsoMassKg':1.0,'eachLinkMassKg':.056,'wheelTireMassKg':.08715,'totalMassKg':float(m.body_mass.sum()),'linkLengthM':.25,'wheelRadiusM':.05,
-       'derivedFrom':'Original source-derived Upkie/sketch leg and tire dimensions/masses; new rounded base is an engineering assumption, with 1 kg lumped body/drive assembly and no identified motor assemblies or remote transmission'},
-      'weightChoice':{'prior':'assets/wheelbot/contact_profile.json','changed':'Q[0,0] from 2 to 80 for faster small position commands','optimalityClaim':False,'observerProcessCovarianceScale':.01,'observerReason':'One bounded revision after prior Qe gave 0.62–0.92 rad/s noisy wheel jitter; same measurementSigma. Quiet local-model assumption, not calibrated disturbance robustness.'},'limitsNm':[16.,16.,1.7],'solver':'scipy.linalg.solve_discrete_are; A/B from MuJoCo mjd_transitionFD and 5-step composition',
+       'derivedFrom':'Original source-derived Upkie/sketch leg and tire dimensions/masses; new rectangular box base is an engineering assumption, with 1 kg lumped body/drive assembly and no identified motor assemblies or remote transmission'},
+      'weightChoice':{'prior':'assets/wheelbot/contact_profile.json','changed':'Single declared variant: Q[0,0] 80 to 1280 for the frozen 1.5 s / 10 cm criterion; all other Q/R and noise unchanged','optimalityClaim':False,'observerProcessCovarianceScale':.01,'observerReason':'One bounded revision after prior Qe gave 0.62–0.92 rad/s noisy wheel jitter; same measurementSigma. Quiet local-model assumption, not calibrated disturbance robustness.'},'limitsNm':[16.,16.,1.7],'solver':'scipy.linalg.solve_discrete_are; A/B from MuJoCo mjd_transitionFD and 5-step composition',
       'scope':'local design about solved bent-knee standing contact; no global or hardware stability claim'}
 
 METADATA={
- 'baseGeometryType':'ellipsoid','baseHalfSizeM':[.085,.07,.075],
+ 'baseGeometryType':'box','baseHalfSizeM':[.085,.07,.075],
  'baseSizeM':[.17,.14,.15], 'bodyCOMLocalM':[0.,0.,.02],
  'hipPivotLocalM':[0.,0.,0.], 'hipToBodyCOMDistanceM':.02,
  'postureAnglesDeg':{'hip':float(np.degrees(.55)),'knee':float(np.degrees(-1.10)),'kneeFlexion':float(np.degrees(1.10))},
  'massAssumptions':'1 kg lumped body/drive assembly + two 0.056 kg rods + 0.08715 kg wheel/tire; not hardware identified',
- 'baseInertiaKgM2':[(.07**2+.075**2)/5,(.085**2+.075**2)/5,(.085**2+.07**2)/5],
+ 'baseInertiaKgM2':[(.07**2+.075**2)/3,(.085**2+.075**2)/3,(.085**2+.07**2)/3],
  'fullBodyContact':True,'collisionExclusion':'Standard MuJoCo parent-child filter only',
  'designChoice':'Hip near COM is a bounded compact-base choice, not a universal stability theorem'}
 
@@ -96,12 +96,13 @@ def build_model():
     torso.find('inertial').set('pos','0 0 0.02')
     torso.find('inertial').set('diaginertia',' '.join(map(str,METADATA['baseInertiaKgM2'])))
     geom=torso.find("geom[@name='torso_visual']")
-    geom.set('type','ellipsoid');geom.set('pos','0 0 0.02');geom.set('size','0.085 0.07 0.075')
+    geom.set('type','box');geom.set('pos','0 0 0.02');geom.set('size','0.085 0.07 0.075')
     root.find('keyframe/key').set('qpos',f'0 {.05+.5*np.cos(.55)} 0 .55 -1.10 0')
     tmp=XML.with_suffix('.xml.tmp'); ET.ElementTree(root).write(tmp,encoding='unicode');tmp.replace(XML)
 
 if __name__=='__main__':
-    build_model()
+    import sys
+    if "--profiles-only" not in sys.argv: build_model()
     profile=design();atomic_json(OUT,profile)
     protocol={'schema':'wheelbot-live-design/v1','modelSha256':profile['xmlSha256'],'profileSha256':hashlib.sha256(OUT.read_bytes()).hexdigest(),
       'modelMetadata':profile['modelMetadata'],'defaultMode':'lqr_kf','controlDt':.01,'substeps':5,

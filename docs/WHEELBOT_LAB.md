@@ -1,41 +1,53 @@
-# Wheelbot: direct control
+# One-box wheelbot lab
 
-[Open the simulation](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html) · [CartPole](../index.html)
+[Wheelbot viewer](https://tinmanlab.github.io/cartpole-mpc/wheelbot.html) · [CartPole](../index.html)
 
-## Three sliders and actions
+## One model and an explicit runtime version
 
-The default screen contains the robot, three target sliders, and the action row. Plots, observer details, model editing and earlier experiments are inside **분석 · 이전 실험**, closed initially.
+The page loads only `assets/wheelbot/live_model.xml`: a planar wheelbot with a 170 × 140 × 150 mm, 1 kg box torso. The uniform-box inertia is `mass / 3 * (halfside² + halfside²)` on each diagonal. The declared torso COM is 20 mm above the hip axis. The original links, wheel and contact model remain; motor ceilings are 16 / 16 / 1.7 N·m, physics advances every 2 ms and feedback every 10 ms. These are model assumptions, not identified hardware speed, thermal or battery limits. Historical robot assets are not selectable on this page.
 
-Request **horizontal position −1 to +1 m**, **hip-axis height 0.36–0.49 m**, and **body pitch −10° to +10°**. This planar robot does not provide roll/yaw control. Height refers to the torso origin at the hip axis, not its COM. The dashed body is the target; the solid body is the actual simulated robot. Commands change the reference, not the physical state. Reference acceleration and velocity are limited. **목표 복귀** returns the target without resetting the robot or observer. Arrow keys change the horizontal target by 0.1 m.
+Native and browser MuJoCo are pinned to 3.15.0. The package lock, native requirements, vendored upstream files and manifest agree with the loaded engine. Base gains, the 25-pose atlas and selected jump schedules were regenerated with that engine. Historical receipts are not relabelled. The viewer displays the actual engine and generation versions; incompatible optional jump data disables jumping without disabling ordinary balance.
 
-**점프** uses the same compact robot and its own verified plan. The robot moves under control into the entry posture, then its three motors produce takeoff, flight, landing and settling. No alternate asset, pose teleport or upward external force is used. Pose editing is locked during the action. Six tested reference cases produced about 0.11 m wheel clearance and 0.34 s flight. This is a bounded hop, not an arbitrary jump planner. Invalid optional jump data disables jumping, not ordinary pose control.
+## Click, draw and follow
 
-**외란** offers a short push, sinusoidal gust or pitch moment, either direction, with three strengths. Straight arrows show force in N; curved arrows show moment in N·m. These are physical inputs, not state changes. Pulses cannot stack. Strong disturbances may cause a fall; their recovery is not guaranteed.
+Choose **몸통** or **바퀴 중심**, click a target or draw an ordered path and release. Base means the torso origin at the hip axis, not COM. Wheel means wheel centre; in standing contact it is approximately 0.05 m above the existing floor. Only planar position and pitch are represented, not roll/yaw.
 
-**일어서기** remains unavailable: motor-driven full get-up has not passed this compact model's criteria. Leaving the tested balance domain disengages motors and invalidates the observer while gravity and full-body collision continue. **초기화** explicitly restores the initial state; it is not physical recovery. Smaller recoverable disturbances are corrected automatically by the active balance controller. Existing recovery probes did not establish a valid floor-to-standing path.
+Grey dashed paths show requests, green paths show accepted candidates and blue paths show actual motion. The gold body shows the reference currently supplied to the controller. Sliders use the same admission path. Requests never teleport the robot or reset its Kalman estimate. Cancelling removes future reference commands while balance continues; Reset is explicit state initialization, not physical get-up.
 
-## Model and control
+The planner compresses near-collinear points within 3 mm while retaining corners, then uses quintic reference segments. It includes reference rates for body height/pitch and the induced hip/knee motion. Wheel rolling rate is calculated from MuJoCo kinematics. Candidate coordinate rates of 0.24 m/s, 0.06 m/s and 0.24 rad/s are software design values, not physical maxima.
 
-The unchanged compact torso is a 170 × 140 × 150 mm ellipsoid, with 1 kg lumped body/drive mass and recomputed inertia. COM is 20 mm above the hip axis. Nominal hip is 0.55 rad and knee −1.10 rad (about 63° flexion). This is a teaching-model assumption, not a calibrated assembly or universal motor-placement rule. Motor ceilings remain ±16 / ±16 / ±1.7 N·m; physics advances at 2 ms and action feedback at 10 ms.
+The geometric atlas projection is only a candidate. Up to three retimings are checked with the official nonlinear plant and noisy estimator, including motor, joint, contact, self-collision and tracking limits. Preview has separate MuJoCo data and does not alter live state, force history, step counts or measurement noise. It yields periodically so simulation can continue, retries once when the actual state invalidates its prediction, and has a five-second wall-time budget. It can reject long or complicated requests. No globally closest path or minimum-time solution is claimed.
 
-`live_model.xml`, `live_profile.json` and `live_design.json` own the plant and nominal design. `pose_profiles.json` contains 25 independently solved height/pitch trims. Bilinear scheduling interpolates trim, LQR and Kalman matrices; bounded references control transitions. This is empirically tested gain scheduling, not global Lyapunov certification. Range labels describe admitted commands, not every possible input sequence.
+Rejected replacement requests retain braking/balance rather than silently executing an unchecked trajectory. During replacement, a bounded 0.20-second reference brake may replace the old future path. The checked trajectory is followed by up to 2.5 seconds of settling, with final limits evaluated over the last 0.5 seconds. The viewer reports this duration separately.
 
-Measurements are five noisy pose channels (x, z, pitch, hip, knee) plus noisy wheel encoder rate. Both posture and compact jump feedback use estimated state, not true velocities. True state/contact forces serve visualization and evaluation. The added encoder is a simulated sensing assumption, not calibrated hardware. Jump uses time-varying feedback/scheduled observation followed by terminal balance; no nonlinear optimizer runs online.
+## Small jumps from a checked current state
 
-Horizontal disturbance peaks are 0.5 / 1.5 / 4 N, and pitch moments 0.02 / 0.05 / 0.1 N·m. Push/twist durations are 0.1 / 0.2 / 0.2 s; gust durations 0.2 / 0.25 / 0.2 s. Force acts at the torso origin in world coordinates; moment is about world y. The planar generalized wrench is `[Fx,Fz,Ty,0,0,0]`. Pulse timing and actual wrench are logged.
+Choose the explicit **낮은 자세로 이동** target to move under normal ground control toward 0.3925 m and zero pitch. It is not a hidden preparation action inside the jump command. Jump readiness is calculated from the current estimate and shown with the missing admission conditions.
 
-## Reproducible checks
+Once ready, select **바퀴 중심 → 작은 점프** and click a target. The planner chooses the nearest eligible wheel-apex candidate from a finite seven-primitive family. The accepted apex, existing-floor landing and path are shown separately from the request. Jump admission preserves the actual state and estimator; a physical crouch/push-off begins from that state. No upward external force, alternate model or pose overwrite is used.
 
-`node tests/test_wheelbot_actions.mjs` runs the fixed 24-case, 20-second posture/disturbance protocol and separately retains six stronger-pulse outcomes. Final-two-second limits are 0.03 m horizontal error, 0.01 m height error, 0.04 rad pitch error, joint excursion ≤0.02 rad, penetration ≤0.005 m, actual motor ceilings, body rates ≤0.3 and wheel rate ≤1 rad/s. `python tests/test_wheelbot_pose.py` independently checks native trims, linearizations and actual WASM transitions.
+The checked neighborhood is narrow, around 0.3925/0.425 m standing heights, near-zero pitch, small joint errors and low rates. The default approximately 0.476 m stance is outside it. The small hops have approximately 2–5 cm tyre clearance. Translation of a reference in world x is not proof of arbitrary left/right relative jumping. Base-apex targets, freely drawn flight paths and complete floor-to-standing recovery are not established and must not be represented as available.
 
-Compact jump: `python tests/test_wheelbot_action_jump_reference.py`, `node tests/test_wheelbot_action_jump_wasm.mjs`, and `node tests/test_wheelbot_actions_jump_manager.mjs`. These verify noisy-measurement cases, actual flight, physical limits, final settling and state-preserving admission. They do not certify arbitrary poses or strong disturbances during flight.
+A 600-command run is not, by itself, jump success. The completion check requires observed flight, contact landing, at least 2 cm clearance and terminal base errors within 2 cm / 5 mm / 0.03 rad with rates at most 0.3. An unmet outcome is reported separately while physically admissible balance can continue. Physical violations disengage the motors. The 0.5 m/s first-landing tangential-slip ceiling is an explicit simulation benchmark assumption, not a hardware-derived limit.
 
-`tests/test_wheelbot_actions_browser.py` checks actual page controls, changed targets, wall-clock play, same-robot jump, disturbance units, falling physics, reset/recovery distinction and optional-profile failure isolation. Existing CartPole and reference-wheelbot checks remain. Real-time factor is simulated time divided by measured wall time; FPS/timing observations are not hardware or worst-case guarantees. Physics/control are separate from rendering; full history is not recomputed every frame and analysis updates only while open.
+Wheel acceleration produces reaction torque about the same planar y axis, not gyroscopic cross-axis stabilization. The displayed spoke uses the physical absolute wheel angle. Small-jump design considers wheel-rate and actuator-work penalties; it does not freeze wheel state or merely change the drawing. Lower spin on these smaller hops is not an equal-height optimality or energy-efficiency proof.
 
-## Earlier experiments and provenance
+## Measurements and timing
 
-The collapsed analysis section retains **Reference · standing / jump**, with the earlier model's own MPC/jump/pulse tests. **Try contact lift** uses its distinct full-contact reference model for 0.5 s small lift/hold with exact-state feedback, not full get-up. Old gains are never treated as valid for the compact robot.
+Five noisy pose channels plus a noisy wheel encoder-rate channel feed the observer. Feedback uses the estimate; true state and contact results support visualization and evaluation. They are not real sensor recordings. The viewer's reproducible measurement seed is 7; that is a development scenario, not a robustness claim.
 
-The advanced geometry editor belongs to the reference primitive model. Explicit model edits invalidate incompatible profiles. It is not automatic retuning or a universal importer.
+Push, gust and twist are finite physical inputs with light/medium/strong settings, bounded by 4 N or 0.1 N·m. Strong pulses may leave the tested control domain. Reset must never be described as recovery.
 
-Selected leg lengths, wheel dimensions and motor limits derive from the pinned Upkie description. The [source record](../assets/wheelbot/source/provenance.json), [URDF](../assets/wheelbot/source/upkie.urdf) and [Apache-2.0 licence](../assets/wheelbot/source/LICENSE) are retained. The compact torso/lumped drive are declared primitive assumptions. Transmission compliance, battery/thermal limits and real sensor calibration are outside validation. MuJoCo is the reusable physics engine; this is a model-specific lab, not arbitrary-asset compatibility or a registered WebMCP interface.
+Pure control, plant, planning, rendering and complete-loop timing are separate. Manual batch stepping and pause are not wall-clock playback. Detailed metrics are serialized only while their panel is open. Native/Node throughput is not browser FPS, real-time certification or a hardware deadline guarantee.
+
+## Reproduction and remaining performance gap
+
+The original 1.5-second response benchmark remains recorded as 1/8, not solved by the engine upgrade. It mixes feasible steps, projected unreachable requests and whole multi-waypoint paths; original-request and accepted-target errors must remain distinct. The aspirational benchmark is nonblocking for the version/viewer integration, while physical gates remain mandatory. Feasible single-step response speed is still an improvement target. The inactive affine-tracking prototype is not used by this viewer.
+
+Version gates: `python tests/test_runtime_versions.py` and `node tests/test_runtime_versions.mjs`. Ground tests: `node tests/test_wheelbot_box_paths.mjs`, `node tests/test_wheelbot_paths_runtime.mjs`, then the native box/pose parity tests. Append `--require-fast` to retain the unmet fast benchmark as an explicit failure.
+
+Jump tests: `python tests/test_wheelbot_target_jump.py`, `node tests/test_wheelbot_target_jump.mjs`, `node tests/test_wheelbot_target_jump_actions.mjs` and `node tests/test_wheelbot_jump_completion.mjs`. These separate primitive parity, action integration and the completion predicate. Completion rejects missing, wrong-length, sparse and nonfinite state/reference arrays before checking physical outcomes; malformed data cannot count as success.
+
+Normal CI runs `tests/test_wheelbot_paths_browser.py --url URL` against the actual page. Its positive jump gate requires the explicit low target, bounded ordinary settling and a real pointer-triggered jump without an intervening reset. Rejection is not an alternative pass. Negative version, unsupported target and optional-data cases are separate. Actual browser evidence is required before viewer acceptance; syntax compilation alone is insufficient.
+
+The original Upkie parameter source and licence remain in `assets/wheelbot/source/`. MuJoCo supplies the dynamics; this is a model-specific educational lab, not a universal robot importer or registered WebMCP interface.

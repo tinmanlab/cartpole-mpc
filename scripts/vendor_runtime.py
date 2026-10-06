@@ -7,12 +7,15 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def artifacts():
     files={}
+    versions=json.loads((ROOT/'package.json').read_text())['dependencies']
+    version=versions['@mujoco/mujoco']
     mj=ROOT/'node_modules/@mujoco/mujoco';qp=ROOT/'node_modules/quadprog'
-    assert json.loads((mj/'package.json').read_text())['version']=='3.7.0'
-    assert json.loads((qp/'package.json').read_text())['version']=='1.6.1'
+    assert json.loads((mj/'package.json').read_text())['version']==version
+    assert json.loads((qp/'package.json').read_text())['version']==versions['quadprog']
     for name in ['mujoco.js','mujoco.wasm','README.md']:
         files['vendor/mujoco/'+name]=(mj/name).read_bytes()
-    files['vendor/mujoco/package.json']=b'{"type":"module","version":"3.7.0"}\n'
+    files['vendor/mujoco/package.json']=(json.dumps({'type':'module','version':version},separators=(',',':'))+'\n').encode()
+    files['vendor/mujoco/version.mjs']=('export const MUJOCO_VERSION='+json.dumps(version)+';\n').encode()
     files['vendor/mujoco/LICENSE']=(ROOT/'licenses/Apache-2.0.txt').read_bytes()
     files['vendor/quadprog/LICENSE']=(qp/'LICENSE').read_bytes()
     files['vendor/quadprog/README.md']=(qp/'README.md').read_bytes()
@@ -25,8 +28,8 @@ def artifacts():
 const module={exports:{}};cache[id]=module;factories[id](module,module.exports,name=>load(name.startsWith('./')?(id.includes('/')?id.slice(0,id.lastIndexOf('/')+1):'')+name.slice(2):name));return module.exports;}
 globalThis.Quadprog=load('index');})();\n'''
     files['vendor/quadprog/quadprog.js']=text.encode()
-    manifest={'schema':'cartpole-runtime-assets/v1','packages':{'@mujoco/mujoco':'3.7.0','quadprog':'1.6.1'},
-              'origins':{'@mujoco/mujoco':'https://github.com/google-deepmind/mujoco/tree/3.7.0/wasm','quadprog':'https://github.com/albertosantini/quadprog'},
+    manifest={'schema':'cartpole-runtime-assets/v1','packages':{'@mujoco/mujoco':version,'quadprog':versions['quadprog']},
+              'origins':{'@mujoco/mujoco':f'https://github.com/google-deepmind/mujoco/tree/{version}/wasm','quadprog':'https://github.com/albertosantini/quadprog'},
               'files':{p:{'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)} for p,b in files.items()},
               'quadprog_sources':{p.relative_to(qp).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources}}
     files['vendor/manifest.json']=(json.dumps(manifest,indent=2)+'\n').encode()
