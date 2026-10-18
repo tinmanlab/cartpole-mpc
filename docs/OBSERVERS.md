@@ -61,6 +61,19 @@ The EKF keeps the Kalman update structure but propagates the mean through nonlin
 
 The runtime uses a central-difference Jacobian of the same nonlinear 20 ms plant transition.
 
+## UKF
+
+The Unscented Kalman Filter keeps a Gaussian belief but does not propagate its mean/covariance with one local Jacobian. It builds deterministic sigma points from P, propagates each point through the same nonlinear plant, and recombines them.
+
+    x,P -> sigma points chi_i
+    chi_i_minus = f(chi_i,u)
+    weighted mean/covariance -> x_minus,P_minus
+    measurement sigma points -> S,K -> correction
+
+The CartPole implementation treats pole angle with circular means and wrapped residuals. In the current smooth 4-state benchmark UKF and EKF are nearly identical, which is an expected result for this regime, not evidence that one method dominates.
+
+UKF still assumes a single Gaussian belief. Hybrid contact ambiguity, multimodal pose hypotheses, hard outliers, and long-window constraints are structural problems that may require a different estimator family.
+
 ## Invariant filtering bridge
 
 InEKF is not simply "EKF but newer."

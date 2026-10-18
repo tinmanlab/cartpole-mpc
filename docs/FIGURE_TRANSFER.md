@@ -30,6 +30,7 @@ and replace each implementation with a robot-scale native implementation.
 | soft cart bound | joint/contact/collision/path constraints | native OCP constraints |
 | robust-MPC concept | model/contact/estimator uncertainty margins | robust/scenario/chance formulation as justified |
 | KF/EKF | stock-sensor floating-base estimator | ESKF/EKF implementation |
+| UKF | sigma-point nonlinear Gaussian alternative | use only if Gaussian belief remains appropriate and Jacobian-free propagation adds value |
 | SO(2) bridge | SO(3)/SE(3)/SE_2(3) invariant error | InEKF when structure applies |
 | shooting-MHE bridge | constrained windowed velocity/contact estimation | OSQP/acados MHE or equivalent |
 | Adaptive-R bridge | contact/FK reliability covariance | residual adaptation / FOCUS / CoCo where evidence supports it |
@@ -37,6 +38,7 @@ and replace each implementation with a robot-scale native implementation.
 | CEM calibration | covariance/kinematics calibration | bilevel / likelihood / offline calibration |
 | black-box gain tuning | residual hardware feedback gain tuning | Safe BO after a safe seed exists |
 | sim2real scenario | real-signal, actuator, timing, contact and model mismatch brackets | Figure evidence harness |
+| advanced failure injection | colored noise, stale/stuck sensors, jitter, torque-speed, thermal derating, discretization | measured telemetry + actuator/timing/native sensor models |
 
 ## Current Figure evidence this should address
 
@@ -182,3 +184,12 @@ Do not turn this repository into:
 - a second source of Figure-specific parameters.
 
 Its value is a small executable reference for the **reasoning structure and acceptance contract**.
+
+## Additional commissioning transfers
+
+- UKF is available as a sigma-point nonlinear Gaussian alternative, but should only be admitted when Jacobian/local-linearization error is the relevant limitation; hybrid contact ambiguity is not solved by UKF.
+- Colored noise, stale/dropout packets and stuck sensors require explicit timestamp/fault evidence, not only larger R.
+- Torque-speed/current/voltage and thermal derating belong to the actuator/input-authority model used by control and acceptance tests.
+- Integration/timestep refinement is a prerequisite before interpreting a controller retune as a physics improvement.
+- The CartPole NMPC + backup supervisor transfers as an architectural pattern only: Figure needs native constraint/safety semantics and verified fallback behavior.
+- Joint controller-estimator tuning is a late-stage optimization. Keep staged model/estimator/controller evidence so a joint optimizer cannot hide which block is wrong.

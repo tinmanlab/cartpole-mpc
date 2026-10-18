@@ -85,6 +85,7 @@ Then learned information can enter at different points:
 | PPO | frozen robust actor from the related CartPole PPO lab |
 | KF | linear Kalman filter |
 | EKF | nonlinear prediction + numerical Jacobian covariance propagation |
+| UKF | sigma-point nonlinear Gaussian propagation with circular angle handling |
 | SO(2) error bridge | wrapped angle innovation; not the full Hartley humanoid InEKF |
 | Nonlinear shooting MHE | recent-window nonlinear single-shooting estimate with EKF arrival prior; not full constrained NMHE |
 | Learned residual | locally trained residual MLP behind the geometry-aware EKF |
@@ -231,7 +232,10 @@ Representative fixed checks from the audited implementation:
 - the targeted LQR-fixed estimator nonlinear bench gives about 0.0080 KF RMSE versus 0.00323 EKF RMSE across five fixed seeds,
 - the SO(2) regression demonstrates that +179 deg and -179 deg differ by 2 deg, not 358 deg,
 - scenario R is tied to the injected Gaussian sensor variance; Q remains a tuned teaching parameter,
-- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims.
+- learned/adaptive estimator paths are CartPole evidence only, not humanoid benchmark claims,
+- colored noise, dropout, stuck-sensor, command jitter, torque-speed and thermal-derating probes are separate failure classes rather than one generic "reality gap",
+- integration refinement is checked explicitly before interpreting tuning failures,
+- low-dimensional controller-estimator co-tuning is admitted only through held-out validation/test and is not mislabeled as ContEst/DiffTune.
 
 Run:
 

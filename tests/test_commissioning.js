@@ -11,3 +11,13 @@ const aid=C.identifyActuator();
 assert(aid.identified.delaySteps===aid.trueParams.delaySteps,'actuator ID should recover discrete delay');
 assert(aid.heldout.identifiedLoss < .01*aid.heldout.nominalLoss,'actuator ID should materially reduce held-out command/application error');
 console.log(JSON.stringify({systemIdentification:id,actuatorIdentification:aid},null,2));
+
+const advanced=C.advancedFailureReport();
+assert(advanced.sensorRows.some(r=>r.scenario==='colored'&&r.innovationLag1>0.2),'colored-noise failure report should expose innovation correlation');
+assert(advanced.sensorRows.some(r=>r.scenario==='dropout'&&r.staleSamples>0),'dropout report should retain stale-sample evidence');
+assert(advanced.sensorRows.some(r=>r.scenario==='stuck'&&r.faultSamples>0),'stuck report should retain fault evidence');
+assert(advanced.actuatorRows.some(r=>r.scenario==='torque_speed'&&r.minForceLimit<10),'torque-speed report should expose reduced input authority');
+assert(advanced.actuatorRows.some(r=>r.scenario==='thermal'&&r.maxThermalState>0),'thermal report should expose history-dependent actuator state');
+const disc=C.discretizationProbe();
+assert(disc.rows[0].rmseVs16>disc.rows.at(-1).rmseVs16,'integration refinement should reduce this fixed discretization error probe');
+console.log(JSON.stringify({advancedFailures:advanced,discretization:disc},null,2));

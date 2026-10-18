@@ -17,6 +17,30 @@ const ControlLab = (() => {
   const quad=(x,Q)=>dot(x,mv(Q,x));
   const inv2=M=>{const d=M[0][0]*M[1][1]-M[0][1]*M[1][0];if(Math.abs(d)<1e-12)throw Error('singular 2x2');return [[M[1][1]/d,-M[0][1]/d],[-M[1][0]/d,M[0][0]/d]];};
   const cloneM=A=>A.map(r=>r.slice());
+  function outer(a,b){return a.map(x=>b.map(y=>x*y));}
+  function choleskyPSD(A){
+    const n=A.length;
+    for(const jitter of [0,1e-12,1e-10,1e-8,1e-6]){
+      const L=zeros(n,n);let ok=true;
+      for(let i=0;i<n&&ok;i++)for(let j=0;j<=i;j++){
+        let v=A[i][j]+(i===j?jitter:0);
+        for(let k=0;k<j;k++)v-=L[i][k]*L[j][k];
+        if(i===j){if(v<=0||!Number.isFinite(v)){ok=false;break;}L[i][j]=Math.sqrt(v);}
+        else L[i][j]=v/L[j][j];
+      }
+      if(ok)return L;
+    }
+    throw Error('covariance is not positive definite');
+  }
+  function circularMean(values,weights){
+    let c=0,s=0;for(let i=0;i<values.length;i++){c+=weights[i]*Math.cos(values[i]);s+=weights[i]*Math.sin(values[i]);}
+    return Math.atan2(s,c);
+  }
+  function stabilizeCovariance(P,minDiag=1e-12){
+    const S=P.map((r,i)=>r.map((v,j)=>.5*(v+P[j][i])));
+    for(let i=0;i<S.length;i++)S[i][i]=Math.max(minDiag,S[i][i]);
+    return S;
+  }
   function maxAbsDiff(A,B){let m=0;for(let i=0;i<A.length;i++)for(let j=0;j<A[i].length;j++)m=Math.max(m,Math.abs(A[i][j]-B[i][j]));return m;}
   function solveLinearSystem(A,b){
     const n=A.length,M=A.map((r,i)=>r.slice().concat([b[i]]));
@@ -55,11 +79,12 @@ const ControlLab = (() => {
     return {P,K};
   }
   function nominalParams(spec){return {mc:spec.mc,mp:spec.mp,l:spec.l,gain:1,tau:0,delay:0,friction:0,bias:0,pushAmp:0,pushDuration:0,pushOffset:1e9,pushPeriod:1e9,pushSign:1,noise:[0,0,0,0],thetaBias:0,maxForce:spec.force,actuator:'ideal'};}
-  function nonlinearStep(state,u,spec=PlantRef.DEFAULT_SPEC,params=null){
-    let s=state.slice(),p=params||nominalParams(spec);
-    for(let k=0;k<4;k++)s=PlantRef.integrate(s,spec,p,u,0,.005,0).state;
+  function nonlinearStepSubsteps(state,u,spec=PlantRef.DEFAULT_SPEC,params=null,substeps=4){
+    let s=state.slice(),p=params||nominalParams(spec),n=Math.max(1,Math.round(substeps)),dt=DT/n;
+    for(let k=0;k<n;k++)s=PlantRef.integrate(s,spec,p,u,0,dt,0).state;
     s[2]=wrap(s[2]);return s;
   }
+  function nonlinearStep(state,u,spec=PlantRef.DEFAULT_SPEC,params=null){return nonlinearStepSubsteps(state,u,spec,params,4);}
   function numericJacobian(state,u,spec,eps=1e-5,params=null){
     const F=zeros(4,4);
     for(let j=0;j<4;j++){
@@ -73,7 +98,7 @@ const ControlLab = (() => {
     constructor(opts={}){this.spec={...PlantRef.DEFAULT_SPEC,actuator:'ideal',force:10,friction:0,...(opts.spec||{})};this.rng=new RNG(opts.seed||17);this.sensorRng=new RNG((opts.seed||17)+991);this.scenario=opts.scenario||'nominal';this.goal=0;this.reset();}
     setScenario(name){this.scenario=name;this.configure();}
     configure(){
-      const s=this.spec;this.params=nominalParams(s);this.sensorStd=[.008,.004];this.delaySteps=0;this.actuatorAlpha=1;this.actuatorGain=1;this.biasWalk=[0,0];
+      const s=this.spec;this.params=nominalParams(s);this.sensorStd=[.008,.004];this.delaySteps=0;this.actuatorAlpha=1;this.actuatorGain=1;this.biasWalk=[0,0];this.coloredRho=0;this.dropoutPeriod=0;this.dropoutLength=0;this.stuckStart=-1;this.stuckLength=0;this.jitterProb=0;this.torqueSpeedNoLoad=Infinity;this.minForceFraction=1;this.thermalHeat=0;this.thermalCool=0;this.thermalDerate=0;
       if(this.scenario==='sensor'){this.sensorStd=[.06,.025];}
       if(this.scenario==='model'){this.params={...this.params,mc:s.mc*1.25,mp:s.mp*.8,l:s.l*1.15,friction:.15};this.sensorStd=[.012,.006];}
       if(this.scenario==='mixed'){this.params={...this.params,mc:s.mc*1.2,mp:s.mp*.85,l:s.l*1.1,friction:.12};this.sensorStd=[.04,.018];}
@@ -82,6 +107,12 @@ const ControlLab = (() => {
       if(this.scenario==='bias'){this.biasWalk=[4e-4,1.5e-4];}
       if(this.scenario==='actuator'){this.actuatorAlpha=.42;this.actuatorGain=.9;}
       if(this.scenario==='latency'){this.delaySteps=2;}
+      if(this.scenario==='colored'){this.sensorStd=[.025,.01];this.coloredRho=.94;}
+      if(this.scenario==='dropout'){this.dropoutPeriod=70;this.dropoutLength=8;}
+      if(this.scenario==='stuck'){this.stuckStart=90;this.stuckLength=35;}
+      if(this.scenario==='jitter'){this.actuatorAlpha=.72;this.actuatorGain=.96;this.jitterProb=.18;}
+      if(this.scenario==='torque_speed'){this.torqueSpeedNoLoad=2.2;this.minForceFraction=.25;}
+      if(this.scenario==='thermal'){this.thermalHeat=.02;this.thermalCool=.0015;this.thermalDerate=.55;}
       if(this.scenario==='actuator_id'){this.actuatorAlpha=.52;this.actuatorGain=.88;this.delaySteps=2;}
       if(this.scenario==='sim2real'){
         const u=()=>this.rng.uniform();
@@ -91,21 +122,45 @@ const ControlLab = (() => {
       }
     }
     defaultState(){if(this.scenario==='nonlinear')return [0,0,.5,0];return [0,0,(this.rng.uniform()-.5)*.08,0];}
-    reset(state=null){this.configure();this.s=state?state.slice():this.defaultState();this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;this.sensorBias=[0,0];this.delayQueue=Array(this.delaySteps).fill(0);this.actuatorState=0;return this.s.slice();}
+    reset(state=null){this.configure();this.s=state?state.slice():this.defaultState();this.steps=0;this.pushLeft=0;this.pushForce=0;this.glitch=0;this.lastSensor=null;this.sensorBias=[0,0];this.coloredNoise=[0,0];this.delayQueue=Array(this.delaySteps).fill(0);this.actuatorState=0;this.lastDelayedCommand=0;this.lastGoodMeasurement=null;this.stuckMeasurement=null;this.sensorMeta={fresh:true,fault:null};this.thermalState=0;this.forceLimit=this.spec.force;return this.s.slice();}
     applyPush(force,steps=10){this.pushForce=force;this.pushLeft=steps;}
     measurementVariance(){return this.sensorStd.map(s=>s*s);}
     sensor(){
       this.sensorBias[0]+=this.biasWalk[0]*this.sensorRng.normal();this.sensorBias[1]+=this.biasWalk[1]*this.sensorRng.normal();
-      let x=this.s[0]+this.sensorBias[0]+this.sensorStd[0]*this.sensorRng.normal(),th=wrap(this.s[2]+this.sensorBias[1]+this.sensorStd[1]*this.sensorRng.normal());
-      if(this.scenario==='glitch' && (this.steps%180)>=90 && (this.steps%180)<108)x+=.35;
-      const y=[x,th];this.lastSensor=y;return y;
+      let nx,nt;
+      if(this.coloredRho>0){
+        const q=Math.sqrt(Math.max(0,1-this.coloredRho*this.coloredRho));
+        this.coloredNoise[0]=this.coloredRho*this.coloredNoise[0]+q*this.sensorStd[0]*this.sensorRng.normal();
+        this.coloredNoise[1]=this.coloredRho*this.coloredNoise[1]+q*this.sensorStd[1]*this.sensorRng.normal();
+        nx=this.coloredNoise[0];nt=this.coloredNoise[1];
+      }else{nx=this.sensorStd[0]*this.sensorRng.normal();nt=this.sensorStd[1]*this.sensorRng.normal();}
+      let y=[this.s[0]+this.sensorBias[0]+nx,wrap(this.s[2]+this.sensorBias[1]+nt)],fresh=true,fault=null;
+      if(this.scenario==='glitch' && (this.steps%180)>=90 && (this.steps%180)<108){y[0]+=.35;fault='outlier';}
+      if(this.dropoutPeriod>0 && (this.steps%this.dropoutPeriod)<this.dropoutLength && this.lastGoodMeasurement){y=this.lastGoodMeasurement.slice();fresh=false;fault='dropout-hold';}
+      else if(this.stuckStart>=0 && this.steps>=this.stuckStart && this.steps<this.stuckStart+this.stuckLength){
+        if(!this.stuckMeasurement)this.stuckMeasurement=y.slice();y=this.stuckMeasurement.slice();fault='stuck';
+      }else this.lastGoodMeasurement=y.slice();
+      this.sensorMeta={fresh,fault};this.lastSensor=y;return y;
     }
     step(u){
       const ext=this.pushLeft>0?this.pushForce:0;if(this.pushLeft>0)this.pushLeft--;
-      this.delayQueue.push(clamp(u,-this.spec.force,this.spec.force));const delayed=this.delayQueue.shift();
-      this.actuatorState+=this.actuatorAlpha*(this.actuatorGain*delayed-this.actuatorState);const applied=clamp(this.actuatorState,-this.spec.force,this.spec.force);
+      this.delayQueue.push(clamp(u,-this.spec.force,this.spec.force));let delayed=this.delayQueue.shift();
+      if(this.jitterProb>0){
+        if(this.rng.uniform()<this.jitterProb)delayed=this.lastDelayedCommand;
+        else this.lastDelayedCommand=delayed;
+      }else this.lastDelayedCommand=delayed;
+      this.actuatorState+=this.actuatorAlpha*(this.actuatorGain*delayed-this.actuatorState);
+      let speedFraction=1;
+      if(Number.isFinite(this.torqueSpeedNoLoad))speedFraction=Math.max(this.minForceFraction,1-Math.abs(this.s[1])/this.torqueSpeedNoLoad);
+      if(this.thermalHeat>0){
+        const effort=Math.min(1,Math.abs(this.actuatorState)/Math.max(1e-9,this.spec.force));
+        this.thermalState=clamp(this.thermalState+this.thermalHeat*effort*effort-this.thermalCool*this.thermalState,0,1);
+      }
+      const thermalFraction=1-this.thermalDerate*this.thermalState;
+      this.forceLimit=this.spec.force*speedFraction*thermalFraction;
+      const applied=clamp(this.actuatorState,-this.forceLimit,this.forceLimit);
       let s=this.s.slice(),peak=0;for(let k=0;k<4;k++){const r=PlantRef.integrate(s,this.spec,this.params,applied,ext,.005,0);s=r.state;peak=Math.max(peak,r.drive.tractionRatio||0);}
-      s[2]=wrap(s[2]);this.s=s;this.steps++;return {state:s.slice(),external:ext,appliedCommand:applied,peakTractionRatio:peak,failed:Math.abs(s[0])>2.4||Math.abs(s[2])>35*Math.PI/180};
+      s[2]=wrap(s[2]);this.s=s;this.steps++;return {state:s.slice(),external:ext,appliedCommand:applied,forceLimit:this.forceLimit,thermalState:this.thermalState,peakTractionRatio:peak,failed:Math.abs(s[0])>2.4||Math.abs(s[2])>35*Math.PI/180};
     }
   }
   class PIDController{
@@ -328,6 +383,20 @@ const ControlLab = (() => {
     }
   }
 
+  class SupervisedNMPCController{
+    constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
+      this.primary=new FullNMPCController(spec);this.backup=new LQRController(spec,opts.backup||{});
+      this.positionMargin=opts.positionMargin??2.05;this.angleMargin=opts.angleMargin??(.48);
+      this.limit=spec.force;this.name='NMPC + backup supervisor';this.lastBackup=false;
+    }
+    reset(){this.primary.reset();this.backup.reset();this.lastBackup=false;this.lastPrediction=[];this.lastControls=[];this.lastSolveMs=0;this.lastIterations=0;}
+    act(x,goal=0){
+      const up=this.primary.act(x,goal),unsafe=(this.primary.lastPrediction||[]).some(q=>Math.abs(q[0]-goal)>this.positionMargin||Math.abs(q[2])>this.angleMargin);
+      const ub=unsafe?this.backup.act(x,goal):up;this.lastBackup=unsafe;this.lastPrediction=this.primary.lastPrediction;this.lastControls=this.primary.lastControls;
+      this.lastSolveMs=this.primary.lastSolveMs;this.lastIterations=this.primary.lastIterations;this.lastCost=this.primary.lastCost;return clamp(ub,-this.limit,this.limit);
+    }
+  }
+
   class LTVMPCController extends FullNMPCController{
     constructor(spec=PlantRef.DEFAULT_SPEC,opts={}){
       super(spec);this.N=opts.N||30;this.U=Array(this.N).fill(0);
@@ -405,6 +474,50 @@ const ControlLab = (() => {
     reset(y=[0,0]){super.reset(y);if(this.baseR)this.R=cloneM(this.baseR);}
     update(y){const yhat=mv(H,this.x),ix=y[0]-yhat[0],it=wrap(y[1]-yhat[1]),sx=Math.sqrt(this.baseR[0][0])+1e-9,st=Math.sqrt(this.baseR[1][1])+1e-9;const wx=Math.exp(-.5*(ix/(5*sx))**2),wt=Math.exp(-.5*(it/(5*st))**2);this.R=[[this.baseR[0][0]*(1+99*(1-wx)),0],[0,this.baseR[1][1]*(1+99*(1-wt))]];const out=super.update(y);this.last.reliability=[wx,wt];return out;}
   }
+  class UKFObserver{
+    constructor(spec,opts={}){
+      this.spec=spec;this.n=4;this.alpha=opts.alpha??.7;this.beta=opts.beta??2;this.kappa=opts.kappa??0;
+      this.lambda=this.alpha*this.alpha*(this.n+this.kappa)-this.n;
+      const den=this.n+this.lambda;this.Wm=[this.lambda/den];this.Wc=[this.lambda/den+(1-this.alpha*this.alpha+this.beta)];
+      for(let i=0;i<2*this.n;i++){this.Wm.push(1/(2*den));this.Wc.push(1/(2*den));}
+      this.R=diag(opts.R||[.008**2,.004**2]);this.Q=diag(opts.Q||[2e-5,2e-3,2e-5,4e-3]);
+      this.P=diag([.1,1,.04,1]);this.x=[0,0,0,0];this.name='UKF · sigma-point nonlinear filter';
+    }
+    reset(y=[0,0]){this.x=[y[0],0,y[1],0];this.P=diag([.1,1,.04,1]);this.last={innovation:[0,0]};}
+    sigmaPoints(){
+      const L=choleskyPSD(this.P),scaleFactor=Math.sqrt(this.n+this.lambda),pts=[this.x.slice()];
+      for(let j=0;j<this.n;j++){
+        const d=L.map(r=>scaleFactor*r[j]),p=this.x.map((v,i)=>v+d[i]),m=this.x.map((v,i)=>v-d[i]);
+        p[2]=wrap(p[2]);m[2]=wrap(m[2]);pts.push(p,m);
+      }
+      return pts;
+    }
+    step(y,u){
+      const prop=this.sigmaPoints().map(x=>nonlinearStep(x,u,this.spec));
+      const xm=[0,0,0,0];
+      for(const i of [0,1,3])for(let k=0;k<prop.length;k++)xm[i]+=this.Wm[k]*prop[k][i];
+      xm[2]=circularMean(prop.map(q=>q[2]),this.Wm);
+      let Pm=cloneM(this.Q);
+      for(let k=0;k<prop.length;k++){
+        const d=prop[k].map((v,i)=>i===2?wrap(v-xm[i]):v-xm[i]);
+        Pm=add(Pm,scale(outer(d,d),this.Wc[k]));
+      }
+      Pm=stabilizeCovariance(Pm);
+      const zs=prop.map(q=>[q[0],q[2]]),zm=[0,circularMean(zs.map(z=>z[1]),this.Wm)];
+      for(let k=0;k<zs.length;k++)zm[0]+=this.Wm[k]*zs[k][0];
+      let S=cloneM(this.R),Pxz=zeros(4,2);
+      for(let k=0;k<zs.length;k++){
+        const dz=[zs[k][0]-zm[0],wrap(zs[k][1]-zm[1])],dx=prop[k].map((v,i)=>i===2?wrap(v-xm[i]):v-xm[i]);
+        S=add(S,scale(outer(dz,dz),this.Wc[k]));Pxz=add(Pxz,scale(outer(dx,dz),this.Wc[k]));
+      }
+      const K=mul(Pxz,inv2(S)),innov=[y[0]-zm[0],wrap(y[1]-zm[1])];
+      this.x=xm.map((v,i)=>v+K[i][0]*innov[0]+K[i][1]*innov[1]);this.x[2]=wrap(this.x[2]);
+      this.P=stabilizeCovariance(sub(Pm,mul(mul(K,S),T(K))));
+      this.last={innovation:innov,K,S};return this.x.slice();
+    }
+    outputCovariance(){return this.P;}
+  }
+
   class ShootingMHEObserver{
     constructor(spec,opts={}){
       this.spec=spec;this.window=opts.window||8;this.Rdiag=opts.R||[.008**2,.004**2];this.name='Nonlinear shooting MHE';
@@ -456,8 +569,8 @@ const ControlLab = (() => {
     outputCovariance(){return null;}
   }
 
-  function makeController(name,spec,actor,opts={}){if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec,opts);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec,opts);if(name==='scenario_mpc')return new ScenarioMPCController(spec,opts);if(name==='state_mpc')return new StateAwareLinearMPCController(spec,opts);if(name==='ltv_mpc')return new LTVMPCController(spec,opts);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
-  function makeObserver(name,spec,opts={}){if(name==='truth')return new TruthObserver();if(name==='raw')return new RawObserver();if(name==='kf')return new KFObserver(spec,opts);if(name==='ekf')return new EKFObserver(spec,opts);if(name==='so2')return new SO2Observer(spec,opts);if(name==='mhe')return new ShootingMHEObserver(spec,opts);if(name==='residual')return new ResidualObserver(spec,opts);if(name==='adaptive')return new AdaptiveRObserver(spec,opts);throw Error('unknown observer');}
+  function makeController(name,spec,actor,opts={}){if(name==='pid')return new PIDController(spec);if(name==='lqr')return new LQRController(spec,opts);if(name==='mpc'||name==='linear_mpc')return new LinearMPCController(spec,opts);if(name==='scenario_mpc')return new ScenarioMPCController(spec,opts);if(name==='state_mpc')return new StateAwareLinearMPCController(spec,opts);if(name==='ltv_mpc')return new LTVMPCController(spec,opts);if(name==='supervised_nmpc')return new SupervisedNMPCController(spec,opts);if(name==='centroidal_mpc')return new CentroidalMPCController(spec);if(name==='full_nmpc')return new FullNMPCController(spec);if(name==='ppo')return new PPOController(actor,spec);throw Error('unknown controller');}
+  function makeObserver(name,spec,opts={}){if(name==='truth')return new TruthObserver();if(name==='raw')return new RawObserver();if(name==='kf')return new KFObserver(spec,opts);if(name==='ekf')return new EKFObserver(spec,opts);if(name==='so2')return new SO2Observer(spec,opts);if(name==='ukf')return new UKFObserver(spec,opts);if(name==='mhe')return new ShootingMHEObserver(spec,opts);if(name==='residual')return new ResidualObserver(spec,opts);if(name==='adaptive')return new AdaptiveRObserver(spec,opts);throw Error('unknown observer');}
   function runEpisode({controller='lqr',observer='kf',scenario='nominal',seed=1,steps=500,goal=0,actor=null,residualModel=null,controllerOpts={},observerOpts={},pushAt=120,pushForce=3,initialState=null}={}){
     const plant=new LabPlant({seed,scenario});if(initialState)plant.reset(initialState);const ctl=makeController(controller,plant.spec,actor,controllerOpts);
     const baseR=plant.measurementVariance().map(v=>v*(observerOpts.RScale??1)),obs=makeObserver(observer,plant.spec,{...observerOpts,model:residualModel,R:observerOpts.R||baseR});
@@ -474,7 +587,7 @@ const ControlLab = (() => {
       se+=err.reduce((ss,v)=>ss+v*v,0);ae+=Math.abs(out.state[2]);maxAngle=Math.max(maxAngle,Math.abs(out.state[2]));maxPosition=Math.max(maxPosition,Math.abs(out.state[0]));
       const Pout=obs.outputCovariance?obs.outputCovariance():obs.P;
       trace.push({k,truth:out.state.slice(),estimate:xh.slice(),measurement:y.slice(),u:uu,innovation:obs.last?.innovation?.slice?.()||[0,0],
-        P:Pout?cloneM(Pout):null,baseP:obs.P?cloneM(obs.P):null,S:obs.last?.S?cloneM(obs.last.S):null,reliability:obs.last?.reliability?.slice?.()||null,observerIterations:obs.last?.iterations??0,observerCost:obs.last?.cost??0,observerWindow:obs.last?.window??0,external:out.external,appliedCommand:out.appliedCommand??uu});
+        P:Pout?cloneM(Pout):null,baseP:obs.P?cloneM(obs.P):null,S:obs.last?.S?cloneM(obs.last.S):null,reliability:obs.last?.reliability?.slice?.()||null,observerIterations:obs.last?.iterations??0,observerCost:obs.last?.cost??0,observerWindow:obs.last?.window??0,external:out.external,appliedCommand:out.appliedCommand??uu,forceLimit:out.forceLimit??plant.spec.force,thermalState:out.thermalState??0,sensorFresh:plant.sensorMeta?.fresh??true,sensorFault:plant.sensorMeta?.fault??null});
       if(out.failed){failed=true;break;}
     }
     const sortedSolve=solveTimes.slice().sort((a,b)=>a-b),p95SolveMs=sortedSolve.length?sortedSolve[Math.min(sortedSolve.length-1,Math.ceil(.95*sortedSolve.length)-1)]:0;
@@ -482,6 +595,6 @@ const ControlLab = (() => {
     return {controller,observer,scenario,steps:trace.length,failed,rmseState:Math.sqrt(se/Math.max(1,trace.length*4)),meanAbsAngle:ae/Math.max(1,trace.length),maxAngle,maxPosition,rmsControl:Math.sqrt(sumU2/Math.max(1,trace.length)),maxControl:maxU,rmsCommandMismatch:Math.sqrt(sumActErr2/Math.max(1,trace.length)),meanSolveMs:solveN?solveMs/solveN:0,p95SolveMs,deadlineMs,deadlineMisses,deadlineMissRate:solveN?deadlineMisses/solveN:0,meanSolverIterations:solveN?iterSum/solveN:0,trace};
   }
 
-  return {DT,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
+  return {DT,wrap,diag,eye,mul,mv,T,add,sub,scale,linearModel,dare,linearRollout,linearQuadraticCost,linearQuadraticGradient,solveBoxLinearMpc,ensembleLinearObjective,solveLinearSystem,nonlinearStep,nonlinearStepSubsteps,numericJacobian,numericInputJacobian,LabPlant,PIDController,LQRController,LinearMPCController,ScenarioMPCController,StateAwareLinearMPCController,SupervisedNMPCController,LTVMPCController,CentroidalMPCController,FullNMPCController,PPOController,KFObserver,EKFObserver,SO2Observer,UKFObserver,ShootingMHEObserver,RawObserver,TruthObserver,ResidualObserver,AdaptiveRObserver,makeController,makeObserver,runEpisode,ppoForward,mlpResidual};
 })();
 if(typeof module!=='undefined')module.exports=ControlLab;

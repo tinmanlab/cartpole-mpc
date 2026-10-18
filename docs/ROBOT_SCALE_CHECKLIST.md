@@ -205,3 +205,14 @@ CartPole-MPC is the commissioning logic reference, not the robot-scale solver au
 10. wider task envelope.
 
 Never skip directly from step 2 to step 9 and then tune until it works.
+
+## Advanced sim2real failure checks
+
+- [ ] Colored/correlated sensor noise is tested separately from white-noise covariance.
+- [ ] Packet freshness/timestamps distinguish dropout, delay, and stuck sensors.
+- [ ] Commanded and applied effort are synchronized and compared under jitter.
+- [ ] Torque-speed/current/voltage envelopes are represented explicitly where material.
+- [ ] Thermal/power derating is tested over sustained operation, not only short episodes.
+- [ ] Integration timestep/integrator convergence is checked before gain retuning.
+- [ ] UKF/MHE/factor-graph alternatives are selected because of structural need, not algorithm novelty.
+- [ ] Joint control-estimation tuning is attempted only after model/estimator/controller blocks have independent evidence.
