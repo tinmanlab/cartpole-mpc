@@ -1,0 +1,19 @@
+{
+  "schema": "wheelbot-mjpc-verification/v1",
+  "preflight_check_exit": 0,
+  "python_compile_exit": 0,
+  "git_diff_check_exit": 0,
+  "original_no_task_replay_exit": 0,
+  "original_no_task_replay_max_error": 0.0,
+  "replayed_receipts": [
+    "evidence/wheelbot_mjpc_right-0-1791187872241052577.json",
+    "evidence/wheelbot_mjpc_right-1-1791187957917521706.json",
+    "evidence/wheelbot_mjpc_standing-0-1791187861174242808.json"
+  ],
+  "replay_requires_settling_history": true,
+  "initial_qpos_qvel_only_replay_failed_max_error": 35.07763857153057,
+  "wasm_parity": "not run; coordinator gate",
+  "observer": "absent",
+  "full_repository_checks": "not run",
+  "getup_success": false
+}

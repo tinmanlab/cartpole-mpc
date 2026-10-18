@@ -1,0 +1,18 @@
+{
+  "schema": "wheelbot-mjpc-consistency/v1",
+  "scope": "mechanical model identical; numerical initialization profile different; native same-platform only",
+  "numerics": "reproducible",
+  "position_tolerance_m_or_rad": 1e-09,
+  "velocity_tolerance_m_s_or_rad_s": 1e-08,
+  "action_tolerance_nm": 1e-12,
+  "runs": [
+    {
+      "receipt": "test-results/mjpc-consistency/safe_compact-reproducible-perturbed-0-1791191782473476856.json",
+      "receipt_sha256": "abf4e720c622cc97787853cfed8de55cb9430a8f6025350ec821ac894cd9079e"
+    }
+  ],
+  "source_pin": "ff572a21e7c2bf9fda62e1862a758da7e9a8719b",
+  "mujoco": "3.7.0",
+  "observer_integration": false,
+  "cross_wasm_bit_identity": false
+}

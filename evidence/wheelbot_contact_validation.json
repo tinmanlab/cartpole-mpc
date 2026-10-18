@@ -1,0 +1,221 @@
+{
+  "schema": "wheelbot-full-contact-validation/v1",
+  "configurationSha256": "1deeb9ba4609bc1d987daacff281377f8e7c9005361ad6ce9dc79c7ccfc0871d",
+  "results": [
+    {
+      "variant": "default",
+      "scenario": "fall-left",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        -0.4765118147910275,
+        0.062491509383904305,
+        -1.5707945261204799,
+        0.20803421893942223,
+        -0.36521462315923736,
+        0.5262956108294026,
+        3.2994783186231924e-15,
+        -1.4088568307965e-15,
+        5.301272531252377e-14,
+        1.1954182379669882e-15,
+        -7.195241942142654e-15,
+        -4.018662450143161e-16
+      ],
+      "pairs": {
+        "floor|wheel_visual": 724,
+        "floor|upper_link_visual": 5,
+        "floor|lower_link_visual": 356,
+        "floor|torso_visual": 1442
+      },
+      "maximumPenetrationM": 0.011788152832630516,
+      "maximumContactNormalN": 131.3089891537368
+    },
+    {
+      "variant": "default",
+      "scenario": "fall-right",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        -0.3530618706938308,
+        0.062491509383904305,
+        1.5707945261204799,
+        -0.20803421893942223,
+        0.36521462315923736,
+        -0.9319551213156358,
+        -3.3089222808323513e-15,
+        -1.3859393902274123e-15,
+        -5.285895760073089e-14,
+        -1.5383265288017287e-15,
+        7.495996434487712e-15,
+        5.645746198053748e-16
+      ],
+      "pairs": {
+        "floor|wheel_visual": 728,
+        "floor|torso_visual": 1442,
+        "floor|upper_link_visual": 5,
+        "floor|lower_link_visual": 353
+      },
+      "maximumPenetrationM": 0.010022423332249175,
+      "maximumContactNormalN": 100.87359117336366
+    },
+    {
+      "variant": "default",
+      "scenario": "obstacle",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        0.48482110753268765,
+        0.049377154048157366,
+        0.14516404405549407,
+        1.270848628532138,
+        0.3120458679332353,
+        -0.5116387931503815,
+        -0.00010112314214977677,
+        -0.0001254907937470254,
+        0.0005076245258017652,
+        0.0000023820321782488785,
+        -0.0005119839649536038,
+        -0.0024148057397775555
+      ],
+      "pairs": {
+        "obstacle|torso_visual": 742,
+        "floor|wheel_visual": 774,
+        "floor|lower_link_visual": 347,
+        "floor|upper_link_visual": 332
+      },
+      "maximumPenetrationM": 0.0026619262745666006,
+      "maximumContactNormalN": 38.651691276221506
+    },
+    {
+      "variant": "default",
+      "scenario": "torque",
+      "steps": 1,
+      "failed": false,
+      "final": [
+        0.02507943308659382,
+        0.5346556365172709,
+        -0.1742723614488607,
+        0.861088601253022,
+        -1.3127990373515224,
+        0.39892007632978355,
+        3.5860069228652045,
+        -1.6430133505958757,
+        -25.679929366531912,
+        93.42748008039224,
+        -120.80876197295726,
+        54.36877865779038
+      ],
+      "pairs": {},
+      "maximumPenetrationM": 0,
+      "maximumContactNormalN": 0
+    },
+    {
+      "variant": "edited",
+      "scenario": "fall-left",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        -0.4795264875077726,
+        0.06249143148525957,
+        -1.570794911645588,
+        0.17297535702519437,
+        -0.33015624998867055,
+        0.8500932339274664,
+        2.5989032112385194e-15,
+        -1.2642290857032514e-15,
+        4.1896660153374356e-14,
+        -4.252438229435618e-15,
+        3.8990223965310634e-15,
+        4.550254846848472e-15
+      ],
+      "pairs": {
+        "floor|wheel_visual": 724,
+        "floor|upper_link_visual": 7,
+        "floor|lower_link_visual": 349,
+        "floor|torso_visual": 1426
+      },
+      "maximumPenetrationM": 0.01638056285385351,
+      "maximumContactNormalN": 203.20626602240472
+    },
+    {
+      "variant": "edited",
+      "scenario": "fall-right",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        -0.35405353218023033,
+        0.06249143148525957,
+        1.570794911645588,
+        -0.17297535702519437,
+        0.33015624998867055,
+        -0.9527413515753845,
+        -2.608852360007644e-15,
+        -1.2833655809112682e-15,
+        -4.1959607680178844e-14,
+        4.340731098614786e-15,
+        -3.873985924726854e-15,
+        -4.312930086423875e-15
+      ],
+      "pairs": {
+        "floor|wheel_visual": 724,
+        "floor|torso_visual": 1432,
+        "floor|upper_link_visual": 8,
+        "floor|lower_link_visual": 355
+      },
+      "maximumPenetrationM": 0.010403303746743482,
+      "maximumContactNormalN": 355.71721129193037
+    },
+    {
+      "variant": "edited",
+      "scenario": "obstacle",
+      "steps": 400,
+      "failed": false,
+      "final": [
+        0.47036067984185576,
+        0.0363374093305264,
+        0.2146118970005342,
+        1.2712873123916948,
+        0.24190610558078454,
+        -0.7461480712535101,
+        -0.0002389445526771812,
+        -0.00028611114126480175,
+        0.0009526325924894684,
+        0.000007647621714910768,
+        -0.0009640681596422442,
+        -0.005265845977584874
+      ],
+      "pairs": {
+        "obstacle|torso_visual": 740,
+        "floor|wheel_visual": 764,
+        "floor|lower_link_visual": 22,
+        "floor|upper_link_visual": 317
+      },
+      "maximumPenetrationM": 0.002567073993456223,
+      "maximumContactNormalN": 36.96533690845337
+    },
+    {
+      "variant": "edited",
+      "scenario": "torque",
+      "steps": 1,
+      "failed": false,
+      "final": [
+        0.007004926566285957,
+        0.5909658941149998,
+        -0.047685809602201215,
+        0.3786271743247204,
+        -0.7065840413635309,
+        0.22109760319296115,
+        1.0860487413298523,
+        -0.5085336494799781,
+        -7.480240752331252,
+        33.80961568611528,
+        -58.68186912746514,
+        33.04207416817227
+      ],
+      "pairs": {},
+      "maximumPenetrationM": 0,
+      "maximumContactNormalN": 0
+    }
+  ],
+  "claim": "Actual body/link/ground/obstacle dynamics and parameter changes; no self-righting success claim."
+}

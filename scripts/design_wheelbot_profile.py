@@ -23,7 +23,7 @@ def linearize(qref,uref,phase=0.):
     for _ in range(5): b=F@b+G; a=F@a
     return a[np.ix_(CONTROLLED,CONTROLLED)],b[CONTROLLED,:],d
 
-def design():
+def design(*, initial_height=None):
     m=mujoco.MjModel.from_xml_path(str(XML));d=mujoco.MjData(m)
     # Declared modest bend; solve root height/pitch and all three feedforward
     # torques from native acceleration, retaining the full precision solution.
@@ -33,7 +33,8 @@ def design():
         d.ctrl[:]=v[2:]
         mujoco.mj_forward(m,d)
         return d.qacc.copy()
-    result=least_squares(residual,[.05+.5*np.cos(.15)-.0001,0.,0.,.4,0.],
+    seed_height=.05+.5*np.cos(.15)-.0001 if initial_height is None else float(initial_height)
+    result=least_squares(residual,[seed_height,0.,0.,.4,0.],
                          xtol=1e-14,ftol=1e-14,gtol=1e-14,diff_step=1e-5,max_nfev=1000)
     trim=float(np.max(np.abs(residual(result.x))))
     qref=d.qpos.copy();uref=d.ctrl.copy()

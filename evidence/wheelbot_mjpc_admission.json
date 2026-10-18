@@ -1,0 +1,141 @@
+{
+  "schema": "wheelbot-mjpc-admission-replay/v1",
+  "passed": true,
+  "scriptSha256": "d1d204d85f559c164074f07988b5f2d3e3caff5f60aaefc17a8ae1046c0b00a0",
+  "rows": [
+    {
+      "receipt": "test-results/mjpc-admission/safe_task-reproducible-perturbed-0-1791193538338395929.json",
+      "receiptSha256": "973a8577bdd5ea093900d0da0e29788713dd3270788021da3b658b918fd00e5d",
+      "traceSha256": "b18248624683856ef90d1a8d4eca28013f0790fb20e6ef3725cc76547c56dda2",
+      "initialPitchErrorRad": 0.02,
+      "executedSteps": 3000,
+      "localStandingPassed": true,
+      "getUpFromFallenDemonstrated": false,
+      "planningSelections": {
+        "officialsample": 0,
+        "LQRbackup": 600
+      },
+      "actualControlStepsByPolicy": {
+        "LQRbackup": 3000
+      },
+      "maxExistingLqrCommandErrorNm": 2.220446049250313e-16,
+      "maximumTorquesNm": [
+        0.10072363253186693,
+        0.5226188117244892,
+        0.1478258121392637
+      ],
+      "maxJointExcursionRad": 0.0,
+      "maxPenetrationM": 0.00021204067070228205,
+      "metrics": {
+        "duration_s": 5.999999999999561,
+        "final_root_height_m": 0.5442786477480404,
+        "max_root_height_m": 0.5445732409729136,
+        "tail_min_height_m": 0.5442785398391692,
+        "tail_max_pitch_error_rad": 2.9065151225327393e-05,
+        "tail_max_joint_error_rad": 2.1347924626324843e-05,
+        "tail_max_speed": 0.025345568663049028,
+        "max_penetration_m": 0.00021204067070228205,
+        "max_joint_excursion_rad": 0.0,
+        "max_actual_torques_nm": [
+          0.10072363253186693,
+          0.5226188117244892,
+          0.1478258121392637
+        ],
+        "max_controls_nm": [
+          0.10072363253186693,
+          0.5226188117244892,
+          0.1478258121392637
+        ],
+        "initial_qpos": [
+          0.0,
+          0.5442793664645657,
+          0.023233225019888525,
+          0.15,
+          -0.3,
+          0.0
+        ],
+        "initial_qvel": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "contact_count_range": [
+          0,
+          2
+        ],
+        "finite": true
+      },
+      "scope": "Observed local exact-state controller-plus-verified-backup behavior, not sampler-only success, sensor robustness, general safety or hardware certification."
+    },
+    {
+      "receipt": "test-results/mjpc-admission/safe_task-reproducible-perturbed-left-0-1791193850600266629.json",
+      "receiptSha256": "3c806448e4be8f37ff34f61c5bf9c603061146b3bd47dc357234717113a2fcbc",
+      "traceSha256": "fe456c9b84327da04fae4af16aec22b5f0063b0f3b2bab85220d1f37f2dbf2ed",
+      "initialPitchErrorRad": -0.02,
+      "executedSteps": 3000,
+      "localStandingPassed": true,
+      "getUpFromFallenDemonstrated": false,
+      "planningSelections": {
+        "officialsample": 0,
+        "LQRbackup": 600
+      },
+      "actualControlStepsByPolicy": {
+        "LQRbackup": 3000
+      },
+      "maxExistingLqrCommandErrorNm": 1.6653345369377348e-16,
+      "maximumTorquesNm": [
+        0.09279416198605471,
+        0.39253327273308825,
+        0.14782581213926138
+      ],
+      "maxJointExcursionRad": 0.0,
+      "maxPenetrationM": 0.00010363486785454346,
+      "metrics": {
+        "duration_s": 5.999999999999561,
+        "final_root_height_m": 0.5442800695038063,
+        "max_root_height_m": 0.5442803192379951,
+        "tail_min_height_m": 0.5442800695038063,
+        "tail_max_pitch_error_rad": 2.8384279238015744e-05,
+        "tail_max_joint_error_rad": 2.0902355916452287e-05,
+        "tail_max_speed": 0.024752725407688875,
+        "max_penetration_m": 0.00010363486785454346,
+        "max_joint_excursion_rad": 0.0,
+        "max_actual_torques_nm": [
+          0.09279416198605471,
+          0.39253327273308825,
+          0.14782581213926138
+        ],
+        "max_controls_nm": [
+          0.09279416198605471,
+          0.39253327273308825,
+          0.14782581213926138
+        ],
+        "initial_qpos": [
+          0.0,
+          0.5442793664645657,
+          -0.016766774980111476,
+          0.15,
+          -0.3,
+          0.0
+        ],
+        "initial_qvel": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "contact_count_range": [
+          2,
+          2
+        ],
+        "finite": true
+      },
+      "scope": "Observed local exact-state controller-plus-verified-backup behavior, not sampler-only success, sensor robustness, general safety or hardware certification."
+    }
+  ]
+}

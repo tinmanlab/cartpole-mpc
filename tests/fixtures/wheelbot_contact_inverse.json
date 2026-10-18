@@ -1,0 +1,13 @@
+{
+  "schema": "same-contact-inverse/v1",
+  "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+  "duration_s": 0.5, "command_dt": 0.01, "settle_s": 4,
+  "rotation_rad": 0.08, "ramp_s": 0.4, "kp_s_inv2": 25, "kd_s_inv": 10,
+  "minimum_edge_rise_m": 0.005, "minimum_away_rotation_rad": 0.05,
+  "maximum_joint_excursion_rad": 0.05, "maximum_penetration_m": 0.02,
+  "root_tolerance": 1e-7, "qacc_component_tolerance": 1e-6,
+  "torque_violation_tolerance_nm": 1e-8, "force_tolerance_n": 1e-6,
+  "torque_limits_nm": [16, 16, 1.7], "jacobian_eps": 1e-6,
+  "maxiter": 100, "ftol": 1e-10,
+  "acceptance": "Both edge rise and away rotation at one instant; full 50 commands admissible. Two known development poses, not holdout. Full getup false."
+}

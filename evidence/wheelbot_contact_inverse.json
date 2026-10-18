@@ -1,0 +1,480 @@
+{
+  "schema": "same-contact-inverse-evidence/v1",
+  "protocol": {
+    "schema": "same-contact-inverse/v1",
+    "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "duration_s": 0.5,
+    "command_dt": 0.01,
+    "settle_s": 4,
+    "rotation_rad": 0.08,
+    "ramp_s": 0.4,
+    "kp_s_inv2": 25,
+    "kd_s_inv": 10,
+    "minimum_edge_rise_m": 0.005,
+    "minimum_away_rotation_rad": 0.05,
+    "maximum_joint_excursion_rad": 0.05,
+    "maximum_penetration_m": 0.02,
+    "root_tolerance": 1e-07,
+    "qacc_component_tolerance": 1e-06,
+    "torque_violation_tolerance_nm": 1e-08,
+    "force_tolerance_n": 1e-06,
+    "torque_limits_nm": [
+      16,
+      16,
+      1.7
+    ],
+    "jacobian_eps": 1e-06,
+    "maxiter": 100,
+    "ftol": 1e-10,
+    "acceptance": "Both edge rise and away rotation at one instant; full 50 commands admissible. Two known development poses, not holdout. Full getup false."
+  },
+  "hashes": {
+    "scripts/wheelbot_contact_wbc.py": "f4f80ff5d8cb3a8bcb33213a5511357b8458b9066194ef1346d745d2383f22d9",
+    "scripts/validate_wheelbot_contact_inverse.py": "691632cb23b428d73c0deafdb6e1a2933db403bcc6063f376c69417fd68b6d0c",
+    "tests/test_wheelbot_contact_inverse.py": "4337b39ba354e5ecbb5539e3efdb6a81755a10ebd3cc1858c870f9e31227d729",
+    "tests/fixtures/wheelbot_contact_inverse.json": "455429d92a2b62a8f4e5fbe05b7a32e7ec780ddcf1ec73e206bf51e96c6bead0",
+    "tests/fixtures/wheelbot_contact_wbc.json": "c62e618093fd3d473bc20025ed0bfb3f3ab534b8e09b96f909d96ca9b274926b",
+    "assets/wheelbot/contact_model.xml": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "assets/wheelbot/contact_profile.json": "f980a50bce7485328764f82f7bd86b330a0bef862ce2f36eddc09141c3bd58d1",
+    "docs/WHEELBOT_CONTACT_WBC.md": "b27c582e62d21875fc524b10ba67e08737f995a117766862e5c7ce32f7297ca6"
+  },
+  "mujoco": "3.7.0",
+  "scipy": "1.15.3",
+  "method": "MuJoCo inverse/contact/forward; SciPy SLSQP with transposed mjd_inverseFD DfDa; no TSID binary",
+  "full_state_only": true,
+  "development_poses": true,
+  "observer": false,
+  "rl": false,
+  "native_wasm": false,
+  "full_getup": false,
+  "hard_realtime": false,
+  "settle_excluded_s_per_trial": 4,
+  "numerical_flags": {
+    "enable": 0,
+    "disable": 0
+  },
+  "trials": [
+    {
+      "name": "left_inverse",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": null,
+      "inverse_slsqp_accepted_commands": 50,
+      "forward_prediction_match": true,
+      "primitive_success": true,
+      "simultaneous_thresholds_reached": true,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 0.19099504255832284,
+      "max_root_rise_m": 0.16933513094417582,
+      "max_away_rotation_rad": 0.8586763018171091,
+      "max_joint_excursion_rad": 0.042110181552247106,
+      "max_penetration_m": 0.0006312515433161275,
+      "max_force_error_n": 8.522249572706642e-11,
+      "max_qacc_error": 2.015440259128809e-09,
+      "final": {
+        "penetration_m": 0.0,
+        "edge_rise_m": 0.19099504255832284,
+        "edge_clearance_m": 0.19098655194232847,
+        "root_rise_m": 0.16933513094417582,
+        "away_rotation_rad": 0.8586763018171091,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": -3.1731298653326494,
+      "final_reference_rotation_error_rad": 0.7786763018171091,
+      "peak_rotation_overshoot_rad": 0.7786763018171091,
+      "timing_ns": {
+        "inverseopt_jacobians": {
+          "median_ns": 12607303.5,
+          "p95_ns": 21906096.15,
+          "max_ns": 145142521,
+          "over_10ms": 36
+        },
+        "forwardvalidation": {
+          "median_ns": 2509792.5,
+          "p95_ns": 3292262.5,
+          "max_ns": 5049280,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 95081.0,
+          "p95_ns": 149773.0,
+          "max_ns": 176965,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 640895.0,
+          "p95_ns": 893410.2499999998,
+          "max_ns": 1241112,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 24238546.5,
+          "p95_ns": 34387901.3,
+          "max_ns": 157513642,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 1425207206,
+      "wall_to_requested_0_5s": 2.850414412
+    },
+    {
+      "name": "left_hold",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": 50,
+      "inverse_slsqp_accepted_commands": null,
+      "forward_prediction_match": false,
+      "primitive_success": false,
+      "simultaneous_thresholds_reached": false,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 1.9193238292511405e-06,
+      "max_root_rise_m": 1.9193211484302974e-06,
+      "max_away_rotation_rad": 1.1236183471430294e-05,
+      "max_joint_excursion_rad": 0.0,
+      "max_penetration_m": 1.7193225451319488e-05,
+      "max_force_error_n": 1.0875537307968306,
+      "max_qacc_error": 0.6362318517620443,
+      "final": {
+        "penetration_m": 1.7193225451319488e-05,
+        "edge_rise_m": 1.9193238292511405e-06,
+        "edge_clearance_m": -6.571292165115372e-06,
+        "root_rise_m": 1.9193211484302974e-06,
+        "away_rotation_rad": 1.1236183471430294e-05,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": -1.2462294345111037e-11,
+      "final_reference_rotation_error_rad": null,
+      "peak_rotation_overshoot_rad": null,
+      "timing_ns": {
+        "solver_setup": {
+          "median_ns": 1116911.0,
+          "p95_ns": 1540345.8,
+          "max_ns": 1675906,
+          "over_10ms": 0
+        },
+        "solver_solve": {
+          "median_ns": 377865.5,
+          "p95_ns": 547140.9999999998,
+          "max_ns": 644165,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 108488.5,
+          "p95_ns": 193440.39999999997,
+          "max_ns": 222996,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 569898.5,
+          "p95_ns": 813486.4999999997,
+          "max_ns": 917310,
+          "over_10ms": 0
+        },
+        "forwardvalidation": {
+          "median_ns": 0.0,
+          "p95_ns": 0.0,
+          "max_ns": 0,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 17252998.5,
+          "p95_ns": 21576864.5,
+          "max_ns": 24869194,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 881902479,
+      "wall_to_requested_0_5s": 1.763804958
+    },
+    {
+      "name": "left_pivot",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": 50,
+      "inverse_slsqp_accepted_commands": null,
+      "forward_prediction_match": false,
+      "primitive_success": false,
+      "simultaneous_thresholds_reached": false,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 0.0,
+      "max_root_rise_m": 0.0,
+      "max_away_rotation_rad": -0.0,
+      "max_joint_excursion_rad": 0.0,
+      "max_penetration_m": 3.709984944399655e-05,
+      "max_force_error_n": 10.345768517126938,
+      "max_qacc_error": 54.91539595245822,
+      "final": {
+        "penetration_m": 1.6353805974020363e-05,
+        "edge_rise_m": -7.86318997965385e-06,
+        "edge_clearance_m": -1.6353805974020363e-05,
+        "root_rise_m": -7.863282280438921e-06,
+        "away_rotation_rad": -5.257641218037179e-05,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": 9.423900044210161e-05,
+      "final_reference_rotation_error_rad": null,
+      "peak_rotation_overshoot_rad": null,
+      "timing_ns": {
+        "solver_setup": {
+          "median_ns": 1119752.5,
+          "p95_ns": 1590961.5999999999,
+          "max_ns": 1845998,
+          "over_10ms": 0
+        },
+        "solver_solve": {
+          "median_ns": 159338.5,
+          "p95_ns": 266134.14999999997,
+          "max_ns": 2232848,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 108542.0,
+          "p95_ns": 158928.3,
+          "max_ns": 276054,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 452652.5,
+          "p95_ns": 663604.4999999999,
+          "max_ns": 834637,
+          "over_10ms": 0
+        },
+        "forwardvalidation": {
+          "median_ns": 0.0,
+          "p95_ns": 0.0,
+          "max_ns": 0,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 16569262.5,
+          "p95_ns": 21359633.049999997,
+          "max_ns": 24779528,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 855067239,
+      "wall_to_requested_0_5s": 1.710134478
+    },
+    {
+      "name": "right_inverse",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": null,
+      "inverse_slsqp_accepted_commands": 50,
+      "forward_prediction_match": true,
+      "primitive_success": true,
+      "simultaneous_thresholds_reached": true,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 0.15177457087255722,
+      "max_root_rise_m": 0.13893832374862092,
+      "max_away_rotation_rad": 0.6524166480088951,
+      "max_joint_excursion_rad": 0.04211018939809885,
+      "max_penetration_m": 0.0008846881817409225,
+      "max_force_error_n": 1.0912764025761135e-09,
+      "max_qacc_error": 6.322466106212232e-09,
+      "final": {
+        "penetration_m": 0.0,
+        "edge_rise_m": 0.12817771419910154,
+        "edge_clearance_m": 0.12816922358310717,
+        "root_rise_m": 0.11934200436217368,
+        "away_rotation_rad": 0.5382097866206985,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": -0.85363073823177,
+      "final_reference_rotation_error_rad": 0.4582097866206985,
+      "peak_rotation_overshoot_rad": 0.5724166480088951,
+      "timing_ns": {
+        "inverseopt_jacobians": {
+          "median_ns": 12714920.5,
+          "p95_ns": 31091937.99999999,
+          "max_ns": 322133755,
+          "over_10ms": 32
+        },
+        "forwardvalidation": {
+          "median_ns": 2604433.0,
+          "p95_ns": 3956783.4499999997,
+          "max_ns": 4113049,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 99215.0,
+          "p95_ns": 173342.89999999997,
+          "max_ns": 235596,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 646886.5,
+          "p95_ns": 963028.5499999999,
+          "max_ns": 1161975,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 25085725.5,
+          "p95_ns": 44787175.449999996,
+          "max_ns": 339724276,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 1679507923,
+      "wall_to_requested_0_5s": 3.359015846
+    },
+    {
+      "name": "right_hold",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": 50,
+      "inverse_slsqp_accepted_commands": null,
+      "forward_prediction_match": false,
+      "primitive_success": false,
+      "simultaneous_thresholds_reached": false,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 1.9193238292511405e-06,
+      "max_root_rise_m": 1.9193211484302974e-06,
+      "max_away_rotation_rad": 1.1236183471430294e-05,
+      "max_joint_excursion_rad": 0.0,
+      "max_penetration_m": 1.7193225451319488e-05,
+      "max_force_error_n": 1.0875537307968315,
+      "max_qacc_error": 0.6362318517621249,
+      "final": {
+        "penetration_m": 1.7193225451319488e-05,
+        "edge_rise_m": 1.9193238292511405e-06,
+        "edge_clearance_m": -6.571292165115372e-06,
+        "root_rise_m": 1.9193211484302974e-06,
+        "away_rotation_rad": 1.1236183471430294e-05,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": 1.2462482434765241e-11,
+      "final_reference_rotation_error_rad": null,
+      "peak_rotation_overshoot_rad": null,
+      "timing_ns": {
+        "solver_setup": {
+          "median_ns": 1117605.0,
+          "p95_ns": 1467235.5499999998,
+          "max_ns": 1633333,
+          "over_10ms": 0
+        },
+        "solver_solve": {
+          "median_ns": 368283.0,
+          "p95_ns": 589711.5499999999,
+          "max_ns": 643263,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 100101.0,
+          "p95_ns": 142956.44999999998,
+          "max_ns": 179161,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 577706.0,
+          "p95_ns": 833354.9499999998,
+          "max_ns": 931021,
+          "over_10ms": 0
+        },
+        "forwardvalidation": {
+          "median_ns": 0.0,
+          "p95_ns": 0.0,
+          "max_ns": 0,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 17330828.0,
+          "p95_ns": 22232777.799999997,
+          "max_ns": 52598596,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 931147328,
+      "wall_to_requested_0_5s": 1.862294656
+    },
+    {
+      "name": "right_pivot",
+      "requested_commands": 50,
+      "completed_commands": 50,
+      "simulated_s": 0.5,
+      "rejection": null,
+      "qp_accepted_commands": 50,
+      "inverse_slsqp_accepted_commands": null,
+      "forward_prediction_match": false,
+      "primitive_success": false,
+      "simultaneous_thresholds_reached": false,
+      "whole_trial_admissible": true,
+      "full_getup": false,
+      "max_edge_rise_m": 0.0,
+      "max_root_rise_m": 0.0,
+      "max_away_rotation_rad": 0.0,
+      "max_joint_excursion_rad": 0.0,
+      "max_penetration_m": 3.709984944399655e-05,
+      "max_force_error_n": 10.345768517126881,
+      "max_qacc_error": 54.91539595245853,
+      "final": {
+        "penetration_m": 1.6353805974020363e-05,
+        "edge_rise_m": -7.86318997965385e-06,
+        "edge_clearance_m": -1.6353805974020363e-05,
+        "root_rise_m": -7.863282280438921e-06,
+        "away_rotation_rad": -5.257641218037179e-05,
+        "joint_excursion_rad": 0.0
+      },
+      "final_pitch_velocity_rad_s": -9.423900044186152e-05,
+      "final_reference_rotation_error_rad": null,
+      "peak_rotation_overshoot_rad": null,
+      "timing_ns": {
+        "solver_setup": {
+          "median_ns": 1104481.5,
+          "p95_ns": 1392808.1999999997,
+          "max_ns": 1564642,
+          "over_10ms": 0
+        },
+        "solver_solve": {
+          "median_ns": 155176.5,
+          "p95_ns": 224097.5,
+          "max_ns": 1455627,
+          "over_10ms": 0
+        },
+        "physics_5steps": {
+          "median_ns": 103611.0,
+          "p95_ns": 163624.49999999994,
+          "max_ns": 219839,
+          "over_10ms": 0
+        },
+        "logging": {
+          "median_ns": 456135.5,
+          "p95_ns": 566090.8999999999,
+          "max_ns": 687560,
+          "over_10ms": 0
+        },
+        "forwardvalidation": {
+          "median_ns": 0.0,
+          "p95_ns": 0.0,
+          "max_ns": 0,
+          "over_10ms": 0
+        },
+        "fullstep": {
+          "median_ns": 17168993.5,
+          "p95_ns": 19796240.15,
+          "max_ns": 21327094,
+          "over_10ms": 50
+        }
+      },
+      "fullwall_ns_excluding_settle": 872564279,
+      "wall_to_requested_0_5s": 1.745128558
+    }
+  ],
+  "trace_path": "test-results/contact-inverse-traces.json",
+  "trace_sha256": "4449b2d55a76bc48d52aa68879fd17e45bdb8ce137bcfe5dd92a6afb3bfd52e7"
+}

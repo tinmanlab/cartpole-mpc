@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {buildConfiguredWheelbotXml} from '../src/wheelbot_configuration.mjs';
+const path=process.argv[2]??'assets/wheelbot/contact_design.json';
+const output=process.argv[3]??'assets/wheelbot/contact_model.xml';
+const cfg=JSON.parse(fs.readFileSync(path,'utf8'));
+const result=buildConfiguredWheelbotXml(fs.readFileSync('assets/wheelbot/wheelbot.xml','utf8'),cfg);
+fs.writeFileSync(output,result.xml);
+const record={...result.metadata,assetSha256:crypto.createHash('sha256').update(result.xml).digest('hex'),configurationSha256:crypto.createHash('sha256').update(fs.readFileSync(path)).digest('hex')};
+fs.writeFileSync(output.replace(/\.xml$/,'.metadata.json'),JSON.stringify(record,null,2)+'\n');
+console.log(JSON.stringify({output,assetSha256:record.assetSha256,massKg:record.totalMassKg},null,2));

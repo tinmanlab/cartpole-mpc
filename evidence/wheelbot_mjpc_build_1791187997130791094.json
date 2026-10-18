@@ -1,0 +1,64 @@
+{
+  "pin": "ff572a21e7c2bf9fda62e1862a758da7e9a8719b",
+  "tracked_source_clean": true,
+  "header_version": 3007000,
+  "runtime_version": 3007000,
+  "library_sha256": "116c30629fcddc38b963724744b4d7ec8fd253ef1db0b26a417e8eb24c16f672",
+  "source_sha256": {
+    "task.cc": "eaa57dace133d8bb7ea9c2143f879e2c09e0ab36f8a4f96128c59c36cc223791",
+    "norm.cc": "d061569ea8c48a148aea2aafcdcb13192b63d5db13d59b97d31b6299efa1fa86",
+    "utilities.cc": "1924b6cea946cbac517abc1808e9433ddc8c1a390aee5e5c570d5aeab8fbd118",
+    "trajectory.cc": "d1960cee8f2e268d03bbfcdd9424483b5a8d876358613f99965e062a75abefa2",
+    "states/state.cc": "98fd0aab740b24afe72795835c252b004aad6ba9d88f783b5fc6ad8b3eb1d2bd",
+    "spline/spline.cc": "c7a5deb58bf863f1d9be0bedf7be62befcf7e696c07cb0d4bb79a7ae71ce2528",
+    "threadpool.cc": "6400f1b86ba6afcef59d459894f11667c645647f4b459a45f1ad3a994354329b",
+    "planners/planner.cc": "66adf9a9cebc9422f094748ab1522c84a6b20f400078af1442cb2e2815a6ba0e",
+    "planners/sampling/planner.cc": "d3b893343c638a96e7be69a32291a28d615df372125856458c7a5b7eb9ddaa63",
+    "planners/sampling/policy.cc": "6bc183cd3db399bfcb96c92fd9c7eef578e34b837f14a47ba60995c63182a641"
+  },
+  "success": true,
+  "compatibility_shim": "// MuJoCo 3.7 mujoco.h:670 declares the added normal output nullable.\n// Preserve the old eight-argument convenience call; discard only that new output.\n#pragma once\n#include <mujoco/mujoco.h>\ninline mjtNum mjpc_ray_compat(const mjModel* m, const mjData* d,\n    const mjtNum* p, const mjtNum* v, const mjtByte* group, mjtByte fixed,\n    int exclude, int* geom) {\n  return mj_ray(m,d,p,v,group,fixed,exclude,geom,nullptr);\n}\n#define mj_ray(m,d,p,v,g,f,e,id) mjpc_ray_compat(m,d,p,v,g,f,e,id)\n",
+  "adapter_sha256": "2f06351245acedb48363be75df9885063ba6358e6ae39e29315f1a9cfecf9957",
+  "upstream_rechecked": true,
+  "binary_sha256": "6ad35058ad9d819cf0dc055fe678f018b1b59ec12e24f06acac48fef410b9fad",
+  "build_log": "test-results/mjpc-adopt/build-1791187892707011961.json",
+  "compile_and_link_returncodes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "upstream_license": "Apache-2.0",
+  "previous_build_attempts": [
+    {
+      "path": "test-results/mjpc-adopt/build-1791187675057570358.json",
+      "success": false
+    },
+    {
+      "path": "test-results/mjpc-adopt/build-1791187787961451113.json",
+      "success": false
+    },
+    {
+      "path": "test-results/mjpc-adopt/build-1791187851300079844.json",
+      "success": true
+    },
+    {
+      "path": "test-results/mjpc-adopt/build-1791187892707011961.json",
+      "success": true
+    }
+  ],
+  "adapter_files_sha256": {
+    "scripts/mjpc_wheelbot/main.cc": "2f06351245acedb48363be75df9885063ba6358e6ae39e29315f1a9cfecf9957",
+    "scripts/mjpc_wheelbot/compat.h": "609e5c9b402a97871d8f53aaf196d9783843360e1005d4d418b212c29a9f9a60",
+    "scripts/mjpc_wheelbot/run.py": "f17226b080e2ad6a781a25d4473e59224b4773175cf268ea78c796dddea9834b",
+    "scripts/mjpc_wheelbot/build.py": "8aa85343a078e7da9119d6e83324e27288c8c3043e0d22c807d2ee45eb252ec5"
+  }
+}

@@ -1,0 +1,525 @@
+{
+  "schema": "wheelbot-contact-tracking-independent-reference/v1",
+  "arithmetic_and_physics_verified": true,
+  "source_receipt_sha256": "d07b3dfc80204a969e10f42084c0c10f2db4dfb7ccee9d56701dcb9ab357c39b",
+  "source_profile_sha256": "8ecc3f2719e63c5dfc3835279871506ba13e04158f5a81b170c2544926d0a67c",
+  "verifier_sha256": "d84573ae1fbf40879772cbcdbee0affa8062614ea95663e3e6a3615e29f7c8f2",
+  "trials": 20,
+  "physics_steps": 5000,
+  "max_native_state_error": 0.0,
+  "max_command_error_nm": 0.0,
+  "max_riccati_gain_error": 0.0,
+  "minimum_cost_to_go_eigenvalue": 0.25370364362351594,
+  "linearization_validation": {
+    "derivative_columns": 7000,
+    "native_map_evaluations": 28500,
+    "epsilons": [
+      1e-06,
+      1e-07
+    ],
+    "contact_branch_mismatches": [
+      4,
+      0
+    ],
+    "constraint_branch_mismatches": [
+      4,
+      0
+    ],
+    "max_relative_refinement_error": 5016.751913105417,
+    "largest_abs_gain": 676.6326893882447,
+    "max_solve_condition": 77.76261228486175,
+    "poor_condition_threshold": 10000000000.0,
+    "linearization_validated": false,
+    "bounded_refinement": {
+      "epsilons": [
+        1e-07,
+        1e-08
+      ],
+      "rows": [
+        {
+          "sign": -1,
+          "step": 2,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 1.0842025634727003e-09
+        },
+        {
+          "sign": -1,
+          "step": 6,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 2.2316220455721216e-09
+        },
+        {
+          "sign": -1,
+          "step": 186,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 3.424552250785817e-09
+        },
+        {
+          "sign": 1,
+          "step": 2,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 7.814579918256454e-10
+        },
+        {
+          "sign": 1,
+          "step": 6,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 8.753876104833172e-09
+        },
+        {
+          "sign": 1,
+          "step": 186,
+          "kind": "x",
+          "column": 1,
+          "same_branch": [
+            true,
+            true
+          ],
+          "relative_error": 1.1083959330303947e-08
+        }
+      ],
+      "gains_changed": false,
+      "original_gate_retained": true,
+      "extra_map_evaluations": 30
+    },
+    "selected_derivatives_validated": true,
+    "selected_derivative_scope": "Finite local consistency for chosen nominal branch, not global differentiability or stability under contact changes.",
+    "coarse_invalid_classification": [
+      {
+        "sign": -1,
+        "step": 2,
+        "kind": "x",
+        "column": 1,
+        "reason": "contactbranch-crossing"
+      },
+      {
+        "sign": -1,
+        "step": 6,
+        "kind": "x",
+        "column": 1,
+        "reason": "contactbranch-crossing"
+      },
+      {
+        "sign": -1,
+        "step": 186,
+        "kind": "x",
+        "column": 1,
+        "reason": "excessive-coarse-step"
+      },
+      {
+        "sign": 1,
+        "step": 2,
+        "kind": "x",
+        "column": 1,
+        "reason": "contactbranch-crossing"
+      },
+      {
+        "sign": 1,
+        "step": 6,
+        "kind": "x",
+        "column": 1,
+        "reason": "contactbranch-crossing"
+      },
+      {
+        "sign": 1,
+        "step": 186,
+        "kind": "x",
+        "column": 1,
+        "reason": "excessive-coarse-step"
+      }
+    ],
+    "numeric_arrays_exactly_unchanged": true
+  },
+  "feedback_passes": 10,
+  "feedback_trials": 10,
+  "feedforward_passes": 2,
+  "feedforward_trials": 10,
+  "results": [
+    {
+      "sign": -1,
+      "variant": "nominal",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0002607329805307118,
+      "final_window_pitch_speed_rad_s": 0.0017351224498326093,
+      "overshoot_rad": 0.0002607329805307118,
+      "edge_rise_m": 0.02003757904788981,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.0001854660160328786,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "nominal",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0002607329805307118,
+      "final_window_pitch_speed_rad_s": 0.0017351224498326093,
+      "overshoot_rad": 0.0002607329805307118,
+      "edge_rise_m": 0.02003757904788981,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.0001854660160328786,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "hip_plus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.060859047461195484,
+      "final_window_pitch_speed_rad_s": 0.2889167691415872,
+      "overshoot_rad": 0.060859047461195484,
+      "edge_rise_m": 0.03509257825032112,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.002467575438349738,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "hip_plus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0011617352727229663,
+      "final_window_pitch_speed_rad_s": 0.04082760398893299,
+      "overshoot_rad": 0.0013370824329864278,
+      "edge_rise_m": 0.020306072624042625,
+      "peak_torque_nm": [
+        1.4374302379849817,
+        0.7319581895809364,
+        0.29438848765589054
+      ],
+      "max_penetration_m": 0.002467575438349738,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "hip_minus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.05261990228278586,
+      "final_window_pitch_speed_rad_s": 0.2538225653353061,
+      "overshoot_rad": 0.05261990228278586,
+      "edge_rise_m": 0.03305192481549343,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.0009080707399561627,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "hip_minus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0008478053637082789,
+      "final_window_pitch_speed_rad_s": 0.04063799610206949,
+      "overshoot_rad": 0.0010201659290867832,
+      "edge_rise_m": 0.020227108193910937,
+      "peak_torque_nm": [
+        1.670890694642896,
+        1.1535895561779435,
+        0.4086670704978441
+      ],
+      "max_penetration_m": 0.0012600273821274793,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "body_rate_plus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.04497632200648834,
+      "final_window_pitch_speed_rad_s": 0.22324941075603666,
+      "overshoot_rad": 0.04497632200648834,
+      "edge_rise_m": 0.031156778453327677,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.00029698636400703193,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "body_rate_plus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0008758859587712636,
+      "final_window_pitch_speed_rad_s": 0.040654327519434236,
+      "overshoot_rad": 0.0010491570366675945,
+      "edge_rise_m": 0.020234332021580988,
+      "peak_torque_nm": [
+        1.326527588272508,
+        0.7345802709077729,
+        0.2390617984961429
+      ],
+      "max_penetration_m": 0.00022130804662599812,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "body_rate_minus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.050645008365565694,
+      "final_window_pitch_speed_rad_s": 0.25184143332565556,
+      "overshoot_rad": 0.050645008365565694,
+      "edge_rise_m": 0.03256248096832048,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "max_penetration_m": 0.00027839266664902995,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": -1,
+      "variant": "body_rate_minus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0007790902057521337,
+      "final_window_pitch_speed_rad_s": 0.04058183677758445,
+      "overshoot_rad": 0.0009486901009346377,
+      "edge_rise_m": 0.020209297643223614,
+      "peak_torque_nm": [
+        1.3221620464420922,
+        0.737790210035836,
+        0.23594978587291113
+      ],
+      "max_penetration_m": 0.00023036207786815421,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "nominal",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0002607332733611384,
+      "final_window_pitch_speed_rad_s": 0.0017351233746890553,
+      "overshoot_rad": 0.0002607332733611384,
+      "edge_rise_m": 0.020037579121378726,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.00018546601607241642,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "nominal",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0002607332733611384,
+      "final_window_pitch_speed_rad_s": 0.0017351233746890553,
+      "overshoot_rad": 0.0002607332733611384,
+      "edge_rise_m": 0.020037579121378726,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.00018546601607241642,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "hip_plus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.05261988287135207,
+      "final_window_pitch_speed_rad_s": 0.2538224268707806,
+      "overshoot_rad": 0.05261988287135207,
+      "edge_rise_m": 0.03305192000538013,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.0009080707399565235,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "hip_plus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0008478048992873327,
+      "final_window_pitch_speed_rad_s": 0.0406379953661274,
+      "overshoot_rad": 0.0010201655400097903,
+      "edge_rise_m": 0.020227108096983464,
+      "peak_torque_nm": [
+        1.6708910777550332,
+        1.1535897109868785,
+        0.408667051044264
+      ],
+      "max_penetration_m": 0.0012600273853496796,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "hip_minus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.06085902737438549,
+      "final_window_pitch_speed_rad_s": 0.28891662849619587,
+      "overshoot_rad": 0.06085902737438549,
+      "edge_rise_m": 0.035092573278410435,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.002467575438349738,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "hip_minus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0011617347653339466,
+      "final_window_pitch_speed_rad_s": 0.04082760314816569,
+      "overshoot_rad": 0.0013370820473069395,
+      "edge_rise_m": 0.020306072527952204,
+      "peak_torque_nm": [
+        1.437430269452363,
+        0.7319581677729599,
+        0.2943884972683237
+      ],
+      "max_penetration_m": 0.002467575438349738,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "body_rate_plus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.05064498750880049,
+      "final_window_pitch_speed_rad_s": 0.2518412875523447,
+      "overshoot_rad": 0.05064498750880049,
+      "edge_rise_m": 0.032562475798682454,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.00027839237290169794,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "body_rate_plus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0007790897781170952,
+      "final_window_pitch_speed_rad_s": 0.04058183615230935,
+      "overshoot_rad": 0.0009486897523263843,
+      "edge_rise_m": 0.020209297556379506,
+      "peak_torque_nm": [
+        1.322162107123412,
+        0.7377902307685155,
+        0.23594986823332673
+      ],
+      "max_penetration_m": 0.00023036207768988015,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "body_rate_minus",
+      "controller": "feedforward",
+      "steps": 250,
+      "passed": false,
+      "final_window_angle_error_rad": 0.04497630194738507,
+      "final_window_pitch_speed_rad_s": 0.22324927046144688,
+      "overshoot_rad": 0.04497630194738507,
+      "edge_rise_m": 0.031156773477869187,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "max_penetration_m": 0.00029698602617676817,
+      "max_joint_excursion_rad": 0.0
+    },
+    {
+      "sign": 1,
+      "variant": "body_rate_minus",
+      "controller": "tvlqr",
+      "steps": 250,
+      "passed": true,
+      "final_window_angle_error_rad": 0.0008758854417368483,
+      "final_window_pitch_speed_rad_s": 0.040654326776406916,
+      "overshoot_rad": 0.001049156644405816,
+      "edge_rise_m": 0.020234331923860115,
+      "peak_torque_nm": [
+        1.3265276716187844,
+        0.7345802638294398,
+        0.23906188885742874
+      ],
+      "max_penetration_m": 0.00022130804371331414,
+      "max_joint_excursion_rad": 0.0
+    }
+  ],
+  "scope": "Independent native reconstruction of a known trajectory and declared perturbations. This is time-varying feedback, not an online nonlinear optimizer or fixed standing gain. Derivative admission, runtime deadline and physical passes are distinct; no observer/hardware/fullgetup claim."
+}

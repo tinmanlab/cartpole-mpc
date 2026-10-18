@@ -1,0 +1,448 @@
+{
+  "schema": "wheelbot-selfright-feasibility/v1",
+  "sourceSha256": "08d14e7b5891007363b0d684b0f3fd9dcf6f9d04e0fffaf5be6fcd27cff2cd57",
+  "nativeMuJoCoVersion": "3.7.0",
+  "method": "Same 7-parameter joint-sequence and wheel-rate-target search budget, actual full-contact MuJoCo, SciPy differential_evolution; local standing LQR only after admissible handover",
+  "bounds": [
+    [
+      -1.2,
+      1.2
+    ],
+    [
+      -2.4,
+      2.4
+    ],
+    [
+      -1.2,
+      1.2
+    ],
+    [
+      -2.4,
+      2.4
+    ],
+    [
+      -1.2,
+      1.2
+    ],
+    [
+      -2.4,
+      2.4
+    ],
+    [
+      -15,
+      15
+    ]
+  ],
+  "acceptance": "600 control samples; final1s rootheight>90%newtrim, pitcherror<0.08rad, hip/kneeerror<0.12rad, speeds<0.3 in listed units; joint limit excursion<0.05rad, contact penetration<0.02m. Declared simulation acceptance, not hardware safety.",
+  "privilegedState": true,
+  "groundTruthUsedFor": "Offline feasibility feedback/damping and evaluation only; not an implemented observer-controlled get-up",
+  "externalForces": false,
+  "historyResetWithinTrial": false,
+  "automaticRedesignPromotion": false,
+  "trials": [
+    {
+      "name": "full-contact-original",
+      "configuration": {
+        "schema": "wheelbot-contact-design/v1",
+        "base": {
+          "massKg": 1,
+          "sizeM": [
+            0.125,
+            0.17,
+            0.25
+          ]
+        },
+        "upper": {
+          "massKg": 0.056,
+          "lengthM": 0.25,
+          "radiusM": 0.011
+        },
+        "lower": {
+          "massKg": 0.056,
+          "lengthM": 0.25,
+          "radiusM": 0.011
+        },
+        "wheel": {
+          "massKg": 0.08715,
+          "radiusM": 0.05,
+          "widthM": 0.04
+        },
+        "motor": {
+          "torqueLimitNm": [
+            16,
+            16,
+            1.7
+          ],
+          "dampingNms": 0.015,
+          "armatureKgM2": 0.0002,
+          "hipRangeRad": [
+            -1.26,
+            1.26
+          ],
+          "kneeRangeRad": [
+            -2.51,
+            2.51
+          ]
+        },
+        "contact": {
+          "enabled": true,
+          "friction": 1,
+          "timeConstantS": 0.01,
+          "dampingRatio": 1
+        },
+        "obstacle": {
+          "enabled": false,
+          "centerM": [
+            0.65,
+            0,
+            0.1
+          ],
+          "sizeM": [
+            0.16,
+            0.5,
+            0.2
+          ]
+        }
+      },
+      "modelSha256": "f8cb4581a94340c7ad1486f132a5fe073da4ff24c97204898416aec88b870bc1",
+      "profile": {
+        "qref": [
+          0.0,
+          0.5442793664645657,
+          0.0032332250198885233,
+          0.15,
+          -0.3,
+          0.0
+        ],
+        "uref": [
+          0.003964735272906112,
+          0.3887816656632832,
+          1.1764113924208331e-15
+        ],
+        "trimQaccInf": 3.6075475238023734e-11,
+        "closedLoopRadius": 0.9985908990630061,
+        "designAvailable": true
+      },
+      "evaluations": 196,
+      "passedCandidates": 0,
+      "bestParameters": [
+        -0.01796456817693275,
+        2.2099915079134838,
+        0.7461836353224274,
+        -1.0452465035701062,
+        -0.7069821937712922,
+        -0.6859255930762428,
+        4.3352814346877935
+      ],
+      "initialFallen": [
+        0.04597355045928647,
+        0.062491509383904305,
+        1.5707945261204799,
+        -0.20803421893942223,
+        0.36521462315923736,
+        -0.9447522580709892,
+        -3.3040203838522353e-15,
+        -1.3526723752222276e-15,
+        -5.2634178197922416e-14,
+        -1.7545060116766017e-15,
+        7.313825973371866e-15,
+        3.3744915014928694e-16
+      ],
+      "result": {
+        "score": 62.938206902351624,
+        "passed": false,
+        "steps": 600,
+        "localControllerHandoverStep": null,
+        "maximumJointLimitExcursionRad": 0.0,
+        "maximumContactPenetrationM": 0.005971454382997482,
+        "maximumRootHeightM": 0.1838688492090742,
+        "minimumPitchErrorRad": 1.4983974537624545,
+        "final": [
+          -0.13055238527789464,
+          0.07113792047741035,
+          1.5994437993367947,
+          0.25535166477175636,
+          -0.6409883746903124,
+          8.25418861124167,
+          -0.42668288265402177,
+          -0.9155351030024814,
+          -7.602127943328011,
+          38.63654323161259,
+          -64.00508310949664,
+          37.353933082982486
+        ]
+      },
+      "elapsedS": 14.672851424000328
+    },
+    {
+      "name": "lower-base",
+      "configuration": {
+        "schema": "wheelbot-contact-design/v1",
+        "base": {
+          "massKg": 1,
+          "sizeM": [
+            0.125,
+            0.17,
+            0.16
+          ]
+        },
+        "upper": {
+          "massKg": 0.056,
+          "lengthM": 0.25,
+          "radiusM": 0.011
+        },
+        "lower": {
+          "massKg": 0.056,
+          "lengthM": 0.25,
+          "radiusM": 0.011
+        },
+        "wheel": {
+          "massKg": 0.08715,
+          "radiusM": 0.05,
+          "widthM": 0.04
+        },
+        "motor": {
+          "torqueLimitNm": [
+            16,
+            16,
+            1.7
+          ],
+          "dampingNms": 0.015,
+          "armatureKgM2": 0.0002,
+          "hipRangeRad": [
+            -1.26,
+            1.26
+          ],
+          "kneeRangeRad": [
+            -2.51,
+            2.51
+          ]
+        },
+        "contact": {
+          "enabled": true,
+          "friction": 1,
+          "timeConstantS": 0.01,
+          "dampingRatio": 1
+        },
+        "obstacle": {
+          "enabled": false,
+          "centerM": [
+            0.65,
+            0,
+            0.1
+          ],
+          "sizeM": [
+            0.16,
+            0.5,
+            0.2
+          ]
+        }
+      },
+      "modelSha256": "7ef9046fdd6db24dfc74ba4e519fa82dd024dbd4704db47317fd464d0cae82fe",
+      "profile": {
+        "qref": [
+          0.0,
+          0.5442789694291039,
+          0.0034748808448599247,
+          0.15,
+          -0.3,
+          0.0
+        ],
+        "uref": [
+          0.0027270809988791415,
+          0.38814611676146993,
+          3.565318737461095e-16
+        ],
+        "trimQaccInf": 7.935873809518121e-11,
+        "closedLoopRadius": 0.9985908509599705,
+        "designAvailable": true
+      },
+      "evaluations": 196,
+      "passedCandidates": 0,
+      "bestParameters": [
+        -0.6846530504028586,
+        1.6755397612229521,
+        0.7223232772153453,
+        -0.4365143505170502,
+        0.7696311399420047,
+        2.097739438958474,
+        -11.50637355516812
+      ],
+      "initialFallen": [
+        0.040008926205296495,
+        0.0624915098697338,
+        1.5707935132715944,
+        -0.20803323121517894,
+        0.3652146727135828,
+        -0.9590632990664942,
+        -3.1682553211535375e-15,
+        -1.0259742406874061e-15,
+        -5.086001888777634e-14,
+        3.2459943398783207e-15,
+        -8.420292629002573e-15,
+        -1.915904451181613e-15
+      ],
+      "result": {
+        "score": 62.88240020334079,
+        "passed": false,
+        "steps": 600,
+        "localControllerHandoverStep": null,
+        "maximumJointLimitExcursionRad": 0.0,
+        "maximumContactPenetrationM": 0.0359346159448437,
+        "maximumRootHeightM": 0.1125456960598343,
+        "minimumPitchErrorRad": 0.6434200778549958,
+        "final": [
+          -0.2635852851676697,
+          0.09569442992423707,
+          1.180063829019964,
+          0.1770602724532507,
+          0.6107348821957617,
+          -48.87900786583992,
+          0.11599039928924731,
+          -0.8737197605322442,
+          -4.350153967654006,
+          24.38535285774396,
+          -36.45860399085051,
+          11.934998168148134
+        ]
+      },
+      "elapsedS": 13.591821985999559
+    },
+    {
+      "name": "compact-damped",
+      "configuration": {
+        "schema": "wheelbot-contact-design/v1",
+        "base": {
+          "massKg": 1,
+          "sizeM": [
+            0.125,
+            0.17,
+            0.16
+          ]
+        },
+        "upper": {
+          "massKg": 0.056,
+          "lengthM": 0.2,
+          "radiusM": 0.011
+        },
+        "lower": {
+          "massKg": 0.056,
+          "lengthM": 0.2,
+          "radiusM": 0.011
+        },
+        "wheel": {
+          "massKg": 0.08715,
+          "radiusM": 0.05,
+          "widthM": 0.04
+        },
+        "motor": {
+          "torqueLimitNm": [
+            16,
+            16,
+            1.7
+          ],
+          "dampingNms": 0.04,
+          "armatureKgM2": 0.0005,
+          "hipRangeRad": [
+            -1.26,
+            1.26
+          ],
+          "kneeRangeRad": [
+            -2.51,
+            2.51
+          ]
+        },
+        "contact": {
+          "enabled": true,
+          "friction": 1,
+          "timeConstantS": 0.01,
+          "dampingRatio": 1
+        },
+        "obstacle": {
+          "enabled": false,
+          "centerM": [
+            0.65,
+            0,
+            0.1
+          ],
+          "sizeM": [
+            0.16,
+            0.5,
+            0.2
+          ]
+        }
+      },
+      "modelSha256": "a6cbd326a53cc7e3ce0aa80a2a555587950b6a0654fcad2ab949ae203af79951",
+      "profile": {
+        "qref": [
+          0.0,
+          0.4454083076724012,
+          0.0033631619740023904,
+          0.15,
+          -0.3,
+          0.0
+        ],
+        "uref": [
+          0.0026394045415335868,
+          0.31075194998036815,
+          1.99240926651148e-15
+        ],
+        "trimQaccInf": 1.1067037210331319e-10,
+        "closedLoopRadius": 0.9985924004253758,
+        "designAvailable": true
+      },
+      "evaluations": 196,
+      "passedCandidates": 0,
+      "bestParameters": [
+        -0.9350818430475305,
+        -2.37255036660736,
+        1.0290832598136974,
+        1.1862813713444482,
+        -0.9550452011093579,
+        0.055828965568345976,
+        -8.895132965588846
+      ],
+      "initialFallen": [
+        0.033130577638518184,
+        0.062491543046008444,
+        1.5707935242615205,
+        -0.2615252621816803,
+        0.4588579149579757,
+        -1.0736824957587963,
+        -2.8352776275164744e-15,
+        -1.2815439527616312e-15,
+        -4.588994854829391e-14,
+        9.075442331255094e-15,
+        -8.579496045074755e-15,
+        -8.771844563611223e-15
+      ],
+      "result": {
+        "score": 60.86815865728795,
+        "passed": false,
+        "steps": 600,
+        "localControllerHandoverStep": null,
+        "maximumJointLimitExcursionRad": 0.0,
+        "maximumContactPenetrationM": 0.007201062148899512,
+        "maximumRootHeightM": 0.1717588191517652,
+        "minimumPitchErrorRad": 1.3592391252616252,
+        "final": [
+          -0.6705846782099963,
+          0.07498255477985175,
+          1.6063321360693819,
+          -0.18651351578059433,
+          0.3312493308883736,
+          -29.84338391340766,
+          -0.399025973720646,
+          1.2469086142228571,
+          12.534826872250033,
+          -60.33186949420468,
+          99.60899529531187,
+          -17.719706719033514
+        ]
+      },
+      "elapsedS": 14.648408061000737
+    }
+  ],
+  "elapsedS": 45.50850027399974,
+  "interpretation": "No local-search failure proves physical impossibility. Geometry/actuator edits and the reusable local profile are available, but a stable get-up must satisfy the declared physical and closed-loop gates before deployment."
+}

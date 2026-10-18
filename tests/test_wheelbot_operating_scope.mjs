@@ -7,7 +7,7 @@ const html=fs.readFileSync('wheelbot.html','utf8');
 const code=source.slice(source.indexOf('function prepareForce('),source.indexOf('function tick('));
 let creates=0;
 const fields={mode:{value:'lqr_kf'}};
-const context={ready:true,forceProtocol:{controllers:['lqr_kf','mpc_kf'],stressN:40},forceOperating:{amplitudeN:.8},profiles:{recovery:{}},backend:{},playing:true,accumulated:.02,droppedWallSeconds:.1,poseOnly:false,statusLocked:false,jumpActive:true,jumpInitialTelemetry:{},trial:{steps:17},forceActive:false,viewState:[1],$:id=>fields[id]??=( {} ),createForceTrial:()=>{creates++;throw Error('trial creation reached');}};
+const context={designActive:false,ready:true,forceProtocol:{controllers:['lqr_kf','mpc_kf'],stressN:40},forceOperating:{amplitudeN:.8},profiles:{recovery:{}},backend:{},playing:true,accumulated:.02,droppedWallSeconds:.1,poseOnly:false,statusLocked:false,jumpActive:true,jumpInitialTelemetry:{},trial:{steps:17},forceActive:false,viewState:[1],$:id=>fields[id]??=( {} ),createForceTrial:()=>{creates++;throw Error('trial creation reached');}};
 vm.createContext(context);vm.runInContext(code,context);
 const snapshot=()=>JSON.stringify({playing:context.playing,accumulated:context.accumulated,droppedWallSeconds:context.droppedWallSeconds,poseOnly:context.poseOnly,statusLocked:context.statusLocked,jumpActive:context.jumpActive,jumpInitialTelemetry:context.jumpInitialTelemetry,trial:context.trial,forceActive:context.forceActive,viewState:context.viewState,fields});
 for(const level of ['stress','40',40,NaN,null,'']){

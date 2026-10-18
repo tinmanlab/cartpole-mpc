@@ -1,4 +1,5 @@
 import {createWheelbotBackend} from './wheelbot_backend.mjs';
+import {mountDesignEditor,drawConfiguredScene} from './wheelbot_design_view.mjs';
 import {createWheelbotTrial, validateWheelbotProfile, validateWheelbotResponseProfile} from './wheelbot_control.mjs';
 import {createJumpTrial, validateJumpProfile, jumpMetrics} from './wheelbot_jump.mjs';
 import {createForceTrial,validateForceReceipt} from './wheelbot_disturbance.mjs';
@@ -13,6 +14,7 @@ const profileLoadErrors = {};
 let jumpProfile = null, jumpActive = false, jumpInitialTelemetry = null;
 let forceProtocol=null,forceOperating=null,forceActive=false;
 const profileHashes={};
+let designEditor=null,designActive=false,designOriginal=null,designMetadataCurrent=null;
 
 const getJson = async path => {
   const response = await fetch(path);
@@ -38,7 +40,7 @@ function say(message, bad = false) {
 }
 function state() {
   const s = trial ? trial.snapshot() : {truth: viewState, estimate: null, steps: 0, last: null, failed: false};
-  return {...s, playing, truth12: s.truth, physics: backend?.diagnostics(), jumpActive,
+  return {...s, playing, truth12: s.truth, physics: backend ? {...backend.diagnostics(),controlDt:trial?.controlDt??.01} : null,configuredModel:designActive,modelInfo:designActive?backend.modelInfo():null,jumpActive,
     jumpResult: jumpActive && trial ? jumpMetrics(jumpProfile, trial.history, jumpInitialTelemetry) : null,forceActive,forceResult:forceActive&&trial?trial.result():null};
 }
 function render() {
@@ -65,6 +67,7 @@ function render() {
   ctx.fillStyle = '#3e9d66'; ctx.strokeStyle = '#216b45'; ctx.lineWidth = 3;
   ctx.beginPath(); ctx.arc(px(geo.wheel[0]), py(geo.wheel[2]), geo.wheelRadius * scale, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
   ctx.strokeStyle = '#e9f5ed'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(px(geo.wheel[0]), py(geo.wheel[2])); ctx.lineTo(px(geo.wheel[0]) + geo.wheelRotation[0] * geo.wheelRadius * scale, py(geo.wheel[2]) - geo.wheelRotation[6] * geo.wheelRadius * scale); ctx.stroke();
+  if(designActive)drawConfiguredScene(canvas,backend.sceneGeometry(x));
   $('truth').innerHTML = names.map((n, i) => `<tr><td>${n} ${i < 2 ? '[m]' : '[rad]'}</td><td>${x[i].toFixed(4)}</td><td>${x[i + 6].toFixed(4)} ${i < 2 ? 'm/s' : 'rad/s'}</td></tr>`).join('');
   const estimateNames = ['x [m]', 'z [m]', 'pitch [rad]', 'hip [rad]', 'knee [rad]', 'vx [m/s]', 'vz [m/s]', 'pitch rate [rad/s]', 'hip rate [rad/s]', 'knee rate [rad/s]', 'wheel rate [rad/s]'];
   $('estimate').innerHTML = estimateNames.map((name, i) => `<tr><td>${name}</td><td>${s.estimate?.[i] === undefined ? '—' : s.estimate[i].toFixed(4)}</td></tr>`).join('');
@@ -72,8 +75,8 @@ function render() {
   $('torques').innerHTML = actuators.map((n, i) => `<tr><td>${n}</td><td>${Number(u[i] ?? 0).toFixed(3)}${saturated ? ' · SAT' : ''}</td><td>request ${(requested[i] ?? 0).toFixed(3)}</td></tr>`).join('');
   const last = s.last ?? {};
   const metric = (value, digits = 2) => Number.isFinite(value) ? value.toExponential(digits) : '—';
-  $('solver').textContent = jumpActive ? 'Jump feedback · time-varying LQR + scheduled KF; offline nonlinear reference, no online QP' : last.solver === undefined ? 'Solver · —' : `Solver · accepted · ${last.solver} · KKT residual ${metric(last.kktResidual)} · primal residual ${metric(last.primalResidual)} · solve ${metric(last.solveMs)} ms · planned bound-active ${Boolean(last.forecastConstraintActive)}`;
-  $('timing').textContent = `Timing · simulated step 10 ms; last MPC solve ${metric(last.solveMs)} ms. Wall catch-up dropped ${(droppedWallSeconds*1000).toFixed(1)} ms; physics steps are never skipped. No hard real-time guarantee.`;
+  $('solver').textContent = s.tracking ? 'Offline contact plan + scheduled feedback · exact-state research; no online MPC' : jumpActive ? 'Jump feedback · time-varying LQR + scheduled KF; offline nonlinear reference, no online QP' : last.solver === undefined ? 'Solver · —' : `Solver · accepted · ${last.solver} · KKT residual ${metric(last.kktResidual)} · primal residual ${metric(last.primalResidual)} · solve ${metric(last.solveMs)} ms · planned bound-active ${Boolean(last.forecastConstraintActive)}`;
+  $('timing').textContent = `Timing · simulated step ${s.tracking ? 2 : 10} ms; last MPC solve ${metric(last.solveMs)} ms. Wall catch-up dropped ${(droppedWallSeconds*1000).toFixed(1)} ms; physics steps are never skipped. No hard real-time guarantee.`;
   const contact = s.last?.contact ?? backend.contact(x);
   $('contact').textContent = `Contact · wheel contacts: ${contact.wheelContacts ?? contact.count ?? 0} · ${(contact.wheelContacts ?? contact.count ?? 0) === 0 ? 'airborne surface velocity' : 'slip'} [m/s]: ${Number(contact.slip ?? 0).toFixed(4)} m/s · step ${s.steps ?? 0} · ${s.failed ? 'failure flagged' : 'running state valid'}`;
   if (jumpActive) {
@@ -87,6 +90,7 @@ function render() {
     $('force-status').textContent=`${label} · ${recipe.direction*recipe.amplitudeN} N for ${(recipe.durationSeconds*1000).toFixed(0)} ms at hip origin · step ${s.steps}/300 · impulse applied ${result.appliedSignedImpulseNs.toFixed(3)} N s · ${s.done?(result.normalPassed?'grounded recovery target met':result.taskPassed?'tracking met, contact scope not met':'target not met'):'evaluating'} · controller ${s.mode}, recovery design. Local model task; hardware unverified.`;
   }
   if (ready && (trial || poseOnly) && !statusLocked) $('status').textContent = `${playing ? 'RUNNING' : poseOnly ? 'POSE PROBE · physics paused' : 'PAUSED'} · ${s.steps ?? 0} steps · MuJoCo WASM ${backend.diagnostics().version}`;
+  if(designActive)designEditor?.render();
   $('play').textContent = playing ? 'Pause' : 'Start';
 }
 function makeTrial(initial = qrefState()) {
@@ -115,6 +119,7 @@ function renderDesignInfo() {
   $('design-info').textContent=text;
 }
 function configure() {
+  if(designActive){designEditor.selectTrial('standing');return;}
   jumpActive = false; jumpInitialTelemetry = null; forceActive=false;
   if(forceOperating){$('force-left').disabled=false;$('force-right').disabled=false;$('force-status').textContent=`Assessed local pulse ±${forceOperating.amplitudeN} N × ${forceOperating.durationSeconds}s, at hip origin. ${forceOperating.impulseNs.toFixed(3)} N s; ${(forceOperating.forceToWeight*100).toFixed(1)}% of model weight. Both directions/controller modes tested. Model-specific setting; hardware unverified.`;}
   for (const id of ['mode', 'design', 'goal', 'pose', 'local']) $(id).disabled = false;
@@ -130,6 +135,7 @@ function designMetadata() {
   return {selection: selected, ...(profiles[selected]?.responseDesign ?? {source: 'Original baseline profile'})};
 }
 function prepareJump(seed = 809) {
+  if(designActive)throw Error('Current model invalidates benchmark jump; restore or independently redesign/validate its controller first');
   if (!ready || !jumpProfile) throw Error('Jump profile unavailable; standing modes remain usable');
   playing = false; accumulated = 0; droppedWallSeconds = 0; poseOnly = false; statusLocked = false;
   forceActive=false;
@@ -141,6 +147,7 @@ function prepareJump(seed = 809) {
   say('Jump prepared at declared initial posture · paused'); render(); return state();
 }
 function prepareForce(direction=1,level='normal',seed=901){
+  if(designActive)throw Error('Current physical design has no approved benchmark pulse controller');
   if(level!=='normal')throw Error('Only the normal model-specific pulse is supported');
   if(!ready||!forceProtocol||!forceOperating||!profiles.recovery)throw Error('Assessed force task unavailable');
   if(![-1,1].includes(direction))throw Error('Invalid force direction: expected -1 or 1');
@@ -167,14 +174,14 @@ function tick(draw = true) {
 function animate(time) {
   if (frameTime === 0) frameTime = time;
   if (playing) {
-    const dt = backend?.diagnostics().controlDt ?? .01;
+    const dt = trial?.controlDt ?? backend?.diagnostics().controlDt ?? .01;
     const elapsed = Math.max(0, (time - frameTime) / 1000);
-    const budget = 4 * dt;
+    const budget = .04;
     const pending = accumulated + elapsed;
     droppedWallSeconds += Math.max(0, pending - budget);
     accumulated = Math.min(pending, budget);
     let count = 0;
-    while (playing && accumulated + 1e-12 >= dt && count++ < 4) { tick(false); accumulated = Math.max(0, accumulated - dt); }
+    while (playing && accumulated + 1e-12 >= dt && count++ < Math.round(budget / dt)) { tick(false); accumulated = Math.max(0, accumulated - dt); }
     if (count) render();
   } else accumulated = 0;
   frameTime = time; requestAnimationFrame(animate);
@@ -182,15 +189,24 @@ function animate(time) {
 window.wheelbotLab = {
   get ready() { return ready; },
   getState: state,
+  prepareTracking:(sign=1)=>designEditor.startTracking(sign),
+  getDesignEditor:()=>designEditor?.getState(),
+  applyPhysicalDesign:c=>designEditor.apply(c),
+  restorePhysicalBenchmark:()=>designEditor.restore(),
+  physicalScenario:name=>designEditor.selectTrial(name),
+  importPhysicalProfile:p=>designEditor.importProfile(p),
+  testPhysicalController:()=>designEditor.localControl(),
   getDesign: designMetadata,
   prepareJump,
   prepareForce,
   selectDesign(selection) {
+    if(designActive)return {accepted:false,reason:'Old design profiles are invalid for configured physics'};
     if (!profiles[selection]) { playing=false; return {accepted: false, selection: $('design').value}; }
     $('design').value = selection; profile = profiles[selection]; configure();
     return {accepted: Boolean(trial), ...designMetadata()};
   },
   configureMode(mode) {
+    if(designActive)return {accepted:false,reason:'Use the physical editor or restore the benchmark'};
     const option = [...$('mode').options].find(item => item.value === mode && !item.disabled);
     if (!option) {
       playing = false; viewState = trial?.snapshot().truth ?? viewState; trial = null;
@@ -269,7 +285,32 @@ try {
   $('local').onclick = () => { playing = false; statusLocked = false; poseOnly = false; $('goal').value = '0.03'; viewState = qrefState(); viewState[2] += 0.02; try { trial = makeTrial(viewState); } catch (error) { trial = null; say(`LOCAL TEST REJECTED · ${error.message}`, true); } render(); };
   $('mode').onchange = configure; $('goal').onchange = configure;
   $('design').onchange = () => { profile=profiles[$('design').value]??profiles.baseline; configure(); };
-  configure(); requestAnimationFrame(animate);
+  configure();
+  try {
+    const defaults=await getJson('assets/wheelbot/contact_design.json');
+    designEditor=mountDesignEditor({template:xml,defaults,active:()=>designActive,readState:state,
+      loadProfile:()=>getJson('assets/wheelbot/contact_profile.json'),
+      loadTrackingSources:async()=>{
+        const paths=['assets/wheelbot/contact_tracking_profile.json','assets/wheelbot/contact_profile.json','tests/fixtures/wheelbot_contact_tracking.json'];
+        const [profileText,costText,protocolText]=await Promise.all(paths.map(async path=>{const r=await fetch(path);if(!r.ok)throw Error('Tracking source unavailable');return r.text();}));
+        return {profileText,costText,protocolText,traceSha256:'c84199c0cb7624a0bf88a082d788560038286d8971915ac1fc5466d150eab3da'};
+      },
+      applyToView:(next,nextTrial,metadata)=>{
+        if(!designActive)designOriginal={backend,profile};
+        playing=false;accumulated=0;droppedWallSeconds=0;jumpActive=false;forceActive=false;poseOnly=false;statusLocked=false;
+        backend=next;trial=nextTrial;designActive=true;designMetadataCurrent=metadata;viewState=trial.snapshot().truth;
+        for(const id of ['mode','design','goal','jump','force-left','force-right','pose','local'])$(id).disabled=true;
+        $('design-info').textContent='Configured full-contact model · old gains and jump/force certification do not transfer automatically.';
+        say('FULL BODY CONTACT · passive model ready');render();
+      },
+      activateTrial:(nextTrial,play=false)=>{playing=play;jumpActive=false;forceActive=false;poseOnly=false;droppedWallSeconds=0;accumulated=0;trial=nextTrial;viewState=trial.snapshot().truth;statusLocked=false;say('Configured physical trial · paused');render();},
+      restoreView:()=>{
+        if(!designActive)return;
+        playing=false;designActive=false;backend=designOriginal.backend;profile=designOriginal.profile;designOriginal=null;designMetadataCurrent=null;
+        $('jump').disabled=!jumpProfile;configure();
+      }});
+  }catch(error){$('physical-status').textContent='Physical editor unavailable · '+error.message;}
+  requestAnimationFrame(animate);
 } catch (error) {
   ready = false; say(`MODEL / PROFILE REJECTED · ${error.message}`, true);
   $('message').textContent = 'Physics remains disabled until the wheelbot XML and its matching offline profile validate.';

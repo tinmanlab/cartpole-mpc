@@ -1,0 +1,20 @@
+{
+  "schema": "contact-wbc-frozen-protocol/v1",
+  "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+  "fall_qpos": [-0.4, 0.7, 1.1, 0.15, -0.3, 0],
+  "settle_s": 4.0,
+  "duration_s": 0.5,
+  "physics_dt": 0.002,
+  "command_dt": 0.01,
+  "minimum_upright_rotation_rad": 0.05,
+  "minimum_com_or_hip_rise_m": 0.005,
+  "maximum_joint_excursion_rad": 0.05,
+  "maximum_penetration_m": 0.02,
+  "torque_limits_nm": [16, 16, 1.7],
+  "pitch_acceleration_rad_s2": 1.0,
+  "com_z_acceleration_m_s2": 0.1,
+  "velocity_servo_s_inv": 2.0,
+  "trials": ["left_hold", "left_pivot", "right_hold", "right_pivot"],
+  "perturbation_rad": 0.001,
+  "acceptance": "Both displacement thresholds at the same sample within 0.5s, with the entire prefix physically admissible. Hold is a diagnostic, never a standup success. No threshold retuning."
+}

@@ -11,7 +11,7 @@ assert(validateWheelbotResponseProfile({assetSha256:base.assetSha256,limits:base
 const source=fs.readFileSync('src/wheelbot_app.mjs','utf8');
 const scheduler=source.slice(source.indexOf('function animate(time)'),source.indexOf('window.wheelbotLab ='));
 assert(scheduler.startsWith('function animate(time)'));
-const context={playing:true,frameTime:0,accumulated:0,droppedWallSeconds:0,steps:0,draws:0,callbacks:0,backend:{diagnostics:()=>({controlDt:.01})}};
+const context={trial:null,playing:true,frameTime:0,accumulated:0,droppedWallSeconds:0,steps:0,draws:0,callbacks:0,backend:{diagnostics:()=>({controlDt:.01})}};
 context.tick=draw=>{assert.equal(draw,false,'animation must not redraw for each control sample');context.steps++;};
 context.render=()=>{context.draws++;};
 context.requestAnimationFrame=()=>{context.callbacks++;};
@@ -26,6 +26,13 @@ assert(context.accumulated>=0&&context.accumulated<.01);
 const before=context.steps;context.playing=false;context.animate(2517);assert.equal(context.steps,before);
 context.playing=true;context.animate(2527);assert.equal(context.steps,before+1);
 assert.equal(context.callbacks,5);
+// Fast feedback consumes real 2 ms samples, with rendering outside the loop.
+context.trial={controlDt:.002};context.accumulated=0;
+let fastBefore=context.steps;context.animate(2544);
+assert.equal(context.steps-fastBefore,8,'17 ms frame must not be capped at four 2 ms samples');
+fastBefore=context.steps;const drawsBefore=context.draws;context.animate(3044);
+assert.equal(context.steps-fastBefore,20,'40 ms fixed catch-up budget');
+assert.equal(context.draws-drawsBefore,1);
 console.log('Recovery profile binding and actual frame scheduler PASS: one redraw, fixed steps, bounded catch-up, pause/resume');
 
 // Both DOM changes and API changes must display the actual active design.

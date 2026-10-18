@@ -1,0 +1,108 @@
+{
+  "schema": "wheelbot-full-contact-native-reference/v1",
+  "passed": true,
+  "mujocoVersion": "3.7.0",
+  "trials": 8,
+  "frames": 2402,
+  "maxStateComponentError": 7.887024366937112e-13,
+  "maxNormalForceErrorN": 3.40349970429088e-12,
+  "counts": [
+    {
+      "variant": "default",
+      "scenario": "fall-left",
+      "steps": 400,
+      "contactPairs": {
+        "floor|wheel_visual": 724,
+        "floor|upper_link_visual": 5,
+        "floor|lower_link_visual": 356,
+        "floor|torso_visual": 1442
+      },
+      "maxPenetrationM": 0.011788152832630516,
+      "maxNormalN": 131.3089891537368
+    },
+    {
+      "variant": "default",
+      "scenario": "fall-right",
+      "steps": 400,
+      "contactPairs": {
+        "floor|wheel_visual": 728,
+        "floor|torso_visual": 1442,
+        "floor|upper_link_visual": 5,
+        "floor|lower_link_visual": 353
+      },
+      "maxPenetrationM": 0.010022423332249175,
+      "maxNormalN": 100.87359117336366
+    },
+    {
+      "variant": "default",
+      "scenario": "obstacle",
+      "steps": 400,
+      "contactPairs": {
+        "obstacle|torso_visual": 742,
+        "floor|wheel_visual": 774,
+        "floor|lower_link_visual": 347,
+        "floor|upper_link_visual": 332
+      },
+      "maxPenetrationM": 0.0026619262745666006,
+      "maxNormalN": 38.651691276221506
+    },
+    {
+      "variant": "default",
+      "scenario": "torque",
+      "steps": 1,
+      "contactPairs": {},
+      "maxPenetrationM": 0.0,
+      "maxNormalN": 0.0
+    },
+    {
+      "variant": "edited",
+      "scenario": "fall-left",
+      "steps": 400,
+      "contactPairs": {
+        "floor|wheel_visual": 724,
+        "floor|upper_link_visual": 7,
+        "floor|lower_link_visual": 349,
+        "floor|torso_visual": 1426
+      },
+      "maxPenetrationM": 0.01638056285385344,
+      "maxNormalN": 203.20626602240472
+    },
+    {
+      "variant": "edited",
+      "scenario": "fall-right",
+      "steps": 400,
+      "contactPairs": {
+        "floor|wheel_visual": 724,
+        "floor|torso_visual": 1432,
+        "floor|upper_link_visual": 8,
+        "floor|lower_link_visual": 355
+      },
+      "maxPenetrationM": 0.010403303746743482,
+      "maxNormalN": 355.71721129193037
+    },
+    {
+      "variant": "edited",
+      "scenario": "obstacle",
+      "steps": 400,
+      "contactPairs": {
+        "obstacle|torso_visual": 740,
+        "floor|wheel_visual": 764,
+        "floor|lower_link_visual": 22,
+        "floor|upper_link_visual": 317
+      },
+      "maxPenetrationM": 0.002567073993456223,
+      "maxNormalN": 36.96533690845337
+    },
+    {
+      "variant": "edited",
+      "scenario": "torque",
+      "steps": 1,
+      "contactPairs": {},
+      "maxPenetrationM": 0.0,
+      "maxNormalN": 0.0
+    }
+  ],
+  "localProfileRecomputed": true,
+  "localProfileSha256": "f980a50bce7485328764f82f7bd86b330a0bef862ce2f36eddc09141c3bd58d1",
+  "scope": "Full body/link collisions and configurable parameters verified. Soft-contact penetration is measured, not claimed zero. No successful stand-up is inferred."
+}

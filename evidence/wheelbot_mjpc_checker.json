@@ -1,0 +1,16 @@
+{
+  "schema": "wheelbot-mjpc-consistency/v1",
+  "passed": true,
+  "results": [
+    {
+      "receipt": "test-results/mjpc-consistency/safe_compact-reproducible-right-0-1791192150358304134.json",
+      "prediction_qpos_max_error": 0.0,
+      "prediction_qvel_max_error": 0.0,
+      "cold_one_step_qpos_max_error": 0.0,
+      "cold_one_step_qvel_max_error": 0.0,
+      "trace_steps": 3000,
+      "trace_qpos_max_error": 0.0,
+      "trace_qvel_max_error": 0.0
+    }
+  ]
+}

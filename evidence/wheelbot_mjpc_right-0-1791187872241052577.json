@@ -1,0 +1,170 @@
+{
+  "schema": "wheelbot-mjpc-adoption/v1",
+  "id": "right-0-1791187872241052577",
+  "command": [
+    "/home/tinman/cartpole-wheelbot-contact-20261005/test-results/mjpc-adopt/wheelbot",
+    "/home/tinman/cartpole-wheelbot-contact-20261005/test-results/mjpc-adopt/task.xml",
+    "/home/tinman/cartpole-wheelbot-contact-20261005/test-results/mjpc-adopt/right-0-1791187872241052577.csv",
+    "right",
+    "6.0",
+    "0"
+  ],
+  "returncode": 0,
+  "wall_seconds": 49.78846755900304,
+  "source": {
+    "pin": "ff572a21e7c2bf9fda62e1862a758da7e9a8719b",
+    "tracked_source_clean": true,
+    "header_version": 3007000,
+    "runtime_version": 3007000,
+    "library_sha256": "116c30629fcddc38b963724744b4d7ec8fd253ef1db0b26a417e8eb24c16f672",
+    "source_sha256": {
+      "task.cc": "eaa57dace133d8bb7ea9c2143f879e2c09e0ab36f8a4f96128c59c36cc223791",
+      "norm.cc": "d061569ea8c48a148aea2aafcdcb13192b63d5db13d59b97d31b6299efa1fa86",
+      "utilities.cc": "1924b6cea946cbac517abc1808e9433ddc8c1a390aee5e5c570d5aeab8fbd118",
+      "trajectory.cc": "d1960cee8f2e268d03bbfcdd9424483b5a8d876358613f99965e062a75abefa2",
+      "states/state.cc": "98fd0aab740b24afe72795835c252b004aad6ba9d88f783b5fc6ad8b3eb1d2bd",
+      "spline/spline.cc": "c7a5deb58bf863f1d9be0bedf7be62befcf7e696c07cb0d4bb79a7ae71ce2528",
+      "threadpool.cc": "6400f1b86ba6afcef59d459894f11667c645647f4b459a45f1ad3a994354329b",
+      "planners/planner.cc": "66adf9a9cebc9422f094748ab1522c84a6b20f400078af1442cb2e2815a6ba0e",
+      "planners/sampling/planner.cc": "d3b893343c638a96e7be69a32291a28d615df372125856458c7a5b7eb9ddaa63",
+      "planners/sampling/policy.cc": "6bc183cd3db399bfcb96c92fd9c7eef578e34b837f14a47ba60995c63182a641"
+    }
+  },
+  "plant": {
+    "settled_both_sides": {
+      "left": {
+        "qpos": [
+          -0.0744782117793034,
+          0.062491509383904305,
+          -1.5707945261204799,
+          0.20803421893942223,
+          -0.36521462315923736,
+          0.5653264310257773
+        ],
+        "qvel": [
+          3.3003343676706966e-15,
+          -1.3910323527473203e-15,
+          5.2873795754383024e-14,
+          1.3581054298734422e-15,
+          -7.159928552485289e-15,
+          -1.0696476569102992e-16
+        ],
+        "time": 3.999999999999781,
+        "contacts": 7,
+        "initial_penetration": 0
+      },
+      "right": {
+        "qpos": [
+          0.045973550459284994,
+          0.062491509383904305,
+          1.5707945261204799,
+          -0.20803421893942223,
+          0.36521462315923736,
+          -0.9447522580710227
+        ],
+        "qvel": [
+          -3.308258072285333e-15,
+          -1.4257438844173308e-15,
+          -5.3100880356841825e-14,
+          -1.109859533778043e-15,
+          7.253967000685184e-15,
+          5.681522275609079e-16
+        ],
+        "time": 3.999999999999781,
+        "contacts": 7,
+        "initial_penetration": 0
+      }
+    },
+    "numeric_plant_sha256": "3422e6b57408adb22f1ffa9e3ac806966ecb92798a10ac7c6232a52850c16ecf",
+    "numeric_fields_compared": 414,
+    "original_xml_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "task_xml_sha256": "0b7cff6c1ce547219c925e40e367f825b4d31745f915c86d117d3aa88164460a",
+    "plant_equal": true
+  },
+  "trace": "test-results/mjpc-adopt/right-0-1791187872241052577.csv",
+  "mode": "right",
+  "staged": false,
+  "observer_integration": false,
+  "privileged_full_state": true,
+  "external_forces": false,
+  "physics_dt_s": 0.002,
+  "replan_dt_s": 0.01,
+  "action_mapping": "linear upstream spline evaluated at every 2ms substep; no 10ms zero-order hold",
+  "initialization": "right: q=[0,.7,1.1,.15,-.3,0], v=0, ctrl=0, 2000 uninterrupted gravity steps",
+  "stderr": "",
+  "binary_sha256": "6ad35058ad9d819cf0dc055fe678f018b1b59ec12e24f06acac48fef410b9fad",
+  "adapter_sha256": "2f06351245acedb48363be75df9885063ba6358e6ae39e29315f1a9cfecf9957",
+  "trim_q": [
+    0.0,
+    0.5442793664645657,
+    0.0032332250198885233,
+    0.15,
+    -0.3,
+    0.0
+  ],
+  "planner": {
+    "iterations": 600,
+    "horizon_steps": 501,
+    "rollouts_per_iteration": 64,
+    "threads": 4,
+    "spline_knots": 24,
+    "nominal_native_max_error": 6.520339823623544e-13,
+    "final_cost": 14.526637163295632,
+    "header_version": 3007000,
+    "runtime_version": 3007000
+  },
+  "metrics": {
+    "duration_s": 6.000000000000227,
+    "final_root_height_m": 0.24601185058176758,
+    "max_root_height_m": 0.3777826982648379,
+    "tail_min_height_m": 0.21082103096087335,
+    "tail_max_pitch_error_rad": 0.5542465275467954,
+    "tail_max_joint_error_rad": 2.734689943300905,
+    "tail_max_speed": 35.39220470699577,
+    "max_penetration_m": 0.02640697901365862,
+    "max_joint_excursion_rad": 0.3690725215506985,
+    "max_actual_torques_nm": [
+      16.0,
+      15.624107137530235,
+      1.5901812579582002
+    ],
+    "max_controls_nm": [
+      16.0,
+      15.624107137530235,
+      1.5901812579582002
+    ],
+    "initial_qpos": [
+      0.045973550459284994,
+      0.062491509383904305,
+      1.5707945261204799,
+      -0.20803421893942223,
+      0.36521462315923736,
+      -0.9447522580710227
+    ],
+    "initial_qvel": [
+      -3.308258072285333e-15,
+      -1.4257438844173308e-15,
+      -5.3100880356841825e-14,
+      -1.109859533778043e-15,
+      7.253967000685184e-15,
+      5.681522275609079e-16
+    ],
+    "contact_count_range": [
+      0,
+      7
+    ],
+    "finite": true
+  },
+  "gates": {
+    "complete_6s": true,
+    "height": false,
+    "pitch": false,
+    "joints": false,
+    "speed": false,
+    "penetration": false,
+    "limits": false,
+    "torques": true,
+    "finite": true
+  },
+  "getup_success": false
+}

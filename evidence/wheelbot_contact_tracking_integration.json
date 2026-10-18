@@ -1,0 +1,131 @@
+{
+  "schema": "wheelbot-contact-tracking-integration/v1",
+  "head": "aff137291a70544ede5bdecfe9027b6ae8a1ee0b",
+  "branch": "feat/wheelbot-contact-codesign",
+  "commands": [
+    {
+      "command": [
+        "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python",
+        "tests/test_wheelbot_contact_tracking_reference.py",
+        "--imports-only"
+      ],
+      "exit": 0,
+      "seconds": 0.702,
+      "log": "test-results/contact-tracking-integration-0.log",
+      "log_sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+    },
+    {
+      "command": [
+        "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python",
+        "tests/test_wheelbot_contact_tracking_reference.py"
+      ],
+      "exit": 0,
+      "seconds": 3.871,
+      "log": "test-results/contact-tracking-integration-1.log",
+      "log_sha256": "2f2f94f9d2982600db812e64ac589948cc907daa232128a9dd399b0914e40864"
+    },
+    {
+      "command": [
+        "/home/tinman/cartpole-mpc-audit-20261004/.venv-native/bin/python",
+        "tests/test_wheelbot_contact_tracking.py"
+      ],
+      "exit": 0,
+      "seconds": 0.538,
+      "log": "test-results/contact-tracking-integration-2.log",
+      "log_sha256": "5372b1b7b45d381d93cfddaa59adaafcdc60f6a7e4ac76e217a7f4b2cfaf6d05"
+    },
+    {
+      "command": [
+        "node",
+        "tests/test_wheelbot_contact_tracking_wasm.mjs"
+      ],
+      "exit": 0,
+      "seconds": 2.533,
+      "log": "test-results/contact-tracking-integration-3.log",
+      "log_sha256": "402e58a8486b4090681343b3ff7d205273700f3166ee91dcb6c2c9ef931ba2bd"
+    },
+    {
+      "command": [
+        "node",
+        "tests/test_wheelbot_configuration.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032,
+      "log": "test-results/contact-tracking-integration-4.log",
+      "log_sha256": "604b625bc34cacc35e79a4c7e949606c6d8acac45cfb05b282d2bef66b8fa910"
+    },
+    {
+      "command": [
+        "node",
+        "tests/test_wheelbot_runtime.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.051,
+      "log": "test-results/contact-tracking-integration-5.log",
+      "log_sha256": "c6c63652bacdff39be9b7e83589f900f3028e87bd74f4a45ad368fc7563023c8"
+    },
+    {
+      "command": [
+        "node",
+        "tests/test_wheelbot_operating_scope.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.029,
+      "log": "test-results/contact-tracking-integration-6.log",
+      "log_sha256": "de9392dab47d3acdd83f4fa2cab9f0f552612acf405e378f25a997e28f0fedf5"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 45.518,
+      "log": "test-results/contact-tracking-integration-7.log",
+      "log_sha256": "dd9a0bd70695df4365c4e3bcfd32fcd7f925fe24a425c5f75bd904df6a9d1882"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.005,
+      "log": "test-results/contact-tracking-integration-8.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_hashes": {
+    "src/wheelbot_contact_tracking.mjs": "d3a0629c4438881efedfb11482f14aba0c6d5b2f144f9acd95e20a956fe6d55a",
+    "src/wheelbot_contact_backend.mjs": "7d15d1835102a843ecacebd3f35ad1a511dfca50de684249869f8510d693317f",
+    "src/wheelbot_design_view.mjs": "2bb30d624b09043b51aeef11481120cb4abd3279909d34590ad51609744492ca",
+    "src/wheelbot_app.mjs": "bb3c3f08dbd4871266bdc3157101173bf9bdfaff98daa44c8256a6bb551e6e72",
+    "wheelbot.html": "8aa15f9e12028bfc29095eb3526b3668fd6fb2dfb779d1f26966f7c71a1e2034",
+    "tests/test_wheelbot_contact_tracking_reference.py": "d84573ae1fbf40879772cbcdbee0affa8062614ea95663e3e6a3615e29f7c8f2",
+    "tests/test_wheelbot_contact_tracking_wasm.mjs": "d77471008e43894544ebc267791233f03ad0015bae9206e3d8c6ff8b18f0435f",
+    "tests/test_wheelbot_contact_tracking_browser.py": "e7591e22df35e39fd0b3cd751c8f42484eb2a6f83635bf3cac7e0c65a0970788",
+    "tests/test_wheelbot_runtime.mjs": "89d602741bd0dbe709daa2e3e7ef3e8257665f4ac0a526d0232441bc19a0d2f2",
+    "docs/WHEELBOT_CONTACT_WBC.md": "c5f4b92cef1147916ffc2a6ac821dc64d379c2a47f3f991c0fd7a6fe20b75732",
+    "src/wheelbot_backend.mjs": "024b171afa58a6c50be0a46dedc8f7730643a293678a7bda95336f9a718b46ba",
+    "assets/wheelbot/contact_model.xml": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "assets/wheelbot/contact_tracking_profile.json": "8ecc3f2719e63c5dfc3835279871506ba13e04158f5a81b170c2544926d0a67c",
+    "evidence/wheelbot_contact_tracking_reference.json": "2f2f94f9d2982600db812e64ac589948cc907daa232128a9dd399b0914e40864",
+    "evidence/wheelbot_contact_tracking_wasm.json": "0ac7d770dc62edbcf08591bbc4786c2eafe06e0cd7b9ab6c6cdef98378798b97"
+  },
+  "original_receipt_sources_unchanged": true,
+  "historical_backend_byte_unchanged": true,
+  "fail_first": {
+    "command": "python3 tests/test_wheelbot_contact_tracking_reference.py --imports-only",
+    "exit": 1,
+    "reason": "hashlib rejected before narrow whitelist correction"
+  },
+  "resolved_test_failure": "Initial WASM metric assertion referenced overshoot_rad instead of frozen native rotation_overshoot_rad; corrected test key without changing thresholds.",
+  "browser": {
+    "executed": false,
+    "syntax_checked": true,
+    "reason": "Prior sandbox socket denials; execute shared UI Playwright test only in normal CI."
+  },
+  "scope": "Exact-state support transfer only; no observer, full standup, hardware or browser WCET claim."
+}

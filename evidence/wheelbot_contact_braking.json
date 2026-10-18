@@ -1,0 +1,399 @@
+{
+  "schema": "wheelbot-contact-braking-evidence/v1",
+  "protocol": {
+    "schema": "wheelbot-contact-braking/v1",
+    "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "duration_s": 0.5,
+    "physics_dt_s": 0.002,
+    "reference_source": "tests/fixtures/wheelbot_contact_inverse.json",
+    "reference_rotation_rad": 0.08,
+    "reference_ramp_s": 0.4,
+    "final_window_s": 0.1,
+    "maximum_final_angle_error_rad": 0.02,
+    "maximum_final_pitch_speed_rad_s": 0.1,
+    "maximum_rotation_overshoot_rad": 0.02,
+    "minimum_hip_edge_rise_m": 0.005,
+    "maximum_joint_excursion_rad": 0.05,
+    "maximum_penetration_m": 0.02,
+    "signs": [
+      -1,
+      1
+    ],
+    "cases": [
+      {
+        "name": "original_hold_10ms",
+        "feedback_dt_s": 0.01,
+        "max_iterations": 100,
+        "reuse_workspace": true
+      },
+      {
+        "name": "substep_feedback_2ms",
+        "feedback_dt_s": 0.002,
+        "max_iterations": 200,
+        "reuse_workspace": true
+      }
+    ],
+    "changed_numerical_budget": "The2mscandidate uses an explicit200-iteration ceiling; solve success and residual gates remain unchanged. No iteration-limit result is accepted.",
+    "scope": "Known-model exact-state development comparison, not hardware, heldout robustness, observer-based execution or full getup.2msfeedback is an explicit different control-rate design; it is not success of the original10mshold. Physics, torque limits and reference gains are unchanged. Every wall-clock miss remains reported."
+  },
+  "hashes": {
+    "scripts/wheelbot_contact_wbc.py": "8b41bbf4520267a726202897ee8ac3d1171a2770dd852ea8099d433b4efdcdde",
+    "scripts/validate_wheelbot_contact_braking.py": "52575f456b0fdb7cea680415e2fa2769b204dca608ba4b2d738a0c9be1dda13d",
+    "tests/fixtures/wheelbot_contact_braking.json": "fd64e517f4026f803b913ce3d811853739072ce898a75fe9916e44498381da83",
+    "tests/fixtures/wheelbot_contact_inverse.json": "455429d92a2b62a8f4e5fbe05b7a32e7ec780ddcf1ec73e206bf51e96c6bead0",
+    "assets/wheelbot/contact_model.xml": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+    "assets/wheelbot/contact_profile.json": "f980a50bce7485328764f82f7bd86b330a0bef862ce2f36eddc09141c3bd58d1"
+  },
+  "trace_path": "test-results/contact-braking-traces.json",
+  "trace_sha256": "c84199c0cb7624a0bf88a082d788560038286d8971915ac1fc5466d150eab3da",
+  "native_version": "3.7.0",
+  "source_state": "exact state for diagnostic feedback, not an implemented observer",
+  "controller": "Existing matched-contact inverse and unchanged reference gains. Explicit change from10mszero-orderhold to2msfeedback; optional scratch-buffer reuse and declared iteration budget.",
+  "physical_model_changed": false,
+  "external_force_added": false,
+  "trials": [
+    {
+      "name": "original_hold_10ms",
+      "sign": -1,
+      "case": {
+        "name": "original_hold_10ms",
+        "feedback_dt_s": 0.01,
+        "max_iterations": 100,
+        "reuse_workspace": true
+      },
+      "initial_state": [
+        -0.47447821177930916,
+        0.062491509383904305,
+        -1.5707945261204799,
+        0.20803421893942223,
+        -0.36521462315923736,
+        0.5653264310259218,
+        3.297569045530242e-15,
+        -1.3686030381204324e-15,
+        5.278833785839226e-14,
+        1.7035543813643945e-15,
+        -7.62751392774006e-15,
+        -2.8965326185481535e-16
+      ],
+      "expected_commands": 50,
+      "accepted_commands": 50,
+      "rejection": null,
+      "metrics": {
+        "tracking_success": false,
+        "completed": true,
+        "physics_steps": 250,
+        "max_edge_rise_m": 0.19099504255832284,
+        "max_rotation_rad": 0.8586763018171091,
+        "final_rotation_rad": 0.8586763018171091,
+        "final_window_angle_error_rad": 0.7786763018171091,
+        "final_window_pitch_speed_rad_s": 7.201955907453547,
+        "final_pitch_velocity_rad_s": -3.1731298653326494,
+        "rotation_overshoot_rad": 0.7786763018171091,
+        "max_penetration_m": 0.0006312515433161275,
+        "max_joint_excursion_rad": 0.042110181552247106,
+        "physical_limits_met": true,
+        "final_edge_rise_m": 0.19099504255832284
+      },
+      "timing": {
+        "optimization": {
+          "samples": 50,
+          "median_ms": 3.7964385,
+          "p95_ms": 5.90692975,
+          "max_ms": 26.898141,
+          "deadline_misses": 1
+        },
+        "forward_validation": {
+          "samples": 50,
+          "median_ms": 1.216086,
+          "p95_ms": 1.6974412499999996,
+          "max_ms": 1.934178,
+          "deadline_misses": 0
+        },
+        "physics": {
+          "samples": 50,
+          "median_ms": 0.1081785,
+          "p95_ms": 0.1727628,
+          "max_ms": 0.21731,
+          "deadline_misses": 0
+        },
+        "telemetry": {
+          "samples": 50,
+          "median_ms": 5.824874,
+          "p95_ms": 7.4028418999999985,
+          "max_ms": 9.384088,
+          "deadline_misses": 0
+        },
+        "full_control_cycle": {
+          "samples": 50,
+          "median_ms": 11.4707895,
+          "p95_ms": 15.467750999999996,
+          "max_ms": 35.475792,
+          "deadline_misses": 47
+        }
+      },
+      "wall_seconds_excluding_settle": 0.614373205,
+      "simulated_seconds": 0.5,
+      "real_time_factor": 0.8138375761358277,
+      "full_getup": false,
+      "observer": false
+    },
+    {
+      "name": "original_hold_10ms",
+      "sign": 1,
+      "case": {
+        "name": "original_hold_10ms",
+        "feedback_dt_s": 0.01,
+        "max_iterations": 100,
+        "reuse_workspace": true
+      },
+      "initial_state": [
+        -0.35402644954070434,
+        0.062491509383904305,
+        1.5707945261204799,
+        -0.20803421893942223,
+        0.36521462315923736,
+        -0.9447522580709234,
+        -3.300399612132192e-15,
+        -1.3802749984520588e-15,
+        -5.277472953569839e-14,
+        -1.4797964243240243e-15,
+        7.181881900447053e-15,
+        2.0576765814373305e-16
+      ],
+      "expected_commands": 50,
+      "accepted_commands": 50,
+      "rejection": null,
+      "metrics": {
+        "tracking_success": false,
+        "completed": true,
+        "physics_steps": 250,
+        "max_edge_rise_m": 0.15177457087255722,
+        "max_rotation_rad": 0.6524166480088951,
+        "final_rotation_rad": 0.5382097866206985,
+        "final_window_angle_error_rad": 0.5503972277111463,
+        "final_window_pitch_speed_rad_s": 1.333790460595505,
+        "final_pitch_velocity_rad_s": -0.85363073823177,
+        "rotation_overshoot_rad": 0.5724166480088951,
+        "max_penetration_m": 0.0008846881817409225,
+        "max_joint_excursion_rad": 0.04211018939809885,
+        "physical_limits_met": true,
+        "final_edge_rise_m": 0.12817771419910154
+      },
+      "timing": {
+        "optimization": {
+          "samples": 50,
+          "median_ms": 3.693388,
+          "p95_ms": 9.003039799999994,
+          "max_ms": 50.956751,
+          "deadline_misses": 2
+        },
+        "forward_validation": {
+          "samples": 50,
+          "median_ms": 1.23813,
+          "p95_ms": 1.8078853499999996,
+          "max_ms": 2.444634,
+          "deadline_misses": 0
+        },
+        "physics": {
+          "samples": 50,
+          "median_ms": 0.117354,
+          "p95_ms": 0.18860479999999996,
+          "max_ms": 0.210452,
+          "deadline_misses": 0
+        },
+        "telemetry": {
+          "samples": 50,
+          "median_ms": 6.1760305,
+          "p95_ms": 8.414191,
+          "max_ms": 9.889815,
+          "deadline_misses": 0
+        },
+        "full_control_cycle": {
+          "samples": 50,
+          "median_ms": 12.0322865,
+          "p95_ms": 18.861525999999994,
+          "max_ms": 58.848604,
+          "deadline_misses": 50
+        }
+      },
+      "wall_seconds_excluding_settle": 0.674433406,
+      "simulated_seconds": 0.5,
+      "real_time_factor": 0.7413630397780148,
+      "full_getup": false,
+      "observer": false
+    },
+    {
+      "name": "substep_feedback_2ms",
+      "sign": -1,
+      "case": {
+        "name": "substep_feedback_2ms",
+        "feedback_dt_s": 0.002,
+        "max_iterations": 200,
+        "reuse_workspace": true
+      },
+      "initial_state": [
+        -0.47447821177930916,
+        0.062491509383904305,
+        -1.5707945261204799,
+        0.20803421893942223,
+        -0.36521462315923736,
+        0.5653264310259218,
+        3.297569045530242e-15,
+        -1.3686030381204324e-15,
+        5.278833785839226e-14,
+        1.7035543813643945e-15,
+        -7.62751392774006e-15,
+        -2.8965326185481535e-16
+      ],
+      "expected_commands": 250,
+      "accepted_commands": 250,
+      "rejection": null,
+      "metrics": {
+        "tracking_success": true,
+        "completed": true,
+        "physics_steps": 250,
+        "max_edge_rise_m": 0.02003757904788981,
+        "max_rotation_rad": 0.08026073298053071,
+        "final_rotation_rad": 0.08026073298053071,
+        "final_window_angle_error_rad": 0.0002607329805307118,
+        "final_window_pitch_speed_rad_s": 0.0017351224498326093,
+        "final_pitch_velocity_rad_s": -0.0003236293133633852,
+        "rotation_overshoot_rad": 0.0002607329805307118,
+        "max_penetration_m": 0.0001854660160328786,
+        "max_joint_excursion_rad": 0.0,
+        "physical_limits_met": true,
+        "final_edge_rise_m": 0.02003757904788981
+      },
+      "timing": {
+        "optimization": {
+          "samples": 250,
+          "median_ms": 6.099203,
+          "p95_ms": 11.0571824,
+          "max_ms": 33.24108,
+          "deadline_misses": 248
+        },
+        "forward_validation": {
+          "samples": 250,
+          "median_ms": 1.3657495,
+          "p95_ms": 1.9042326499999997,
+          "max_ms": 3.505427,
+          "deadline_misses": 8
+        },
+        "physics": {
+          "samples": 250,
+          "median_ms": 0.028162,
+          "p95_ms": 0.05456184999999998,
+          "max_ms": 0.219414,
+          "deadline_misses": 0
+        },
+        "telemetry": {
+          "samples": 250,
+          "median_ms": 1.3794765,
+          "p95_ms": 1.8735441999999998,
+          "max_ms": 3.707584,
+          "deadline_misses": 8
+        },
+        "full_control_cycle": {
+          "samples": 250,
+          "median_ms": 9.4085055,
+          "p95_ms": 14.4137278,
+          "max_ms": 36.48543,
+          "deadline_misses": 250
+        }
+      },
+      "wall_seconds_excluding_settle": 2.533085164,
+      "simulated_seconds": 0.5,
+      "real_time_factor": 0.19738775746901813,
+      "full_getup": false,
+      "observer": false
+    },
+    {
+      "name": "substep_feedback_2ms",
+      "sign": 1,
+      "case": {
+        "name": "substep_feedback_2ms",
+        "feedback_dt_s": 0.002,
+        "max_iterations": 200,
+        "reuse_workspace": true
+      },
+      "initial_state": [
+        -0.35402644954070434,
+        0.062491509383904305,
+        1.5707945261204799,
+        -0.20803421893942223,
+        0.36521462315923736,
+        -0.9447522580709234,
+        -3.300399612132192e-15,
+        -1.3802749984520588e-15,
+        -5.277472953569839e-14,
+        -1.4797964243240243e-15,
+        7.181881900447053e-15,
+        2.0576765814373305e-16
+      ],
+      "expected_commands": 250,
+      "accepted_commands": 250,
+      "rejection": null,
+      "metrics": {
+        "tracking_success": true,
+        "completed": true,
+        "physics_steps": 250,
+        "max_edge_rise_m": 0.020037579121378726,
+        "max_rotation_rad": 0.08026073327336114,
+        "final_rotation_rad": 0.08026073327336114,
+        "final_window_angle_error_rad": 0.0002607332733611384,
+        "final_window_pitch_speed_rad_s": 0.0017351233746890553,
+        "final_pitch_velocity_rad_s": 0.00032363031681111753,
+        "rotation_overshoot_rad": 0.0002607332733611384,
+        "max_penetration_m": 0.00018546601607241642,
+        "max_joint_excursion_rad": 0.0,
+        "physical_limits_met": true,
+        "final_edge_rise_m": 0.020037579121378726
+      },
+      "timing": {
+        "optimization": {
+          "samples": 250,
+          "median_ms": 6.3338195,
+          "p95_ms": 11.662815649999999,
+          "max_ms": 24.891632,
+          "deadline_misses": 250
+        },
+        "forward_validation": {
+          "samples": 250,
+          "median_ms": 1.419825,
+          "p95_ms": 2.1799196499999995,
+          "max_ms": 4.303966,
+          "deadline_misses": 18
+        },
+        "physics": {
+          "samples": 250,
+          "median_ms": 0.028873,
+          "p95_ms": 0.07388744999999997,
+          "max_ms": 0.141936,
+          "deadline_misses": 0
+        },
+        "telemetry": {
+          "samples": 250,
+          "median_ms": 1.4188865,
+          "p95_ms": 2.393816549999998,
+          "max_ms": 3.617214,
+          "deadline_misses": 23
+        },
+        "full_control_cycle": {
+          "samples": 250,
+          "median_ms": 9.9989705,
+          "p95_ms": 15.1487968,
+          "max_ms": 29.984536,
+          "deadline_misses": 250
+        }
+      },
+      "wall_seconds_excluding_settle": 2.617044789,
+      "simulated_seconds": 0.5,
+      "real_time_factor": 0.19105519405002436,
+      "full_getup": false,
+      "observer": false
+    }
+  ],
+  "hardware_ready": false,
+  "hard_realtime_certified": false,
+  "full_getup": false
+}

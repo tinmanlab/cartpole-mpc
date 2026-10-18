@@ -1,0 +1,99 @@
+{
+  "schema": "wheelbot-contact-braking-reference/v1",
+  "passed": true,
+  "receipt_sha256": "1958b31b7972239fa981e6214fc7ec14688858d282998192e0f56d039ebba3bf",
+  "trace_sha256": "c84199c0cb7624a0bf88a082d788560038286d8971915ac1fc5466d150eab3da",
+  "verifier_sha256": "21511a080cd4a901c42d4a0bd2a358d8eb0f6b0d0d6153a4a71d0496d458c0d1",
+  "model_sha256": "3c5e1a4a080a598038fe407f7c1d8575ac7dd317e4cfc8aa338e4dc3df817ae4",
+  "physics_steps": 1000,
+  "commands": 600,
+  "max_state_error": 0.0,
+  "max_contact_force_error_n": 0.0,
+  "rows": [
+    {
+      "name": "original_hold_10ms",
+      "sign": -1,
+      "feedback_dt_s": 0.01,
+      "physics_dt_s": 0.002,
+      "tracking_success": false,
+      "final_window_angle_error_rad": 0.7786763018171091,
+      "final_window_pitch_speed_rad_s": 7.201955907453547,
+      "rotation_overshoot_rad": 0.7786763018171091,
+      "final_rotation_rad": 0.8586763018171091,
+      "edge_rise_m": 0.19099504255832284,
+      "max_penetration_m": 0.0006312515433161275,
+      "max_joint_excursion_rad": 0.042110181552247106,
+      "peak_torque_nm": [
+        7.863030308745413,
+        4.899215951011139,
+        1.7000000000006845
+      ],
+      "commands": 50,
+      "physics_steps": 250
+    },
+    {
+      "name": "original_hold_10ms",
+      "sign": 1,
+      "feedback_dt_s": 0.01,
+      "physics_dt_s": 0.002,
+      "tracking_success": false,
+      "final_window_angle_error_rad": 0.5503972277111463,
+      "final_window_pitch_speed_rad_s": 1.333790460595505,
+      "rotation_overshoot_rad": 0.5724166480088951,
+      "final_rotation_rad": 0.5382097866206985,
+      "edge_rise_m": 0.12817771419910154,
+      "max_penetration_m": 0.0008846881817409225,
+      "max_joint_excursion_rad": 0.04211018939809885,
+      "peak_torque_nm": [
+        7.386753268134997,
+        3.433560217809007,
+        1.7000000000001543
+      ],
+      "commands": 50,
+      "physics_steps": 250
+    },
+    {
+      "name": "substep_feedback_2ms",
+      "sign": -1,
+      "feedback_dt_s": 0.002,
+      "physics_dt_s": 0.002,
+      "tracking_success": true,
+      "final_window_angle_error_rad": 0.0002607329805307118,
+      "final_window_pitch_speed_rad_s": 0.0017351224498326093,
+      "rotation_overshoot_rad": 0.0002607329805307118,
+      "final_rotation_rad": 0.08026073298053071,
+      "edge_rise_m": 0.02003757904788981,
+      "max_penetration_m": 0.0001854660160328786,
+      "max_joint_excursion_rad": 0.0,
+      "peak_torque_nm": [
+        1.2866022840129985,
+        0.6509317463255887,
+        0.2387586340654048
+      ],
+      "commands": 250,
+      "physics_steps": 250
+    },
+    {
+      "name": "substep_feedback_2ms",
+      "sign": 1,
+      "feedback_dt_s": 0.002,
+      "physics_dt_s": 0.002,
+      "tracking_success": true,
+      "final_window_angle_error_rad": 0.0002607332733611384,
+      "final_window_pitch_speed_rad_s": 0.0017351233746890553,
+      "rotation_overshoot_rad": 0.0002607332733611384,
+      "final_rotation_rad": 0.08026073327336114,
+      "edge_rise_m": 0.020037579121378726,
+      "max_penetration_m": 0.00018546601607241642,
+      "max_joint_excursion_rad": 0.0,
+      "peak_torque_nm": [
+        1.2866022840291387,
+        0.6509317463181777,
+        0.23875863407502368
+      ],
+      "commands": 250,
+      "physics_steps": 250
+    }
+  ],
+  "scope": "Same-platform native reconstruction and declared control-rate comparison only. Different feedback rate and numerical iteration budget are explicit. No real-time, observer, arbitrary getup or hardware claim."
+}
